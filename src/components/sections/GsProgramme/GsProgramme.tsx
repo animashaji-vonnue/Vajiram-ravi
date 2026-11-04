@@ -1,89 +1,112 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
-import { ArrowUpRightIcon } from "@/components/icons";
-import { ARROW_TILE, NUDGE } from "@/components/ui/Buttons";
-import RibbonGradient from "@/components/ui/RibbonGradient";
+import { Button } from "@/components/ui/Buttons";
 import { Eyebrow } from "@/components/ui/Typography";
 import { gsProgramme } from "@/data/home";
-import { cx } from "@/lib/cx";
-import type { RibbonPalette } from "@/lib/ribbonGradient";
-import ProgrammeReel from "./ProgrammeReel";
 
 /**
- * The frame's animated ribbon gradient in Vajiram & Ravi colours. Each palette is [base, colour 1,
- * colour 2, colour 3]; the background holds each one for a while, then crossfades to the next.
+ * The four Recitals covers in the card's corners, from the design (3585:42707). `box` places the area the
+ * tilted cover fills, measured from the corners of the 1392px design card (the card here is 1360); the 180 × 238 cover is centred in it at `tilt` degrees. While the
+ * page is open each cover drifts (`lift` px up and `drift` px across) and sways `sway` degrees, over
+ * `seconds`, starting `delay` seconds in, so the four never move together.
  */
-const PALETTES: RibbonPalette[] = [
-  ["#fef8ec", "#f6b653", "#73e2bd", "#fde57c"], // brand/50, brand/300, green/300, yellow/200
-  ["#fafaf9", "#f39c2c", "#fcd54d", "#cbb9a6"], // sand/50, brand/400, yellow/300, brown/300
-  ["#edfcf6", "#3acda1", "#f9d38e", "#fde57c"], // green/50, green/400, brand/200, yellow/200
+const COVERS = [
+  { src: "/images/gs/recitals-july.jpg", box: { left: 38.63, top: 64, width: 222.105, height: 267.973 }, tilt: 11, sway: 3, lift: -14, drift: 6, seconds: 7, delay: 0 },
+  { src: "/images/gs/recitals-june.jpg", box: { right: 83.86, top: 88.31, width: 200.058, height: 252.782 }, tilt: -5, sway: -3, lift: -12, drift: -6, seconds: 8, delay: -2.5 },
+  { src: "/images/gs/recitals-may.jpg", box: { left: 104.04, bottom: 92.43, width: 196.164, height: 249.976 }, tilt: -4, sway: 3, lift: -10, drift: 5, seconds: 9, delay: -4 },
+  { src: "/images/gs/recitals-april.jpg", box: { right: 109.27, bottom: 42.62, width: 232.231, height: 274.476 }, tilt: 14, sway: -3, lift: -16, drift: -7, seconds: 7.5, delay: -1.2 },
 ];
 
+/** An ornamental rule: an orange line tapering to a small star in the middle (design 3588:2098). */
+function Rule() {
+  return (
+    <Image
+      src="/images/gs/rule.svg"
+      alt=""
+      width={573.988}
+      height={5.927}
+      className="h-[5.927px] w-[573.988px] max-w-none"
+    />
+  );
+}
+
 /**
- * The GS programme: a white card set in a frame with an animated ribbon gradient, after
- * amplemarket.com's MCP section. The copy and marks sit on the left, with the same orange arrow link
- * as the course cards in the top right corner of the copy; on the right a window
- * cut out of the card shows the moving gradient behind, with a looping reel of programme highlights
- * floating in it (ProgrammeReel).
+ * "Our flagship programme", after the design's section 3575:2050: a cream card with a centred heading,
+ * a short description, the marks General Studies carries between two ornamental rules, and one call to
+ * action, with the four latest Recitals covers floating in its corners.
  */
 export default function GsProgramme() {
   return (
-    <section id="gs-programme" className="bg-white" aria-labelledby="gs-title">
-      <div className="mx-auto w-canvas px-6 py-10">
-        <div className="relative flex flex-col items-center overflow-clip rounded-[32px] px-34 py-22">
-          <RibbonGradient className="absolute inset-0" palettes={PALETTES} />
-
-          <div className="relative flex h-[580px] w-[1120px] overflow-clip rounded-[20px] p-2.5">
-            {/* The white card surface, with the window on the right cut out of it. */}
-            <Image
-              className="absolute inset-0"
-              src="/images/gs-programme/card-surface.svg"
-              alt=""
-              width={1120}
-              height={580}
-            />
-            <div className="relative flex min-w-px flex-1 flex-col justify-between py-9 pr-12 pl-[38px]">
-              <div className="flex flex-col items-start gap-3.5">
-                <div className="flex w-full items-center justify-between">
-                  <Eyebrow tone="neutral" tagged>
-                    {gsProgramme.eyebrow}
-                  </Eyebrow>
-                  {/* Pulled in by -my-2 so the taller tile doesn't push the heading down. */}
-                  <a
-                    href={gsProgramme.cta.href}
-                    aria-label={gsProgramme.cta.label}
-                    className={cx(ARROW_TILE, "group/cta -my-2 hover:bg-brand-600")}
-                  >
-                    <ArrowUpRightIcon className={cx(NUDGE, "group-hover/cta:translate-x-px group-hover/cta:-translate-y-px")} />
-                  </a>
-                </div>
-                <h2 id="gs-title" className="font-display text-[36px]/[44px] font-semibold text-balance text-neutral-900">
-                  {gsProgramme.heading}
-                </h2>
-                <p className="font-sans text-[16px]/[23px] font-medium text-neutral-500">{gsProgramme.intro}</p>
-              </div>
-
-              <div className="flex flex-col gap-3.5">
-                <p className="font-sans text-[14px]/[20px] font-bold text-neutral-500">{gsProgramme.statsLabel}</p>
-                <dl className="grid grid-cols-[220px_1fr] gap-x-10">
-                  {gsProgramme.stats.map((stat) => (
-                    <div key={stat.stage} className="flex flex-col gap-3">
-                      <dt className="font-display text-[16px]/[22px] font-semibold text-neutral-500">{stat.stage}</dt>
-                      <dd className="font-display whitespace-nowrap lining-nums proportional-nums">
-                        <span className="text-[40px]/[47px] font-semibold text-[#451b03]">{stat.marks}</span>
-                        <span className="text-[18px]/[25px] font-bold text-neutral-600">{stat.total}</span>
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
+    <section className="bg-white" aria-labelledby="gs-title">
+      <div className="mx-auto w-canvas px-10 py-24">
+        {/* Cream with a tone-on-tone diamond checker (design 3704:42385), tiled from one diamond so it fits any width. */}
+        <div className="relative flex flex-col items-center overflow-hidden rounded-[24px] bg-cream bg-[url(/images/gs/diamond-tile.svg)] bg-size-[99.3103px_94.1244px] px-10 pt-[120px] pb-[112px]">
+          {COVERS.map((cover) => (
+            <div
+              key={cover.src}
+              aria-hidden="true"
+              className="pointer-events-none absolute flex items-center justify-center"
+              style={cover.box}
+            >
+              <div
+                className="relative h-[238px] w-[180px] rounded-[4px] shadow-[0_18px_32px_rgba(66,18,5,0.18)]"
+                style={
+                  {
+                    "--tilt": `${cover.tilt}deg`,
+                    "--sway": `${cover.sway}deg`,
+                    "--lift": `${cover.lift}px`,
+                    "--drift": `${cover.drift}px`,
+                    rotate: "var(--tilt)",
+                    animation: `float-cover ${cover.seconds}s ease-in-out ${cover.delay}s infinite`,
+                  } as CSSProperties
+                }
+              >
+                <Image src={cover.src} alt="" fill sizes="180px" className="rounded-[4px] object-cover" />
               </div>
             </div>
+          ))}
 
-            <div className="relative h-full w-[520px] shrink-0 overflow-clip rounded-[14px]">
-              <ProgrammeReel
-                className="absolute inset-11 rounded-2xl shadow-[0_16px_36px_rgba(66,18,5,.22)]"
-                slides={gsProgramme.reel}
-              />
+          <div className="relative flex flex-col items-center gap-10">
+            <div className="flex flex-col items-center gap-5">
+              <Eyebrow tone="maroon" tagged tag="crest">
+                {gsProgramme.eyebrow}
+              </Eyebrow>
+              <h2
+                id="gs-title"
+                className="text-center font-display text-[88px]/[92px] font-medium tracking-[-2.64px] whitespace-nowrap text-brand-950"
+              >
+                {gsProgramme.heading.map((line, i) => (
+                  <span key={line} className={i === gsProgramme.heading.length - 1 ? "block text-amber" : "block"}>
+                    {line}
+                  </span>
+                ))}
+              </h2>
             </div>
+            <p className="w-[620px] text-center font-sans text-[18px]/[28px] font-medium text-neutral-600">
+              {gsProgramme.intro}
+            </p>
+            {/* The marks between two ornamental rules, which are wider than the 448px block and run past it. */}
+            <div className="flex w-[448px] flex-col items-center gap-5">
+              <Rule />
+              <div className="flex w-full flex-col items-center gap-1.5 text-center">
+                {/* The dot sits exactly on the centre line, under the rules' stars; the two marks are set out
+                    from it, one to each side. */}
+                <p className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-3.5 font-display text-[18px]/[24px] font-semibold whitespace-nowrap text-neutral-900">
+                  <span className="justify-self-end">
+                    <span className="text-amber">{gsProgramme.marks.prelims}</span> Prelims
+                  </span>
+                  <span aria-hidden="true">·</span>
+                  <span className="justify-self-start">
+                    <span className="text-amber">{gsProgramme.marks.mains}</span> Mains
+                  </span>
+                </p>
+                <p className="font-sans text-[14px]/[20px] font-medium whitespace-nowrap text-neutral-500">
+                  {gsProgramme.marks.caption}
+                </p>
+              </div>
+              <Rule />
+            </div>
+            <Button href={gsProgramme.primary.href}>{gsProgramme.primary.label}</Button>
           </div>
         </div>
       </div>

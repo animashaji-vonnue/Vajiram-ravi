@@ -52,6 +52,13 @@ export function CarouselChevronIcon(props: IconProps) {
   );
 }
 
+/** Arrow right, 20px (call-to-action buttons) */
+export function ArrowRightLgIcon(props: IconProps) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false" {...props}><path d="M2.5 10H17.5M10.4167 17.0833L17.5 10L10.4167 2.91667" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  );
+}
+
 /** Arrow right, 16px */
 export function ArrowRightIcon(props: IconProps) {
   return (

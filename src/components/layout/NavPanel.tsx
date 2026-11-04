@@ -23,13 +23,13 @@ function columns(count: number): string {
 
 /**
  * One header menu's contents: a small heading and the links on the left, and a feature card with a
- * picture on the right. The panels for all the menus sit in the same place under the header pill and
+ * picture on the right. The panels for all the menus sit in the same place under the header bar and
  * crossfade as you move between items (SiteHeader draws the shared background behind them).
  * A closed panel is faded out, hidden and `inert`, so nothing in it can be focused or read out.
  */
 export default function NavPanel({ id, menu, open, warm, onNavigate, contentRef }: NavPanelProps) {
   return (
-    // The top padding bridges the gap under the pill, so the pointer can cross it without closing the panel.
+    // The top padding bridges the gap under the bar, so the pointer can cross it without closing the panel.
     <div
       id={id}
       inert={!open}
@@ -49,7 +49,7 @@ export default function NavPanel({ id, menu, open, warm, onNavigate, contentRef 
                 <a
                   href={link.href}
                   onClick={onNavigate}
-                  className="-mx-2 flex min-h-9 items-center rounded-lg px-2 py-1.5 font-display text-[15px]/[22px] font-medium text-neutral-800 transition-colors duration-200 hover:bg-white/70 hover:text-neutral-900 focus-visible:rounded-lg focus-visible:-outline-offset-2"
+                  className="-mx-2 flex min-h-9 items-center rounded-lg px-2 py-1.5 font-display text-[15px]/[22px] font-medium text-neutral-800 transition-colors duration-200 hover:bg-brand-50 hover:text-brand-700 focus-visible:rounded-lg focus-visible:-outline-offset-2"
                 >
                   {link.label}
                 </a>

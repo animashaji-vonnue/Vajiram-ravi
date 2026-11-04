@@ -56,15 +56,87 @@
   --color-sun-100: #fef4c7;
   --color-sun-200: #fde57c;
 
-  /* Testimonial card tints, and the testimonial eyebrow. */
+  /* Testimonial card tints, their edge lines, and the testimonial eyebrow (badge and label). */
   --color-green-300: #73e2bd;
+  /* The section divider's rules (design 3697:533). */
+  --color-green-400: #3acda1;
+  --color-green-600: #0b906f;
+  --color-green-700: #378373;
   --color-green-800: #096652;
   --color-yellow-300: #fcd54d;
+  --color-yellow-600: #d97a06;
+  --color-brand-400: #f39c2c;
+
+  /* The toppers eyebrow: a maroon badge with a saffron label. */
+  --color-red-800: #922228;
+  --color-saffron-400: #fda421;
+
+  /*
+   * "Mango Tango", the warm palette from the brief: cream for the hero's background, with amber, mango,
+   * saffron and lemon for accents.
+   */
+  --color-cream: #fff8e8;
+  --color-amber: #c84800;
+  --color-mango: #f07010;
+  --color-saffron: #f8a020;
+  --color-lemon: #f8d040;
+  /* The hero badge's orange, from the reference badge the brief pointed to. */
+  --color-vermilion: #fe551b;
+
+  /* The nav's active link (design 3663:42638). */
+  --color-blue-900: #254583;
+  /* The success stories band. */
+  --color-indigo-800: #2c3e8c;
+
+  /* Topper cards (design 3614:4855): gold and rose borders round an ivory body, and a wine name plate. */
+  --color-gold-200: #f5c97a;
+  --color-gold-600: #c9a000;
+  --color-rose-500: #e8427a;
+  --color-wine-800: #7b1a2c;
+  --color-ivory: #faf6e8;
 
   /* Warm light greys for card surfaces and their borders. */
   --color-sand-50: #fafaf9;
   --color-sand-100: #f5f5f4;
   --color-sand-200: #e8e4e3;
+  --color-sand-300: #d8d1cf;
+  --color-sand-800: #2b2322;
+
+  /*
+   * "Featured programmes" (design 3591:2114): the marigold band, and each course card's colourway: a light
+   * body (50), its tag (100), the button's inset line (300), the edge and button (700 or 800) and the tag's
+   * label (800 or 900). The design's greens here are deeper than the testimonial greens, so they're "jade".
+   */
+  --color-marigold: #f9c83b;
+  --color-parchment: #fffcf3;
+  --color-yellow-50: #fffbeb;
+  --color-jade-50: #edfcf6;
+  --color-jade-100: #d3f8e7;
+  --color-jade-700: #09735c;
+  --color-jade-800: #0a5b4a;
+  --color-blue-50: #f0f7fe;
+  --color-blue-100: #ddedfc;
+  --color-blue-300: #a2d1f7;
+  --color-blue-800: #274fa6;
+  --color-pink-50: #fdeff4;
+  --color-pink-100: #f9d6e3;
+  --color-pink-300: #f4b8cc;
+  --color-pink-700: #b83a68;
+  --color-pink-800: #8e2a50;
+  --color-purple-50: #f7f1fc;
+  --color-purple-100: #e6d6f5;
+  --color-purple-300: #cdb3ea;
+  --color-purple-700: #5b2a86;
+  --color-purple-800: #44206b;
+  --color-red-50: #fef3f1;
+  --color-red-100: #fad6d1;
+  --color-red-300: #f2b5af;
+  --color-red-700: #a32a2a;
+  --color-red-900: #7a1f1f;
+
+  /* The practice banner (design 3722:42634): a matchbox-label blue, and the navy of its rule and headline. */
+  --color-blue-500: #4792ea;
+  --color-blue-950: #1b2b50;
 
   /* Figtree for headings and UI, Geist for body copy, Geist Mono for counters. The *-face variables come from next/font in layout.tsx. */
   --font-display: var(--font-figtree-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -72,6 +144,8 @@
   --font-mono: var(--font-geist-mono-face), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --container-canvas: 1440px;
+  /* How far the header, hero and stats spread on screens wider than the canvas; the same as the canvas below it. */
+  --container-wide: 1760px;
 
   --ease-smooth: cubic-bezier(0.22, 0.61, 0.36, 1);
   /* Match plain CSS: transitions without an explicit easing use `ease`. */
@@ -91,34 +165,80 @@
   }
 }
 
-/* Gentle "breathing" of the toppers banner rings. Used through an arbitrary animation value, so it lives outside @theme. */
-@keyframes ring {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.022);
-  }
-}
-
-/* Programme reel (ProgrammeReel): each slide's photo settles from a slight zoom, and its caption rises in. */
-@keyframes reel-settle {
-  from {
-    transform: scale(1.08);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-@keyframes reel-caption {
+/*
+ * The opening sequence (Hero), after brand.dropbox.com: a white cover with guide lines sliding in from
+ * the edges while the emblem draws itself in the middle of the window (its line drawing animates inside
+ * emblem-lines.svg), then glides to its place in the hero as the page fades up around it. Pure CSS, so it plays before any script loads. With reduced motion the base rule below
+ * cuts every animation to its end state, and the cover isn't shown at all.
+ * Used through arbitrary animation values, so these live outside @theme.
+ */
+@keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+  }
+}
+@keyframes cover-out {
+  from {
+    opacity: 1;
+    visibility: visible;
   }
   to {
-    opacity: 1;
-    transform: none;
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes guide-x {
+  from {
+    scale: 0 1;
+  }
+}
+@keyframes guide-y {
+  from {
+    scale: 1 0;
+  }
+}
+@keyframes intro-rise {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+}
+/* The emblem starts where Hero puts it (--settle-x/--settle-y: the middle of the window) and glides to its place. */
+@keyframes emblem-settle {
+  from {
+    translate: var(--settle-x) var(--settle-y);
+    scale: 1.12;
+  }
+}
+/* One full turn, for the rings of cards around the emblem (OrbitCards). */
+@keyframes orbit {
+  to {
+    rotate: 360deg;
+  }
+}
+/*
+ * A cover drifting up and sideways and back, with a slight sway in its tilt. Each cover sets its own
+ * --tilt (its resting angle), --sway (extra degrees at the top of the drift) and --lift (how far it rises).
+ * With reduced motion the animation is cut to nothing and the cover rests at --tilt.
+ */
+@keyframes float-cover {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: var(--tilt);
+  }
+  50% {
+    translate: var(--drift, 0px) var(--lift);
+    rotate: calc(var(--tilt) + var(--sway));
+  }
+}
+/* Keeps the emblem above the cover while it draws and moves, then drops it back under the sticky header. */
+@keyframes lift {
+  from {
+    z-index: 60;
+  }
+  to {
+    z-index: 1;
   }
 }
 
@@ -161,6 +281,7 @@
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
+      animation-delay: 0ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       transition-delay: 0ms !important;
