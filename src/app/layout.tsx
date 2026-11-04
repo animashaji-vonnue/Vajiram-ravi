@@ -29,6 +29,22 @@ const geist = localFont({
   display: "swap",
 });
 
+// A free stand-in for Reckless (Displaay), the serif wanted for the hero heading. Variable: weight 400–700, optical size, SOFT and WONK.
+const fraunces = localFont({
+  src: [{ path: "./fonts/fraunces.woff2", weight: "400 700", style: "normal" }],
+  // Consumed by the --font-serif theme token in globals.css.
+  variable: "--font-fraunces-face",
+  display: "swap",
+});
+
+// Noto Serif, for the toppers heading. Variable: weight 400–800.
+const notoSerif = localFont({
+  src: [{ path: "./fonts/noto-serif.woff2", weight: "400 800", style: "normal" }],
+  // Consumed by the --font-noto-serif theme token in globals.css.
+  variable: "--font-noto-serif-face",
+  display: "swap",
+});
+
 const geistMono = localFont({
   // Variable font, copied from the one Next.js bundles.
   src: [{ path: "./fonts/geist-mono.woff2", weight: "100 900", style: "normal" }],
@@ -53,7 +69,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // The canvas-fit script sets an inline zoom on <html> before hydration.
     <html
       lang="en"
-      className={`${figtree.variable} ${geist.variable} ${geistMono.variable}`}
+      className={`${figtree.variable} ${geist.variable} ${geistMono.variable} ${fraunces.variable} ${notoSerif.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

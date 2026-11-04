@@ -34,8 +34,6 @@ type PeekCarouselProps = {
   start: number;
   /** Shifts which dot is lit for a given slide. */
   dotOffset: number;
-  /** Enlarges the dot after the active one. */
-  nearDot: boolean;
   /** Autoplay interval in milliseconds. */
   interval: number;
   /** Sets the active slide in the hero's glass frame and hides the peeking slides, as in the hero design. */
@@ -84,7 +82,7 @@ function GlassFrame({ slide, width }: { slide?: PeekSlide; width: number }) {
  * never jumps. Positions use `calc(50% + offset)` and therefore need no measuring.
  */
 export default function PeekCarousel(props: PeekCarouselProps) {
-  const { count, slides, slideWidth, activeWidth, gap, dotOffset, nearDot, interval, framed = false } = props;
+  const { count, slides, slideWidth, activeWidth, gap, dotOffset, interval, framed = false } = props;
   const [index, setIndex] = useState(props.start);
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -252,7 +250,6 @@ export default function PeekCarousel(props: PeekCarouselProps) {
             key={i}
             label={`${props.slideLabel} ${i + 1}`}
             active={i === activeDot}
-            big={nearDot && i === mod(activeDot + 1, count)}
             onClick={() => {
               toDot(i);
               restart();

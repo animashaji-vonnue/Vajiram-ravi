@@ -10,17 +10,15 @@ import NavPanel from "./NavPanel";
 const CLOSE_DELAY_MS = 160;
 
 /**
- * A nav item's label: dark grey, turning the design's active blue while hovered, focused or open. Only
- * the colour changes, so the row never shifts.
+ * A nav item's label: mid grey, turning near black while hovered, focused or open. Only the colour
+ * changes, so the row never shifts.
  */
 const ITEM =
-  "flex h-10 cursor-pointer items-center px-3 font-display text-[16px]/[24px] font-medium whitespace-nowrap text-neutral-700 transition-colors duration-200 hover:text-blue-900 focus-visible:text-blue-900 focus-visible:-outline-offset-2 aria-expanded:text-blue-900";
+  "flex h-10 cursor-pointer items-center px-3.5 font-display text-[15px]/[22px] font-medium whitespace-nowrap text-neutral-600 transition-colors duration-200 hover:text-neutral-950 focus-visible:text-neutral-950 focus-visible:-outline-offset-2 aria-expanded:text-neutral-950";
 
 /**
- * The header, after the design's "Nav · C1 framed tile" (3663:42638): a white bar holding the logo, the
- * main items and "Let's talk" inside a blue cartouche, a double line with rounded ends and small fleurons
- * at its corners. The cartouche is a nine-slice border image: its 64px ends are drawn as they are and only
- * the straight middle stretches, so it fits any width. Menus open on hover, after
+ * The header, after humble's: a plain light bar with a hairline under it, the logo on the left, the main
+ * items in the middle and "Let's talk", the site's small primary button, on the right. Menus open on hover, after
  * harvey.ai: hovering a menu item drops its panel under the bar; moving to the next item keeps the
  * panel open, resizes its background to fit and crossfades the contents. Hovering a plain link or
  * leaving the header closes it.
@@ -71,12 +69,11 @@ export default function SiteHeader() {
   };
 
   return (
-    // In the flow it takes 80px; the other 20px of the bar hang over the page.
-    <header className="sticky top-0 z-40 h-20">
-      <div className="h-[100px] bg-white">
+    <header className="sticky top-0 z-40 h-[72px] border-b border-neutral-200 bg-neutral-50">
+      <div className="h-full">
         <div
           ref={groupRef}
-          className="relative mx-auto h-full w-full max-w-wide pt-3"
+          className="relative mx-auto h-full w-full max-w-wide"
           onPointerEnter={() => {
             keepOpen();
             setWarm(true);
@@ -88,12 +85,8 @@ export default function SiteHeader() {
             if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setActive(null);
           }}
         >
-          {/* The cartouche, 24px in from the sides and 12px from the top and bottom. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 [border-image:url(/images/nav/cartouche.svg)_50_64_fill/50px_64px_stretch] border-solid"
-          />
-          <div className="relative flex h-[76px] items-center justify-between px-16">
+          {/* Three columns, so the items sit in the middle of the bar whatever the widths at the ends. */}
+          <div className="relative grid h-full grid-cols-[1fr_auto_1fr] items-center px-10">
             <a
               href="#top"
               aria-label="Vajiram & Ravi – Institute for IAS Examination, home"
@@ -153,7 +146,7 @@ export default function SiteHeader() {
               </ul>
             </nav>
 
-            <Button href="#contact" size="nav">
+            <Button href="#contact" size="s" icon="chat" className="justify-self-end">
               Let&apos;s talk
             </Button>
           </div>

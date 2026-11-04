@@ -82,6 +82,16 @@
   --color-lemon: #f8d040;
   /* The hero badge's orange, from the reference badge the brief pointed to. */
   --color-vermilion: #fe551b;
+  /* The call-to-action buttons (design 3764:42634). */
+  --color-tangerine: #ff7517;
+  /* The torn kraft paper under the stats: its brown face and the pale rim a tear leaves. */
+  --color-kraft: #dcb57a;
+  --color-kraft-rim: #f2e8d2;
+  /* The notepad pages the toppers are shown on. */
+  --color-notepad: #e3dac9;
+  /* The clipboard "Why choose" is shown on: its brown hardboard and the warm white sheet on it. */
+  --color-hardboard: #b88b5f;
+  --color-paper: #f8f6f2;
 
   /* The nav's active link (design 3663:42638). */
   --color-blue-900: #254583;
@@ -142,6 +152,10 @@
   --font-display: var(--font-figtree-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-sans: var(--font-geist-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-mono: var(--font-geist-mono-face), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* Fraunces, standing in for Reckless, for the hero heading. */
+  --font-serif: var(--font-fraunces-face), ui-serif, Georgia, "Times New Roman", serif;
+  /* Noto Serif, for the toppers heading. */
+  --font-noto-serif: var(--font-noto-serif-face), ui-serif, Georgia, "Times New Roman", serif;
 
   --container-canvas: 1440px;
   /* How far the header, hero and stats spread on screens wider than the canvas; the same as the canvas below it. */
@@ -230,6 +244,13 @@
   50% {
     translate: var(--drift, 0px) var(--lift);
     rotate: calc(var(--tilt) + var(--sway));
+  }
+}
+/* The hero's photos: each one starts a little zoomed in and to the left, and settles while it's up. */
+@keyframes hero-drift {
+  from {
+    scale: 1.12;
+    translate: -2% 0;
   }
 }
 /* Keeps the emblem above the cover while it draws and moves, then drops it back under the sticky header. */

@@ -1,116 +1,163 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import Image from "next/image";
+import { type CSSProperties, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Buttons";
 import { hero } from "@/data/home";
 import { cx } from "@/lib/cx";
-import OpeningCover from "./OpeningCover";
-import EmblemMark from "./EmblemMark";
-import HeroStats from "./HeroStats";
-import OrbitCards from "./OrbitCards";
+
+/** How long each photo stays up before the next one tears in. */
+const SLIDE_MS = 6000;
+const ROWS = 28;
 
 /**
- * The opening sequence: the emblem draws itself in the middle of the window (about 1.85s), then glides
- * over MOVE_MS to its place, while the cover fades (OpeningCover) and the copy rises in.
+ * A ragged, slightly slanted vertical edge as a clip-path: everything right of `x`% is kept. The same
+ * `seed` always tears the same way, so the hidden and shown shapes have matching points and the browser
+ * can slide one into the other.
  */
-const DRAWN_AT = 1850;
-const MOVE_MS = 1050;
-const RISE = "[animation:intro-rise_1000ms_var(--ease-smooth)_2550ms_both]";
-/**
- * The hero fills the window (`--vh` is its height in canvas pixels), but never less than MIN_HEIGHT (enough for
- * the orbit inside the panel), and centres its content in the part below the nav bar (which ends NAV_BOTTOM
- * from the top).
- */
-const MIN_HEIGHT = 880;
-const NAV_BOTTOM = 100;
-const HEIGHT = `max(var(--vh, 900px), ${MIN_HEIGHT}px)`;
-/**
- * The design's framed tile (3697:662), drawn 1440 × 839: under the nav bar, an indigo band with a white panel
- * FRAME px in from its edges, its corners scooped out, a pencil line just inside it, and leaf sprigs in the
- * band's corners. The band's size follows the window, so the drawing is nine-sliced: the CORNER pieces
- * (scoops, line curves and sprigs) keep their size and only the straight runs between them stretch.
- */
-const FRAME = 30;
-const CORNER = { x: 180, y: 160 };
-const BAND = {
-  borderStyle: "solid",
-  borderWidth: `${CORNER.y}px ${CORNER.x}px`,
-  borderImage: `url(/images/hero/frame.svg) ${CORNER.y} ${CORNER.x} fill / ${CORNER.y}px ${CORNER.x}px stretch`,
-} as CSSProperties;
-/**
- * Where the emblem's centre ends up: the middle of the 610 × 568 art area, ART_RIGHT in from the right of the
- * content, which spreads to the panel's width (the window's, `--vw`, less the frame) up to the 1760px "wide"
- * container, and centred under the nav bar. ART_RIGHT keeps the outer ring of cards inside the panel.
- */
-const ART_RIGHT = 55;
-const EMBLEM_FROM_RIGHT = ART_RIGHT + 610 / 2;
-const EMBLEM_Y = `(${NAV_BOTTOM}px + ${HEIGHT}) / 2`;
-/** Starts the emblem in the middle of the window. */
-const EMBLEM_MOTION = {
-  "--settle-x": `calc(${EMBLEM_FROM_RIGHT}px - min(var(--vw, 1440px) - ${2 * FRAME}px, 1760px) / 2)`,
-  "--settle-y": `calc(var(--vh, 900px) / 2 - ${EMBLEM_Y})`,
-  animation: `emblem-settle ${MOVE_MS}ms var(--ease-smooth) ${DRAWN_AT}ms both, lift ${DRAWN_AT + MOVE_MS + 50}ms step-end both`,
-} as CSSProperties;
+function tornEdge(x: number, seed: number): string {
+  const points = ["300% 0%"];
+  for (let row = 0; row <= ROWS; row++) {
+    const y = (row / ROWS) * 100;
+    const jag = (Math.sin((row + 1) * 12.9898 * seed) * 43758.5453) % 1;
+    points.push(`${(x + (50 - y) * 0.12 + jag * 1.4).toFixed(2)}% ${y.toFixed(2)}%`);
+  }
+  points.push("300% 100%");
+  return `polygon(${points.join(", ")})`;
+}
+
+/** The layers of one cut, back to front: two torn papers and then the photo, each a beat behind the last. */
+const LAYERS = [
+  { seed: 1.7, delay: "delay-0" },
+  { seed: 2.9, delay: "delay-[70ms]" },
+  { seed: 4.3, delay: "delay-[160ms]" },
+].map(({ seed, delay }) => ({
+  delay,
+  style: {
+    "--hidden": tornEdge(112, seed),
+    "--shown": tornEdge(-12, seed),
+  } as CSSProperties,
+}));
+
+/** A fine grain for the papers, so they read as paper rather than flat colour. */
+const GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E\")";
 
 /**
- * The hero, from the design's split layout: heading, intro, actions and the stats on the left; on the right the
- * emblem with two rings of cards orbiting it (OrbitCards).
- * The page opens on a white cover while the emblem draws itself in the middle of the window, after
- * brand.dropbox.com (OpeningCover, EmblemMark); it then glides to its place on the right as the rest of
- * the hero comes in. The emblem is lifted above the cover until it lands, then dropped back under the header.
- * Like theperformancelab.ca, the hero is exactly one window tall, and on wide screens its content spreads
- * out (to the "wide" container) rather than sitting in a 1440px column.
+ * Hidden until its turn, then torn in over the slide before it; "prev" stays up underneath until the
+ * next cut has finished. Only the active slide's tear animates: the others jump.
+ */
+const CLIP =
+  "absolute inset-0 [clip-path:var(--hidden)] group-data-[state=active]/slide:[clip-path:var(--shown)] group-data-[state=prev]/slide:[clip-path:var(--shown)] group-data-[state=active]/slide:transition-[clip-path] group-data-[state=active]/slide:duration-[1100ms] group-data-[state=active]/slide:ease-[cubic-bezier(0.7,0,0.2,1)]";
+
+/**
+ * A jaali lattice, after the tone-on-tone pattern in airindia.com's footer but drawn as our own: on an 80px
+ * tile, an eight-pointed khatam star (two squares, one turned 45°) whose points run out to the tile's
+ * edges and corners, so neighbouring tiles join into one screen. Amber lines, faint on the cream.
+ */
+const JAALI = `url("data:image/svg+xml,${encodeURIComponent(
+  `<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' fill='none' stroke='#c84800' stroke-opacity='.13' stroke-width='1'>` +
+    `<rect x='24' y='24' width='32' height='32'/>` +
+    `<path d='M40 17.4 62.6 40 40 62.6 17.4 40Z'/>` +
+    `<path d='M40 17.4V0M62.6 40H80M40 62.6V80M17.4 40H0M24 24 0 0M56 24 80 0M56 56 80 80M24 56 0 80'/>` +
+    `</svg>`,
+)}")`;
+
+/** The shadow each layer casts on the one beneath, on a wrapper so the clip doesn't cut it off. */
+const SHADOW = "absolute inset-0 drop-shadow-[-8px_0_14px_rgb(0_0_0/0.35)]";
+
+/**
+ * The opening hero, after amperos.com: a rounded card where photos of serving officers (IPS, IAS, IFS)
+ * take turns, each one drifting slowly and the next tearing in behind two strips of torn paper in a
+ * colour from its photo. The heading, a short paragraph and the buttons sit on the dark left of
+ * the photos. With reduced motion the first photo stays up.
+ * The card sits on a cream band, the full width of the window, with a faint jaali lattice; the lattice
+ * fades out towards the band's foot and the cream fades into the white page.
  */
 export default function Hero() {
+  const { slides } = hero;
+  const [index, setIndex] = useState(0);
+  const [prev, setPrev] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setTimeout(() => {
+      setPrev(index);
+      setIndex((index + 1) % slides.length);
+    }, SLIDE_MS);
+    return () => window.clearTimeout(timer);
+  }, [index, slides.length]);
+
+  const state = (i: number) => (i === index ? "active" : i === prev ? "prev" : "idle");
+
   return (
-    // Pulled up under the 80px header, so the hero's one window of height starts at the top of the window.
-    <section
-      className="-mt-20 flex flex-col bg-white"
-      style={{ height: HEIGHT, paddingTop: NAV_BOTTOM }}
-      aria-labelledby="hero-title"
-    >
-      <OpeningCover />
-      <div className="relative flex flex-1 bg-indigo-800" style={{ padding: FRAME }}>
-        <div aria-hidden="true" className="absolute inset-0" style={BAND} />
-        <div
-          className="relative mx-auto flex w-full max-w-wide items-center justify-between pl-[110px]"
-          style={{ paddingRight: ART_RIGHT }}
-        >
-          <div className={cx("flex w-[560px] shrink-0 flex-col gap-10", RISE)}>
-            <div className="flex flex-col gap-6">
-              {/* A two-part badge: a light pill holding a filled vermilion tag, then vermilion monospaced text. */}
-              <p className="inline-flex items-center gap-2.5 self-start rounded-full border border-neutral-200 bg-neutral-50 py-1 pr-4 pl-1">
-                <span className="rounded-full bg-vermilion px-3 py-1 font-display text-[14px]/[20px] font-medium text-white">
-                  {hero.badge.tag}
-                </span>
-                <span className="font-mono text-[14px]/[20px] font-medium tracking-[-0.2px] text-vermilion">
-                  {hero.badge.text}
-                </span>
-              </p>
-              <h1
-                id="hero-title"
-                className="font-display text-[64px]/[71px] font-semibold text-balance text-neutral-900"
-              >
-                {hero.heading} <span className="text-brand-500">{hero.highlight}</span>
-              </h1>
-              <p className="font-sans text-[18px]/[25px] font-medium text-neutral-500">{hero.intro}</p>
+    <section aria-labelledby="hero-heading" className="relative isolate bg-linear-to-b from-cream from-70% to-white">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 mask-b-from-30% mask-b-to-100%"
+        style={{ backgroundImage: JAALI, backgroundPosition: "center top" }}
+      />
+      {/*
+        The card fills the canvas at 1440 (1360px) and grows to 1520px on wider windows, with the lattice
+        either side. It's as tall as the window allows under the header, between 600 and 860px; the photos
+        crop to fit (--vh is the window's height in canvas pixels, from lib/canvas).
+      */}
+      <div className="mx-auto w-full max-w-[1600px] px-10 pt-6 pb-12">
+        <div className="relative h-[clamp(600px,calc(var(--vh,900px)-150px),860px)] w-full overflow-hidden rounded-[24px] bg-neutral-950">
+          {slides.map((slide, i) => (
+            <div
+              key={slide.short}
+              data-state={state(i)}
+              aria-hidden={i !== index}
+              className="group/slide absolute inset-0 z-1 data-[state=active]:z-3 data-[state=prev]:z-2"
+            >
+              {[slide.paper, "var(--color-cream)"].map((colour, layer) => (
+                <div key={colour} className={SHADOW}>
+                  <div
+                    className={cx(CLIP, LAYERS[layer].delay)}
+                    style={{
+                      ...LAYERS[layer].style,
+                      backgroundColor: colour,
+                      backgroundImage: GRAIN,
+                      backgroundBlendMode: "multiply",
+                    }}
+                  />
+                </div>
+              ))}
+              <div className={SHADOW}>
+                <div className={cx(CLIP, LAYERS[2].delay, "overflow-hidden")} style={LAYERS[2].style}>
+                  <Image
+                    src={slide.photo}
+                    alt={slide.alt}
+                    fill
+                    sizes="1520px"
+                    priority={i === 0}
+                    className="object-cover group-data-[state=idle]/slide:animate-none animate-[hero-drift_9s_var(--ease-smooth)_both]"
+                  />
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
+          ))}
+
+          {/* Darkens the left for the text. */}
+          <div className="pointer-events-none absolute inset-0 z-4 bg-linear-to-r from-black/60 via-black/20 via-45% to-transparent to-70%" />
+
+          <div className="absolute bottom-16 left-16 z-5 flex w-[600px] flex-col items-start">
+            <h1
+              id="hero-heading"
+              className="animate-[intro-rise_0.9s_var(--ease-smooth)_both] font-serif text-[76px]/[80px] font-medium tracking-[-1.5px] text-white [font-variation-settings:'SOFT'_0,'WONK'_0]"
+            >
+              {hero.heading} <span className="block text-saffron">{hero.highlight}</span>
+            </h1>
+            <p className="mt-5 w-[520px] animate-[intro-rise_0.9s_var(--ease-smooth)_0.1s_both] text-[18px]/[28px] text-white/80">
+              {hero.intro}
+            </p>
+            <div className="mt-9 flex animate-[intro-rise_0.9s_var(--ease-smooth)_0.2s_both] gap-4">
               <Button href={hero.primary.href}>{hero.primary.label}</Button>
               <Button href={hero.secondary.href} tone="secondary">
                 {hero.secondary.label}
               </Button>
             </div>
-            <HeroStats />
-          </div>
-
-          {/* Not given a z-index, so the cards and the emblem stack against each other directly. */}
-          <div className="relative h-[568px] w-[610px] shrink-0">
-            <OrbitCards />
-            {/* 272 × 392, the emblem's own proportions. */}
-            <EmblemMark
-              // Multiplied onto the background, so the picture's white inside takes on whatever is behind it.
-              className="absolute top-1/2 left-1/2 -mt-[196px] -ml-[136px] h-[392px] w-[272px] mix-blend-multiply"
-              style={EMBLEM_MOTION}
-            />
           </div>
         </div>
       </div>

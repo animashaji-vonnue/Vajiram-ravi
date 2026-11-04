@@ -117,7 +117,7 @@ export default function TrackCarousel(props: TrackCarouselProps) {
       </div>
       <div className={DOTS} role="tablist" aria-label={props.dotsLabel}>
         {Array.from({ length: pages }, (_, i) => (
-          <CarouselDot key={i} label={`Page ${i + 1}`} active={i === page} big={i === page + 1} onClick={() => go(i)} />
+          <CarouselDot key={i} label={`Page ${i + 1}`} active={i === page} onClick={() => go(i)} />
         ))}
       </div>
       <CarouselArrow

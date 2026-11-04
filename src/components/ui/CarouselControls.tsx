@@ -33,17 +33,16 @@ export function CarouselArrow({ direction, label, onClick, className, hidden = f
   );
 }
 
-export const DOTS = "flex h-2 items-center gap-1.5";
+export const DOTS = "flex h-3.5 items-center gap-0.5";
 
 type CarouselDotProps = {
   label: string;
   active: boolean;
-  /** The dot after the active one is drawn slightly larger. */
-  big: boolean;
   onClick: () => void;
 };
 
-export function CarouselDot({ label, active, big, onClick }: CarouselDotProps) {
+/** A page marker: a small square turned on its corner, light grey, or burnt orange for the page on view. */
+export function CarouselDot({ label, active, onClick }: CarouselDotProps) {
   return (
     <button
       type="button"
@@ -51,10 +50,14 @@ export function CarouselDot({ label, active, big, onClick }: CarouselDotProps) {
       aria-label={label}
       aria-selected={active}
       onClick={onClick}
-      className={cx(
-        "relative rounded-full [transition:width_.35s_var(--ease-smooth),height_.35s_var(--ease-smooth),background-color_.35s] after:absolute after:-inset-x-1 after:-inset-y-2.5 focus-visible:outline-offset-2",
-        active ? "size-2 bg-brand-500" : big ? "size-2 bg-control" : "size-1 bg-control",
-      )}
-    />
+      className="relative flex size-3.5 items-center justify-center after:absolute after:-inset-x-px after:-inset-y-2 focus-visible:rounded-sm focus-visible:outline-offset-2"
+    >
+      <span
+        className={cx(
+          "size-2.5 rotate-45 transition-colors duration-300",
+          active ? "bg-brand-600" : "bg-neutral-300 hover:bg-neutral-400",
+        )}
+      />
+    </button>
   );
 }
