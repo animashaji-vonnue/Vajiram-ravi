@@ -57,10 +57,10 @@ export default function FreeResources() {
         <div data-reveal className="flex items-center gap-4">
           <p className="font-display text-[18px]/[25px] font-semibold whitespace-nowrap text-neutral-900">Other free resources :</p>
           <div className="flex flex-wrap items-center gap-3">
-            {otherResources.map((label) => (
+            {otherResources.map(({ label, href }) => (
               <a
                 key={label}
-                href="#"
+                href={href}
                 className="group/chip flex items-center gap-2 rounded-full border border-neutral-200 bg-white py-2.5 pr-3.5 pl-4 font-sans text-[14px]/[21px] font-medium whitespace-nowrap text-neutral-700 transition-colors duration-200 hover:border-neutral-300 hover:text-neutral-900"
               >
                 {label}

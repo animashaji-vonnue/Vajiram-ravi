@@ -83,6 +83,100 @@
   }
 }
 
+/* =====================================================================================
+ * THE RECITALS — palette and serifs.
+ *
+ * This block is the one place to edit when the Recitals palette changes; every component
+ * on that page and on /kit reads from it. The colours are the reference palette on the
+ * Figma board, anchored to the two taken off the logo: the orange wordmark and the
+ * terracotta red mark. Everything is namespaced `r-` so it cannot collide with the
+ * homepage theme above: `bg-r-paper`, `text-r-ink`, `font-r-display`.
+ *
+ * It has to sit after the theme above, which resets `--color-*` and would wipe it.
+ *
+ * The family is all warm — no cool opposites. What stops it turning to mush is value:
+ * near-white grounds, mid accents, and one genuinely dark band colour.
+ * ===================================================================================== */
+@theme {
+  /* Grounds — warm near-whites, the paper the page is printed on. */
+  --color-r-paper: #fffcf6;
+  --color-r-cream: #fff3e0;
+  --color-r-sand: #ffe5b4; /* Peach */
+  --color-r-melon: #fdbcb4; /* Melon */
+
+  /* Ink — warm near-black, so text sits on warm paper instead of floating above it. */
+  --color-r-ink: #2b1710;
+  --color-r-ink-700: #5e4336;
+  --color-r-ink-500: #8c7264;
+
+  /* The two mains, taken off the logo. */
+  --color-r-orange: #f58025; /* Princeton Orange */
+  --color-r-terracotta: #e2725b; /* Terra Cotta */
+  --color-r-vermilion: #e34234; /* Vermilion */
+
+  /* The warm neighbours that do the complementing. */
+  --color-r-amber: #ffbf00; /* Amber */
+  --color-r-saffron: #f4c430; /* Saffron */
+  --color-r-gamboge: #e49b0f; /* Gamboge */
+
+  /*
+   * Deeper tones for links and dark bands. `rust` is a darkened Vermilion: the reference
+   * reds are too light to read as link text on paper, and readability wins over the swatch.
+   * `oxblood` is deeper than anything in the reference set, because the page needs at least
+   * one genuinely dark band to give the scroll a rhythm.
+   */
+  --color-r-rust: #a8341a;
+  --color-r-burnt: #cc5500; /* Burnt Orange */
+  --color-r-copper: #b87333; /* Copper */
+  --color-r-oxblood: #5e1b10;
+
+  /* Hairlines, warm so they sit on paper. */
+  --color-r-line: #efdcc4;
+  --color-r-white: #ffffff;
+
+  /*
+   * Martel: a serif drawn by Indian Type Foundry with a Devanagari companion. It gives the
+   * page an Indian voice while staying a plain, readable text serif, not a display face.
+   * Figtree stays for body copy, so the site still reads as Vajiram & Ravi.
+   */
+  --font-r-display: var(--font-martel-face), "Iowan Old Style", Georgia, serif;
+  --font-r-editorial: var(--font-martel-face), Georgia, serif;
+  /* The masthead and the faint newsprint, both set in Instrument Serif as in the design. */
+  --font-r-masthead: var(--font-instrument-face), "Iowan Old Style", Georgia, serif;
+
+  --ease-ink: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  /* Paper grain, baked as a tiling SVG so the turbulence rasterises once per tile. */
+  --r-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/*
+ * The kit page hides the homepage chrome so specimens are judged on a clean ground.
+ * Unlayered on purpose: `display: none` inside @layer base loses to the chrome's own
+ * `flex` utility.
+ */
+body:has([data-kit]) [data-chrome] {
+  display: none;
+}
+
+/*
+ * The Recitals is a standalone page while it is being designed: it carries its own running
+ * banner and glass nav from the approved frame, so none of the homepage chrome shows.
+ */
+body:has([data-recitals]) [data-chrome] {
+  display: none;
+}
+
+/* The Recitals running banner. The track holds two copies, so -50% loops seamlessly. */
+@keyframes r-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 /* Gentle "breathing" of the toppers banner rings. Used through an arbitrary animation value, so it lives outside @theme. */
 @keyframes ring {
   0%,

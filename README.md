@@ -32,6 +32,7 @@ src/
   app/
     layout.tsx        fonts, metadata, site chrome, canvas-fit script
     page.tsx          the homepage: sections in order
+    magazine/page.tsx the magazine page (/magazine): The Recitals, with the issue archive
     globals.css       Tailwind import, design tokens (@theme), base rules, keyframes
     fonts/            Figtree and Geist (latin), loaded with next/font/local
   components/
@@ -40,11 +41,12 @@ src/
       Hero/ Toppers/ WhyChoose/ Courses/ GsProgramme/ Faculty/ Batches/
       Counselling/ SuccessStories/ FreeResources/ Faq/ ContactOptions/
       Locations/ ClosingCta/
+      Magazine/       the magazine page's sections: hero, contents, archive, stages, portal band, FAQ
     ui/               shared pieces: Buttons, Typography, PeekCarousel,
                       TrackCarousel, CarouselControls, Photo, RankBadge,
                       Toast, ScrollReveal, CanvasFit
     icons.tsx         every inline SVG from the design, as typed components
-  data/               all copy and lists (toppers, courses, faculty, FAQs, ...)
+  data/               all copy and lists (toppers, courses, faculty, FAQs, magazine issues, ...)
   lib/                small helpers (canvas zoom, motion, toast events)
 public/images/        logo, photos and illustrations
 scripts/serve-out.mjs preview server for the static export (npm start)
@@ -68,3 +70,4 @@ To change content, edit the files in `src/data`. To change a section's look, edi
 - Links with `href="#"` point at pages that do not exist yet. Clicking one shows a short toast.
 - The counselling form validates input and shows a thank-you state, but it does not send anything yet. Because the site is static, sending it later needs a form service such as Netlify Forms or a serverless function.
 - Images are served as the original webp files. Next.js image resizing needs a server, so it is off.
+- The magazine page (`/magazine`) lists every issue of The Recitals from `src/data/magazine.ts`. The covers and PDFs are loaded straight from the live site's CDN, so the page needs no local copies; to add an issue, add a row at the top of that file. Links to homepage sections are written as `/#section` so they work from this page too.

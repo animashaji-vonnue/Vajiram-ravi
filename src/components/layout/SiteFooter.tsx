@@ -2,10 +2,10 @@ import { footerColumns, legalLinks, socialLinks } from "@/data/site";
 
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-neutral-200 bg-white">
+    <footer data-chrome className="border-t border-neutral-200 bg-white">
       <div className="relative mx-auto flex w-canvas flex-col gap-12 px-14 pt-16 pb-8">
         <div className="flex items-center justify-between border-b border-neutral-200 pb-6">
-          <a href="#top" aria-label="Back to top">
+          <a href="/#top" aria-label="Back to top">
             <span
               className="block h-[42.41px] w-[176px] bg-contain bg-center bg-no-repeat [background-image:var(--image-logo)]"
               role="img"

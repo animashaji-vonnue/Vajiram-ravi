@@ -22,8 +22,8 @@ export default function ClosingCta() {
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <KnobButton href="#courses">Find your course</KnobButton>
-              <OutlineButton href="#contact">Talk to a counsellor</OutlineButton>
+              <KnobButton href="/#courses">Find your course</KnobButton>
+              <OutlineButton href="/#contact">Talk to a counsellor</OutlineButton>
             </div>
             <p className="font-sans text-[14px]/[normal] font-normal whitespace-pre text-neutral-500">
               {`Prefer to call? ${contact.phone}  ·  ${contact.hours}`}

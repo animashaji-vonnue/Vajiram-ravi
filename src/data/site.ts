@@ -12,7 +12,10 @@ import {
   type IconProps,
 } from "@/components/icons";
 
-/** Links pointing at "#" lead to pages that are not part of this homepage yet; clicking one shows a toast. */
+/**
+ * Links pointing at "#" lead to pages that are not part of this prototype yet; clicking one shows a toast.
+ * Homepage sections are linked as "/#section" so they also work from the other pages.
+ */
 export type LinkItem = { label: string; href: string };
 
 export const contact = {
@@ -23,13 +26,13 @@ export const contact = {
 };
 
 export const mainNav: LinkItem[] = [
-  { label: "All Courses", href: "#courses" },
-  { label: "Toppers", href: "#toppers" },
-  { label: "Study Materials", href: "#resources" },
-  { label: "Current Affairs", href: "#" },
+  { label: "All Courses", href: "/#courses" },
+  { label: "Toppers", href: "/#toppers" },
+  { label: "Study Materials", href: "/#resources" },
+  { label: "Current Affairs", href: "/magazine" },
   { label: "UPSC Exam", href: "#" },
-  { label: "Upcoming Batches", href: "#batches" },
-  { label: "FAQs", href: "#faq" },
+  { label: "Upcoming Batches", href: "/#batches" },
+  { label: "FAQs", href: "/#faq" },
 ];
 
 export type Announcement = {
@@ -54,8 +57,8 @@ export const footerColumns: { heading: string; links: LinkItem[] }[] = [
     links: [
       { label: "About Us", href: "#" },
       { label: "Careers", href: "#" },
-      { label: "Contact Us", href: "#contact" },
-      { label: "FAQs", href: "#faq" },
+      { label: "Contact Us", href: "/#contact" },
+      { label: "FAQs", href: "/#faq" },
     ],
   },
   {
@@ -110,7 +113,8 @@ export const footerColumns: { heading: string; links: LinkItem[] }[] = [
   {
     heading: "Free resources",
     links: [
-      { label: "UPSC Current Affairs", href: "#resources" },
+      { label: "UPSC Current Affairs", href: "/#resources" },
+      { label: "The Recitals monthly magazine", href: "/magazine" },
       { label: "UPSC Previous Year Papers", href: "#" },
       { label: "UPSC Books", href: "#" },
       { label: "Model Answers for UPSC Mains 2026", href: "#" },

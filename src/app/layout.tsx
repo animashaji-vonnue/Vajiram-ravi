@@ -32,6 +32,29 @@ const geist = localFont({
   display: "swap",
 });
 
+// Headings on The Recitals. Martel is Indian Type Foundry's text serif, drawn with a
+// Devanagari companion: an Indian voice that still reads as plain, comfortable text.
+// The Recitals masthead. Instrument Serif is the face the approved Direction A frame uses:
+// light, high contrast and elegant at display size, where a text serif turns clumsy.
+const instrument = localFont({
+  src: [
+    { path: "./fonts/instrument-serif-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/instrument-serif-400-italic.woff2", weight: "400", style: "italic" },
+  ],
+  variable: "--font-instrument-face",
+  display: "swap",
+});
+
+const martel = localFont({
+  src: [
+    { path: "./fonts/martel-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/martel-700.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/martel-800.woff2", weight: "800", style: "normal" },
+  ],
+  variable: "--font-martel-face",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Vajiram & Ravi Homepage",
   description: "Working prototype of the redesigned Vajiram & Ravi homepage.",
@@ -48,7 +71,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // The canvas-fit script sets an inline zoom on <html> before hydration.
     <html
       lang="en"
-      className={`${figtree.variable} ${geist.variable}`}
+      className={`${figtree.variable} ${geist.variable} ${martel.variable} ${instrument.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

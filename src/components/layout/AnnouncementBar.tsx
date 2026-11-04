@@ -55,7 +55,7 @@ export default function AnnouncementBar() {
   }, []);
 
   return (
-    <div className="group/ann relative h-10 overflow-hidden bg-brown-900" aria-label="Announcements">
+    <div data-chrome className="group/ann relative h-10 overflow-hidden bg-brown-900" aria-label="Announcements">
       <div
         ref={trackRef}
         id="annTrack"

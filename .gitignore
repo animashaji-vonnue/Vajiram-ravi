@@ -19,3 +19,10 @@ npm-debug.log*
 # misc
 .DS_Store
 Thumbs.db
+
+# stray command output and editor settings
+build.log
+build.err
+serve.log
+serve.err
+.vscode/

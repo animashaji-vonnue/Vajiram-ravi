@@ -43,10 +43,10 @@ export const resourceColumns: ResourceColumn[] = [
   },
 ];
 
-export const otherResources = [
-  "Monthly magazine",
-  "Yojana & Kurukshetra",
-  "Previous year papers",
-  "Toppers’ answer sheets",
-  "Essay practice",
+export const otherResources: { label: string; href: string }[] = [
+  { label: "Monthly magazine", href: "/magazine" },
+  { label: "Yojana & Kurukshetra", href: "#" },
+  { label: "Previous year papers", href: "#" },
+  { label: "Toppers’ answer sheets", href: "#" },
+  { label: "Essay practice", href: "#" },
 ];

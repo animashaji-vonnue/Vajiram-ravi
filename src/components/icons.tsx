@@ -296,3 +296,54 @@ export function WhatsAppIcon(props: IconProps) {
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false" {...props}><path d="M14.5594 11.985C14.3119 11.8609 13.0944 11.2625 12.8677 11.1792C12.6402 11.0967 12.4752 11.0559 12.3094 11.3042C12.1452 11.5517 11.6702 12.1092 11.526 12.2742C11.3819 12.44 11.2369 12.46 10.9894 12.3367C10.7419 12.2117 9.94354 11.9509 8.99771 11.1075C8.26188 10.4509 7.76438 9.64003 7.62021 9.3917C7.47604 9.1442 7.60521 9.01003 7.72854 8.8867C7.84021 8.77587 7.97687 8.59753 8.10021 8.45337C8.22437 8.30837 8.26521 8.20503 8.34854 8.0392C8.43104 7.8742 8.39021 7.73003 8.32771 7.60587C8.26521 7.4817 7.77021 6.26253 7.56437 5.7667C7.36271 5.2842 7.15854 5.35003 7.00688 5.3417C6.86271 5.33503 6.69771 5.33337 6.53188 5.33337C6.36687 5.33337 6.09854 5.39503 5.87187 5.64337C5.64521 5.89087 5.00521 6.49003 5.00521 7.7092C5.00521 8.92753 5.89271 10.105 6.01604 10.2709C6.14021 10.4359 7.76271 12.9375 10.2469 14.01C10.8377 14.265 11.2985 14.4175 11.6585 14.5309C12.2519 14.72 12.7919 14.6934 13.2177 14.6292C13.6935 14.5584 14.6827 14.03 14.8894 13.4517C15.096 12.8734 15.096 12.3775 15.0335 12.2742C14.9719 12.1709 14.8077 12.1092 14.5594 11.985ZM10.041 18.1542H10.0377C8.56252 18.1543 7.11444 17.7577 5.84521 17.0059L5.54437 16.8275L2.42688 17.6459L3.25854 14.6059L3.06271 14.2942C2.23807 12.9811 1.80183 11.4614 1.80437 9.91087C1.80521 5.3692 5.50104 1.6742 10.0444 1.6742C12.2444 1.6742 14.3127 2.53253 15.8677 4.0892C16.6349 4.85305 17.2431 5.76147 17.6569 6.7619C18.0707 7.76233 18.282 8.8349 18.2785 9.91753C18.276 14.4592 14.581 18.1542 10.041 18.1542ZM17.0519 2.9067C16.1337 1.98247 15.0412 1.24965 13.8378 0.750701C12.6343 0.251754 11.3438 -0.00339687 10.041 3.4148e-05C4.57854 3.4148e-05 0.132708 4.44587 0.130208 9.91003C0.130208 11.6567 0.586042 13.3617 1.45354 14.8642L0.046875 20L5.30104 18.6217C6.75403 19.4133 8.38224 19.8282 10.0369 19.8284H10.041C15.5027 19.8284 19.9494 15.3825 19.9519 9.91753C19.9559 8.61526 19.7017 7.32512 19.2039 6.12173C18.7061 4.91834 17.9747 3.82559 17.0519 2.9067Z" fill="currentColor" /></svg>
   );
 }
+
+/* Magazine page icons. Same 22px, 1.5px stroke, currentColor as the "why choose" feature icons. */
+
+/** Download arrow into a tray, 16px (issue cards) */
+export function DownloadIcon(props: IconProps) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false" {...props}><path d="M8 2.5V10.5M8 10.5L4.75 7.25M8 10.5L11.25 7.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /><path d="M2.5 11V12.5C2.5 13.0523 2.94772 13.5 3.5 13.5H12.5C13.0523 13.5 13.5 13.0523 13.5 12.5V11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+  );
+}
+
+/** Checklist, 22px (Prelims) */
+export function ListChecksIcon(props: IconProps) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true" focusable="false" {...props}><path d="M3.5 6L5 7.5L8 4.5M3.5 12L5 13.5L8 10.5M3.5 18L5 19.5L8 16.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /><path d="M11.5 6H19M11.5 12H19M11.5 18H19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+  );
+}
+
+/** Pen over a line, 22px (Mains) */
+export function PenLineIcon(props: IconProps) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true" focusable="false" {...props}><path d="M3.5 19H18.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /><path d="M13.2 4.3L16.7 7.8L8.5 16H5V12.5L13.2 4.3Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /><path d="M11.5 6L15 9.5" stroke="currentColor" strokeWidth="1.5" /></svg>
+  );
+}
+
+/** Speech bubble, 22px (Interview) */
+export function ChatBubbleIcon(props: IconProps) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true" focusable="false" {...props}><path d="M11 3.5C6.58 3.5 3 6.63 3 10.5C3 12.34 3.8 14.01 5.12 15.26L4.5 18.5L8.04 16.95C8.96 17.3 9.96 17.5 11 17.5C15.42 17.5 19 14.37 19 10.5C19 6.63 15.42 3.5 11 3.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /><path d="M7.75 10.5H7.76M11 10.5H11.01M14.25 10.5H14.26" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>
+  );
+}
+
+/** Quotation mark, 22px (Essay) */
+export function QuoteMarkIcon(props: IconProps) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true" focusable="false" {...props}><path d="M9.5 6.5C6.5 7.5 5 9.5 5 12.5V16H9V12H6.8C6.8 10.2 7.7 9 9.5 8.3V6.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /><path d="M17.5 6.5C14.5 7.5 13 9.5 13 12.5V16H17V12H14.8C14.8 10.2 15.7 9 17.5 8.3V6.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /></svg>
+  );
+}
+
+/** Balance scale, 22px (Ethics) */
+export function ScaleIcon(props: IconProps) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true" focusable="false" {...props}><path d="M11 3.5V18.5M7.5 18.5H14.5M4 6.5H18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /><path d="M5.5 6.5L2.5 12.5C2.5 14.16 3.84 15.5 5.5 15.5C7.16 15.5 8.5 14.16 8.5 12.5L5.5 6.5ZM16.5 6.5L13.5 12.5C13.5 14.16 14.84 15.5 16.5 15.5C18.16 15.5 19.5 14.16 19.5 12.5L16.5 6.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /></svg>
+  );
+}
+
+/** Calendar, 22px (monthly rhythm) */
+export function CalendarIcon(props: IconProps) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true" focusable="false" {...props}><rect x="3.5" y="5" width="15" height="13.5" rx="2" stroke="currentColor" strokeWidth="1.5" /><path d="M3.5 9.5H18.5M7.5 3V6.5M14.5 3V6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /><path d="M7.5 13H9.5M12.5 13H14.5M7.5 16H9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+  );
+}
