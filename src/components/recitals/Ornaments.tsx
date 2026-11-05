@@ -44,6 +44,37 @@ export function StarMark({ className, size = 12 }: MarkProps) {
   );
 }
 
+/**
+ * A drawn underline. Two passes of an uneven stroke, so it reads as a hand marking a line
+ * under a phrase rather than a border-bottom. Stretches to whatever it sits under.
+ */
+export function Underline({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 180 13"
+      fill="none"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+      className={className}
+    >
+      <path
+        d="M4 8.6C31 5 59 3.3 88 3.6c30 .3 59 2.3 88 5.6"
+        stroke="currentColor"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M14 11.2c26-2.6 52-3.6 78-3.3"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        opacity="0.5"
+      />
+    </svg>
+  );
+}
+
 /** Lozenge. Sits at card corners and inside rules. */
 export function DiamondMark({ className, size = 8 }: MarkProps) {
   return (

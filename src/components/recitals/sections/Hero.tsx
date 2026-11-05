@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { ArrowRightIcon, DownloadIcon } from "@/components/icons";
 import CoverFan from "@/components/recitals/CoverFan";
 import HeroBackground from "@/components/recitals/HeroBackground";
-import { FlowerMark } from "@/components/recitals/Ornaments";
+import { Underline } from "@/components/recitals/Ornaments";
 import { latestIssue } from "@/data/magazine";
 
 /*
@@ -39,24 +39,28 @@ export default function Hero() {
 
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-1 flex-col items-center justify-end gap-[clamp(14px,2.6vh,30px)] px-20 pt-[calc(78px+clamp(36px,7vh,116px))] pb-[clamp(26px,4.8vh,50px)] text-center">
         {/* 1. The masthead, on paper. */}
-        <div className="flex flex-col items-center gap-[clamp(10px,1.6vh,18px)]">
-          <motion.span
-            className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 font-sans text-[13px]/[16px] font-medium text-[#8a3c10] shadow-[inset_0_0_0_1px_#eccfa8]"
-            {...rise(0.1)}
-          >
-            <FlowerMark size={11} className="text-r-gamboge" />
-            New issue every month
+        <div className="flex flex-col items-center gap-[clamp(14px,2.1vh,24px)]">
+          {/*
+           * A marked phrase rather than a pill. A rounded chip with an icon in it is the
+           * house style of every template on the internet, and it was the first thing on
+           * the page — so it set the register for everything under it.
+           */}
+          <motion.span className="relative inline-block" {...rise(0.1)}>
+            <span className="font-sans text-[clamp(13px,1.05vw,15px)]/[1.4] font-semibold text-[#8a3c10]">
+              New issue every month
+            </span>
+            <Underline className="absolute -bottom-2 left-0 h-[10px] w-full text-[#e2650d]" />
           </motion.span>
 
           <div className="flex flex-col items-center gap-1">
             <span className="block overflow-hidden py-[0.08em]">
               <motion.p
-                className="font-sans text-[clamp(13px,1.1vw,16px)]/[1.3] font-semibold tracking-[.16em] text-[#b4430c] uppercase"
+                className="font-r-masthead text-[clamp(17px,1.5vw,22px)]/[1.3] text-[#9c3b10]"
                 initial={reduce ? false : { y: "130%" }}
                 animate={{ y: "0%" }}
                 transition={{ duration: 0.75, delay: 0.2, ease: EASE }}
               >
-                Monthly Current Affairs Magazine for UPSC
+                Monthly current affairs magazine for UPSC —
               </motion.p>
             </span>
             <span className="block overflow-hidden pb-[0.1em]">
