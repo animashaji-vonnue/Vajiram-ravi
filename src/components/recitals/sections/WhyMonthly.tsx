@@ -13,8 +13,8 @@ import { whyMonthlyArguments, whyMonthlyStats } from "@/data/magazine";
  */
 export default function WhyMonthly() {
   return (
-    <section id="why" className="relative bg-r-oxblood" aria-labelledby="why-h">
-      <div className="pointer-events-none absolute inset-0" style={patternStyle("jali", "#ffbf00", 0.06)} aria-hidden="true" />
+    <section id="why" className="relative bg-[#7c2a11]" aria-labelledby="why-h">
+      <div className="pointer-events-none absolute inset-0" style={patternStyle("jali", "#ffcf6a", 0.07)} aria-hidden="true" />
 
       <div className="relative mx-auto flex w-full max-w-[1440px] items-start gap-20 px-20 py-24">
         {/* The case, held in place. */}
@@ -29,7 +29,7 @@ export default function WhyMonthly() {
 
             <div className="grid grid-cols-2 gap-px bg-r-paper/15">
               {whyMonthlyStats.map((stat) => (
-                <div key={stat.label} className="flex flex-col gap-1.5 bg-r-oxblood p-5">
+                <div key={stat.label} className="flex flex-col gap-1.5 bg-[#7c2a11] p-5">
                   <p className="font-r-display text-[32px]/[36px] font-extrabold text-r-amber">{stat.value}</p>
                   <p className="font-sans text-[14px]/[20px] font-medium text-r-sand/85">{stat.label}</p>
                 </div>

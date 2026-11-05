@@ -1,6 +1,6 @@
 import { ArrowRightXsIcon, GraduationCapIcon, NotebookIcon, OpenBookIcon, TrendIcon } from "@/components/icons";
 import { Reveal, Stagger, StaggerItem } from "@/components/recitals/Motion";
-import { DiamondMark, doubleRule } from "@/components/recitals/Ornaments";
+import { DiamondMark, doubleRule, SectionGround } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { collections } from "@/data/magazine";
 import { cx } from "@/lib/cx";
@@ -17,7 +17,8 @@ const ICONS = [OpenBookIcon, NotebookIcon, GraduationCapIcon, TrendIcon];
 
 export default function ReadAlongside() {
   return (
-    <section id="alongside" className="relative bg-r-paper" aria-labelledby="alongside-h">
+    <section id="alongside" className="relative bg-[#fdf8ef]" aria-labelledby="alongside-h">
+      <SectionGround tint={0.2} />
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-12 px-20 py-24">
         <Reveal>
           <SectionHead

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { PlusMinusIcon } from "@/components/icons";
-import { DiamondMark } from "@/components/recitals/Ornaments";
+import { DiamondMark, SectionGround } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { magazineFaqs } from "@/data/magazine";
 import { cx } from "@/lib/cx";
@@ -18,7 +18,8 @@ export default function Faq() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative bg-r-cream" aria-labelledby="faq-h">
+    <section id="faq" className="relative bg-[#faf3e6]" aria-labelledby="faq-h">
+      <SectionGround tint={0.24} />
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-col items-center gap-12 px-20 py-24">
         <SectionHead id="faq-h" eyebrow="FAQ" title="Questions, answered" center />
 

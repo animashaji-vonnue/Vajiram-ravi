@@ -1,5 +1,5 @@
 import { Reveal, Stagger, StaggerItem } from "@/components/recitals/Motion";
-import { DiamondMark, patternStyle } from "@/components/recitals/Ornaments";
+import { DiamondMark, SectionGround } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { issueSections, type Stage } from "@/data/magazine";
 import { cx } from "@/lib/cx";
@@ -22,7 +22,8 @@ const STAGE_TONE: Record<Stage, string> = {
 
 export default function InsideIssue() {
   return (
-    <section id="inside" className="relative bg-r-paper" aria-labelledby="inside-h">
+    <section id="inside" className="relative bg-[#fdf8ef]" aria-labelledby="inside-h">
+      <SectionGround tint={0.2} />
       <div className="relative mx-auto flex w-full max-w-[1440px] items-start gap-20 px-20 py-24">
         <Reveal className="sticky top-24 w-[420px] shrink-0">
           <SectionHead
@@ -73,7 +74,6 @@ export default function InsideIssue() {
         </Stagger>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40" style={patternStyle("chevron", "#cc5500", 0.05)} aria-hidden="true" />
     </section>
   );
 }

@@ -1,4 +1,4 @@
-import { FlowerMark, patternStyle } from "@/components/recitals/Ornaments";
+import { FlowerMark } from "@/components/recitals/Ornaments";
 import { contact } from "@/data/site";
 import { issues, magazine } from "@/data/magazine";
 
@@ -40,8 +40,18 @@ const COLUMNS = [
 
 export default function RecitalsFooter() {
   return (
-    <footer className="relative bg-r-ink" aria-label="Footer">
-      <div className="pointer-events-none absolute inset-0" style={patternStyle("block", "#ffbf00", 0.04)} aria-hidden="true" />
+    <footer className="relative overflow-hidden bg-[#60200e]" aria-label="Footer">
+      {/*
+       * The painted Parliament standing across the foot of the page, instead of a
+       * stamped pattern. Multiply is what makes it work on a dark ground: the painting's
+       * cream paper leaves the colour almost untouched while the building itself deepens,
+       * so it reads as a watermark pressed into the page rather than a picture pasted on.
+       */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[78%] bg-contain bg-bottom bg-no-repeat opacity-70 mix-blend-multiply"
+        style={{ backgroundImage: "url(/recitals/parliament.png)" }}
+        aria-hidden="true"
+      />
 
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-12 px-20 pt-20 pb-10">
         <div className="flex items-start justify-between gap-20">

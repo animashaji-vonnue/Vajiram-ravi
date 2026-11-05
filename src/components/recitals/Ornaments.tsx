@@ -68,6 +68,23 @@ export function Underline({ className }: { className?: string }) {
   );
 }
 
+/**
+ * The page’s paper, at whatever strength a section needs.
+ *
+ * Every section used to sit on a flat tint, which is what made the lower half of the page
+ * read as a different document from the hero. One scanned sheet, multiplied in, ties them
+ * together without anyone having to draw a pattern — and nothing here is ever pure white.
+ */
+export function SectionGround({ tint = 0.26, className }: { tint?: number; className?: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      className={cx("pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat mix-blend-multiply", className)}
+      style={{ backgroundImage: "url(/recitals/section-paper.webp)", opacity: tint }}
+    />
+  );
+}
+
 /** Lozenge. Sits at card corners and inside rules. */
 export function DiamondMark({ className, size = 8 }: MarkProps) {
   return (
