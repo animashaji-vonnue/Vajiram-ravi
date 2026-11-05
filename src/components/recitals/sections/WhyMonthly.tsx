@@ -1,6 +1,6 @@
 import { ArrowRightIcon } from "@/components/icons";
 import { Reveal, Stagger, StaggerItem } from "@/components/recitals/Motion";
-import { DiamondMark, Eyebrow, patternStyle } from "@/components/recitals/Ornaments";
+import { Eyebrow, RosetteMark, RubberStamp } from "@/components/recitals/Ornaments";
 import { whyMonthlyArguments, whyMonthlyStats } from "@/data/magazine";
 
 /*
@@ -10,27 +10,83 @@ import { whyMonthlyArguments, whyMonthlyStats } from "@/data/magazine";
  * light rather than relentless. And it is where the argument is made, which is the part a
  * reader should stop at: the case sits on the left and stays put while the four points
  * move past it, so the claim and its evidence are never separated.
+ *
+ * Indigo, not maroon. The maroon was a darker mix of the page's own orange, so the band
+ * read as the same colour turned down rather than as a change of material, and gold on it
+ * sat too close in hue to carry an accent. Indigo is the one deep colour this palette can
+ * take that is still Indian to its roots — it is the dye, and the colour of the chakra
+ * already on the cards above — and gold on indigo is a pairing that has been working for
+ * several centuries. It is laid as a gradient with a saffron bloom at one shoulder so the
+ * band has light in it rather than being a flat rectangle.
  */
+
+/**
+ * The band sits on a photograph now rather than on a colour.
+ *
+ * A reading room at night, under a scrim of the same indigo. The scrim carries alpha
+ * instead of being opaque, which is the whole point: the desk lamps come through it as
+ * warm points of light, so the ground has depth and incident in it that no gradient can
+ * fake. It is also the right picture for the argument being made beside it.
+ *
+ * It has to stay a ground. The scrim is heavy enough that nothing in the photograph
+ * competes with a line of type, and the section's own colour shows through underneath if
+ * the image is slow or fails.
+ */
+const GROUND = "linear-gradient(168deg,#1d2f6b 0%,#16204f 46%,#101637 100%)";
+const SCRIM = "linear-gradient(168deg,rgba(29,47,107,.8) 0%,rgba(22,32,79,.87) 46%,rgba(14,20,50,.92) 100%)";
+/** Heat bleeding in from the page above, so the join is a transition and not a cut. */
+const BLOOM =
+  "radial-gradient(58% 48% at 88% -4%,#ff8a2b 0%,transparent 64%)," +
+  "radial-gradient(44% 40% at 6% 104%,#f4c430 0%,transparent 68%)";
+
 export default function WhyMonthly() {
   return (
-    <section id="why" className="relative bg-[#7c2a11]" aria-labelledby="why-h">
-      <div className="pointer-events-none absolute inset-0" style={patternStyle("jali", "#ffcf6a", 0.07)} aria-hidden="true" />
+    <section id="why" className="relative overflow-hidden" aria-labelledby="why-h" style={{ background: GROUND }}>
+      <div
+        className="pointer-events-none absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url(/recitals/reading-room.webp)" }}
+        aria-hidden="true"
+      />
+      <div className="pointer-events-none absolute inset-0" style={{ background: SCRIM }} aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 opacity-[.28]" style={{ background: BLOOM }} aria-hidden="true" />
+      {/*
+       * No letterfield here any more. It was the ground before the photograph arrived,
+       * and running both left two competing figures in the same space — the glyphs
+       * cutting across the room, neither one legible as the thing behind the text. A
+       * section gets one ground. The scripts moved to the FAQ, which has none.
+       */}
 
       <div className="relative mx-auto flex w-full max-w-[1440px] items-start gap-20 px-20 py-24">
         {/* The case, held in place. */}
-        <Reveal className="sticky top-24 w-[470px] shrink-0">
-          <div className="flex flex-col gap-8">
+        <Reveal className="relative sticky top-24 w-[470px] shrink-0">
+          {/*
+           * Struck half into the gutter, across the corner of the figures, the way a
+           * clerk's stamp lands on a form — partly on the box and partly off it. Centred
+           * in its own empty space it would read as a logo, which is the opposite of the
+           * effect.
+           */}
+          <RubberStamp
+            size={158}
+            rotate={-14}
+            className="pointer-events-none absolute -right-20 bottom-24 text-r-saffron opacity-[.42]"
+          />
+          <div className="relative flex flex-col gap-8">
             <div className="flex flex-col gap-4">
-              <Eyebrow className="text-r-amber!">Why monthly</Eyebrow>
+              <Eyebrow className="text-r-saffron!">Why monthly</Eyebrow>
               <h2 id="why-h" className="font-r-editorial text-[40px]/[48px] font-bold text-r-paper">
                 A month&rsquo;s compilation beats a month of scrolling
               </h2>
             </div>
 
-            <div className="grid grid-cols-2 gap-px bg-r-paper/15">
+            {/*
+             * The cells are translucent rather than a flat fill. A solid colour here
+             * would sit as four opaque patches on top of the gradient and cancel it
+             * exactly where the eye goes first.
+             */}
+            <div className="grid grid-cols-2 gap-px bg-r-paper/20">
               {whyMonthlyStats.map((stat) => (
-                <div key={stat.label} className="flex flex-col gap-1.5 bg-[#7c2a11] p-5">
-                  <p className="font-r-display text-[32px]/[36px] font-extrabold text-r-amber">{stat.value}</p>
+                <div key={stat.label} className="flex flex-col gap-1.5 bg-[#16204f]/80 p-5 backdrop-blur-[2px]">
+                  <p className="font-r-display text-[32px]/[36px] font-extrabold text-r-saffron">{stat.value}</p>
                   <p className="font-sans text-[14px]/[20px] font-medium text-r-sand/85">{stat.label}</p>
                 </div>
               ))}
@@ -39,7 +95,7 @@ export default function WhyMonthly() {
             <div className="flex items-center gap-4">
               <a
                 href="#latest"
-                className="group/btn inline-flex h-12 items-center gap-2.5 bg-r-amber px-6 font-sans text-[15px]/[20px] font-semibold text-r-oxblood transition-colors duration-250 hover:bg-r-saffron"
+                className="group/btn inline-flex h-12 items-center gap-2.5 bg-r-saffron px-6 font-sans text-[15px]/[20px] font-semibold text-[#141d49] transition-colors duration-250 hover:bg-r-amber"
               >
                 Read the latest issue
                 <ArrowRightIcon className="transition-transform duration-300 group-hover/btn:translate-x-0.5" />
@@ -58,14 +114,14 @@ export default function WhyMonthly() {
         <Stagger className="min-w-0 flex-1" gap={0.08}>
           {whyMonthlyArguments.map((argument, i) => (
             <StaggerItem key={argument.title}>
-              <article className="group/arg flex items-start gap-7 border-b border-r-paper/12 py-8 last:border-b-0 last:pb-0">
+              <article className="group/arg flex items-start gap-7 border-b border-r-paper/14 py-8 last:border-b-0 last:pb-0">
                 <span className="relative w-14 shrink-0 pt-1">
-                  <span className="font-r-display text-[30px]/[32px] font-extrabold text-r-paper/25 transition-colors duration-400 group-hover/arg:text-r-amber">
+                  <span className="font-r-display text-[30px]/[32px] font-extrabold text-r-paper/30 transition-colors duration-400 group-hover/arg:text-r-saffron">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <DiamondMark
-                    size={5}
-                    className="absolute top-0 -left-3 text-r-amber opacity-0 transition-opacity duration-400 group-hover/arg:opacity-100"
+                  <RosetteMark
+                    size={11}
+                    className="absolute top-0 -left-5 text-r-saffron opacity-0 transition-opacity duration-400 group-hover/arg:opacity-100"
                   />
                 </span>
                 <div className="flex min-w-0 flex-1 flex-col gap-2.5">
@@ -77,7 +133,6 @@ export default function WhyMonthly() {
           ))}
         </Stagger>
       </div>
-
     </section>
   );
 }

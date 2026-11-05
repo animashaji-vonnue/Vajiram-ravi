@@ -68,8 +68,13 @@ export default function HeroBackground() {
           className="absolute w-[clamp(240px,21vw,320px)] text-[#6d3310] opacity-[.11]"
           style={{ top: ghost.top, [ghost.side]: "-22px" }}
         >
-          <span className="block h-px w-full bg-current" />
-          <p className="pt-2 font-r-masthead text-[clamp(19px,1.72vw,26px)]/[1.1] font-bold">{ghost.text}</p>
+          {/*
+           * No rule above the headline. The top deck on each side sits at 5–7%, which is
+           * exactly where the floating nav is, and a hairline crossing the glass read as
+           * a seam in the header rather than as part of the newsprint. The headline and
+           * the two columns under it carry the newspaper on their own.
+           */}
+          <p className="font-r-masthead text-[clamp(19px,1.72vw,26px)]/[1.1] font-bold">{ghost.text}</p>
           <div className="mt-2 flex gap-3">
             <p className="w-1/2 font-r-masthead text-[8.5px]/[11px]">{COLUMN}</p>
             <p className="w-1/2 font-r-masthead text-[8.5px]/[11px]">{COLUMN}</p>

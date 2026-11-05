@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { ArrowRightIcon, ArrowRightXsIcon, ClockIcon, DownloadIcon, SelectChevronIcon } from "@/components/icons";
-import { DiamondMark, doubleRule, Eyebrow, FlowerMark } from "@/components/recitals/Ornaments";
+import { doubleRule, Eyebrow, RosetteMark } from "@/components/recitals/Ornaments";
 import type { Issue } from "@/data/magazine";
 import { cx } from "@/lib/cx";
 
@@ -34,7 +34,7 @@ export function MetaLine({ items, className }: { items: string[]; className?: st
     <p className={cx("flex flex-wrap items-center gap-2 font-sans text-[13px]/[18px] font-medium text-r-ink-500", className)}>
       {items.map((item, i) => (
         <span key={item} className="flex items-center gap-2">
-          {i > 0 && <FlowerMark size={7} className="text-r-amber" />}
+          {i > 0 && <RosetteMark size={13} className="text-r-amber" />}
           {item}
         </span>
       ))}
@@ -133,7 +133,7 @@ export function CollectionCard({ title, body, icon }: { title: string; body: str
         <p className="font-sans text-[14px]/[22px] font-medium text-r-ink-700">{body}</p>
       </div>
       <div className="flex items-center gap-3 border-t border-r-line pt-4">
-        <DiamondMark size={6} className="text-r-amber" />
+        <RosetteMark size={13} className="text-r-amber" />
         <a href="#" className="flex items-center gap-1.5 font-sans text-[14px]/[20px] font-semibold text-r-rust">
           Open the booklets
           <ArrowRightXsIcon className="transition-transform duration-300 group-hover/col:translate-x-0.5" />
@@ -147,7 +147,7 @@ export function CollectionCard({ title, body, icon }: { title: string; body: str
 export function StatCard({ value, label }: { value: ReactNode; label: string }) {
   return (
     <div className="relative flex flex-col gap-1 bg-r-cream p-5 shadow-[inset_0_0_0_1px_var(--color-r-line)]">
-      <DiamondMark size={6} className="absolute top-2.5 right-2.5 text-r-amber" />
+      <RosetteMark size={13} className="absolute top-2.5 right-2.5 text-r-amber" />
       <p className="font-r-display font-extrabold text-[40px]/[44px] text-r-rust">{value}</p>
       <p className="font-sans text-[14px]/[20px] font-medium text-r-ink-700">{label}</p>
     </div>
@@ -241,7 +241,7 @@ export function YearChip({ children, active }: { children: ReactNode; active?: b
 export function SearchField({ placeholder }: { placeholder: string }) {
   return (
     <div className="flex h-12 flex-1 items-center gap-3 bg-r-paper px-4 shadow-[inset_0_0_0_1px_var(--color-r-line)]">
-      <FlowerMark size={11} className="text-r-amber" />
+      <RosetteMark size={14} className="text-r-amber" />
       <span className="font-sans text-[15px]/[21px] font-medium text-r-ink-500">{placeholder}</span>
     </div>
   );

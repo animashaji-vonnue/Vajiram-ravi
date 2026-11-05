@@ -132,6 +132,7 @@ export function DealIn({
   className,
   root,
   once = true,
+  armed = true,
 }: {
   children: ReactNode;
   index?: number;
@@ -140,14 +141,27 @@ export function DealIn({
   /** Watch this scroller rather than the window, so sideways movement counts too. */
   root?: RefObject<HTMLElement | null>;
   once?: boolean;
+  /**
+   * Hold the card un-dealt until the shelf itself has reached the reader.
+   *
+   * With `root` set, the card is measured against the scroller's box, and a scroller is
+   * always fully "in view" of itself no matter where the page is scrolled to. So every
+   * card dealt itself on mount, while the section was still several screens below the
+   * fold, and by the time anyone scrolled down the hand was already lying flat — which
+   * is why the shelf seemed to appear all at once with no entrance at all. This gate
+   * supplies the one thing the scroller root cannot: whether the page has arrived.
+   */
+  armed?: boolean;
 }) {
   const reduce = useReducedMotion();
+  const undealt = { opacity: 0, y: 54, rotate: tilt, scale: 0.94 };
   return (
     <motion.div
       className={className}
       style={{ transformOrigin: "bottom center" }}
-      initial={reduce ? false : { opacity: 0, y: 54, rotate: tilt, scale: 0.94 }}
-      whileInView={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+      initial={reduce ? false : undealt}
+      animate={armed ? undefined : undealt}
+      whileInView={armed ? { opacity: 1, y: 0, rotate: 0, scale: 1 } : undefined}
       viewport={{ once, amount: 0.5, root }}
       transition={{ duration: 0.7, delay: index * 0.06, ease: DEAL }}
     >

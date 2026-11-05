@@ -2,7 +2,6 @@
 
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { useRef } from "react";
-import { StampBadge } from "@/components/recitals/Parts";
 import { issues, latestIssue } from "@/data/magazine";
 
 /*
@@ -120,15 +119,14 @@ export default function CoverFan() {
             transition={{ duration: 0.9, delay: 0.6, ease: DEAL }}
           >
             <a href={latestIssue.pdf} className="group/cover relative block" aria-label={`Read the ${latestIssue.label} issue`}>
-              <motion.span
-                className="absolute -top-3 left-1/2 z-10"
-                initial={reduce ? false : { opacity: 0, y: 10, x: "-50%", scale: 0.75 }}
-                animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
-                transition={{ duration: 0.5, delay: 1.02, ease: DEAL }}
-              >
-                <StampBadge>Latest</StampBadge>
-              </motion.span>
-
+              {/*
+               * No "Latest" flag on the hero cover. The fan already reads newest-first
+               * and the standfirst says the month, so the badge was labelling something
+               * the picture had said more clearly — and it sat on the masthead of the
+               * cover art, which is the one part of that image worth seeing whole. The
+               * archive cards keep theirs: there it marks one issue out of eighty-nine,
+               * which is a job worth doing.
+               */}
               <span className={`relative block overflow-hidden rounded-[3px] ${EDGE}`}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img

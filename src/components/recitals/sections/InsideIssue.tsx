@@ -1,6 +1,6 @@
 import { Reveal } from "@/components/recitals/Motion";
 import { LETTERFORMS, Letterform } from "@/components/recitals/Letterforms";
-import { SectionGround } from "@/components/recitals/Ornaments";
+import { MarginMark, SectionGlow, SectionGround } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { issueSections } from "@/data/magazine";
 
@@ -31,6 +31,11 @@ export default function InsideIssue() {
   return (
     <section id="inside" className="relative bg-[#fdf8ef]" aria-labelledby="inside-h">
       <SectionGround tint={0.2} />
+      <SectionGlow at="top right" strength={0.15} />
+      {/* A figure in the margin, struck faint. The section is not clipped: overflow-hidden
+          here would turn it into a scroll container and break the sticky stack inside. */}
+      <MarginMark src="/recitals/mark-morning.webp" className="bottom-10 left-4" size={370} opacity={0.24} />
+      <MarginMark src="/recitals/mark-briefing.webp" className="bottom-6 right-6" size={330} opacity={0.18} />
       <div className="relative mx-auto flex w-full max-w-[1440px] items-start gap-20 px-20 py-24">
         <Reveal className="sticky top-32 w-[420px] shrink-0">
           <SectionHead
@@ -42,11 +47,15 @@ export default function InsideIssue() {
         </Reveal>
 
         {/*
-         * A short runway. The stack needs its container to still be crossing the
-         * scrollport in order to hold, but too much of it leaves the finished stack
-         * hanging in dead space and then lurching upward when it lets go.
+         * The runway below the stack is a real element, not padding on this column.
+         *
+         * A sticky card is clamped to its container's CONTENT edge, so padding-bottom
+         * buys no hold whatsoever: the completed stack was being dragged back up the
+         * instant it formed, which is the lurch this section had. The hold the finished
+         * stack gets is exactly the spacer's height, so 220px is a deliberate figure,
+         * not a guess.
          */}
-        <div className="relative min-w-0 flex-1 pb-[10vh]">
+        <div className="relative min-w-0 flex-1">
           {issueSections.map((section, i) => (
             <div key={section.title} className="sticky" style={{ top: PARK + i * STEP, zIndex: i + 1 }}>
               <article className="relative mb-6 overflow-hidden rounded-xl border-[0.8px] border-[#2e1a0e]/10 bg-white">
@@ -86,6 +95,7 @@ export default function InsideIssue() {
               </article>
             </div>
           ))}
+          <div className="h-[220px]" aria-hidden="true" />
         </div>
       </div>
     </section>

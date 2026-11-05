@@ -85,6 +85,200 @@ export function SectionGround({ tint = 0.26, className }: { tint?: number; class
   );
 }
 
+/**
+ * A wash of colour bled into a section's paper.
+ *
+ * The light sections had gone quiet: paper, hairlines and ink, correct and a little
+ * lifeless next to a hero that is almost entirely colour. This is the cheapest way to
+ * carry some of that heat through the rest of the page without putting colour anywhere
+ * near the reading — a soft bloom that fades out well before it reaches a column of
+ * text, and a second cooler one opposite so the ground is never flat.
+ *
+ * Each section places it on a different side. A bloom in the same corner five times is a
+ * stamp, and the eye starts reading it as a border rather than as light.
+ */
+export function SectionGlow({
+  at = "top right",
+  tone = "#ff8a2b",
+  counter = "#f4c430",
+  strength = 0.2,
+}: {
+  at?: "top left" | "top right" | "bottom left" | "bottom right";
+  tone?: string;
+  counter?: string;
+  strength?: number;
+}) {
+  const [v, h] = at.split(" ");
+  const opposite = `${v === "top" ? "bottom" : "top"} ${h === "left" ? "right" : "left"}`;
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0"
+      style={{
+        background: [
+          `radial-gradient(60% 55% at ${at}, ${tone} 0%, transparent 68%)`,
+          `radial-gradient(52% 48% at ${opposite}, ${counter} 0%, transparent 70%)`,
+        ].join(","),
+        opacity: strength,
+      }}
+    />
+  );
+}
+
+/**
+ * An office rubber stamp, struck in a corner.
+ *
+ * Indian pages are busy in a particular way: a government form, a textbook, a coaching
+ * prospectus all carry marks that were added by somebody — a stamp, an initial, a
+ * marginal note — on top of the printed matter. That layering is what the page has been
+ * missing, and it is not the same thing as putting more words in front of a reader.
+ *
+ * Everything it says is true of this magazine. A stamp that claimed an endorsement, an
+ * approval or a date that did not exist would be a forged mark, not an ornament.
+ */
+export function RubberStamp({
+  className,
+  size = 150,
+  rotate = -13,
+  tone,
+}: {
+  className?: string;
+  size?: number;
+  rotate?: number;
+  /**
+   * Leave this unset to take the colour from a class on the element or from its parent.
+   * It must not default to "currentColor": written into the inline style it outranks any
+   * utility class on the same element, so `className="text-r-saffron"` silently lost and
+   * the stamp came out near-black on a navy ground — present, correct, and invisible.
+   */
+  tone?: string;
+}) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 200 200"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+      className={className}
+      style={{ transform: `rotate(${rotate}deg)`, ...(tone ? { color: tone } : null) }}
+    >
+      {/*
+       * Two paths carry the curved wording. The lower one is drawn left-to-right along
+       * the bottom of the circle so its letters stand upright; drawn the other way the
+       * text comes out upside down, which is the usual way this goes wrong.
+       */}
+      <defs>
+        <path id="r-stamp-top" d="M28 100A72 72 0 0 1 172 100" />
+        <path id="r-stamp-bottom" d="M38 100A62 62 0 0 0 162 100" />
+      </defs>
+
+      <circle cx="100" cy="100" r="95" stroke="currentColor" strokeWidth="3.5" />
+      <circle cx="100" cy="100" r="84" stroke="currentColor" strokeWidth="1.4" />
+
+      <text
+        fill="currentColor"
+        fontSize="15.5"
+        letterSpacing="2.4"
+        style={{ fontFamily: "var(--font-r-display), serif", fontWeight: 800 }}
+      >
+        <textPath href="#r-stamp-top" startOffset="50%" textAnchor="middle">
+          THE RECITALS
+        </textPath>
+      </text>
+      <text
+        fill="currentColor"
+        fontSize="12"
+        letterSpacing="2.2"
+        style={{ fontFamily: "var(--font-r-display), serif", fontWeight: 700 }}
+      >
+        <textPath href="#r-stamp-bottom" startOffset="50%" textAnchor="middle">
+          VAJIRAM &amp; RAVI
+        </textPath>
+      </text>
+
+      <path d="M58 100H142" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M58 122H142" stroke="currentColor" strokeWidth="1.4" />
+      <text
+        x="100"
+        y="95"
+        textAnchor="middle"
+        fill="currentColor"
+        fontSize="16"
+        letterSpacing="1.4"
+        style={{ fontFamily: "var(--font-r-display), serif", fontWeight: 800 }}
+      >
+        FREE TO READ
+      </text>
+      <text
+        x="100"
+        y="117"
+        textAnchor="middle"
+        fill="currentColor"
+        fontSize="13"
+        letterSpacing="1.2"
+        style={{ fontFamily: "var(--font-r-display), serif", fontWeight: 700 }}
+      >
+        NO SIGN-IN
+      </text>
+
+      {/* The small marks either side, where a real stamp has its separators. */}
+      <circle cx="14" cy="100" r="3" fill="currentColor" />
+      <circle cx="186" cy="100" r="3" fill="currentColor" />
+    </svg>
+  );
+}
+
+/**
+ * A sketch laid into a section's margin, the way a textbook carries a figure beside the
+ * text. Struck faint and with multiply, so it sits in the paper rather than on it, and
+ * stays behind the reading even where a column crosses it.
+ */
+export function MarginMark({
+  src,
+  className,
+  size = 300,
+  opacity = 0.1,
+}: {
+  src: string;
+  className?: string;
+  size?: number;
+  opacity?: number;
+}) {
+  return (
+    <div
+      aria-hidden="true"
+      className={cx("pointer-events-none absolute bg-contain bg-center bg-no-repeat mix-blend-multiply", className)}
+      style={{ backgroundImage: `url(${src})`, width: size, height: size, opacity }}
+    />
+  );
+}
+
+/**
+ * A six-petalled rosette. The page's one ornament.
+ *
+ * It replaces the lozenge and the four-point star everywhere on this page. Those were two
+ * different marks doing the same job in different places, which is why neither read as
+ * belonging to anything — a rosette this specific gets recognised after the second time
+ * you meet it, and that recognition is the whole value of having a house mark at all.
+ *
+ * Drawn as one petal rotated six times about the centre rather than as six hand-written
+ * paths, so the symmetry is exact and the shape can be adjusted in one place.
+ */
+const PETAL = "M12 12.4C13.75 9 13.9 5.3 12 1.4 10.1 5.3 10.25 9 12 12.4Z";
+
+export function RosetteMark({ className, size = 12 }: MarkProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" className={className}>
+      {[0, 60, 120, 180, 240, 300].map((angle) => (
+        <path key={angle} d={PETAL} fill="currentColor" transform={`rotate(${angle} 12 12)`} />
+      ))}
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+    </svg>
+  );
+}
+
 /** Lozenge. Sits at card corners and inside rules. */
 export function DiamondMark({ className, size = 8 }: MarkProps) {
   return (
@@ -114,10 +308,16 @@ export function Rule({ className, tone = "line" }: { className?: string; tone?: 
   return (
     <div className={cx("flex items-center gap-3", className)} role="presentation">
       <span className={cx("h-px flex-1", stroke)} />
+      {/*
+       * One rosette flanked by two of the same mark set small. They read as dots at that
+       * size, which is all the flanks ever did — but they are the same shape, so the
+       * cluster belongs to the page rather than being a third ornament invented for
+       * rules alone.
+       */}
       <span className={cx("flex items-center gap-1.5", mark)}>
-        <DiamondMark size={5} />
-        <FlowerMark size={11} />
-        <DiamondMark size={5} />
+        <RosetteMark size={7} />
+        <RosetteMark size={16} />
+        <RosetteMark size={7} />
       </span>
       <span className={cx("h-px flex-1", stroke)} />
     </div>
@@ -338,7 +538,7 @@ export const grainStyle: CSSProperties = {
 export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <p className={cx("flex items-center gap-2 font-sans text-[13px]/[18px] font-semibold tracking-[.16em] text-r-rust uppercase", className)}>
-      <FlowerMark size={11} className="text-r-amber" />
+      <RosetteMark size={15} className="text-r-amber" />
       {children}
     </p>
   );

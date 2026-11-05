@@ -56,3 +56,61 @@ export function Letterform({ script, className }: { script: string; className?: 
     </svg>
   );
 }
+
+/*
+ * A field of Indian letterforms, scattered large and faint across a section.
+ *
+ * This replaces a drawn lattice as the ground for the dark band. A jali is Indian the way
+ * a paisley is Indian — true, but generic, and it could sit behind anything. Script is
+ * specific: it is the thing the page is actually about, read by people who write these
+ * exams in several of these alphabets. Five scripts appear, not one, because a page of
+ * Devanagari alone would speak to a part of the country rather than all of it.
+ *
+ * The placements are written out rather than generated. Random positions differ between
+ * the server render and the browser's, which React reports as a hydration mismatch, and
+ * a hand-placed field composes better than a scatter function anyway.
+ */
+type Glyph = { script: string; top: string; left: string; size: number; rotate: number; opacity: number };
+
+const FIELD: Glyph[] = [
+  { script: "devanagari", top: "-6%", left: "2%", size: 420, rotate: -9, opacity: 0.075 },
+  { script: "tamil", top: "44%", left: "-3%", size: 330, rotate: 7, opacity: 0.055 },
+  { script: "bengali", top: "8%", left: "36%", size: 250, rotate: 13, opacity: 0.04 },
+  { script: "kannada", top: "62%", left: "30%", size: 300, rotate: -6, opacity: 0.05 },
+  { script: "gujarati", top: "-2%", left: "72%", size: 360, rotate: 5, opacity: 0.06 },
+  { script: "devanagari", top: "56%", left: "80%", size: 390, rotate: -12, opacity: 0.07 },
+  { script: "tamil", top: "24%", left: "58%", size: 200, rotate: -3, opacity: 0.035 },
+];
+
+export function Letterfield({
+  className,
+  boost = 1,
+}: {
+  className?: string;
+  /**
+   * Multiplies every glyph's opacity. The written values are tuned for pale ink on a
+   * dark ground; the same marks on cream paper need roughly twice the strength to read
+   * at all, and the relative weighting between glyphs should stay as it is.
+   */
+  boost?: number;
+}) {
+  return (
+    <div className={`pointer-events-none absolute inset-0 overflow-hidden ${className ?? ""}`} aria-hidden="true">
+      {FIELD.map((glyph, i) => (
+        <span
+          key={`${glyph.script}-${i}`}
+          className="absolute block"
+          style={{
+            top: glyph.top,
+            left: glyph.left,
+            height: glyph.size,
+            opacity: glyph.opacity * boost,
+            transform: `rotate(${glyph.rotate}deg)`,
+          }}
+        >
+          <Letterform script={glyph.script} className="h-full w-auto" />
+        </span>
+      ))}
+    </div>
+  );
+}

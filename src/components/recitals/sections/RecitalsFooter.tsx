@@ -1,12 +1,34 @@
-import { FlowerMark } from "@/components/recitals/Ornaments";
+import { RosetteMark } from "@/components/recitals/Ornaments";
 import { contact } from "@/data/site";
 import { issues, magazine } from "@/data/magazine";
 
 /*
  * The page's own footer. Deliberately short: this page is about one thing, so the footer
- * closes it rather than opening a second site. It sits on the ink ground the FAQ seam
- * hands it, so the page ends dark instead of trailing off.
+ * closes it rather than opening a second site.
+ *
+ * It used to be a flat maroon panel with the painting laid on it as a watermark, and the
+ * white-and-gold on that maroon was the weakest colour on the page — gold sitting on a
+ * dark orange is the same hue twice, so nothing read as an accent and the whole block
+ * went muddy.
+ *
+ * So the footer is now a time of day rather than a panel. It opens in the indigo the
+ * section above ends on, warms down through it, and finishes on a lit horizon with the
+ * building standing against it. That is what the painting was always better suited to:
+ * multiply on a dark ground turns it into a silhouette, and a silhouette needs something
+ * behind it to be a silhouette against. The links sit high, on the indigo, where they
+ * have the contrast they need; the colour is spent at the bottom of the page where there
+ * is nothing left to read.
  */
+
+/**
+ * Night at the top, a warm horizon at the foot — but the very bottom turns back towards
+ * the dark. The copyright line lives down there, and on the open glow it was pale text on
+ * bright orange at about 2.5:1, which is unreadable. So the light peaks behind the
+ * building and is spent before it reaches the last rule.
+ */
+const SKY = "linear-gradient(180deg,#101637 0%,#18214e 36%,#3a2f55 64%,#5e3630 88%,#3d2430 100%)";
+/** The sun just under the skyline, which is what makes the building read as a cut-out. */
+const DAWN = "radial-gradient(58% 54% at 50% 82%,#ffa23c 0%,#e2725b 36%,transparent 74%)";
 
 const COLUMNS = [
   {
@@ -40,31 +62,46 @@ const COLUMNS = [
 
 export default function RecitalsFooter() {
   return (
-    <footer className="relative overflow-hidden bg-[#60200e]" aria-label="Footer">
+    <footer className="relative overflow-hidden" aria-label="Footer" style={{ background: SKY }}>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[72%]" style={{ background: DAWN }} aria-hidden="true" />
+
       {/*
-       * The painted Parliament standing across the foot of the page, instead of a
-       * stamped pattern. Multiply is what makes it work on a dark ground: the painting's
-       * cream paper leaves the colour almost untouched while the building itself deepens,
-       * so it reads as a watermark pressed into the page rather than a picture pasted on.
+       * Multiply is what makes this a silhouette rather than a picture pasted on: the
+       * painting's cream paper leaves the sky almost untouched while the building itself
+       * drops to near-black against the light behind it.
        */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[78%] bg-contain bg-bottom bg-no-repeat opacity-70 mix-blend-multiply"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-contain bg-bottom bg-no-repeat opacity-90 mix-blend-multiply"
         style={{ backgroundImage: "url(/recitals/parliament.png)" }}
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-12 px-20 pt-20 pb-10">
+      {/*
+       * Dark ground at the very foot, painted over the horizon and the building alike.
+       *
+       * The copyright line sits down here, and on the open dawn it was pale text on lit
+       * orange at roughly 2.5:1 — technically present, actually unreadable. Rather than
+       * dim the sunrise everywhere, the light is simply spent before the last rule, which
+       * is also what the building wants: something solid to stand on.
+       */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px]"
+        style={{ background: "linear-gradient(to top,#201630 0%,#201630 34%,transparent 100%)" }}
+        aria-hidden="true"
+      />
+
+      <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-14 px-20 pt-20 pb-10">
         <div className="flex items-start justify-between gap-20">
           <div className="flex w-[330px] shrink-0 flex-col gap-4">
             <p className="font-r-display text-[30px]/[34px] font-extrabold text-r-paper">
-              The <span className="font-extrabold text-r-amber">Recitals</span>
+              The <span className="font-extrabold text-r-saffron">Recitals</span>
             </p>
-            <p className="font-sans text-[15px]/[24px] font-medium text-r-sand/75">
+            <p className="font-sans text-[15px]/[24px] font-medium text-r-sand/80">
               {issues.length} issues, every month since {magazine.firstIssue}. Free to read and download, with no
               sign-in and no email.
             </p>
-            <p className="flex items-center gap-2 pt-1 font-sans text-[14px]/[21px] font-medium text-r-sand/60">
-              <FlowerMark size={10} className="text-r-amber" />
+            <p className="flex items-center gap-2 pt-1 font-sans text-[14px]/[21px] font-medium text-r-sand/65">
+              <RosetteMark size={13} className="text-r-saffron" />
               {contact.phone} · {contact.hours}
             </p>
           </div>
@@ -72,7 +109,7 @@ export default function RecitalsFooter() {
           <div className="flex flex-1 justify-between gap-12">
             {COLUMNS.map((column) => (
               <div key={column.heading} className="flex flex-col gap-4">
-                <h3 className="font-sans text-[12px]/[16px] font-semibold tracking-[.16em] text-r-amber uppercase">
+                <h3 className="font-sans text-[12px]/[16px] font-semibold tracking-[.16em] text-r-saffron uppercase">
                   {column.heading}
                 </h3>
                 <div className="flex flex-col items-start gap-3">
@@ -80,7 +117,7 @@ export default function RecitalsFooter() {
                     <a
                       key={link.label}
                       href={link.href}
-                      className="font-sans text-[14px]/[21px] font-medium whitespace-nowrap text-r-sand/70 transition-colors duration-200 hover:text-r-paper"
+                      className="font-sans text-[14px]/[21px] font-medium whitespace-nowrap text-r-sand/75 transition-colors duration-200 hover:text-r-paper"
                     >
                       {link.label}
                     </a>
@@ -91,7 +128,13 @@ export default function RecitalsFooter() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between border-t border-r-paper/12 pt-7 font-sans text-[13px]/[20px] font-medium text-r-sand/55">
+        {/*
+         * The horizon has to be given room, or the skyline runs up behind the link
+         * columns and the whole foot of the page turns to mush.
+         */}
+        <div className="h-[clamp(180px,20vw,300px)]" aria-hidden="true" />
+
+        <div className="flex items-center justify-between border-t border-r-paper/20 pt-7 font-sans text-[13px]/[20px] font-medium text-r-paper/75">
           <p>© 2026 Vajiram &amp; Ravi. All rights reserved.</p>
           <div className="flex gap-7">
             <a href="#" className="transition-colors duration-200 hover:text-r-paper">

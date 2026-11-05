@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { PlusMinusIcon } from "@/components/icons";
-import { DiamondMark, SectionGround } from "@/components/recitals/Ornaments";
+import { Letterfield } from "@/components/recitals/Letterforms";
+import { RosetteMark, SectionGlow, SectionGround } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { magazineFaqs } from "@/data/magazine";
 import { cx } from "@/lib/cx";
@@ -18,8 +19,15 @@ export default function Faq() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative bg-[#faf3e6]" aria-labelledby="faq-h">
-      <SectionGround tint={0.24} />
+    <section id="faq" className="relative bg-[#fdf8ef]" aria-labelledby="faq-h">
+      <SectionGround tint={0.2} />
+      <SectionGlow at="bottom right" strength={0.14} />
+      {/*
+       * The scripts live here now. This is the one light section with wide empty margins
+       * either side of a centred column, which is exactly what a field of large glyphs
+       * needs — and nothing else is competing for the ground.
+       */}
+      <Letterfield className="text-[#8a4a16]" boost={2.1} />
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-col items-center gap-12 px-20 py-24">
         <SectionHead id="faq-h" eyebrow="FAQ" title="Questions, answered" center />
 
@@ -36,8 +44,8 @@ export default function Faq() {
                   onClick={() => setOpen(isOpen ? null : i)}
                   className="group/q flex w-full items-center gap-5 py-6 text-left"
                 >
-                  <DiamondMark
-                    size={6}
+                  <RosetteMark
+                    size={13}
                     className={cx("shrink-0 transition-colors duration-300", isOpen ? "text-r-rust" : "text-r-amber")}
                   />
                   <span
