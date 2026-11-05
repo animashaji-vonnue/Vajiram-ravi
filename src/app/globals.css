@@ -254,3 +254,36 @@ body:has([data-recitals]) [data-chrome] {
     transform: none;
   }
 }
+
+/*
+ * The stamp's perforated edge.
+ *
+ * Four repeating radial gradients, one per side, kept only where all four overlap, so
+ * half-circles bite inward out of the cream on every edge — the way the vector is drawn in
+ * Figma and the way a real stamp tears. It lives here rather than in a React style object
+ * because React silently drops `maskComposite`, which leaves the four layers unioned and
+ * no notches at all. The prefixed keyword comes first so the standard one wins where both
+ * are understood; browsers that know neither simply get an unbitten rectangle.
+ */
+.r-perforated {
+  --notch: 3.3px;
+  --pitch: 8.99px;
+  -webkit-mask-image:
+    radial-gradient(var(--notch) at 50% 0, #0000 99%, #000 101%),
+    radial-gradient(var(--notch) at 50% 100%, #0000 99%, #000 101%),
+    radial-gradient(var(--notch) at 0 50%, #0000 99%, #000 101%),
+    radial-gradient(var(--notch) at 100% 50%, #0000 99%, #000 101%);
+  mask-image:
+    radial-gradient(var(--notch) at 50% 0, #0000 99%, #000 101%),
+    radial-gradient(var(--notch) at 50% 100%, #0000 99%, #000 101%),
+    radial-gradient(var(--notch) at 0 50%, #0000 99%, #000 101%),
+    radial-gradient(var(--notch) at 100% 50%, #0000 99%, #000 101%);
+  -webkit-mask-position: 50% 0, 50% 100%, 0 50%, 100% 50%;
+  mask-position: 50% 0, 50% 100%, 0 50%, 100% 50%;
+  -webkit-mask-size: var(--pitch) 100%, var(--pitch) 100%, 100% var(--pitch), 100% var(--pitch);
+  mask-size: var(--pitch) 100%, var(--pitch) 100%, 100% var(--pitch), 100% var(--pitch);
+  -webkit-mask-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  mask-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}

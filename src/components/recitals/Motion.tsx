@@ -14,6 +14,8 @@ import { cx } from "@/lib/cx";
  */
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+/* Past 1 on the third handle, so a card overshoots a little as it lands. */
+const DEAL: [number, number, number, number] = [0.18, 0.89, 0.32, 1.12];
 
 /** Inertial scrolling. Mount once per page; renders nothing. */
 export function SmoothScroll() {
@@ -112,6 +114,40 @@ export function Counter({ to, suffix = "", className }: { to: number; suffix?: s
       {value}
       {suffix}
     </span>
+  );
+}
+
+/**
+ * A card arriving the way the hero deals its fan: tilted and low, settling flat, each one
+ * a beat behind the last and pivoting from its foot rather than its middle.
+ *
+ * This is what carries the eye from the hero into the library. The fan closes into a stack
+ * as the hero scrolls away; these deal back out of it. The point is not decoration — it
+ * says that the five covers you just saw are a sample of the shelf you have arrived at.
+ */
+export function DealIn({
+  children,
+  index = 0,
+  tilt = 0,
+  className,
+}: {
+  children: ReactNode;
+  index?: number;
+  tilt?: number;
+  className?: string;
+}) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      className={className}
+      style={{ transformOrigin: "bottom center" }}
+      initial={reduce ? false : { opacity: 0, y: 54, rotate: tilt, scale: 0.94 }}
+      whileInView={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{ duration: 0.8, delay: index * 0.07, ease: DEAL }}
+    >
+      {children}
+    </motion.div>
   );
 }
 

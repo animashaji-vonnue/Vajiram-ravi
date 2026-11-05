@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ArrowRightIcon, ArrowRightXsIcon, ClockIcon, SelectChevronIcon } from "@/components/icons";
+import { ArrowRightIcon, ArrowRightXsIcon, ClockIcon, DownloadIcon, SelectChevronIcon } from "@/components/icons";
 import { DiamondMark, doubleRule, Eyebrow, FlowerMark } from "@/components/recitals/Ornaments";
 import type { Issue } from "@/data/magazine";
 import { cx } from "@/lib/cx";
@@ -45,68 +45,82 @@ export function MetaLine({ items, className }: { items: string[]; className?: st
 /**
  * One issue, as a postage stamp (Figma: Card / Issue — L).
  *
- * The cover is never cut, masked or decorated — it is a plain rectangle inside the stamp.
- * All the character lives in the border: a cream panel on a rust ground with the
- * perforation bitten out of the cream. That is how a real stamp is made, and it is the one
- * place ornament can go without fighting artwork as busy as these covers.
+ * Geometry read off the Figma vector rather than estimated: a 14px rust border, a cream
+ * stamp inside it, notches of 3.3px radius at a 8.99px pitch, and the cover inset a
+ * further 20px. The cover itself is never cut, masked or decorated — all the character
+ * lives in the border, which is the one place ornament can go without fighting artwork as
+ * busy as these covers.
  *
- * The scallop is a grid of cream discs sitting behind the panel and overhanging it by one
- * radius. Only the overhanging halves show, so the edge stays correct at any card height
- * without hard-coding a count per card.
+ * Two actions on separate targets. The stamp opens the issue to read. The bar across the
+ * foot downloads it, and it is a bar rather than a line of small print because a 9px
+ * caption with a 12px icon is neither noticeable nor reliably hittable — it is 44px tall,
+ * full width, and visible without hovering, since "free PDF, no sign-in" is the whole
+ * offer of this page and hiding it until the pointer arrives undersells it.
  */
 export function IssueCard({ issue, latest }: { issue: Issue; latest?: boolean }) {
   return (
     <article
       className={cx(
-        "group/issue relative flex flex-col bg-[#b9501f] p-5",
+        "group/issue relative flex flex-col bg-[#b9501f] p-[14px]",
         "[transition:translate_.4s_var(--ease-settle),box-shadow_.4s_var(--ease-settle)]",
         "hover:-translate-y-1 hover:shadow-[0_24px_44px_-24px_rgba(94,27,16,.5)]",
       )}
     >
-      <div className="relative flex flex-1 flex-col">
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute -inset-[9px]"
-          style={{
-            background:
-              "radial-gradient(circle 9px at center, #fdf6e8 96%, transparent 98%) center / 19.4px 19.4px repeat",
-          }}
-        />
-
-        <div className="relative flex flex-1 flex-col gap-[11px] bg-[#fdf6e8] px-3.5 pt-3.5 pb-[13px]">
-          <div className="relative overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={issue.cover}
-              alt={`${issue.label} cover`}
-              width={260}
-              height={336}
-              loading="lazy"
-              decoding="async"
-              className="aspect-[260/336] w-full object-cover transition-transform duration-700 ease-[var(--ease-settle)] group-hover/issue:scale-[1.03]"
-            />
-            {latest && (
-              <span className="absolute top-2 left-2">
-                <StampBadge>Latest</StampBadge>
-              </span>
-            )}
-          </div>
-
-          <div className="flex flex-col items-center gap-0.5 text-center">
-            <h3 className="font-r-masthead text-[27px]/[30px] text-[#8a3516]">
-              {issue.month} <span className="text-[#b9501f] italic">{issue.year}</span>
-            </h3>
-            <p className="font-sans text-[9.5px]/[13px] font-semibold tracking-[.12em] text-[#8a3516]/55 uppercase">
-              {issue.pages} pages · PDF {issue.size}
-            </p>
-          </div>
+      <div className="r-perforated relative flex flex-1 flex-col bg-[#fdf6e8] px-5 pt-5">
+        <div className="relative overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={issue.cover}
+            alt={`${issue.label} cover`}
+            width={260}
+            height={336}
+            loading="lazy"
+            decoding="async"
+            className="aspect-[260/336] w-full object-cover transition-transform duration-700 ease-[var(--ease-settle)] group-hover/issue:scale-[1.03]"
+          />
+          {latest && (
+            <span className="absolute top-2 left-2">
+              <StampBadge>Latest</StampBadge>
+            </span>
+          )}
         </div>
-      </div>
 
-      <a href={issue.pdf} className="absolute inset-0" aria-label={`Read ${issue.label}`} />
+        <div className="flex flex-col items-center gap-0.5 pt-3 pb-3.5 text-center">
+          <h3 className="font-r-masthead text-[27px]/[30px] text-[#8a3516]">
+            <a
+              href={issue.pdf}
+              target="_blank"
+              rel="noreferrer"
+              className="after:absolute after:inset-0 after:content-['']"
+            >
+              {issue.month} <span className="text-[#b9501f] italic">{issue.year}</span>
+            </a>
+          </h3>
+          <p className="font-sans text-[10px]/[14px] font-semibold tracking-[.12em] text-[#8a3516]/55 uppercase">
+            {issue.pages} pages
+          </p>
+        </div>
+
+        <a
+          href={issue.pdf}
+          download
+          aria-label={`Download ${issue.label} as a PDF, ${issue.size}`}
+          className={cx(
+            "relative z-10 -mx-5 flex h-11 items-center justify-center gap-2 border-t border-[#8a3516]/15",
+            "font-sans text-[13px]/[18px] font-semibold text-[#8a3516]",
+            "transition-colors duration-200 hover:bg-[#f6e7cf] hover:text-[#b9501f]",
+            "focus-visible:bg-[#f6e7cf] focus-visible:text-[#b9501f] focus-visible:outline-none",
+          )}
+        >
+          <DownloadIcon className="size-4" />
+          Download PDF · {issue.size}
+        </a>
+      </div>
     </article>
   );
 }
+
+
 /** A related free collection: Yojana, Kurukshetra, Quick Revision, Mains Probable. */
 export function CollectionCard({ title, body, icon }: { title: string; body: string; icon: ReactNode }) {
   return (
