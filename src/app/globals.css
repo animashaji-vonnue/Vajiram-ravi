@@ -142,7 +142,13 @@
   --font-r-display: var(--font-martel-face), "Iowan Old Style", Georgia, serif;
   --font-r-editorial: var(--font-martel-face), Georgia, serif;
   /* The masthead and the faint newsprint, both set in Instrument Serif as in the design. */
-  --font-r-masthead: var(--font-instrument-face), "Iowan Old Style", Georgia, serif;
+  /*
+   * Martel, from the Indian Type Foundry. It replaced Instrument Serif here: that face is
+   * the high-contrast display serif on every other generated page, and its thin strokes
+   * went weightless at masthead size. Martel has no italic, so emphasis is carried by
+   * weight and colour instead — which is sturdier anyway at this scale.
+   */
+  --font-r-masthead: var(--font-martel-face), "Iowan Old Style", Georgia, serif;
 
   --ease-ink: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);

@@ -88,14 +88,14 @@ export function IssueCard({ issue, latest }: { issue: Issue; latest?: boolean })
         </div>
 
         <div className="flex flex-col items-center gap-0.5 pt-3 pb-3.5 text-center">
-          <h3 className="font-r-masthead text-[27px]/[30px] text-[#8a3516]">
+          <h3 className="font-r-masthead text-[23px]/[28px] text-[#8a3516]">
             <a
               href={issue.pdf}
               target="_blank"
               rel="noreferrer"
               className="after:absolute after:inset-0 after:content-['']"
             >
-              {issue.month} <span className="text-[#b9501f] italic">{issue.year}</span>
+              {issue.month} <span className="font-bold text-[#b9501f]">{issue.year}</span>
             </a>
           </h3>
           <p className="font-sans text-[10px]/[14px] font-semibold tracking-[.12em] text-[#8a3516]/55 uppercase">

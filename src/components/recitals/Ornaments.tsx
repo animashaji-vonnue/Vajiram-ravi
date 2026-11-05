@@ -45,8 +45,8 @@ export function StarMark({ className, size = 12 }: MarkProps) {
 }
 
 /**
- * A drawn underline. Two passes of an uneven stroke, so it reads as a hand marking a line
- * under a phrase rather than a border-bottom. Stretches to whatever it sits under.
+ * A drawn underline: one uneven stroke, so it reads as a hand marking a line under a
+ * phrase rather than a border-bottom. Stretches to whatever it sits under.
  */
 export function Underline({ className }: { className?: string }) {
   return (
@@ -63,13 +63,6 @@ export function Underline({ className }: { className?: string }) {
         stroke="currentColor"
         strokeWidth="3.2"
         strokeLinecap="round"
-      />
-      <path
-        d="M14 11.2c26-2.6 52-3.6 78-3.3"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        opacity="0.5"
       />
     </svg>
   );

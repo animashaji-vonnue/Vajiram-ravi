@@ -66,12 +66,12 @@ export default function Hero() {
             <span className="block overflow-hidden pb-[0.1em]">
               <motion.h1
                 id="recitals-h"
-                className="font-r-masthead text-[clamp(46px,min(7.6vw,11.5vh),120px)]/[1] tracking-[-.02em] text-[#1c1209]"
+                className="font-r-masthead text-[clamp(42px,min(6.9vw,10.4vh),108px)]/[1.04] tracking-[-.025em] text-[#1c1209]"
                 initial={reduce ? false : { y: "118%" }}
                 animate={{ y: "0%" }}
                 transition={{ duration: 1, delay: 0.28, ease: EASE }}
               >
-                The <span className="text-[#a8401c] italic">Recitals</span>
+                The <span className="font-extrabold text-[#a8401c]">Recitals</span>
               </motion.h1>
             </span>
           </div>

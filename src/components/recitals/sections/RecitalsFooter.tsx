@@ -47,7 +47,7 @@ export default function RecitalsFooter() {
         <div className="flex items-start justify-between gap-20">
           <div className="flex w-[330px] shrink-0 flex-col gap-4">
             <p className="font-r-display text-[30px]/[34px] font-extrabold text-r-paper">
-              The <span className="text-r-amber italic">Recitals</span>
+              The <span className="font-extrabold text-r-amber">Recitals</span>
             </p>
             <p className="font-sans text-[15px]/[24px] font-medium text-r-sand/75">
               {issues.length} issues, every month since {magazine.firstIssue}. Free to read and download, with no

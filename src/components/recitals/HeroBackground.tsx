@@ -34,16 +34,22 @@ const RAYS =
   "transparent 78px 152px)";
 
 /**
- * Held to the margins, clear of the masthead. Real headlines rather than filler, because
- * at this size a reader can make out a phrase or two and that is the point of them.
+ * Held to the margins, clear of the masthead.
+ *
+ * A headline on its own floats; it is the column of body type under it that makes the eye
+ * read "newspaper". So each item is a deck: rule, headline, then two columns of text set
+ * small — the same construction Direction A used.
  */
-const GHOSTS: { text: string; top: string; side: "left" | "right"; w: number }[] = [
-  { text: "Monsoon Session opens with eight Bills on the agenda", top: "11%", side: "left", w: 300 },
-  { text: "RBI keeps the repo rate unchanged for a fourth time", top: "30%", side: "left", w: 280 },
-  { text: "NITI Aayog flags the gap between education and work", top: "49%", side: "left", w: 290 },
-  { text: "Supreme Court sets up a bench on electoral reform", top: "9%", side: "right", w: 300 },
-  { text: "ISRO readies its next mission to study the Sun", top: "28%", side: "right", w: 275 },
-  { text: "Cabinet clears a new scheme for rural broadband", top: "47%", side: "right", w: 290 },
+const COLUMN =
+  "The committee report, tabled on Thursday, recommends a phased roll-out across States, with a review after two years. Members noted the fiscal impact and asked for clearer targets. The ministry said consultations would continue through the month, and that a draft framework would be placed in the public domain before notification.";
+
+const GHOSTS: { text: string; top: string; side: "left" | "right" }[] = [
+  { text: "Monsoon Session opens with eight Bills on the agenda", top: "7%", side: "left" },
+  { text: "RBI keeps the repo rate unchanged for a fourth time", top: "36%", side: "left" },
+  { text: "NITI Aayog flags the gap between education and work", top: "65%", side: "left" },
+  { text: "Supreme Court sets up a bench on electoral reform", top: "5%", side: "right" },
+  { text: "ISRO readies its next mission to study the Sun", top: "34%", side: "right" },
+  { text: "Cabinet clears a new scheme for rural broadband", top: "63%", side: "right" },
 ];
 
 export default function HeroBackground() {
@@ -55,20 +61,20 @@ export default function HeroBackground() {
         style={{ backgroundImage: "url(/recitals/paper.png)", backgroundSize: "cover", backgroundPosition: "center" }}
       />
 
-      {/* 2. The day's news, printed faint into it. */}
+      {/* 2. The day's news, set in columns and printed faint into it. */}
       {GHOSTS.map((ghost) => (
-        <p
+        <div
           key={ghost.text}
-          className="absolute font-r-masthead text-[clamp(22px,2.1vw,31px)]/[1.14] text-[#7a3a14] opacity-[.09]"
-          style={{
-            top: ghost.top,
-            width: ghost.w,
-            [ghost.side]: "-10px",
-            textAlign: ghost.side === "right" ? "right" : "left",
-          }}
+          className="absolute w-[clamp(240px,21vw,320px)] text-[#6d3310] opacity-[.11]"
+          style={{ top: ghost.top, [ghost.side]: "-22px" }}
         >
-          {ghost.text}
-        </p>
+          <span className="block h-px w-full bg-current" />
+          <p className="pt-2 font-r-masthead text-[clamp(19px,1.72vw,26px)]/[1.1] font-bold">{ghost.text}</p>
+          <div className="mt-2 flex gap-3">
+            <p className="w-1/2 font-r-masthead text-[8.5px]/[11px]">{COLUMN}</p>
+            <p className="w-1/2 font-r-masthead text-[8.5px]/[11px]">{COLUMN}</p>
+          </div>
+        </div>
       ))}
 
       {/* 3. The colour, rising from the foot. */}
@@ -84,11 +90,11 @@ export default function HeroBackground() {
 
       {/* 4. Two objects, not a crowd. */}
       <div
-        className="absolute bottom-[-2%] left-[-1%] h-[42%] w-[26%] bg-contain bg-left-bottom bg-no-repeat opacity-55 mix-blend-multiply"
+        className="absolute bottom-[-3%] left-[-3%] h-[56%] w-[34%] bg-contain bg-left-bottom bg-no-repeat opacity-55 mix-blend-multiply"
         style={{ backgroundImage: "url(/recitals/india.png)" }}
       />
       <div
-        className="absolute right-[1%] bottom-[16%] h-[22%] w-[21%] bg-contain bg-right-bottom bg-no-repeat opacity-55 mix-blend-multiply"
+        className="absolute right-[-1%] bottom-[18%] h-[31%] w-[29%] bg-contain bg-right-bottom bg-no-repeat opacity-55 mix-blend-multiply"
         style={{ backgroundImage: "url(/recitals/books.png)" }}
       />
     </div>
