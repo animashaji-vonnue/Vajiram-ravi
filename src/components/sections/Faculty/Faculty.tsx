@@ -1,28 +1,47 @@
-import RevealWords from "@/components/ui/RevealWords";
-import Sheet from "@/components/ui/Sheet";
-import { educators } from "@/data/educators";
+import { EyebrowLeft } from "@/components/ui/Ornament";
+import { educators, facultyIntro } from "@/data/faculty";
 import FacultyCarousel from "./FacultyCarousel";
 
 /**
- * Faculty, on a light panel: the heading row with prev / next buttons, a draggable track of educator
- * cards that runs off the right edge of the page, and a scrubber line that shows where the track is.
+ * "Learn from top educators" (Figma "10 · Faculty — subject gurus", 2271:10583), 1440 × 738: the warm
+ * paper band (#ffefd5 with the page's paper texture at 45%), the left-aligned heading with its italic
+ * emphasis and the carousel arrows at its right, the row of arch-portrait faculty cards, and the progress
+ * line. Padding 72 / 80; 32px between the heading row, the cards and the line. The heading reveals in the
+ * page's order (eyebrow, heading with its italic second beat, lead) and the cards rise in turn.
  */
 export default function Faculty() {
   return (
-    <Sheet id="faculty" labelledBy="faculty-h" className="flex flex-col gap-12">
-      <FacultyCarousel
-        educators={educators}
-        heading={
-          <div className="flex flex-col gap-4 whitespace-nowrap">
-            <h2 id="faculty-h" data-reveal-words className="text-[64px]/none font-medium tracking-[-2.88px] text-char">
-              <RevealWords text="Learn from top educators" />
-            </h2>
-            <p className="text-[16px]/[1.5] text-stone">
-              Subject specialists for every GS paper, the essay, the optionals and the interview.
-            </p>
-          </div>
-        }
+    <section id="faculty" aria-labelledby="faculty-h" className="relative isolate overflow-clip bg-[#ffefd5]">
+      <img
+        src="/images/free-resources/paper-texture.webp"
+        alt=""
+        aria-hidden="true"
+        width={1024}
+        height={1440}
+        loading="lazy"
+        decoding="async"
+        className="pointer-events-none absolute inset-0 -z-1 size-full max-w-none object-cover opacity-45"
       />
-    </Sheet>
+      <div className="mx-auto flex w-canvas flex-col items-start px-20 py-[72px]">
+        <FacultyCarousel
+          educators={educators}
+          profileLabel={facultyIntro.profile}
+          heading={
+            <div className="flex flex-col items-start gap-3">
+              <EyebrowLeft>{facultyIntro.eyebrow}</EyebrowLeft>
+              <h2 id="faculty-h" data-reveal="heading" className="w-[700px] text-[48px]/[1.08] font-bold tracking-[-1.2px] text-ink">
+                {facultyIntro.heading.lead}{" "}
+                <em data-reveal-em className="font-serif text-[52px]/[1.08] font-normal text-burnt italic">
+                  {facultyIntro.heading.emphasis}
+                </em>
+              </h2>
+              <p data-reveal="sub" className="w-[620px] text-[16px]/[1.55] text-[#7a6a5c]">
+                {facultyIntro.lead}
+              </p>
+            </div>
+          }
+        />
+      </div>
+    </section>
   );
 }

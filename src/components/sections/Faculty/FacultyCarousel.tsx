@@ -1,551 +1,458 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  type KeyboardEvent,
-  type PointerEvent,
-  type ReactNode,
-} from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, type RefObject } from "react";
+import { CarouselArrow } from "@/components/ui/CarouselControls";
+import CursorLabel from "@/components/ui/CursorLabel";
+import IndianLink from "@/components/ui/IndianLink";
 import Photo from "@/components/ui/Photo";
-import type { Educator } from "@/data/educators";
+import PointerGlow, { hasFinePointer } from "@/components/ui/PointerGlow";
+import type { Educator } from "@/data/faculty";
 import { getCanvasZoom } from "@/lib/canvas";
 import { cx } from "@/lib/cx";
 import { prefersReducedMotion } from "@/lib/motion";
 
-const CARD_WIDTH = 300;
-const CARD_GAP = 16;
-const STEP = CARD_WIDTH + CARD_GAP;
-/** The content column of the 1440px canvas: the track starts at its left edge and ends at its right edge. */
-const VIEW_WIDTH = 1280;
-/** Beyond either end, the track follows the pointer at this rate. */
-const RUBBER = 0.35;
-const DRAG_START_PX = 6;
-/** The release speed is measured over this last stretch of a drag. */
-const VELOCITY_WINDOW_MS = 100;
-/** How far a flick carries: the release speed (px/ms) times this. */
-const MOMENTUM_MS = 320;
-/** A release faster than this (px/ms) moves at least one card. */
-const FLICK_SPEED = 0.3;
-/** Wheel scrolling settles onto a card once the wheel has been still this long. */
-const WHEEL_SETTLE_MS = 160;
-/** Share of the remaining distance the "Drag" disc closes per 60 fps frame as it follows the pointer. */
-const CURSOR_FOLLOW = 0.3;
-const EASE = cubicBezier(0.2, 0.8, 0.2, 1);
-/** Starting slope of EASE, used to match a glide's opening speed to the release speed. */
-const EASE_START_SLOPE = 4;
+/** One card (200) plus the gap (16): a card's step along the track. */
+const STEP = 216;
+/** Cards on show at once across the 1280 content width. */
+const VISIBLE = 6;
+/** Pointer travel, in canvas px, before a press becomes a drag. */
+const DRAG_THRESHOLD = 6;
+/** A drag this long moves at least one card. */
+const FLICK = 48;
+/** Past either end the track follows the pointer at this rate. */
+const EDGE_GIVE = 0.35;
 
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n));
 
-/** CSS-style cubic-bezier easing, solved for x with a few Newton steps. */
-function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
-  const cx3 = 3 * x1;
-  const bx = 3 * (x2 - x1) - cx3;
-  const ax = 1 - cx3 - bx;
-  const cy3 = 3 * y1;
-  const by = 3 * (y2 - y1) - cy3;
-  const ay = 1 - cy3 - by;
-  return (x: number) => {
-    let t = x;
-    for (let i = 0; i < 8; i++) {
-      const error = ((ax * t + bx) * t + cx3) * t - x;
-      const slope = (3 * ax * t + 2 * bx) * t + cx3;
-      if (Math.abs(error) < 1e-5 || Math.abs(slope) < 1e-6) break;
-      t = clamp(t - error / slope, 0, 1);
-    }
-    return ((ay * t + by) * t + cy3) * t;
-  };
-}
-
-/** Where the track can rest: each card's left edge, capped at the far end. */
-function snapPoints(lefts: number[], max: number): number[] {
-  return Array.from(new Set(lefts.map((left) => Math.min(left, max)))).sort((a, b) => a - b);
-}
-
-type Drag = {
-  pointer: number;
-  startX: number;
-  /** Track offset when the drag took hold, and when the pointer went down. */
-  from: number;
-  origin: number;
-  moved: boolean;
-  /** The canvas zoom, which pointer deltas are divided by. */
-  zoom: number;
-  samples: { t: number; x: number }[];
-};
-
-type Status = { start: boolean; end: boolean; first: number };
-
-function EducatorCard({ educator }: { educator: Educator }) {
-  return (
-    <li className="relative h-[420px] w-[300px] shrink-0 overflow-clip rounded-3xl bg-sand">
-      {/* The name below says who it is, so the photo needs no alt text of its own. */}
-      <Photo className="absolute inset-0" src={educator.photo} alt="" sizes="420px" />
-      <div className="absolute inset-0 bg-linear-to-b from-coal/0 to-coal/55" />
-      <div className="absolute top-[328px] left-4 flex w-[268px] flex-col gap-0.5 rounded-2xl border border-paper/16 bg-coal/35 p-4 backdrop-blur-[9px]">
-        <h3 className="text-[18px]/[1.5] font-medium tracking-[-0.18px] whitespace-nowrap text-paper">{educator.name}</h3>
-        <p className="text-[13px]/[1.5] text-paper/75">{educator.subject}</p>
-      </div>
-    </li>
-  );
-}
-
-const ARROW =
-  "flex size-12 items-center justify-center rounded-full text-[16px]/none font-medium [transition:background-color_.3s,border-color_.3s,scale_.3s_cubic-bezier(.2,.8,.2,1)] enabled:active:scale-95 disabled:cursor-default";
-
-type FacultyCarouselProps = { heading: ReactNode; educators: Educator[] };
+/** The cards' tilt toward the pointer (after Unlumen's tilt card): at most 4° each way, in 900px of perspective. */
+const TILT_MAX = 4;
+const TILT_PERSPECTIVE = 900;
+/** The tilt follows the pointer with this time constant: it closes ~63% of the gap in this long. */
+const TILT_FOLLOW_MS = 90;
+/** On leave the card eases back flat over --dur-base... */
+const TILT_BACK_MS = 320;
+/** ...with --ease-out, cubic-bezier(0.22, 1, 0.36, 1), which is the ease-out quint. */
+const easeOut = (t: number) => 1 - (1 - t) ** 5;
 
 /**
- * The faculty track. It drags freely with momentum and settles on a card; the wheel or trackpad
- * scrolls it sideways while hovered; the arrows step one card; the scrubber line shows the position
- * and can be dragged or used with the arrow keys. With a mouse, the pointer becomes an orange "Drag"
- * disc over the track.
+ * Tilts the card toward the pointer: the side under it sinks back, up to TILT_MAX on each axis. It is a
+ * `transform` (the hover lift of a linked card is the separate `translate`, so the two add up), written in
+ * a frame loop that runs only while the card is moving, and cleared once the card is flat again. Fine
+ * pointers only; never with reduced motion.
  */
-export default function FacultyCarousel({ heading, educators }: FacultyCarouselProps) {
-  const count = educators.length;
-  const trackWidth = count * CARD_WIDTH + (count - 1) * CARD_GAP;
-  const initialMax = Math.max(0, trackWidth - VIEW_WIDTH);
-  const visibleCards = Math.floor((VIEW_WIDTH + CARD_GAP) / STEP);
-  const lastFirst = Math.round(initialMax / STEP);
-  const trackId = useId();
+function useTilt(ref: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || prefersReducedMotion() || !hasFinePointer()) return;
+    let hovering = false;
+    let frame = 0;
+    let last = 0;
+    let leftAt = 0;
+    // Degrees about the x and y axes: where the pointer wants the card, where it is, where it was on leave.
+    const aim = { x: 0, y: 0 };
+    const now = { x: 0, y: 0 };
+    const from = { x: 0, y: 0 };
 
-  const viewRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLUListElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
-  const thumbRef = useRef<HTMLDivElement>(null);
-  const cursorRef = useRef<HTMLDivElement>(null);
-
-  // How far the track has moved left, in canvas pixels.
-  const offset = useRef(0);
-  const maxOffset = useRef(initialMax);
-  const snaps = useRef(snapPoints(educators.map((_, i) => i * STEP), initialMax));
-  const sizes = useRef({ line: VIEW_WIDTH, thumb: (VIEW_WIDTH * VIEW_WIDTH) / trackWidth });
-  const glideFrame = useRef(0);
-  const wheelTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const drag = useRef<Drag | null>(null);
-  const scrub = useRef<{ pointer: number; grab: number } | null>(null);
-  const cursor = useRef({ x: 0, y: 0, tx: 0, ty: 0, clientX: 0, clientY: 0, frame: 0, last: 0 });
-
-  const [status, setStatus] = useState<Status>({ start: true, end: initialMax === 0, first: 0 });
-  const [dragging, setDragging] = useState(false);
-  const [fineCursor, setFineCursor] = useState(false);
-  const [cursorOn, setCursorOn] = useState(false);
-
-  /** Moves the track and the scrubber thumb to the current offset. */
-  const paint = useCallback(() => {
-    const x = offset.current;
-    const max = maxOffset.current;
-    if (trackRef.current) trackRef.current.style.transform = `translate3d(${-x}px, 0, 0)`;
-    if (thumbRef.current) {
-      const progress = max > 0 ? clamp(x / max, 0, 1) : 0;
-      thumbRef.current.style.transform = `translate3d(${progress * (sizes.current.line - sizes.current.thumb)}px, 0, 0)`;
-    }
-    const next = { start: x <= 1, end: x >= max - 1, first: clamp(Math.round(x / STEP), 0, count - 1) };
-    setStatus((prev) => (prev.start === next.start && prev.end === next.end && prev.first === next.first ? prev : next));
-  }, [count]);
-
-  const measure = useCallback(() => {
-    const view = viewRef.current;
-    const track = trackRef.current;
-    if (!view || !track) return;
-    const max = Math.max(0, track.offsetWidth - view.clientWidth);
-    maxOffset.current = max;
-    snaps.current = snapPoints(
-      Array.from(track.children, (card) => (card as HTMLElement).offsetLeft),
-      max,
-    );
-    const thumb = thumbRef.current;
-    if (thumb) thumb.style.width = `${Math.min(100, (view.clientWidth / track.offsetWidth) * 100)}%`;
-    sizes.current = { line: lineRef.current?.offsetWidth ?? 0, thumb: thumb?.offsetWidth ?? 0 };
-    offset.current = clamp(offset.current, 0, max);
-    paint();
-  }, [paint]);
-
-  /** Eases the track to `target`. A release speed (px/ms) keeps a flick's pace into the glide. */
-  const glideTo = useCallback(
-    (target: number, speed = 0) => {
-      cancelAnimationFrame(glideFrame.current);
-      const from = offset.current;
-      const to = clamp(target, 0, maxOffset.current);
-      const distance = Math.abs(to - from);
-      if (distance < 0.5 || prefersReducedMotion()) {
-        offset.current = to;
-        paint();
+    const write = () => {
+      el.style.transform = `perspective(${TILT_PERSPECTIVE}px) rotateX(${now.x.toFixed(3)}deg) rotateY(${now.y.toFixed(3)}deg)`;
+    };
+    const step = (time: number) => {
+      frame = 0;
+      if (hovering) {
+        const dt = last ? Math.min(64, time - last) : 16;
+        last = time;
+        const k = 1 - Math.exp(-dt / TILT_FOLLOW_MS);
+        now.x += (aim.x - now.x) * k;
+        now.y += (aim.y - now.y) * k;
+        write();
+        if (Math.abs(aim.x - now.x) > 0.01 || Math.abs(aim.y - now.y) > 0.01) frame = requestAnimationFrame(step);
+        else last = 0;
         return;
       }
-      let duration = clamp(380 + distance * 0.5, 420, 850);
-      if (Math.abs(speed) > 0.05 && Math.sign(speed) === Math.sign(to - from)) {
-        duration = clamp((EASE_START_SLOPE * distance) / Math.abs(speed), 320, duration);
+      const t = clamp((time - leftAt) / TILT_BACK_MS, 0, 1);
+      const eased = easeOut(t);
+      now.x = from.x * (1 - eased);
+      now.y = from.y * (1 - eased);
+      if (t < 1) {
+        write();
+        frame = requestAnimationFrame(step);
+        return;
       }
-      const start = performance.now();
-      const frame = (now: number) => {
-        const t = Math.min(1, (now - start) / duration);
-        offset.current = from + (to - from) * EASE(t);
-        paint();
-        if (t < 1) glideFrame.current = requestAnimationFrame(frame);
-      };
-      glideFrame.current = requestAnimationFrame(frame);
-    },
-    [paint],
-  );
-
-  const nearestSnap = (x: number) =>
-    snaps.current.reduce((best, snap) => (Math.abs(snap - x) < Math.abs(best - x) ? snap : best), 0);
-
-  /** Glides one card forward (1) or back (-1). */
-  const stepBy = (direction: 1 | -1) => {
-    const x = offset.current;
-    const list = snaps.current;
-    const target =
-      direction > 0
-        ? (list.find((snap) => snap > x + 1) ?? maxOffset.current)
-        : ([...list].reverse().find((snap) => snap < x - 1) ?? 0);
-    glideTo(target);
-  };
-
-  useEffect(() => {
-    measure();
-    const view = viewRef.current;
-    if (!view || !("ResizeObserver" in window)) return;
-    const observer = new ResizeObserver(measure);
-    observer.observe(view);
-    return () => observer.disconnect();
-  }, [measure]);
-
-  useEffect(() => {
-    const query = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const update = () => setFineCursor(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-
-  // Sideways trackpad swipes (or Shift + wheel) scroll the track while hovered; an ordinary vertical wheel
-  // always scrolls the page, so the carousel never catches the page mid-scroll.
-  useEffect(() => {
-    const view = viewRef.current;
-    if (!view) return;
-    const onWheel = (event: WheelEvent) => {
-      if (event.ctrlKey || drag.current) return;
-      const sideways = Math.abs(event.deltaX) > Math.abs(event.deltaY);
-      if (!sideways && !event.shiftKey) return;
-      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? view.clientWidth : 1;
-      const delta = ((sideways ? event.deltaX : event.deltaY) * unit) / getCanvasZoom();
-      const next = clamp(offset.current + delta, 0, maxOffset.current);
-      if (Math.abs(next - offset.current) < 0.5) return;
-      event.preventDefault();
-      cancelAnimationFrame(glideFrame.current);
-      offset.current = next;
-      paint();
-      clearTimeout(wheelTimer.current);
-      wheelTimer.current = setTimeout(() => glideTo(nearestSnap(offset.current)), WHEEL_SETTLE_MS);
+      el.style.transform = "";
+      el.style.willChange = "";
     };
-    view.addEventListener("wheel", onWheel, { passive: false });
+    const run = () => {
+      if (!frame) frame = requestAnimationFrame(step);
+    };
+
+    const onMove = (event: globalThis.PointerEvent) => {
+      if (event.pointerType === "touch") return;
+      const rect = el.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      // -1 to 1 across the card. Ratios of screen px, so the canvas zoom cancels out.
+      const nx = clamp(((event.clientX - rect.left) / rect.width) * 2 - 1, -1, 1);
+      const ny = clamp(((event.clientY - rect.top) / rect.height) * 2 - 1, -1, 1);
+      aim.x = -ny * TILT_MAX;
+      aim.y = nx * TILT_MAX;
+      if (!hovering) {
+        hovering = true;
+        last = 0;
+        el.style.willChange = "transform";
+      }
+      run();
+    };
+    const onLeave = () => {
+      if (!hovering) return;
+      hovering = false;
+      from.x = now.x;
+      from.y = now.y;
+      leftAt = performance.now();
+      cancelAnimationFrame(frame);
+      frame = 0;
+      run();
+    };
+
+    el.addEventListener("pointerenter", onMove);
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerleave", onLeave);
     return () => {
-      view.removeEventListener("wheel", onWheel);
-      clearTimeout(wheelTimer.current);
+      el.removeEventListener("pointerenter", onMove);
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerleave", onLeave);
+      cancelAnimationFrame(frame);
+      el.style.transform = "";
+      el.style.willChange = "";
     };
-    // nearestSnap reads only refs, so the first render's copy stays correct.
-  }, [glideTo, paint]);
+  }, [ref]);
+}
 
-  useEffect(
-    () => () => {
-      cancelAnimationFrame(glideFrame.current);
-      cancelAnimationFrame(cursor.current.frame);
-    },
-    [],
-  );
+/** Moves the track and fills the progress line to the share of the faculty seen so far, as transforms. */
+function place(track: HTMLElement, fill: HTMLElement, offset: number, count: number, animate: boolean) {
+  const transition = animate ? "transform var(--dur-base) var(--ease-in-out)" : "none";
+  track.style.transition = transition;
+  fill.style.transition = transition;
+  track.style.transform = `translate3d(${-offset}px, 0, 0)`;
+  fill.style.transform = `scaleX(${count ? clamp((offset / STEP + VISIBLE) / count, 0, 1) : 1})`;
+}
 
-  // ---- The "Drag" disc ----
+type Drag = { id: number; x: number; y: number; dx: number; dragging: boolean };
 
-  /** Points the disc at a pointer position; it eases there frame by frame and stops once it arrives. */
-  const aimCursor = (clientX: number, clientY: number, jump = false) => {
-    const view = viewRef.current;
-    if (!view) return;
-    const c = cursor.current;
-    const rect = view.getBoundingClientRect();
-    const scale = rect.width / view.offsetWidth || 1;
-    c.clientX = clientX;
-    c.clientY = clientY;
-    c.tx = (clientX - rect.left) / scale;
-    c.ty = (clientY - rect.top) / scale;
-    if (jump || prefersReducedMotion()) {
-      c.x = c.tx;
-      c.y = c.ty;
-      if (cursorRef.current) cursorRef.current.style.translate = `${c.x}px ${c.y}px`;
+type FacultyCarouselProps = {
+  educators: Educator[];
+  /** The eyebrow, heading and lead, shown left of the arrows. */
+  heading: ReactNode;
+  /** The label of the profile link, "View profile". */
+  profileLabel: string;
+};
+
+/**
+ * The faculty carousel (Figma "guru row" and its controls, 2271:10596), built with the page's shared
+ * carousel behaviour (motion spec, "Carousel arrows + dots"):
+ *   - 200px cards, 16px apart; the arrows move a card at a time and hide when there is nothing further
+ *     that way; mouse drag and touch swipe follow the pointer and snap to the nearest card; with focus in
+ *     the carousel the arrow keys move it. The orange line under the row fills to show the position.
+ *   - The design's hover state, drawn on the first card, is the active look: the card turns maroon with a
+ *     soft orange glow, its arch line and chip turn saffron, and the profile link appears. It rests on the
+ *     first card on show and follows the pointer (and keyboard focus once the cards link to profiles).
+ *   - Cards that link to a profile also lift on hover (lib/hover); until those pages exist they stay still.
+ *   - With a fine pointer, every card tilts gently toward the pointer (up to 4°) and a soft saffron glow
+ *     follows it over the card (ui/PointerGlow); a saffron cursor label (ui/CursorLabel) says "Drag" over
+ *     the row once it can move and "View" over a card with a profile.
+ */
+export default function FacultyCarousel({ educators, heading, profileLabel }: FacultyCarouselProps) {
+  const count = educators.length;
+  const last = Math.max(0, count - VISIBLE);
+  // The first card on show, and the card wearing the active look.
+  const [index, setIndex] = useState(0);
+  const [active, setActive] = useState(0);
+  const [moved, setMoved] = useState(false);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const fillRef = useRef<HTMLSpanElement>(null);
+  const cardRefs = useRef<Array<HTMLElement | null>>([]);
+  const drag = useRef<Drag | null>(null);
+  const swallowClick = useRef(false);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    const fill = fillRef.current;
+    if (track && fill) place(track, fill, index * STEP, count, !prefersReducedMotion());
+    setActive(index);
+  }, [index, count]);
+
+  const goTo = (target: number) => {
+    const next = clamp(target, 0, last);
+    if (next !== index) {
+      setIndex(next);
+      setMoved(true);
       return;
     }
-    if (c.frame) return;
-    c.last = performance.now();
-    const frame = (now: number) => {
-      const k = 1 - Math.pow(1 - CURSOR_FOLLOW, (now - c.last) / (1000 / 60));
-      c.last = now;
-      c.x += (c.tx - c.x) * k;
-      c.y += (c.ty - c.y) * k;
-      if (cursorRef.current) cursorRef.current.style.translate = `${c.x}px ${c.y}px`;
-      c.frame = Math.abs(c.tx - c.x) > 0.1 || Math.abs(c.ty - c.y) > 0.1 ? requestAnimationFrame(frame) : 0;
-    };
-    c.frame = requestAnimationFrame(frame);
+    // Same card (a short drag): settle back.
+    const track = trackRef.current;
+    const fill = fillRef.current;
+    if (track && fill) place(track, fill, index * STEP, count, !prefersReducedMotion());
   };
 
-  // The page can scroll under a still pointer (the wheel at either end of the track): keep the disc on it.
-  useEffect(() => {
-    if (!cursorOn) return;
-    const onScroll = () => {
-      const view = viewRef.current;
-      const c = cursor.current;
-      if (!view) return;
-      const rect = view.getBoundingClientRect();
-      const over = c.clientX >= rect.left && c.clientX <= rect.right && c.clientY >= rect.top && c.clientY <= rect.bottom;
-      if (over || drag.current) aimCursor(c.clientX, c.clientY, true);
-      else setCursorOn(false);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-    // aimCursor reads only refs, so the first render's copy stays correct.
-  }, [cursorOn]);
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const at = cardRefs.current.findIndex((card) => card === document.activeElement);
+    if (at < 0) return goTo(index + direction);
+    cardRefs.current[at + direction]?.focus({ preventScroll: true });
+  };
 
-  // ---- Dragging the track ----
+  // A card that takes focus off screen brings itself into view.
+  const showCard = (i: number) => {
+    setActive(i);
+    if (i < index) goTo(i);
+    else if (i >= index + VISIBLE) goTo(i - VISIBLE + 1);
+  };
 
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    const view = event.currentTarget;
-    cancelAnimationFrame(glideFrame.current);
-    clearTimeout(wheelTimer.current);
-    const x = offset.current;
-    drag.current = {
-      pointer: event.pointerId,
-      startX: event.clientX,
-      from: x,
-      origin: x,
-      moved: false,
-      zoom: getCanvasZoom(),
-      samples: [{ t: event.timeStamp, x }],
-    };
-    view.setPointerCapture(event.pointerId);
+    swallowClick.current = false;
+    drag.current = null;
+    if (last === 0 || (event.pointerType === "mouse" && event.button !== 0)) return;
+    drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, dragging: false };
   };
 
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === "mouse" && fineCursor) {
-      // Also covers a pointer that was already over the track when the page loaded.
-      aimCursor(event.clientX, event.clientY, !cursorOn);
-      if (!cursorOn) setCursorOn(true);
+    const current = drag.current;
+    const track = trackRef.current;
+    const fill = fillRef.current;
+    if (!current || current.id !== event.pointerId || !track || !fill) return;
+    if (event.pointerType === "mouse" && event.buttons === 0) {
+      drag.current = null;
+      return;
     }
-    const d = drag.current;
-    if (!d || event.pointerId !== d.pointer) return;
-    if (!d.moved) {
-      if (Math.abs(event.clientX - d.startX) / d.zoom < DRAG_START_PX) return;
-      // Take hold from here, so the track does not jump by the dead zone.
-      d.moved = true;
-      d.startX = event.clientX;
-      setDragging(true);
+    // Pointer deltas are in screen px; the canvas may be zoomed down.
+    const zoom = getCanvasZoom();
+    const dx = (event.clientX - current.x) / zoom;
+    if (!current.dragging) {
+      const dy = (event.clientY - current.y) / zoom;
+      if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+      // Mostly vertical: a page scroll, not a swipe.
+      if (Math.abs(dy) > Math.abs(dx)) {
+        drag.current = null;
+        return;
+      }
+      current.dragging = true;
+      event.currentTarget.setPointerCapture(event.pointerId);
     }
-    const max = maxOffset.current;
-    let x = d.from - (event.clientX - d.startX) / d.zoom;
-    if (x < 0) x *= RUBBER;
-    else if (x > max) x = max + (x - max) * RUBBER;
-    offset.current = x;
-    paint();
-    d.samples.push({ t: event.timeStamp, x });
-    while (d.samples.length > 2 && event.timeStamp - d.samples[0].t > VELOCITY_WINDOW_MS) d.samples.shift();
+    current.dx = dx;
+    const max = last * STEP;
+    let offset = index * STEP - dx;
+    if (offset < 0) offset *= EDGE_GIVE;
+    else if (offset > max) offset = max + (offset - max) * EDGE_GIVE;
+    place(track, fill, offset, count, false);
   };
 
-  const endDrag = (event: PointerEvent<HTMLDivElement>) => {
-    const d = drag.current;
-    if (!d || event.pointerId !== d.pointer) return;
+  const endDrag = (event: PointerEvent<HTMLDivElement>, cancelled: boolean) => {
+    const current = drag.current;
+    if (!current || current.id !== event.pointerId) return;
     drag.current = null;
-    setDragging(false);
-    // A press without a drag can still have stopped a glide part-way: settle onto a card.
-    if (!d.moved) {
-      glideTo(nearestSnap(offset.current));
-      return;
-    }
-    const recent = d.samples.filter((sample) => event.timeStamp - sample.t <= VELOCITY_WINDOW_MS);
-    const first = recent[0];
-    const last = recent[recent.length - 1];
-    const speed = recent.length > 1 && last.t > first.t ? (last.x - first.x) / (last.t - first.t) : 0;
-    let target = nearestSnap(clamp(offset.current + speed * MOMENTUM_MS, 0, maxOffset.current));
-    // A quick flick always moves on at least one card.
-    if (Math.abs(speed) > FLICK_SPEED && target === nearestSnap(d.origin)) {
-      const list = snaps.current;
-      const i = list.indexOf(target) + Math.sign(speed);
-      target = list[clamp(i, 0, list.length - 1)];
-    }
-    glideTo(target, speed);
+    if (!current.dragging) return;
+    swallowClick.current = true;
+    if (cancelled) return goTo(index);
+    let target = Math.round(index - current.dx / STEP);
+    if (target === index && Math.abs(current.dx) > FLICK) target += current.dx < 0 ? 1 : -1;
+    goTo(target);
   };
 
-  const onPointerEnter = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType !== "mouse" || !fineCursor) return;
-    aimCursor(event.clientX, event.clientY, true);
-    setCursorOn(true);
-  };
-
-  const onPointerLeave = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === "mouse") setCursorOn(false);
-  };
-
-  // ---- The scrubber ----
-
-  /** Moves the track to match a pointer on the scrubber line, with the thumb held at `grab` px from its left end. */
-  const scrubTo = (clientX: number, grab: number, smooth: boolean) => {
-    const line = lineRef.current;
-    if (!line) return;
-    const rect = line.getBoundingClientRect();
-    const scale = rect.width / line.offsetWidth || 1;
-    const travel = sizes.current.line - sizes.current.thumb;
-    const left = (clientX - rect.left) / scale - grab;
-    const target = travel > 0 ? clamp(left / travel, 0, 1) * maxOffset.current : 0;
-    if (smooth) {
-      glideTo(target);
-      return;
-    }
-    cancelAnimationFrame(glideFrame.current);
-    offset.current = target;
-    paint();
-  };
-
-  const onScrubDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    const line = lineRef.current;
-    if (!line) return;
-    event.currentTarget.setPointerCapture(event.pointerId);
-    const rect = line.getBoundingClientRect();
-    const scale = rect.width / line.offsetWidth || 1;
-    const max = maxOffset.current;
-    const thumbLeft = max > 0 ? (offset.current / max) * (sizes.current.line - sizes.current.thumb) : 0;
-    const local = (event.clientX - rect.left) / scale;
-    const onThumb = local >= thumbLeft && local <= thumbLeft + sizes.current.thumb;
-    // Grabbing the thumb keeps it under the pointer; a press elsewhere on the line glides the thumb's middle there.
-    const grab = onThumb ? local - thumbLeft : sizes.current.thumb / 2;
-    scrub.current = { pointer: event.pointerId, grab };
-    if (!onThumb) scrubTo(event.clientX, grab, true);
-  };
-
-  const onScrubMove = (event: PointerEvent<HTMLDivElement>) => {
-    const s = scrub.current;
-    if (s && event.pointerId === s.pointer) scrubTo(event.clientX, s.grab, false);
-  };
-
-  const onScrubUp = (event: PointerEvent<HTMLDivElement>) => {
-    const s = scrub.current;
-    if (!s || event.pointerId !== s.pointer) return;
-    scrub.current = null;
-    glideTo(nearestSnap(offset.current));
-  };
-
-  const onScrubKey = (event: KeyboardEvent<HTMLDivElement>) => {
-    const keys: Record<string, () => void> = {
-      ArrowRight: () => stepBy(1),
-      ArrowDown: () => stepBy(1),
-      PageDown: () => stepBy(1),
-      ArrowLeft: () => stepBy(-1),
-      ArrowUp: () => stepBy(-1),
-      PageUp: () => stepBy(-1),
-      Home: () => glideTo(0),
-      End: () => glideTo(maxOffset.current),
-    };
-    const action = keys[event.key];
-    if (!action) return;
+  const onClickCapture = (event: MouseEvent<HTMLDivElement>) => {
+    // After a drag, the click that ends it must not open a profile; keyboard "clicks" (detail 0) pass.
+    if (!swallowClick.current || event.detail === 0) return;
+    swallowClick.current = false;
     event.preventDefault();
-    action();
+    event.stopPropagation();
   };
-
-  const lastShown = Math.min(count, status.first + visibleCards);
 
   return (
-    <>
+    <div role="region" aria-roledescription="carousel" aria-label="Our faculty" onKeyDown={onKeyDown} className="flex w-full flex-col gap-8">
       <div className="flex w-full items-end justify-between">
         {heading}
-        <div className="flex shrink-0 gap-2">
-          <button
-            type="button"
-            onClick={() => stepBy(-1)}
-            disabled={status.start}
-            aria-controls={trackId}
-            aria-label="Previous educators"
-            className={cx(ARROW, "border border-sand-line text-char enabled:hover:border-[#d3cbc1] enabled:hover:bg-sand")}
-          >
-            <span aria-hidden="true">←</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => stepBy(1)}
-            disabled={status.end}
-            aria-controls={trackId}
-            aria-label="Next educators"
-            className={cx(ARROW, "bg-char text-paper enabled:hover:bg-[#2a221e]")}
-          >
-            <span aria-hidden="true">→</span>
-          </button>
+        <div data-reveal="fade" className="flex items-center gap-2.5">
+          <CarouselArrow direction="prev" label="Previous educators" size={48} hidden={index === 0} onClick={() => goTo(index - 1)} />
+          <CarouselArrow direction="next" label="Next educators" tone="solid" size={48} hidden={index >= last} onClick={() => goTo(index + 1)} />
         </div>
       </div>
 
-      <div data-reveal>
-        <div
-          ref={viewRef}
-          role="group"
-          aria-roledescription="carousel"
-          aria-label="Faculty"
-          className={cx("relative touch-pan-y select-none", fineCursor ? "cursor-none" : dragging ? "cursor-grabbing" : "cursor-grab")}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={endDrag}
-          onPointerCancel={endDrag}
-          onPointerEnter={onPointerEnter}
-          onPointerLeave={onPointerLeave}
-          onDragStart={(event) => event.preventDefault()}
-        >
-          <ul id={trackId} ref={trackRef} className="relative flex w-max gap-4 will-change-transform">
-            {educators.map((educator) => (
-              <EducatorCard key={educator.name} educator={educator} />
-            ))}
-          </ul>
-          {fineCursor && (
-            <div
-              ref={cursorRef}
-              aria-hidden="true"
-              className={cx(
-                "pointer-events-none absolute top-0 left-0 z-10 -mt-[38px] -ml-[38px] flex size-[76px] items-center justify-center rounded-full bg-orange text-[13px]/[1.5] font-medium whitespace-nowrap text-paper [transition:scale_.4s_cubic-bezier(.2,.8,.2,1),opacity_.25s_ease]",
-                !cursorOn ? "scale-0 opacity-0" : dragging ? "scale-[.86]" : "scale-100",
-              )}
-            >
-              Drag
-            </div>
-          )}
-        </div>
-      </div>
+      {/*
+        The cursor label says only what a press does: "Drag" once the row can move, "View" over a card that
+        links to a profile. With six educators that all fit and no profile pages yet there is nothing to
+        say, so there is no disc: the card's own chip already names the subject, and a disc repeating it
+        would only crowd the pointer.
+      */}
+      {(last > 0 || educators.some((educator) => educator.profile !== null)) && (
+        <CursorLabel regionRef={viewportRef} fallback={last > 0 ? "Drag" : null} />
+      )}
 
-      {/* A 2px line inside a taller hit area; the negative margins keep the layout at 2px. */}
+      {/* Clipped sideways only, so the active card's glow shows below the row. */}
       <div
-        role="slider"
-        tabIndex={0}
-        aria-controls={trackId}
-        aria-label="Faculty position"
-        aria-valuemin={1}
-        aria-valuemax={lastFirst + 1}
-        aria-valuenow={Math.min(status.first, lastFirst) + 1}
-        aria-valuetext={`Educators ${status.first + 1} to ${lastShown} of ${count}`}
-        className="group/scrub relative -my-[11px] cursor-pointer touch-none py-[11px]"
-        onPointerDown={onScrubDown}
-        onPointerMove={onScrubMove}
-        onPointerUp={onScrubUp}
-        onPointerCancel={onScrubUp}
-        onKeyDown={onScrubKey}
+        ref={viewportRef}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={(event) => endDrag(event, false)}
+        onPointerCancel={(event) => endDrag(event, true)}
+        onPointerLeave={() => setActive(index)}
+        onClickCapture={onClickCapture}
+        onDragStart={(event) => event.preventDefault()}
+        className={cx("touch-pan-y overflow-x-clip overflow-y-visible select-none [overflow-clip-margin:16px]", last > 0 && "cursor-grab active:cursor-grabbing")}
       >
-        <div
-          ref={lineRef}
-          className="relative h-0.5 w-full bg-sand-line transition-[scale] duration-300 ease-[cubic-bezier(.2,.8,.2,1)] group-hover/scrub:scale-y-200"
-        >
-          <div
-            ref={thumbRef}
-            className="absolute top-0 left-0 h-0.5 bg-char"
-            style={{ width: `${(VIEW_WIDTH / trackWidth) * 100}%` }}
-          />
+        <div ref={trackRef} data-reveal-group className="flex w-max items-stretch gap-4">
+          {educators.map((educator, i) => (
+            // The slide's className stays static: ScrollReveal toggles classes on it.
+            <div key={educator.name} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${count}`} className="flex w-50 shrink-0">
+              <FacultyCard
+                educator={educator}
+                active={i === active}
+                profileLabel={profileLabel}
+                cardRef={(el) => {
+                  cardRefs.current[i] = el;
+                }}
+                onActivate={() => setActive(i)}
+                onFocus={() => showCard(i)}
+              />
+            </div>
+          ))}
         </div>
       </div>
+
+      {/* The progress line: the orange share is the part of the faculty seen so far. */}
+      <div data-reveal="fade" aria-hidden="true" className="relative h-[3px] w-full overflow-clip rounded-[2px] bg-ink/8">
+        <span ref={fillRef} className="absolute inset-0 origin-left bg-orange" style={{ transform: `scaleX(${count ? Math.min(1, VISIBLE / count) : 1})` }} />
+      </div>
+
+      <p aria-live="polite" className="sr-only">
+        {moved ? `Showing educators ${index + 1} to ${Math.min(index + VISIBLE, count)} of ${count}` : ""}
+      </p>
+    </div>
+  );
+}
+
+type FacultyCardProps = {
+  educator: Educator;
+  active: boolean;
+  profileLabel: string;
+  cardRef: (el: HTMLElement | null) => void;
+  onActivate: () => void;
+  onFocus: () => void;
+};
+
+/** The colour changes of the active look, over --dur-fast. */
+const SHIFT = "[transition:background-color_var(--dur-fast)_var(--ease-out),border-color_var(--dur-fast)_var(--ease-out),color_var(--dur-fast)_var(--ease-out)]";
+
+/**
+ * One educator (Figma "guru · …", 200 wide): the arch-cut portrait (176 × 220) under its arch line, the
+ * subject chip with its butta, the name, what they teach, and the profile link at the foot. The active
+ * look is the design's hover state. A card with a profile page is one link (the profile link inside is its
+ * look, not a second link); without one it is a still article.
+ */
+function FacultyCard({ educator, active, profileLabel, cardRef, onActivate, onFocus }: FacultyCardProps) {
+  const linked = educator.profile !== null;
+  // The tilt is on the card itself: its slide's className has to stay static for the reveal.
+  const tiltRef = useRef<HTMLElement | null>(null);
+  useTilt(tiltRef);
+  const setRef = (el: HTMLElement | null) => {
+    tiltRef.current = el;
+    cardRef(el);
+  };
+  const className = cx(
+    "group/medal relative flex w-full flex-col items-start gap-3 rounded-[18px] border px-3 pt-3 pb-4",
+    SHIFT,
+    active ? "border-transparent bg-[#5a160f]" : "border-[#eadbc4] bg-white",
+    linked &&
+      "group/card [transition:background-color_var(--dur-fast)_var(--ease-out),border-color_var(--dur-fast)_var(--ease-out),translate_var(--dur-fast)_var(--ease-out),scale_80ms_var(--ease-out)] hover:-translate-y-1 pointer-coarse:active:scale-[.98]",
+  );
+  const content = (
+    <>
+      {/* The soft orange glow of the active card, faded in rather than animating the shadow itself. */}
+      <span
+        aria-hidden="true"
+        className={cx(
+          "pointer-events-none absolute inset-0 rounded-[18px] shadow-[0_24px_40px_rgba(229,115,18,0.3)] [transition:opacity_var(--dur-fast)_var(--ease-out)]",
+          active ? "opacity-100" : "opacity-0",
+        )}
+      />
+      {/*
+        A soft saffron glow under the pointer, behind the portrait and the text. The card under the pointer
+        is always the active, maroon one, so the glow screens onto the maroon; kept low so the white and
+        cream text stays as legible as at rest.
+      */}
+      <PointerGlow color="rgb(244 196 48 / 0.24)" size={240} blend="screen" />
+      <span className="relative block h-[220px] w-44 shrink-0 overflow-clip">
+        <Photo src={educator.photo} alt="" sizes="177px" className="absolute top-[-0.5px] left-[-0.5px] h-[221px] w-[177px]" />
+        <img
+          src="/images/faculty/arch-outline.svg"
+          alt=""
+          aria-hidden="true"
+          width={178}
+          height={221}
+          className="pointer-events-none absolute top-[-1px] left-[-1px] h-[221px] w-[178px] max-w-none"
+        />
+        <img
+          src="/images/faculty/arch-outline-active.svg"
+          alt=""
+          aria-hidden="true"
+          width={178}
+          height={221}
+          className={cx(
+            "pointer-events-none absolute top-[-1px] left-[-1px] h-[221px] w-[178px] max-w-none [transition:opacity_var(--dur-fast)_var(--ease-out)]",
+            active ? "opacity-100" : "opacity-0",
+          )}
+        />
+      </span>
+      <span className={cx("relative inline-flex items-center gap-1.5 rounded-full px-2 py-1", SHIFT, active ? "bg-white/14" : "bg-orange/10")}>
+        <img
+          src={active ? "/images/courses/chip-butta-saffron.svg" : "/images/courses/chip-butta-burnt.svg"}
+          alt=""
+          aria-hidden="true"
+          width={10}
+          height={10}
+          className="size-2.5"
+        />
+        <span className={cx("text-[10.5px]/[normal] font-bold tracking-[0.84px] whitespace-nowrap uppercase", SHIFT, active ? "text-saffron" : "text-burnt")}>
+          {educator.subject}
+        </span>
+      </span>
+      <span className={cx("relative text-[17px]/[normal] font-bold tracking-[-0.102px] whitespace-nowrap", SHIFT, active ? "text-white" : "text-ink")}>
+        {educator.name}
+      </span>
+      <span className={cx("relative w-44 text-[12.5px]/[1.4]", SHIFT, active ? "text-white/75" : "text-[#7a6a5c]")}>{educator.focus}</span>
+      {/* Every card keeps the link's room, so the row never changes height as the active look moves. */}
+      <span
+        aria-hidden={!active || undefined}
+        className={cx(
+          "relative mt-auto [transition:opacity_var(--dur-fast)_var(--ease-out),translate_var(--dur-fast)_var(--ease-out)]",
+          active ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-(--rise-sm) opacity-0",
+        )}
+      >
+        <IndianLink tone="dark" size="sm" href={null} className={linked ? "cursor-pointer" : undefined}>
+          {profileLabel}
+        </IndianLink>
+      </span>
     </>
+  );
+
+  if (linked) {
+    return (
+      <a
+        ref={setRef}
+        href={educator.profile ?? undefined}
+        draggable={false}
+        data-cursor-label="View"
+        aria-label={`${educator.name}, ${educator.focus}: ${profileLabel}`}
+        onPointerEnter={onActivate}
+        onFocus={onFocus}
+        className={className}
+      >
+        {content}
+      </a>
+    );
+  }
+  return (
+    <article ref={setRef} aria-label={`${educator.name}, ${educator.focus}`} onPointerEnter={onActivate} className={className}>
+      {content}
+    </article>
   );
 }

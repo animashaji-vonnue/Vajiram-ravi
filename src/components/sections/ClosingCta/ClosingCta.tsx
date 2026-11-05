@@ -1,76 +1,62 @@
-import Photo from "@/components/ui/Photo";
-import { ArrowPill, PlainPill } from "@/components/ui/Pill";
-import RevealWords from "@/components/ui/RevealWords";
+import Cta from "@/components/ui/Cta";
+import { EyebrowCentred } from "@/components/ui/Ornament";
 import { closingCta } from "@/data/closing-cta";
-import { glow } from "./glow";
-import GradientDrift from "./GradientDrift";
+import SunRise from "./SunRise";
 
-/** The one bright moment before the dark footer: a warm gradient banner with the closing call to action. */
+/** The heading, text and buttons follow the sun: they start 300ms into its rise. */
+const FOLLOW_MS = "300";
+
+/**
+ * The closing call to action above the footer, 720 tall: an orange-to-red band with the halo rings, the
+ * skyline and the sun disc rising from its foot (SunRise), and the call to action centred above them.
+ * The band clips the disc.
+ */
 export default function ClosingCta() {
   const { call } = closingCta;
   return (
-    <section aria-labelledby="cta-h">
-      <div className="mx-auto w-canvas px-20 pt-10">
-        <div
-          data-reveal
-          className="relative flex h-[500px] flex-col items-center justify-center gap-[22px] overflow-hidden rounded-[36px]"
-        >
-          <GradientDrift />
-          {/* A pale bloom rising from the bottom edge, and a faint plum shade in the top left corner. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute top-[220px] left-[-50px] h-[580px] w-[1380px]"
-            style={glow("255 253 251", 0.55)}
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute top-[-340px] left-[-380px] h-[680px] w-[880px]"
-            style={glow("66 7 39", 0.35)}
-          />
+    <section id="closing" aria-labelledby="closing-h" className="relative h-[720px] overflow-hidden bg-linear-to-b from-orange to-[#ae3b0f]">
+      <div className="relative mx-auto h-full w-canvas">
+        <SunRise />
 
-          <div className="relative flex items-center gap-3 rounded-full bg-paper/22 py-1.5 pr-4 pl-2">
-            {/* The toppers overlap from left to right, each cut-out on its own light disc. */}
-            <div className="flex" aria-hidden="true">
-              {closingCta.rankers.map((ranker) => (
-                <Photo
-                  key={ranker.src}
-                  src={ranker.src}
-                  alt=""
-                  sizes="34px"
-                  className="relative -mr-2.5 size-[34px] shrink-0 overflow-hidden rounded-full border-2 border-tangerine bg-sand last:mr-0"
-                />
-              ))}
-            </div>
-            <p className="text-[14px]/[1.5] font-medium whitespace-nowrap text-char">{closingCta.proof}</p>
-          </div>
-
+        <div className="relative mx-auto flex w-[960px] flex-col items-center gap-[22px] pt-24">
+          {/* The design's rules are white here; the ornament's orange rules are turned white to match. */}
+          <EyebrowCentred labelClassName="text-white" className="[&_img]:brightness-0 [&_img]:invert">
+            {closingCta.proof}
+          </EyebrowCentred>
           <h2
-            id="cta-h"
-            data-reveal-words
-            className="relative w-[860px] text-center text-[68px]/none font-medium tracking-[-3.4px] text-char"
+            id="closing-h"
+            data-reveal="heading"
+            data-reveal-delay={FOLLOW_MS}
+            className="w-[900px] text-center font-serif text-[84px]/[1.04] tracking-[-2.1px] text-white"
           >
-            <RevealWords text={closingCta.title} />
+            {closingCta.title.lead}
+            {/* The emphasis takes the second line, as drawn ("UPSC" only just misses the first). */}
+            <br />
+            <em data-reveal-em className="text-[#fff1c2]">
+              {closingCta.title.em}
+            </em>
           </h2>
-          <p className="relative w-[580px] text-center text-[18px]/[1.55] text-char/72">{closingCta.text}</p>
+          <p data-reveal="sub" data-reveal-delay={FOLLOW_MS} className="w-[560px] text-center text-[17px]/[1.55] text-white/90">
+            {closingCta.text}
+          </p>
 
-          <div className="relative flex items-center gap-2.5 pt-1.5">
-            <ArrowPill href={closingCta.primary.href} surface="char" knob="orange">
+          <div data-reveal data-reveal-delay={FOLLOW_MS} className="flex items-start gap-3">
+            <Cta variant="primary" size="lg" href={closingCta.primary.href}>
               {closingCta.primary.label}
-            </ArrowPill>
-            {/* The design's outline is a char hairline on the orange, and the pill is 50px tall like its neighbour. */}
-            <PlainPill
-              href={closingCta.secondary.href}
-              surface="outline-light"
-              className="border-char/35! py-[15px]! hover:border-char/60! hover:bg-char/6!"
-            >
+            </Cta>
+            <Cta variant="secondary" size="lg" href={closingCta.secondary.href}>
               {closingCta.secondary.label}
-            </PlainPill>
+            </Cta>
           </div>
 
-          <p className="relative text-[14px]/[1.5] whitespace-nowrap text-char/60">
+          <p data-reveal="fade" data-reveal-delay={FOLLOW_MS} className="text-[14px]/[normal] whitespace-nowrap text-white/85">
             {call.lead}{" "}
-            <a href={call.phoneHref} className="transition-colors duration-200 hover:text-char">
+            <a href={call.phoneHref} className="group/tel relative inline-block [transition:color_var(--dur-fast)_var(--ease-out)] hover:text-white">
               {call.phone}
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-current [transition:scale_var(--dur-fast)_var(--ease-out)] group-hover/tel:scale-x-100"
+              />
             </a>
             {` · ${call.hours}`}
           </p>

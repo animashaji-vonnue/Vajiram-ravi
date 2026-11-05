@@ -1,53 +1,53 @@
-/** Hero copy, the record bento and the programme banners (Figma "Hero", 1931:3322). */
+/**
+ * The hero and the stats band under it (Figma "the final design": "01 Hero – Lady Justice niche (dark)",
+ * 2256:5586, and "04 · Stats band", 2256:5656).
+ */
+
+import { links } from "@/data/links";
+import { toppers } from "@/data/toppers";
 
 export const heroIntro = {
-  chip: "Admissions for 2027 are open",
-  headline: "Best IAS Coaching in ",
-  accent: "Delhi, India",
+  /** The ornament eyebrow above the heading (set in uppercase as drawn). */
+  eyebrow: "SINCE 1976 · NEW DELHI · CHENNAI",
+  headline: "Best IAS Coaching",
+  /** The second line of the heading, in saffron italic. */
+  accent: "in Delhi, India",
   lead: "For five decades, aspirants have trusted us to take them from their first class to the interview with experienced faculty, a structured method and honest guidance.",
-  newToUpsc: { text: "New to UPSC? ", link: "See how the preparation works →", href: "#gs-programme" },
+  primary: { label: "Find your course", href: "#courses" },
+  /** The postcard enquiry form. */
+  secondary: { label: "Talk to a counsellor", href: "#counsellor" },
+  // TODO: confirm the target with the client; a "how the preparation works" page could replace the GS programme section.
+  newToUpsc: { text: "New to UPSC?", link: "See how the preparation works", href: "#gs-programme" },
 };
 
-export type RecordCard = {
+export type HeroAvatar = { rank: number; name: string; image: string };
+
+/**
+ * The proof card on the statue's plinth: AIR 1 to 8 of UPSC CSE 2025 as avatars (the design's own
+ * photos, which differ from the portrait cut-outs used elsewhere). Names and ranks come from the toppers
+ * data. The card links to the selections page.
+ */
+export const heroProof = {
+  eyebrow: "UPSC CSE 2025",
+  title: "Ranks 1 to 10 all studied with us",
+  href: links.toppers,
+  avatars: toppers.slice(0, 8).map(
+    (topper): HeroAvatar => ({ rank: topper.rank, name: topper.name, image: `/images/hero/avatars/air-${topper.rank}.webp` }),
+  ),
+};
+
+export type HeroStat = {
+  /** The figure as shown; its first number counts up (see CountUp). */
   value: string;
   label: string;
-  /** The card's look: the brand gradient, the light card, the dark card, or a photo under a scrim. */
-  look: "gradient" | "light" | "dark" | "photo";
-  image?: string;
+  /** Set in saffron instead of white, as drawn. */
+  accent?: boolean;
 };
 
-export const records: RecordCard[] = [
-  { value: "50+", label: "Years of experience since 1976", look: "gradient" },
-  { value: "10/10", label: "Top rankers from V&R courses", look: "light" },
-  { value: "59", label: "Questions reflected in Prelims", look: "dark" },
-  { value: "36/50", label: "CSE 2025 rankers from V&R", look: "photo", image: "/images/hero/record-classroom.webp" },
-];
-
-export type ProgrammeBanner = {
-  src: string;
-  alt: string;
-  /**
-   * "cover" for artwork made for the 1136 × 400 slot; "contain" for the slimmer strip banners, shown
-   * whole over a soft blurred copy of themselves.
-   */
-  fit: "cover" | "contain";
-};
-
-/** Banners the client uploads. The first is the design's; the others are the earlier strip banners. */
-export const programmeBanners: ProgrammeBanner[] = [
-  {
-    src: "/images/hero/banner-active.webp",
-    alt: "General Studies Prelims cum Mains Programme for UPSC 2027, Classroom and LIVE-Online. Your Civil Services journey starts with a trusted legacy. Starts 27th November 2026. Admission open.",
-    fit: "cover",
-  },
-  {
-    src: "/images/banners/fledgling-pcm-2028.webp",
-    alt: "2-year General Studies PCM: 2 Years Fledgling Programme 2028, from basics to advanced. Admission open, in Classroom and Live-Online.",
-    fit: "contain",
-  },
-  {
-    src: "/images/banners/stepup-prodigy-super-100.webp",
-    alt: "Step Up Mentorship Prodigy Super 100. Starts 1st November 2026, offline and online. Admission open.",
-    fit: "contain",
-  },
+/** The stats band, left to right. */
+export const heroStats: HeroStat[] = [
+  { value: "59", label: "Questions reflected in Prelims" },
+  { value: "50+", label: "Years of experience since 1976" },
+  { value: "10/10", label: "Top rankers from V&R courses", accent: true },
+  { value: "36/50", label: "CSE 2025 rankers from V&R", accent: true },
 ];

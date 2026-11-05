@@ -6,35 +6,53 @@ export type Topper = {
   image: string;
 };
 
-/** Years offered by the results tabs, newest first. */
-export const resultYears = [2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016];
+/** The result year the toppers band shows (the final design has no year switch). */
+export const toppersYear = 2025;
+
+/** The toppers band's copy (Figma "03 · Results · Toppers CSE 2025", 2257:5843). */
+export const toppersSection = {
+  eyebrow: "UPSC CSE 2025 · RANKS 1–10",
+  /** The heading; its emphasis is set in orange italic. */
+  heading: { lead: "Toppers who prepared", emphasis: "with Vajiram & Ravi" },
+  /** The scalloped note beside the heading (the design ends it with "..", taken as a typo). */
+  note: "Ranks 1 to 10 in UPSC CSE 2025 all studied with us. Each took at least one of our programmes: a classroom course, a test series or the Interview Guidance Programme.",
+  /** The two lines printed on each stamp, under the photo. */
+  stamp: { exam: "UPSC CSE 2025", institute: "VAJIRAM & RAVI" },
+  /** The carousel's accessible name. */
+  carouselLabel: "UPSC CSE 2025 toppers",
+  cta: "See all CSE 2025 selections",
+};
 
 /**
- * UPSC CSE 2025, ranks 1 to 14. Ranks 11 to 14 and their photos come from Vajiram & Ravi's selections
- * page (vajiramandravi.com/ias-selections-from-vajiram), cut out to match the other portraits.
+ * UPSC CSE 2025, ranks 1 to 14. Ranks 11 to 14 and their photos come from Vajiram & Ravi's selections page
+ * (vajiramandravi.com/ias-selections-from-vajiram), cut out to match the other portraits. The programmes of
+ * AIR 4, 7, 9 and 10 follow the design brief; TODO: the selections page lists only the IGP for them, so
+ * confirm with the client which is right.
  */
 export const toppers: Topper[] = [
   { rank: 1, name: "Anuj Agnihotri", programme: "Interview Guidance Programme (IGP)", image: "/images/toppers/anuj-agnihotri.webp" },
   { rank: 2, name: "Rajeshwari Suve M", programme: "PowerUp Prelims Test Series, IGP, Mains Test Series", image: "/images/toppers/rajeshwari-suve-m.webp" },
   { rank: 3, name: "Akansh Dhull", programme: "GS Prelims cum Mains Classroom Programme", image: "/images/toppers/akansh-dhull.webp" },
-  { rank: 4, name: "Raghav Jhunjhunwala", programme: "Interview Guidance Programme (IGP)", image: "/images/toppers/raghav-jhunjhunwala.webp" },
+  { rank: 4, name: "Raghav Jhunjhunwala", programme: "PowerUp Prelims Test Series, IGP, Mains Test Series", image: "/images/toppers/raghav-jhunjhunwala.webp" },
   { rank: 5, name: "Ishan Bhatnagar", programme: "Sociology Optional, Prelims CAMP, IGP", image: "/images/toppers/ishan-bhatnagar.webp" },
   { rank: 6, name: "Zinnia Aurora", programme: "GS Ethics Module, IGP, Power Up 23", image: "/images/toppers/zinnia-aurora.webp" },
-  { rank: 7, name: "A R Rajah Mohaideen", programme: "Interview Guidance Programme (IGP)", image: "/images/toppers/a-r-rajah-mohaideen.webp" },
+  { rank: 7, name: "A R Rajah Mohaideen", programme: "PowerUp Prelims Test Series, IGP, Mains Test Series", image: "/images/toppers/a-r-rajah-mohaideen.webp" },
   { rank: 8, name: "Pakshal Secretry", programme: "Mains Camp, IGP", image: "/images/toppers/pakshal-secretry.webp" },
-  { rank: 9, name: "Astha Jain", programme: "Interview Guidance Programme (IGP)", image: "/images/toppers/astha-jain.webp" },
-  { rank: 10, name: "Ujjwal Priyank", programme: "Interview Guidance Programme (IGP)", image: "/images/toppers/ujjwal-priyank.webp" },
+  { rank: 9, name: "Astha Jain", programme: "PowerUp Prelims Test Series, IGP, Mains Test Series", image: "/images/toppers/astha-jain.webp" },
+  { rank: 10, name: "Ujjwal Priyank", programme: "PowerUp Prelims Test Series, IGP, Mains Test Series", image: "/images/toppers/ujjwal-priyank.webp" },
   { rank: 11, name: "Yashaswi Raj Vardhan", programme: "Interview Guidance Programme (IGP)", image: "/images/toppers/yashaswi-raj-vardhan.webp" },
   { rank: 12, name: "Akshit Bhardwaj", programme: "Prelims CAMP, General Studies, IGP", image: "/images/toppers/akshit-bhardwaj.webp" },
   { rank: 13, name: "Ananya Sharma", programme: "Interview Guidance Programme (IGP)", image: "/images/toppers/ananya-sharma.webp" },
   { rank: 14, name: "Surabhi Yadav", programme: "Ethics Answer Writing Programme, IGP", image: "/images/toppers/surabhi-yadav.webp" },
 ];
 
-/** The year the toppers above are from, and their portraits for the expanding gallery (ranks 1 to 10). */
-export const resultYear = 2025;
-export const galleryToppers = toppers.slice(0, 10).map((topper) => ({
+/**
+ * Ranks 1 to 10 for the stamp carousel, with the cut-out portraits the design places in each stamp
+ * ("stamp sheet", 2257:5946), saved at 480px for their 222px frames.
+ */
+const stampToppers = toppers.slice(0, 10).map((topper) => ({
   ...topper,
-  image: `/images/toppers-gallery/air-${topper.rank}.webp`,
+  image: `/images/toppers/stamps/air-${topper.rank}.webp`,
 }));
 
 /**
@@ -127,5 +145,8 @@ const earlierYears: Record<number, Topper[]> = {
   ],
 };
 
-/** The expanding gallery's toppers for each year of the year switch. */
-export const toppersByYear: Record<number, Topper[]> = { [resultYear]: galleryToppers, ...earlierYears };
+/**
+ * Every year's toppers. The band shows only `toppersYear`; the earlier years feed the site search and stay
+ * ready for a year switch (motion spec: if one is added, the cards cross-fade 200ms and do not slide).
+ */
+export const toppersByYear: Record<number, Topper[]> = { [toppersYear]: stampToppers, ...earlierYears };

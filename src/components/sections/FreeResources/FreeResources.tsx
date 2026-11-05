@@ -1,27 +1,17 @@
-import RevealWords from "@/components/ui/RevealWords";
-import Sheet from "@/components/ui/Sheet";
-import { defaultStage, otherResources, studyStages } from "@/data/study-materials";
-import ResourceShelf from "./ResourceShelf";
-import StageArticles from "./StageArticles";
+import { defaultStage, otherResources, studyIntro, studyStages } from "@/data/study-materials";
+import FrontPage from "./FrontPage";
 
 /**
- * Free study material: current affairs by exam stage, then a shelf of the other free resources. It is a
- * little more compact than the design (tighter padding, gaps and card heights), so the whole panel fits
- * on screen as a card in the stack.
+ * Free study material (Figma "10 · Free study material — newspaper front page", 2258:9835): a sand band
+ * holding one newspaper sheet, 1280 wide, with the masthead and edition tabs, the edition's lead story
+ * and five headlines, and the other free resources along its foot. A plain full-bleed band.
  */
 export default function FreeResources() {
   return (
-    <Sheet id="resources" labelledBy="resources-h" className="flex flex-col items-start gap-9 pt-20 pb-16">
-      <StageArticles
-        stages={studyStages}
-        initialStage={defaultStage}
-        heading={
-          <h2 id="resources-h" data-reveal-words className="w-[760px] text-[64px]/none font-medium tracking-[-2.88px] text-char">
-            <RevealWords text="Study materials for every stage of UPSC" />
-          </h2>
-        }
-      />
-      <ResourceShelf resources={otherResources} />
-    </Sheet>
+    <section id="resources" aria-labelledby="resources-h" className="relative bg-[#e9dcc4]">
+      <div className="mx-auto w-canvas px-20 pt-[68px] pb-24">
+        <FrontPage stages={studyStages} initialStage={defaultStage} intro={studyIntro} resources={otherResources} />
+      </div>
+    </section>
   );
 }

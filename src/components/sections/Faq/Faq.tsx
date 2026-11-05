@@ -1,53 +1,41 @@
-import RevealWords from "@/components/ui/RevealWords";
-import Sheet from "@/components/ui/Sheet";
-import { faqEntries } from "@/data/faq-chat";
-import FaqChat from "./FaqChat";
+import { faqEntries, faqFooter, faqIntro } from "@/data/faq-chat";
+import FaqScroll from "./FaqScroll";
 
-/**
- * FAQPage structured data, so search engines read the questions however the chat presents them.
- * Questions still waiting for their answer are left out.
- */
+/** FAQPage structured data (approved answers only), so search engines read the questions as such. */
 const schema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: faqEntries
-    .filter(({ answer }) => !answer.startsWith("Answer to be added"))
-    .map(({ question, answer }) => ({
-      "@type": "Question",
-      name: question,
-      acceptedAnswer: { "@type": "Answer", text: answer },
-    })),
+  mainEntity: faqEntries.map(({ question, answer }) => ({
+    "@type": "Question",
+    name: question,
+    acceptedAnswer: { "@type": "Answer", text: answer },
+  })),
 };
 
-/** Frequently asked questions, answered as a short chat with a counsellor. */
+/**
+ * Frequently asked questions (Figma "11 · FAQ — the scroll", 2258:9884): a maroon band with a skyline
+ * silhouette at 8% and a gold frame, and the questions on a parchment scroll between two gilded rods.
+ * A plain full-bleed band, 780px tall as drawn.
+ */
 export default function Faq() {
   return (
-    <Sheet
+    <section
       id="faq"
-      labelledBy="faq-h"
-      tone="sand"
-      after={
-        // The FAQ is the last card of the stack and fills the screen, so a nudge shows there is more below.
-        <a
-          href="#contact"
-          className="absolute bottom-7 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full text-[13px]/[1.5] font-medium whitespace-nowrap text-stone transition-colors duration-300 hover:text-char"
-        >
-          Scroll down
-          <span aria-hidden="true" className="inline-block animate-nudge-down">
-            ↓
-          </span>
-        </a>
-      }
+      aria-labelledby="faq-h"
+      className="relative isolate overflow-clip bg-[#2c0b07] bg-[linear-gradient(180deg,rgb(94_23_16/0.9)_0%,rgb(44_11_7/0.4)_100%)]"
     >
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
-      <FaqChat
-        entries={faqEntries}
-        heading={
-          <h2 id="faq-h" data-reveal-words className="w-[440px] text-[56px]/none font-medium tracking-[-2.24px] text-char">
-            <RevealWords text="Frequently asked questions" />
-          </h2>
-        }
+      <img
+        src="/images/faq/skyline.webp"
+        alt=""
+        aria-hidden="true"
+        width={734}
+        height={284}
+        loading="lazy"
+        decoding="async"
+        className="pointer-events-none absolute inset-0 -z-1 size-full max-w-none object-cover opacity-8"
       />
-    </Sheet>
+      <FaqScroll entries={faqEntries} intro={faqIntro} footer={faqFooter} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
+    </section>
   );
 }

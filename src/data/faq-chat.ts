@@ -2,34 +2,50 @@ import { contact } from "./site";
 
 export type FaqEntry = { question: string; answer: string };
 
+/** The FAQ scroll (Figma "11 · FAQ — the scroll", 2258:9884). */
+export const faqIntro = {
+  /** The centred eyebrow, shown in capitals. */
+  eyebrow: "Frequently asked",
+  title: "Questions aspirants",
+  /** The Newsreader italic words after the title. */
+  accent: "ask us",
+};
+
+/** The line along the foot of the scroll, and its button to the enquiry form. */
+export const faqFooter = {
+  note: `Still have questions? A counsellor will listen and help you choose · ${contact.hours}`,
+  cta: "Talk to a counsellor",
+  /** The section holding the enquiry form. */
+  href: "#counsellor",
+};
+
 /**
- * The suggested questions of the FAQ, played into the counsellor chat. Only the first answer is in
- * the design; the others carry over from the previous homepage until the client supplies them.
+ * The questions of the FAQ accordion. The first answer is the design's; the others are the answers
+ * vajiramandravi.com publishes for the same questions today. A question whose answer is not approved yet
+ * has `answer: null` and stays off the page and out of the FAQPage schema.
  */
-export const faqEntries: FaqEntry[] = [
+const faqs: Array<{ question: string; answer: string | null }> = [
   {
     question: "Which coaching is best for UPSC?",
     answer:
       "Vajiram & Ravi is renowned for its comprehensive and structured approach, making it one of the top choices for UPSC coaching in India.",
   },
-  { question: "Which UPSC coaching is best in Delhi?", answer: "Answer to be added." },
-  { question: "Which coaching is best for IAS in Delhi?", answer: "Answer to be added." },
-  { question: "Which coaching institute has the most UPSC toppers?", answer: "Answer to be added." },
+  {
+    question: "Which UPSC coaching is best in Delhi?",
+    answer:
+      "Vajiram & Ravi is considered one of the best UPSC coaching institutes in Delhi for its proven track record and effective teaching methods.",
+  },
+  {
+    question: "Which coaching is best for IAS in Delhi?",
+    answer:
+      "Vajiram & Ravi is highly regarded as one of the best coaching institutes for IAS preparation in Delhi due to its expert faculty and comprehensive study materials.",
+  },
+  {
+    question: "Which coaching institute has the most UPSC toppers?",
+    answer:
+      "Vajiram & Ravi is known for producing a significant number of UPSC toppers, reflecting its strong track record in IAS coaching.",
+  },
 ];
 
-export const counsellorChat = {
-  title: "Still have questions?",
-  hours: contact.hours,
-  avatar: "/images/faq/counsellor.webp",
-  phoneHref: contact.phoneHref,
-  /**
-   * WhatsApp number in international form, digits only. This is the admissions line from the site
-   * contact details; confirm it takes WhatsApp before launch.
-   */
-  whatsappNumber: "918062206330",
-  note: "A counsellor will listen, answer your questions and help you choose. No pressure to enroll.",
-  placeholder: "Ask your own question…",
-  cta: "Talk to a counsellor",
-  /** Section holding the enquiry form, where typed questions go on desktop. */
-  enquirySectionId: "counsellor",
-};
+/** The questions with an approved answer: the only ones the page and its FAQPage schema show. */
+export const faqEntries: FaqEntry[] = faqs.filter((faq): faq is FaqEntry => faq.answer !== null);

@@ -1,73 +1,69 @@
-import type { CSSProperties } from "react";
-import Photo from "@/components/ui/Photo";
-import { ArrowPill, Chip } from "@/components/ui/Pill";
-import RevealWords from "@/components/ui/RevealWords";
+import CountUp from "@/components/ui/CountUp";
+import { EyebrowLeft } from "@/components/ui/Ornament";
 import { flagship } from "@/data/flagship";
-import ScoreMeter from "./ScoreMeter";
-
-/** A soft glow: the design's blurred ellipse as a radial gradient that fills its box (the ellipse plus its blur). */
-function glow(rgb: string, alpha: number): CSSProperties {
-  const at = (share: number, stop: number) => `rgb(${rgb} / ${+(alpha * share).toFixed(3)}) ${stop}%`;
-  return {
-    background: `radial-gradient(closest-side, ${at(1, 0)}, ${at(0.9, 30)}, ${at(0.5, 57)}, ${at(0.2, 75)}, ${at(0.05, 90)}, transparent)`,
-  };
-}
+import EnrolButton from "./EnrolButton";
+import KonarkWheel from "./KonarkWheel";
 
 const formatMarks = (marks: number) => marks.toLocaleString("en-IN");
 
 /**
- * Flagship GS Prelims & Mains Programme: the pitch on the left; on the right a classroom photo over two
- * score meters that show how much of each exam stage General Studies carries.
+ * Flagship GS Prelims & Mains Programme (final design "08 · Flagship GS · Konark sun wheel", 2257:8985),
+ * 1440 × 620: an orange-to-maroon band with the slowly turning Konark wheel and its saffron ring at the
+ * right, and at the left (80 in, 96 down, 640 wide) the eyebrow, the heading with its italic emphasis, the
+ * text, two score boxes whose figures count up when the band comes into view, and the enrol button.
  */
 export default function GsProgramme() {
   return (
-    <section id="gs-programme" aria-labelledby="gs-programme-h" className="relative isolate overflow-clip bg-coal">
-      <div className="relative mx-auto flex w-canvas items-start gap-20 px-20 py-35">
-        {/* Orange light behind the visual, plum light low on the left; under the content (the section isolates them). */}
-        <div
+    <section
+      id="gs-programme"
+      aria-labelledby="gs-programme-h"
+      className="relative isolate overflow-clip bg-[linear-gradient(156.72deg,#ec5800_14.286%,#6e1e14_85.714%)]"
+    >
+      <div className="relative mx-auto h-[620px] w-canvas">
+        <KonarkWheel />
+        <img
+          src="/images/gs-programme/wheel-ring.svg"
+          alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute -z-1 -top-45 left-[540px] h-[1000px] w-[1240px]"
-          style={glow("238 106 18", 0.55)}
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -z-1 top-[300px] -left-100 h-[800px] w-[1000px]"
-          style={glow("66 7 39", 0.9)}
+          width={780}
+          height={780}
+          className="pointer-events-none absolute top-[-80px] left-[750px] size-[780px] max-w-none"
         />
 
-        <div data-reveal-group className="relative flex w-[540px] shrink-0 flex-col items-start gap-7">
-          <Chip tone="dark" dot>
-            {flagship.chip}
-          </Chip>
-          <h2 id="gs-programme-h" data-reveal-words className="text-[56px]/[1.02] font-medium tracking-[-2.24px] text-cream">
-            <RevealWords text={flagship.title} />
-          </h2>
-          <p className="w-[520px] text-[17px]/[1.6] text-cream/68">{flagship.body}</p>
-          <div className="flex pt-2">
-            <ArrowPill href={flagship.cta.href} surface="paper" knob="orange">
-              {flagship.cta.label}
-            </ArrowPill>
+        <div className="relative ml-20 flex w-[640px] flex-col items-start gap-[22px] pt-24">
+          <div className="flex w-full flex-col items-start gap-3">
+            {/* Drawn in the eyebrow's default orange, which all but vanishes on this band: saffron here, like the score labels. */}
+            <EyebrowLeft labelClassName="text-saffron">{flagship.eyebrow}</EyebrowLeft>
+            <h2 id="gs-programme-h" data-reveal="heading" className="w-[640px] text-[48px]/[1.08] font-bold tracking-[-1.2px] text-white">
+              {flagship.title.lead}{" "}
+              <em data-reveal-em className="font-serif text-[52px]/[1.08] font-normal tracking-[-0.78px] text-saffron italic">
+                {flagship.title.em}
+              </em>
+            </h2>
+            <p data-reveal="sub" className="w-[600px] text-[16px]/[1.55] text-white/88">
+              {flagship.body}
+            </p>
           </div>
-        </div>
 
-        <div data-reveal className="relative flex min-w-0 flex-1 flex-col gap-4">
-          <Photo
-            className="relative h-80 w-full overflow-hidden rounded-3xl"
-            src={flagship.photo.src}
-            alt={flagship.photo.alt}
-            sizes="660px"
-          />
-          <div className="flex gap-4">
-            {flagship.meters.map((meter) => (
-              <ScoreMeter
-                key={meter.stage}
-                stage={meter.stage}
-                marks={formatMarks(meter.gsMarks)}
-                total={`/${formatMarks(meter.totalMarks)}`}
-                share={meter.gsMarks / meter.totalMarks}
-                caption={flagship.meterCaption}
-              />
+          <div data-reveal-group className="flex items-start gap-4">
+            {flagship.scores.map((score) => (
+              <div
+                key={score.stage}
+                data-count-scope
+                className="flex flex-col items-start gap-1 rounded-[14px] border border-white/25 bg-white/12 px-[19px] py-[15px] whitespace-nowrap"
+              >
+                <p className="text-[36px]/[normal] font-bold tracking-[-0.72px] text-white">
+                  <CountUp value={`${formatMarks(score.gsMarks)}/${formatMarks(score.totalMarks)}`} />
+                </p>
+                <p data-count-label className="text-[11px]/[normal] font-bold tracking-[1.1px] text-saffron uppercase">
+                  {score.stage} · {flagship.scoreCaption}
+                </p>
+              </div>
             ))}
+          </div>
+
+          <div data-reveal>
+            <EnrolButton label={flagship.cta.label} programme={flagship.cta.enquiry} />
           </div>
         </div>
       </div>

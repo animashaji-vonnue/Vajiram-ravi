@@ -1,93 +1,72 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowPill } from "@/components/ui/Pill";
-import { batchFilters, type Batch, type BatchFilter } from "@/data/admissions";
-import { prefersReducedMotion } from "@/lib/motion";
-import BatchCalendar from "./BatchCalendar";
-import BatchRail from "./BatchRail";
-import { todayIso } from "./dates";
-import ModeFilter from "./ModeFilter";
+import { useEffect, useMemo, useState } from "react";
+import Cta from "@/components/ui/Cta";
+import TraditionalTabs, { type TabItem } from "@/components/ui/TraditionalTabs";
+import { batchesCopy, batchFilters, todayIso, upcomingBatches, type BatchFilter } from "@/data/admissions";
+import { links } from "@/data/links";
+import BatchTrack from "./BatchTrack";
+import { dateParts } from "./dates";
 
-type Hover = { day: string; from: "calendar" | "card" };
+/** The month tab that shows every month. Other month tabs are keyed by month, e.g. "2026-11". */
+const ALL_MONTHS = "all";
 
-type AdmissionsBoardProps = {
-  /** The heading block, rendered on the server. */
-  heading: ReactNode;
-  batches: Batch[];
-};
+/** Each batch's place among all batches in date order: it picks the ticket's head colour, so a ticket keeps it. */
+const TONE_INDEX = new Map(upcomingBatches("").map((batch, i) => [batch.id, i]));
+const toneOf = (id: string) => TONE_INDEX.get(id) ?? 0;
 
 /**
- * The batches part of the admissions section: the heading row with the mode filter, the calendar
- * strip, the batch cards and the link to every batch, which all share the filter, the chosen day and
- * the hovered day.
- * "Today" is read on the client, so the server render treats every batch as upcoming.
+ * The batches under the heading: the mode tabs (All / Classroom / LIVE-Online) and the month tabs, the
+ * arrows and the ticket track, then "View all batches". The two tab lists combine: the month tabs list each
+ * month that has upcoming batches, and their counts follow the chosen mode.
+ * Batches that have started are hidden. "Today" is read on the client, so the server render lists them all.
  */
-export default function AdmissionsBoard({ heading, batches }: AdmissionsBoardProps) {
-  const [filter, setFilter] = useState<BatchFilter>("All");
+export default function AdmissionsBoard() {
+  const [mode, setMode] = useState<BatchFilter>("All");
+  const [month, setMonth] = useState(ALL_MONTHS);
   const [today, setToday] = useState<string | null>(null);
-  const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const [hover, setHover] = useState<Hover | null>(null);
-  const railRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => setToday(todayIso()), []);
 
-  const sorted = useMemo(() => [...batches].sort((a, b) => a.starts.localeCompare(b.starts)), [batches]);
-  const matches = (batch: Batch, value: BatchFilter) => value === "All" || batch.modes.includes(value);
+  // Before today is known every batch counts as upcoming.
+  const upcoming = useMemo(() => upcomingBatches(today ?? ""), [today]);
+  const inMode = upcoming.filter((batch) => mode === "All" || batch.modes.includes(mode));
 
-  const inFilter = sorted.filter((batch) => matches(batch, filter));
-  const upcoming = today ? inFilter.filter((batch) => batch.starts >= today) : inFilter;
-  // Once every batch in the filter has started, list them all rather than leave the rail empty.
-  const listed = upcoming.length ? upcoming : inFilter;
-  const next = upcoming[0] ?? null;
-  const shown = selectedDay ? listed.filter((batch) => batch.starts === selectedDay) : listed;
+  const monthNames = new Map<string, string>();
+  for (const batch of upcoming) {
+    const { year, month: name } = dateParts(batch.startDate);
+    monthNames.set(batch.startDate.slice(0, 7), `${name} ${year}`);
+  }
+  const activeMonth = monthNames.has(month) ? month : ALL_MONTHS;
+  const inMonth = (key: string) => (key === ALL_MONTHS ? inMode : inMode.filter((batch) => batch.startDate.startsWith(key)));
 
-  const changeFilter = (value: BatchFilter) => {
-    setFilter(value);
-    setHover(null);
-    // Let go of a chosen day that has nothing left under the new filter.
-    if (selectedDay && !sorted.some((batch) => batch.starts === selectedDay && matches(batch, value))) setSelectedDay(null);
-  };
-
-  const selectDay = (day: string | null) => {
-    setSelectedDay(day);
-    if (day) railRef.current?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "nearest" });
-  };
+  const modeTabs: TabItem[] = batchFilters.map((filter) => ({ id: filter, label: filter }));
+  const monthTabs: TabItem[] = [ALL_MONTHS, ...monthNames.keys()].map((key) => ({
+    id: key,
+    label: monthNames.get(key) ?? "All",
+    count: inMonth(key).length,
+  }));
 
   return (
     <>
-      <div className="flex w-full items-end justify-between">
-        {heading}
-        <div data-reveal className="shrink-0">
-          <ModeFilter label="Batch mode" options={batchFilters} value={filter} onChange={changeFilter} />
-        </div>
-      </div>
-
-      <BatchCalendar
-        batches={listed}
-        nextDay={next?.starts ?? null}
-        today={today}
-        selectedDay={selectedDay}
-        litDay={hover?.day ?? null}
-        onHoverDay={(day) => setHover(day ? { day, from: "calendar" } : null)}
-        onSelectDay={selectDay}
+      <BatchTrack
+        batches={upcoming}
+        shownIds={inMonth(activeMonth).map((batch) => batch.id)}
+        toneOf={toneOf}
+        panel={{ mode, month: activeMonth }}
+        filters={
+          <div className="flex items-center gap-7">
+            <TraditionalTabs tabs={modeTabs} value={mode} onChange={(id) => setMode(id as BatchFilter)} label="Batch mode" idPrefix="batch-mode" />
+            <span aria-hidden="true" className="h-[26px] w-px shrink-0 bg-ink/18" />
+            <TraditionalTabs tabs={monthTabs} value={activeMonth} onChange={setMonth} label="Batch month" idPrefix="batch-month" />
+          </div>
+        }
       />
 
-      <div data-reveal className="w-full">
-        <BatchRail
-          listRef={railRef}
-          batches={sorted}
-          shownIds={shown.map((batch) => batch.id)}
-          featuredId={next?.id ?? null}
-          spotlightDay={hover?.from === "calendar" ? hover.day : null}
-          onHoverCard={(day) => setHover(day ? { day, from: "card" } : null)}
-        />
-        {/* Every batch, on its own page: after the cards, where the list ends. */}
-        <div className="flex justify-end pt-6">
-          <ArrowPill href="#" surface="outline-dark" knob="paper">
-            View all batches
-          </ArrowPill>
-        </div>
+      <div data-reveal className="relative flex w-full justify-end">
+        <Cta variant="secondary" size="md" href={links.upcomingBatches} className="w-[200px]">
+          {batchesCopy.viewAll}
+        </Cta>
       </div>
     </>
   );

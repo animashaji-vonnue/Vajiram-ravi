@@ -1,8 +1,8 @@
 const ENQUIRY_EVENT = "vr:enquire";
 
 /**
- * Brings the enquiry strip into view with `programme` chosen in its "Select Programmes" step,
- * e.g. from a batch card's "Register now". Safe to call from any client component.
+ * Brings the "Talk to us" postcard form into view with `programme` chosen in its "Select Programmes"
+ * field, e.g. from a batch ticket's "Register now". Safe to call from any client component.
  */
 export function requestEnquiry(programme: string): void {
   window.dispatchEvent(new CustomEvent<string>(ENQUIRY_EVENT, { detail: programme }));

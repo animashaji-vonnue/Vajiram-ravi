@@ -1,4 +1,9 @@
-/** "Featured UPSC CSE programmes" (Figma 1934:3312): the stage filter and the programme bento. */
+import { links, type Href } from "@/data/links";
+
+/**
+ * "Featured UPSC CSE programmes" (final design "07 · Programmes", 2257:8844): the programme stages as tabs
+ * (All / Learn / Practise / Guidance) over a 4 × 2 grid of photo cards, then a line pointing to a counsellor.
+ */
 
 export type Stage = "learn" | "practise" | "guidance";
 
@@ -11,37 +16,87 @@ export const stages: { id: Stage; label: string }[] = [
 export type BentoProgramme = {
   title: string;
   stage: Stage;
-  image: string;
-  /** "wide" is the dark double-width card with a large illustration; "small" the light single card. */
-  size: "wide" | "small";
   modes: string;
-  courseCount: number;
-  href: string;
+  /** Shown after the modes as "N courses"; left out while the count is not confirmed. */
+  courseCount?: number;
+  /** The programme's page; null while it does not exist yet, and the card then renders without a link. */
+  href: Href;
+  /** The card's monument photo and how strongly it shows over the card's paper (as drawn, 0 to 1). */
+  photo: { src: string; opacity: number };
+  /** The flagship card: a dark card with a saffron stage chip and the orange ↗ knob. */
+  featured?: boolean;
 };
 
 const MODES = "Classroom · LIVE-Online";
 
-/** In bento order: each row of the design fills four columns (a wide card takes two). */
+/** The programmes in grid order. */
+// TODO: confirm the course counts. The design shows them for the GS Foundation (4) and the optionals (26) only.
 export const bentoProgrammes: BentoProgramme[] = [
-  { title: "UPSC GS Foundation Course - PCM", stage: "learn", image: "/images/courses/gs-foundation-pcm.webp", size: "wide", modes: MODES, courseCount: 4, href: "#" },
-  { title: "Optional Subject Programme", stage: "learn", image: "/images/courses/optional-subject.webp", size: "small", modes: MODES, courseCount: 26, href: "#" },
-  { title: "CSAT Course", stage: "learn", image: "/images/courses/csat.webp", size: "small", modes: MODES, courseCount: 26, href: "#" },
-  { title: "Prelims Test Series", stage: "practise", image: "/images/courses/prelims-test-series.webp", size: "small", modes: MODES, courseCount: 26, href: "#" },
-  { title: "Mains Test Series", stage: "practise", image: "/images/courses/mains-test-series.webp", size: "small", modes: MODES, courseCount: 26, href: "#" },
-  { title: "Optional Test Series", stage: "practise", image: "/images/courses/optional-test-series.webp", size: "small", modes: MODES, courseCount: 26, href: "#" },
-  { title: "Mentorship Programme", stage: "guidance", image: "/images/courses/mentorship.webp", size: "small", modes: MODES, courseCount: 26, href: "#" },
-  { title: "Interview Guidance Programme", stage: "guidance", image: "/images/courses/interview-guidance.webp", size: "wide", modes: MODES, courseCount: 26, href: "#" },
+  {
+    title: "UPSC GS Foundation Course - PCM",
+    stage: "learn",
+    modes: MODES,
+    courseCount: 4,
+    href: links.gsCourse,
+    photo: { src: "/images/courses/programme-gs-foundation.webp", opacity: 0.28 },
+    featured: true,
+  },
+  {
+    title: "Optional Subject Programme",
+    stage: "learn",
+    modes: MODES,
+    courseCount: 26,
+    href: links.optionalSubject,
+    photo: { src: "/images/courses/programme-optional-subject.webp", opacity: 0.68 },
+  },
+  { title: "CSAT Course", stage: "learn", modes: MODES, href: links.csat, photo: { src: "/images/courses/programme-csat.webp", opacity: 0.66 } },
+  {
+    title: "Prelims Test Series",
+    stage: "practise",
+    modes: MODES,
+    href: links.prelimsTestSeries,
+    photo: { src: "/images/courses/programme-prelims-test-series.webp", opacity: 1 },
+  },
+  {
+    title: "Mains Test Series",
+    stage: "practise",
+    modes: MODES,
+    href: links.mainsTestSeries,
+    photo: { src: "/images/courses/programme-mains-test-series.webp", opacity: 0.69 },
+  },
+  {
+    title: "Optional Test Series",
+    stage: "practise",
+    modes: MODES,
+    href: links.optionalTestSeries,
+    photo: { src: "/images/courses/programme-optional-test-series.webp", opacity: 0.41 },
+  },
+  {
+    title: "Mentorship Programme",
+    stage: "guidance",
+    modes: MODES,
+    href: links.mentorship,
+    photo: { src: "/images/courses/programme-mentorship.webp", opacity: 0.45 },
+  },
+  {
+    title: "Interview Guidance Programme",
+    stage: "guidance",
+    modes: MODES,
+    href: links.interviewGuidance,
+    photo: { src: "/images/courses/programme-interview-guidance.webp", opacity: 0.56 },
+  },
 ];
 
 export const coursesIntro = {
-  title: "Featured UPSC CSE programmes",
+  eyebrow: "FROM YOUR FIRST CLASS TO THE INTERVIEW",
+  /** The heading, then its italic emphasis. */
+  title: { lead: "Featured UPSC CSE", em: "programmes" },
   lead: "From your first GS class to the interview — pick the stage you’re at, then the programme.",
-  viewAll: { label: "View all", href: "#" },
 };
 
-/** The orange tile that closes the bento, shown with every filter. */
-export const counsellingTile = {
-  title: "Not sure which programme fits?",
-  text: "A counsellor can help you.",
+/** The line under the grid, pointing to a counsellor, and the full course list. */
+export const counsellingLine = {
+  text: "Not sure which programme fits? A counsellor can help you.",
   cta: { label: "Book a free session", href: "#counsellor" },
+  viewAll: { label: "View all", href: links.allCourses as Href },
 };

@@ -10,10 +10,11 @@ let instance: Lenis | null = null;
 /**
  * Inline <head> script: the page always opens at the hero. The browser is told not to restore the last
  * scroll position on a reload, and a section hash left in the address by a nav link is dropped before it
- * can jump the page there (the ?year= of the toppers gallery is kept).
+ * can jump the page there. It also marks <html> with `js`, so styles that wait for a script (the counter
+ * labels) only apply when one will run.
  */
 export const startAtTopScript =
-  'history.scrollRestoration="manual";if(location.hash)history.replaceState(null,"",location.pathname+location.search)';
+  'document.documentElement.classList.add("js");history.scrollRestoration="manual";if(location.hash)history.replaceState(null,"",location.pathname+location.search)';
 
 export function setSmoothScroll(lenis: Lenis | null) {
   instance = lenis;
@@ -25,8 +26,11 @@ export function lockScroll(locked: boolean) {
   else instance?.start();
 }
 
-/** Scrolls an element into view under the docked nav, smoothly. */
-export function scrollToElement(el: Element, offset = 88) {
+/** The sticky header's height once the utility bar has slid away: main header (80) and announcement strip (40). */
+export const HEADER_OFFSET = 120;
+
+/** Scrolls an element into view under the sticky header, smoothly. */
+export function scrollToElement(el: Element, offset = HEADER_OFFSET) {
   if (instance) {
     const zoom = parseFloat(document.documentElement.style.zoom) || 1;
     instance.scrollTo(el as HTMLElement, { offset: -offset * zoom });

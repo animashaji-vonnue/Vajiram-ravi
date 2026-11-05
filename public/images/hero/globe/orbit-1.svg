@@ -1,6 +1,0 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="600" height="160" viewBox="0 0 600 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-<mask id="stroke0_0_4" fill="white">
-<path d="M600 80C600 124.183 465.685 160 300 160C134.315 160 0 124.183 0 80C0 35.8172 134.315 0 300 0C465.685 0 600 35.8172 600 80Z"/>
-</mask>
-<path id="orbit 1" d="M600 80C600 124.183 465.685 160 300 160C134.315 160 0 124.183 0 80C0 35.8172 134.315 0 300 0C465.685 0 600 35.8172 600 80Z" stroke-width="2" stroke="#F5F0EA" stroke-opacity="0.16" mask="url(#stroke0_0_4)"/>
-</svg>

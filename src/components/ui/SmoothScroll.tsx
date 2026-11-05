@@ -8,7 +8,7 @@ import { scrollToElement, setSmoothScroll } from "@/lib/smoothScroll";
 
 /**
  * Smooth, eased page scrolling with Lenis, as on the Skiper UI demos. In-page links glide to their section
- * and land under the docked nav. Scroll areas inside dialogs keep their own native scrolling
+ * and land under the sticky header. Scroll areas inside dialogs keep their own native scrolling
  * (data-lenis-prevent), and the FAQ chat takes the wheel only while it overflows (data-scroll-inside). With
  * reduced motion the page scrolls natively.
  */
@@ -32,7 +32,7 @@ export default function SmoothScroll() {
       frame = requestAnimationFrame(step);
     });
 
-    // In-page links (href="#section"). Bare "#" links are left to the toast that explains them.
+    // In-page links (href="#section") glide to their section.
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey) return;
       const link = (event.target as Element | null)?.closest?.('a[href^="#"]');

@@ -1,42 +1,70 @@
-import { ArrowPill, PlainPill } from "@/components/ui/Pill";
-import RevealWords from "@/components/ui/RevealWords";
-import Sheet from "@/components/ui/Sheet";
-import { resultYears, toppersByYear } from "@/data/toppers";
-import ToppersGallery from "./ToppersGallery";
+import { EyebrowLeft } from "@/components/ui/Ornament";
+import { toppersByYear, toppersSection, toppersYear } from "@/data/toppers";
+import ToppersCarousel from "./ToppersCarousel";
 
-/** The toppers panel (Figma "Toppers", 1933:3312): heading, year switch, expanding gallery and a call to action. */
+/**
+ * The toppers band (Figma "03 · Results · Toppers CSE 2025", 2257:5843): a paper band, 906px tall on the
+ * canvas. The heading and a scalloped note share the top row; below them, a carousel of stamp cards for
+ * ranks 1 to 10, five at a time, with its progress line, arrows and a link to all the selections.
+ *
+ * There is no year switch in the final design. If one comes back, the motion spec has the cards cross-fade
+ * over 200ms rather than slide (ui/CrossFade); `toppersByYear` already holds the earlier years.
+ */
 export default function Toppers() {
+  const { heading } = toppersSection;
   return (
-    <Sheet id="toppers" labelledBy="toppers-h" className="flex flex-col gap-12">
-      <div data-reveal className="flex items-end justify-between">
-        <h2 id="toppers-h" data-reveal-words className="w-[760px] text-[64px]/none font-medium tracking-[-2.88px]">
-          <RevealWords text="Toppers who prepared with Vajiram & Ravi" />
-        </h2>
-        <p className="w-[420px] text-[16px]/[1.55] text-stone">
-          Ranks 1 to 10 in UPSC CSE 2025 all studied with us. Each took at least one of our programmes: a classroom
-          course, a test series or the Interview Guidance Programme.
-        </p>
-      </div>
-
-      <ToppersGallery years={resultYears} galleries={toppersByYear} />
-
-      <div data-reveal className="flex items-center justify-between border-t border-sand-line pt-10">
-        <div className="flex flex-col gap-2">
-          <h3 className="text-[30px]/[1.2] font-medium tracking-[-0.75px] whitespace-nowrap">Start where these toppers started.</h3>
-          <p className="w-[620px] text-[16px]/[1.5] text-stone">
-            Every topper above began with our classroom courses, test series or interview guidance. Admissions for 2027
-            are open.
-          </p>
+    <section id="toppers" aria-labelledby="toppers-h" className="bg-paper">
+      <div className="mx-auto flex w-canvas flex-col gap-[52px] px-20 pt-[78px] pb-[112px]">
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col items-start gap-[18px]">
+            <EyebrowLeft>{toppersSection.eyebrow}</EyebrowLeft>
+            {/* 700 wide, as drawn, so it breaks after "with". */}
+            <h2 id="toppers-h" data-reveal="heading" className="w-[700px] font-serif text-[60px]/[1.04] font-normal tracking-[-1.5px] text-[#1a1714]">
+              {heading.lead}{" "}
+              <em data-reveal-em className="text-orange italic">
+                {heading.emphasis}
+              </em>
+            </h2>
+          </div>
+          <NoteCard text={toppersSection.note} />
         </div>
-        <div className="flex items-center gap-2.5">
-          <PlainPill href="#" surface="outline-light">
-            See all toppers
-          </PlainPill>
-          <ArrowPill href="#finder" surface="char" knob="orange">
-            Find your course
-          </ArrowPill>
-        </div>
+
+        <ToppersCarousel
+          toppers={toppersByYear[toppersYear] ?? []}
+          label={toppersSection.carouselLabel}
+          stamp={toppersSection.stamp}
+          cta={toppersSection.cta}
+        />
       </div>
-    </Sheet>
+    </section>
+  );
+}
+
+/**
+ * The note beside the heading: the design's invitation card in a short, 372 × 125 cut (cream paper with a
+ * burnt hairline, scalloped corners and a peak at the top centre) inside a 194px box, so the top row is
+ * as tall as drawn. The two outlines are the design's own drawings.
+ */
+function NoteCard({ text }: { text: string }) {
+  return (
+    <div data-reveal="sub" className="relative h-[194px] w-[372px] shrink-0">
+      <img
+        src="/images/toppers/note-card.svg"
+        alt=""
+        aria-hidden="true"
+        width={373}
+        height={126.044}
+        className="pointer-events-none absolute top-[35.45px] left-[-0.5px] h-[126.044px] w-[373px] max-w-none"
+      />
+      <img
+        src="/images/toppers/note-inner-border.svg"
+        alt=""
+        aria-hidden="true"
+        width={357.75}
+        height={107.78}
+        className="pointer-events-none absolute top-[45.6px] left-[6.625px] h-[107.78px] w-[357.75px] max-w-none"
+      />
+      <p className="absolute top-[60px] left-6 w-[324px] text-[15px]/[22px] font-medium text-clay">{text}</p>
+    </div>
   );
 }

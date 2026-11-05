@@ -1,352 +1,279 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FocusEvent, type KeyboardEvent, type PointerEvent } from "react";
+import { CarouselArrow, CarouselDots } from "@/components/ui/CarouselControls";
 import Photo from "@/components/ui/Photo";
 import type { Story } from "@/data/stories";
 import { getCanvasZoom } from "@/lib/canvas";
 import { cx } from "@/lib/cx";
 import { mod, prefersReducedMotion } from "@/lib/motion";
+import { whenVisible } from "@/lib/reveal";
+import { useInView } from "@/lib/useInView";
 
 /*
- * Two fixed cards: the large dark card holds the current story and the light side card previews the next.
- * The stories change like a carousel: in both cards at once, the old story slides out to one side as the
- * new one slides in from the other, and the new portrait settles from a slight zoom while the quote and
- * then the name rise into place. It plays on its own every six seconds while it is on screen (the active
- * dot fills as the time runs) and pauses while hovered or focused; the arrows, the dots, the arrow keys,
- * a swipe and a click on the side card move it by hand. The motion runs on the Web Animations API and
- * restarts from wherever it is, so quick clicks never jump.
+ * The glass card holds one story at a time; every story sits in the same grid cell, so the card keeps the
+ * height of the longest. Motion spec (09 Success stories):
+ *   - Next / previous cross-fades the story: the old one fades out over 200ms, then the quote and the
+ *     name come in over 320ms, rising --rise-sm; the portrait swaps at once with a 1.04 → 1 settle. The
+ *     amber ring stays put.
+ *   - It moves on by itself every 7s, with the time shown filling the active dot. It holds while hovered
+ *     or focused, while the tab is hidden and while the card is off screen; under reduced motion it never
+ *     moves by itself.
+ *   - The opening quote mark draws itself in, left to right, the first time the card comes into view.
+ *   - The arrows, the dots, the ← → keys and a swipe move it by hand; those moves are announced
+ *     ("Story 2 of 3"), the clock's are not.
  */
 
-const EASE = "cubic-bezier(.2,.8,.2,1)";
-const SLIDE_MS = 800;
-const INTERVAL = 6000;
+const INTERVAL = 7000;
+const OUT_MS = 200;
+const IN_MS = 320;
+const MARK_MS = 500;
 const SWIPE_PX = 48;
+const EASE_OUT = "cubic-bezier(0.22, 1, 0.36, 1)";
+const EASE_IN = "cubic-bezier(0.4, 0, 1, 1)";
+/** The design's near-black for the quote and the name. */
+const TEXT = "text-[#161412]";
 
-type Slot = "feature" | "side";
-
-/** A story slides out of its card, held fully visible while it goes (its layer is hidden once it has gone). */
-function playOut(layer: HTMLElement, dir: 1 | -1) {
-  layer.getAnimations({ subtree: true }).forEach((a) => a.cancel());
-  layer.animate(
-    [
-      { opacity: 1, transform: "none" },
-      { opacity: 1, transform: `translateX(${-104 * dir}%)` },
-    ],
-    { duration: SLIDE_MS, easing: EASE },
-  );
-}
-
-/** A story slides into its card; then its portrait, quote and name settle in turn. */
-function playIn(layer: HTMLElement, dir: 1 | -1) {
-  layer.getAnimations({ subtree: true }).forEach((a) => a.cancel());
-  const timing = (delay: number, duration: number) => ({ duration, delay, easing: EASE, fill: "backwards" as const });
-  layer.animate([{ transform: `translateX(${104 * dir}%)` }, { transform: "none" }], timing(0, SLIDE_MS));
-  layer.querySelector<HTMLElement>("[data-photo]")?.animate([{ transform: "scale(1.1)" }, { transform: "scale(1)" }], timing(0, 1400));
-  layer
-    .querySelector<HTMLElement>("[data-quote]")
-    ?.animate([{ opacity: 0, transform: "translateY(16px)" }, { opacity: 1, transform: "none" }], timing(SLIDE_MS * 0.35, 700));
-  layer
-    .querySelector<HTMLElement>("[data-meta]")
-    ?.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], timing(SLIDE_MS * 0.5, 700));
-}
-
-type StoryCarouselProps = {
-  stories: Story[];
-  /** The section heading, shown left of the arrows. */
-  heading: ReactNode;
-};
-
-export default function StoryCarousel({ stories, heading }: StoryCarouselProps) {
+export default function StoryCarousel({ stories }: { stories: Story[] }) {
   const count = stories.length;
   const [active, setActive] = useState(0);
-  const [playing, setPlaying] = useState(true);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const layers = useRef<Record<Slot, Array<HTMLDivElement | null>>>({ feature: [], side: [] });
+  const [autoplay, setAutoplay] = useState(count > 1);
+  // Moves by hand are announced; the clock's are not.
+  const [announce, setAnnounce] = useState(false);
+  const [rootRef, inView] = useInView<HTMLDivElement>({ threshold: 0.3, once: false });
+  const cardRef = useRef<HTMLDivElement>(null);
+  const slides = useRef<Array<HTMLElement | null>>([]);
   const fillRef = useRef<HTMLSpanElement>(null);
   const elapsed = useRef(0);
-  const inView = useRef(false);
-  const held = useRef(false);
+  // Held while a mouse is over it or keyboard focus is inside it.
+  const hovered = useRef(false);
+  const focused = useRef(false);
   const shown = useRef(0);
-  const direction = useRef<1 | -1>(1);
   const swipe = useRef<{ id: number; x: number; y: number } | null>(null);
-  const next = mod(active + 1, count);
 
-  // Every move, by hand or by the clock, starts the next story's time from zero.
-  const step = useCallback(
-    (delta: 1 | -1) => {
-      direction.current = delta;
+  // Every move, by hand or by the clock, gives the next story its full time.
+  const move = useCallback(
+    (to: (current: number) => number, byHand: boolean) => {
       elapsed.current = 0;
-      if (fillRef.current) fillRef.current.style.transform = "scaleX(0)";
-      setActive((current) => mod(current + delta, count));
+      setAnnounce(byHand);
+      setActive((current) => mod(to(current), count));
     },
     [count],
   );
 
-  const goTo = (index: number) => {
-    if (index === active) return;
-    direction.current = index > active ? 1 : -1;
-    elapsed.current = 0;
-    setActive(index);
-  };
-
   useEffect(() => {
-    if (prefersReducedMotion() || count < 2) setPlaying(false);
-    const root = rootRef.current;
-    if (!root || !("IntersectionObserver" in window)) {
-      inView.current = true;
-      return;
-    }
-    const observer = new IntersectionObserver(([entry]) => (inView.current = entry.isIntersecting), { threshold: 0.4 });
-    observer.observe(root);
-    return () => observer.disconnect();
-  }, [count]);
+    if (prefersReducedMotion()) setAutoplay(false);
+  }, []);
 
-  // The clock: it runs while playing, on screen, in a visible tab and not hovered or focused, fills the
-  // active dot, and moves on when the time is up.
+  // The clock runs while the carousel is on screen; it only counts while nobody is hovering or focused
+  // on it and the tab is visible, and the active dot fills as it counts.
   useEffect(() => {
-    if (!playing) return;
+    if (!autoplay || !inView) return;
     let frame = 0;
     let last = performance.now();
     const tick = (now: number) => {
-      // Capped, so returning to a hidden tab does not count the time away.
+      // Capped, so coming back to a hidden tab does not count the time away.
       const dt = Math.min(now - last, 100);
       last = now;
-      if (inView.current && !held.current && !document.hidden) {
+      if (!hovered.current && !focused.current && !document.hidden) {
         elapsed.current += dt;
-        if (fillRef.current) fillRef.current.style.transform = `scaleX(${Math.min(1, elapsed.current / INTERVAL)})`;
-        if (elapsed.current >= INTERVAL) step(1);
+        if (elapsed.current >= INTERVAL) move((current) => current + 1, false);
       }
+      if (fillRef.current) fillRef.current.style.transform = `scaleX(${Math.min(elapsed.current / INTERVAL, 1)})`;
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [playing, step]);
+  }, [autoplay, inView, move]);
 
-  // Each card plays its old story out and its new one in.
-  useEffect(() => {
+  // The swap, started before paint so the old story never blinks out before it fades.
+  useLayoutEffect(() => {
     const from = shown.current;
     if (from === active) return;
     shown.current = active;
     if (prefersReducedMotion()) return;
-    const dir = direction.current;
-    const slots: Array<[Slot, number, number]> = [
-      ["feature", from, active],
-      ["side", mod(from + 1, count), next],
-    ];
-    for (const [slot, out, into] of slots) {
-      if (out === into) continue;
-      const leaving = layers.current[slot][out];
-      const arriving = layers.current[slot][into];
-      if (leaving) playOut(leaving, dir);
-      if (arriving) playIn(arriving, dir);
+    const leaving = slides.current[from];
+    const arriving = slides.current[active];
+    if (leaving) {
+      leaving.getAnimations({ subtree: true }).forEach((animation) => animation.cancel());
+      leaving.animate([{ opacity: 1 }, { opacity: 0 }], { duration: OUT_MS, easing: EASE_IN });
     }
-  }, [active, next, count]);
+    if (!arriving) return;
+    arriving.getAnimations({ subtree: true }).forEach((animation) => animation.cancel());
+    arriving
+      .querySelector("[data-portrait]")
+      ?.animate([{ opacity: 0, transform: "scale(1.04)" }, { opacity: 1, transform: "none" }], { duration: IN_MS, easing: EASE_OUT });
+    const rise = getComputedStyle(document.documentElement).getPropertyValue("--rise-sm").trim() || "8px";
+    arriving.querySelectorAll("[data-words]").forEach((el) =>
+      el.animate([{ opacity: 0, transform: `translateY(${rise})` }, { opacity: 1, transform: "none" }], {
+        duration: IN_MS,
+        delay: OUT_MS,
+        easing: EASE_OUT,
+        fill: "backwards",
+      }),
+    );
+  }, [active]);
+
+  // The quote mark draws in once, as the card settles after its reveal.
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card || prefersReducedMotion()) return;
+    return whenVisible(card, 0.5, () => {
+      slides.current[shown.current]
+        ?.querySelector("[data-quote-mark]")
+        ?.animate([{ clipPath: "inset(-20% 100% -20% -20%)" }, { clipPath: "inset(-20% -20% -20% -20%)" }], {
+          duration: MARK_MS,
+          delay: 300,
+          easing: EASE_OUT,
+          fill: "backwards",
+        });
+    });
+  }, []);
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    if (count < 2 || (event.key !== "ArrowLeft" && event.key !== "ArrowRight")) return;
     event.preventDefault();
-    step(event.key === "ArrowLeft" ? -1 : 1);
+    const delta = event.key === "ArrowLeft" ? -1 : 1;
+    move((current) => current + delta, true);
   };
 
-  // Swipe on touch: a mostly horizontal flick moves one story; vertical moves stay page scrolls.
-  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+  // Keyboard focus holds it; a mouse click on an arrow does not (the pointer already does while it is over).
+  const onFocus = (event: FocusEvent<HTMLDivElement>) => {
+    if (event.target.matches(":focus-visible")) focused.current = true;
+  };
+  const onBlur = (event: FocusEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) focused.current = false;
+  };
+
+  // Swipe on touch: a mostly sideways flick moves one story; vertical moves stay page scrolls.
+  const onPointerDown = (event: PointerEvent<HTMLElement>) => {
     if (event.pointerType === "mouse") return;
     swipe.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
   };
-  const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
+  const onPointerUp = (event: PointerEvent<HTMLElement>) => {
     const start = swipe.current;
     swipe.current = null;
-    if (!start || start.id !== event.pointerId) return;
+    if (count < 2 || !start || start.id !== event.pointerId) return;
     const zoom = getCanvasZoom();
     const dx = (event.clientX - start.x) / zoom;
     const dy = (event.clientY - start.y) / zoom;
-    if (Math.abs(dx) >= SWIPE_PX && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1);
+    if (Math.abs(dx) >= SWIPE_PX && Math.abs(dx) > Math.abs(dy)) move((current) => current + (dx < 0 ? 1 : -1), true);
   };
-
-  const current = stories[active];
 
   return (
     <div
       ref={rootRef}
-      className="flex flex-col gap-12"
       role="region"
       aria-roledescription="carousel"
-      aria-label="Student stories"
+      aria-label="Success stories"
       onKeyDown={onKeyDown}
-      onMouseEnter={() => (held.current = true)}
-      onMouseLeave={() => (held.current = false)}
-      onFocus={() => (held.current = true)}
-      onBlur={() => (held.current = false)}
+      onPointerEnter={(event) => {
+        if (event.pointerType === "mouse") hovered.current = true;
+      }}
+      onPointerLeave={(event) => {
+        if (event.pointerType === "mouse") hovered.current = false;
+      }}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      className="flex w-full flex-col gap-10"
     >
-      <div data-reveal className="flex w-full items-end justify-between">
-        {heading}
-        <div className="flex items-start gap-2">
-          <button
-            type="button"
-            aria-label="Previous story"
-            onClick={() => step(-1)}
-            className="group/arrow flex size-12 items-center justify-center rounded-full border border-sand-line text-[16px]/none font-medium text-char [transition:background-color_.3s_var(--ease-smooth),border-color_.3s_var(--ease-smooth),scale_.3s_var(--ease-smooth)] hover:border-[#d3cbc1] hover:bg-sand active:scale-97"
-          >
-            <span aria-hidden="true" className="transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] group-hover/arrow:-translate-x-0.5">
-              ←
-            </span>
-          </button>
-          <button
-            type="button"
-            aria-label="Next story"
-            onClick={() => step(1)}
-            className="group/arrow flex size-12 items-center justify-center rounded-full bg-char text-[16px]/none font-medium text-paper [transition:background-color_.3s_var(--ease-smooth),scale_.3s_var(--ease-smooth)] hover:bg-[#2a221e] active:scale-97"
-          >
-            <span aria-hidden="true" className="transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] group-hover/arrow:translate-x-0.5">
-              →
-            </span>
-          </button>
-        </div>
-      </div>
-
+      {/* 1280 wide, 56 / 140 padding, white at 68% with the design's soft amber glow low in the middle. */}
       <div
+        ref={cardRef}
         data-reveal
-        className="relative flex h-[440px] w-full touch-pan-y gap-4"
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
         onPointerCancel={() => (swipe.current = null)}
+        className="relative grid w-full touch-pan-y overflow-clip rounded-[36px] bg-white/68 px-35 py-14 shadow-[0_18px_44px_rgb(140_64_13/0.1)]"
       >
-        <article
-          aria-roledescription="slide"
-          aria-label={`${active + 1} of ${count}`}
-          className="relative h-full w-[860px] shrink-0 overflow-hidden rounded-[28px] bg-char"
-        >
-          {/* The card's warm glow stays put while the stories change over it. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute top-[100px] left-[360px] h-[620px] w-[740px] bg-[radial-gradient(closest-side,rgb(238_106_18/.47),rgb(238_106_18/.42)_28%,rgb(238_106_18/.25)_52%,rgb(238_106_18/.08)_76%,transparent)]"
+        <img
+          src="/images/stories/card-glow.svg"
+          alt=""
+          aria-hidden="true"
+          width={880}
+          height={580}
+          className="pointer-events-none absolute top-[180px] left-[200px] h-[580px] w-[880px] max-w-none"
+        />
+        {stories.map((story, i) => (
+          <StorySlide
+            key={story.name}
+            story={story}
+            label={`${i + 1} of ${count}`}
+            shown={i === active}
+            slideRef={(el) => {
+              slides.current[i] = el;
+            }}
           />
-          {stories.map((story, i) => (
-            <FeatureLook
-              key={story.name}
-              story={story}
-              shown={i === active}
-              layerRef={(el) => {
-                layers.current.feature[i] = el;
-              }}
-            />
-          ))}
-        </article>
-        {count > 1 && (
-          <button
-            type="button"
-            onClick={() => step(1)}
-            aria-label={`Next story: ${stories[next].name}`}
-            className="group/side relative h-full min-w-0 flex-1 cursor-pointer overflow-hidden rounded-[28px] border border-sand-line bg-sand text-left transition-[border-color,translate] duration-500 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-1 hover:border-[#d3cbc1]"
-          >
-            {stories.map((story, i) => (
-              <SideLook
-                key={story.name}
-                story={story}
-                shown={i === next}
-                layerRef={(el) => {
-                  layers.current.side[i] = el;
-                }}
-              />
-            ))}
-          </button>
-        )}
+        ))}
+        {/* The 3px amber ring over the portrait, inside its edge; it stays still while the portraits swap. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-14 left-1/2 size-24 -translate-x-1/2 rounded-full border-3 border-[#f9a825]"
+        />
       </div>
 
-      {/* The dots: the active one is a capsule that fills while its story shows. */}
-      <div data-reveal className="flex items-center gap-1.5" role="tablist" aria-label="Choose story">
-        {stories.map((story, i) => {
-          const isActive = i === active;
-          return (
-            <button
-              key={story.name}
-              type="button"
-              role="tab"
-              aria-label={`Story ${i + 1}: ${story.name}`}
-              aria-selected={isActive}
-              onClick={() => goTo(i)}
-              className={cx(
-                "relative h-1.5 overflow-hidden rounded-[9px] [transition:width_.4s_cubic-bezier(.2,.8,.2,1),background-color_.4s_cubic-bezier(.2,.8,.2,1)] before:absolute before:-inset-x-1 before:-inset-y-3",
-                isActive ? "w-7 bg-char/20" : "w-1.5 bg-char/20 hover:bg-char/40",
-              )}
-            >
-              {isActive && (
-                <span
-                  ref={fillRef}
-                  key={active}
-                  aria-hidden="true"
-                  className="absolute inset-0 origin-left rounded-[9px] bg-char"
-                  // The clock moves this every frame; a re-render keeps whatever it has reached.
-                  style={{ transform: `scaleX(${playing ? Math.min(1, elapsed.current / INTERVAL) : 1})` }}
-                />
-              )}
-            </button>
-          );
-        })}
-      </div>
+      {count > 1 && (
+        <div data-reveal className="flex w-full items-center justify-end gap-5">
+          <CarouselDots
+            count={count}
+            active={active}
+            onSelect={(index) => move(() => index, true)}
+            label="Choose a story"
+            itemName="Story"
+            fillRef={autoplay ? fillRef : undefined}
+          />
+          <div className="flex items-start gap-2.5">
+            <CarouselArrow direction="prev" label="Previous story" onClick={() => move((current) => current - 1, true)} />
+            <CarouselArrow direction="next" label="Next story" tone="solid" onClick={() => move((current) => current + 1, true)} />
+          </div>
+        </div>
+      )}
 
-      <p className="sr-only" aria-live="polite">
-        {`Story ${active + 1} of ${count}: ${current.name}`}
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {announce ? `Story ${active + 1} of ${count}` : ""}
       </p>
     </div>
   );
 }
 
-type LookProps = {
+type StorySlideProps = {
   story: Story;
+  label: string;
   shown: boolean;
-  layerRef: (el: HTMLDivElement | null) => void;
+  slideRef: (el: HTMLElement | null) => void;
 };
 
-const layerClass = (shown: boolean) => cx("absolute inset-0", !shown && "pointer-events-none opacity-0");
-
-/** A story in the large dark card: portrait, quote and who said it. */
-function FeatureLook({ story, shown, layerRef }: LookProps) {
+/** One story: the portrait, the quote in Newsreader italic, the name and the mono line under it. */
+function StorySlide({ story, label, shown, slideRef }: StorySlideProps) {
   return (
-    <div ref={layerRef} aria-hidden={!shown || undefined} className={layerClass(shown)}>
-      <div className="relative flex h-full w-[860px] items-start">
-        {/* The portraits are cut-outs, so they stand on the light backdrop the design shows behind them. */}
-        <div className="relative h-[440px] w-[340px] shrink-0 overflow-hidden bg-sand">
-          <div data-photo className="absolute inset-0">
-            <Photo className="absolute inset-0" src={story.image} alt={story.name} sizes="340px" />
-          </div>
-        </div>
-        <div className="relative flex h-full min-w-0 flex-1 flex-col items-start justify-between p-10">
-          <p aria-hidden="true" className="text-[72px]/[0.6] font-medium whitespace-nowrap text-tangerine">
+    // The slide is a group (a <figure> may not take that role); the figure inside keeps the quote and its caption together.
+    <div
+      ref={slideRef}
+      role="group"
+      aria-roledescription="slide"
+      aria-label={label}
+      aria-hidden={!shown || undefined}
+      inert={!shown}
+      className={cx("relative col-start-1 row-start-1", !shown && "pointer-events-none opacity-0")}
+    >
+      <figure className="flex flex-col items-center gap-7">
+      {/* The cut-out portrait on the design's peach; the name is beside it, so it is decoration. */}
+      <span data-portrait className="block">
+        <Photo src={story.image} alt="" sizes="96px" className="relative size-24 overflow-hidden rounded-full bg-[#ffe0bc]" />
+      </span>
+      <blockquote data-words className={cx("w-[960px] text-center font-serif text-[40px]/[1.3] italic", TEXT)}>
+        <p>
+          <span data-quote-mark className="inline-block">
             “
-          </p>
-          <blockquote data-quote className="w-[440px] text-[26px]/[1.35] font-medium tracking-[-0.39px] text-cream">
-            {story.quote}
-          </blockquote>
-          <div data-meta className="flex flex-col items-start gap-1 leading-[1.5]">
-            <p className="text-[17px] font-medium whitespace-nowrap text-cream">{story.name}</p>
-            <p className="w-[440px] text-[13px] text-cream/60">{`AIR ${story.rank} · ${story.exam} · ${story.programme}`}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/** A story in the light side card: a preview with a small avatar. */
-function SideLook({ story, shown, layerRef }: LookProps) {
-  return (
-    <div ref={layerRef} aria-hidden="true" className={layerClass(shown)}>
-      <div className="flex h-full w-full flex-col items-start justify-between p-7">
-        <p className="text-[56px]/[0.6] font-medium whitespace-nowrap text-orange">“</p>
-        <p data-quote className="w-full text-[19px]/[1.4] font-medium tracking-[-0.19px] text-char">
-          {story.quote}
+          </span>
+          {story.quote}”
         </p>
-        <div data-meta className="flex items-center gap-3">
-          <div data-photo className="relative size-12 shrink-0 overflow-hidden rounded-full bg-shell">
-            <Photo className="absolute inset-0" src={story.image} alt="" sizes="48px" />
-          </div>
-          <div className="flex flex-col items-start gap-0.5 leading-[1.5] whitespace-nowrap">
-            <p className="text-[15px] font-medium text-char">{story.name}</p>
-            <p className="text-[12px] text-stone">{`AIR ${story.rank} · ${story.exam}`}</p>
-          </div>
-        </div>
-      </div>
+      </blockquote>
+      <figcaption data-words className="flex flex-col items-center gap-1 leading-[normal] whitespace-nowrap">
+        <span className={cx("text-[17px] font-semibold", TEXT)}>{story.name}</span>
+        <span className="font-mono text-[11px] tracking-[0.33px] text-[#6b5d52] uppercase">{`AIR ${story.rank} · ${story.exam} · ${story.programme}`}</span>
+      </figcaption>
+      </figure>
     </div>
   );
 }
