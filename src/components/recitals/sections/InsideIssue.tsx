@@ -1,5 +1,5 @@
 import { Reveal, Stagger, StaggerItem } from "@/components/recitals/Motion";
-import { DiamondMark, patternStyle, SeamBand } from "@/components/recitals/Ornaments";
+import { DiamondMark, patternStyle } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { issueSections, type Stage } from "@/data/magazine";
 import { cx } from "@/lib/cx";
@@ -74,7 +74,6 @@ export default function InsideIssue() {
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40" style={patternStyle("chevron", "#cc5500", 0.05)} aria-hidden="true" />
-      <SeamBand variant="border" from="#fffcf6" to="#fff3e0" accent="#e49b0f" />
     </section>
   );
 }

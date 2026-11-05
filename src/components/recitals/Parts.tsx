@@ -62,8 +62,10 @@ export function IssueCard({ issue, latest }: { issue: Issue; latest?: boolean })
     <article
       className={cx(
         "group/issue relative flex flex-col bg-[#b9501f] p-[14px]",
-        "[transition:translate_.4s_var(--ease-settle),box-shadow_.4s_var(--ease-settle)]",
-        "hover:-translate-y-1 hover:shadow-[0_24px_44px_-24px_rgba(94,27,16,.5)]",
+        /* Hover lifts and swells this one card and nothing else: dimming its neighbours
+           made the shelf read as half-disabled rather than as a row of objects. */
+        "[transition:translate_.35s_var(--ease-settle),scale_.35s_var(--ease-settle),box-shadow_.35s_var(--ease-settle)]",
+        "hover:-translate-y-2.5 hover:scale-[1.028] hover:shadow-[0_30px_54px_-26px_rgba(94,27,16,.55)]",
       )}
     >
       <div className="r-perforated relative flex flex-1 flex-col bg-[#fdf6e8] px-5 pt-5">

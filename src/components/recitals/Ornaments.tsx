@@ -180,7 +180,7 @@ export function SeamBand({ variant = "toran", from, to, accent = "#e9a23b", clas
  * Surface patterns — the quiet texture under a section, never over the reading area.
  * ------------------------------------------------------------------------------------ */
 
-export type PatternName = "jali" | "block" | "chevron" | "star";
+export type PatternName = "jali" | "block" | "chevron" | "star" | "ledger";
 
 const PATTERN_TILES: Record<PatternName, { w: number; h: number; svg: (c: string) => string }> = {
   /** A lattice screen, for wide background fields. */
@@ -229,6 +229,19 @@ const PATTERN_TILES: Record<PatternName, { w: number; h: number; svg: (c: string
         "</g></svg>"
       );
     },
+  },
+  /**
+   * Ruled paper. Structure rather than scattered motifs: a field of small shapes at low
+   * contrast reads as dirt on the screen, while a grid reads as the thing you work on.
+   */
+  ledger: {
+    w: 32,
+    h: 32,
+    svg: (c) =>
+      "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" +
+      "<g stroke='" + c + "' stroke-width='1' fill='none'>" +
+      "<path d='M0 31.5H32'/><path d='M31.5 0V32'/>" +
+      "</g></svg>",
   },
   /** A fine zigzag, for narrow strips and card headers. */
   chevron: {

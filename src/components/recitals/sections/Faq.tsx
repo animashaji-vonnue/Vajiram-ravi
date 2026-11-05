@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { PlusMinusIcon } from "@/components/icons";
-import { DiamondMark, SeamBand } from "@/components/recitals/Ornaments";
+import { DiamondMark } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { magazineFaqs } from "@/data/magazine";
 import { cx } from "@/lib/cx";
@@ -69,7 +69,6 @@ export default function Faq() {
         </div>
       </div>
 
-      <SeamBand variant="jali" from="#fff3e0" to="#2b1710" accent="#e49b0f" />
     </section>
   );
 }

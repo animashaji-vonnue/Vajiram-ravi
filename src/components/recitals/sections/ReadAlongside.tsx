@@ -1,6 +1,6 @@
 import { ArrowRightXsIcon, GraduationCapIcon, NotebookIcon, OpenBookIcon, TrendIcon } from "@/components/icons";
 import { Reveal, Stagger, StaggerItem } from "@/components/recitals/Motion";
-import { DiamondMark, doubleRule, SeamBand } from "@/components/recitals/Ornaments";
+import { DiamondMark, doubleRule } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { collections } from "@/data/magazine";
 import { cx } from "@/lib/cx";
@@ -64,7 +64,6 @@ export default function ReadAlongside() {
         </Stagger>
       </div>
 
-      <SeamBand variant="border" from="#fffcf6" to="#fff3e0" accent="#e49b0f" />
     </section>
   );
 }

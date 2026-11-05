@@ -1,6 +1,6 @@
 import { ArrowRightIcon } from "@/components/icons";
 import { Reveal, Stagger, StaggerItem } from "@/components/recitals/Motion";
-import { DiamondMark, Eyebrow, patternStyle, SeamBand } from "@/components/recitals/Ornaments";
+import { DiamondMark, Eyebrow, patternStyle } from "@/components/recitals/Ornaments";
 import { whyMonthlyArguments, whyMonthlyStats } from "@/data/magazine";
 
 /*
@@ -78,7 +78,6 @@ export default function WhyMonthly() {
         </Stagger>
       </div>
 
-      <SeamBand variant="toran" from="#5e1b10" to="#fffcf6" accent="#e9a23b" />
     </section>
   );
 }

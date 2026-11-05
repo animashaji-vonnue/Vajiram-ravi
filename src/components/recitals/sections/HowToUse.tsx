@@ -1,6 +1,6 @@
 import { ClockIcon } from "@/components/icons";
 import { Reveal, Stagger, StaggerItem } from "@/components/recitals/Motion";
-import { DiamondMark, FlowerMark, SeamBand } from "@/components/recitals/Ornaments";
+import { DiamondMark, FlowerMark } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { doubleRule } from "@/components/recitals/Ornaments";
 import { readingPasses, readingTotal } from "@/data/magazine";
@@ -68,7 +68,6 @@ export default function HowToUse() {
         </Reveal>
       </div>
 
-      <SeamBand variant="jali" from="#fff3e0" to="#5e1b10" accent="#e49b0f" />
     </section>
   );
 }

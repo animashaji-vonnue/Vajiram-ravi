@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRightIcon } from "@/components/icons";
-import { patternStyle, SeamBand, StarMark } from "@/components/recitals/Ornaments";
+import { patternStyle, StarMark } from "@/components/recitals/Ornaments";
 import { IssueCard, SectionHead } from "@/components/recitals/Parts";
 import { Counter, DealIn, Stagger, StaggerItem } from "@/components/recitals/Motion";
 import { issues, issueYears, latestIssue } from "@/data/magazine";
@@ -49,7 +49,16 @@ export default function Archive() {
     return issues.filter((issue) => issue.year === year);
   }, [query, searching, year]);
 
-  useEffect(syncEnds, [syncEnds, shown.length, year, query]);
+  /*
+   * Send the shelf back to its start whenever the set changes, and on mount. Browsers
+   * restore a scroller position across reloads, which left the rail parked at its far end
+   * with the first cards still holding their un-dealt state — invisible, off to the left,
+   * and never reached.
+   */
+  useEffect(() => {
+    if (rail.current) rail.current.scrollLeft = 0;
+    syncEnds();
+  }, [syncEnds, shown.length, year, query, onShelf]);
 
   return (
     <section id="archive" className="relative bg-[#fffcf6]" aria-labelledby="archive-h">
@@ -63,7 +72,7 @@ export default function Archive() {
         style={{ backgroundImage: "url(/recitals/paper.png)", backgroundSize: "cover", backgroundPosition: "center" }}
         aria-hidden="true"
       />
-      <div className="pointer-events-none absolute inset-0" style={patternStyle("star", "#a8341a", 0.05)} aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0" style={patternStyle("ledger", "#8a4a16", 0.07)} aria-hidden="true" />
 
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-20 py-24">
         <SectionHead
@@ -166,7 +175,7 @@ export default function Archive() {
                * first card to the scrollport edge and the rail lands at scrollLeft 80, so
                * the shelf started one gutter left of the heading above it.
                */
-              className="r-roster -mx-20 flex snap-x snap-mandatory scroll-px-20 gap-6 overflow-x-auto px-20 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="-mx-20 flex snap-x snap-mandatory scroll-px-20 gap-6 overflow-x-auto px-20 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {shown.map((issue, i) => (
                 <DealIn
@@ -174,7 +183,6 @@ export default function Archive() {
                   index={i}
                   tilt={i % 2 === 0 ? -3.5 : 3.5}
                   root={rail}
-                  once={false}
                   className="w-[302px] shrink-0 snap-start"
                 >
                   <IssueCard issue={issue} latest={issue.label === latestIssue.label} />
@@ -215,7 +223,6 @@ export default function Archive() {
         )}
       </div>
 
-      <SeamBand variant="perf" from="#fff3e0" to="#fffcf6" accent="#f58025" />
     </section>
   );
 }
