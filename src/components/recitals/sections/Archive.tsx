@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRightIcon } from "@/components/icons";
-import { FlowerMark, patternStyle, SeamBand } from "@/components/recitals/Ornaments";
+import { patternStyle, SeamBand, StarMark } from "@/components/recitals/Ornaments";
 import { IssueCard, SectionHead } from "@/components/recitals/Parts";
 import { Counter, DealIn, Stagger, StaggerItem } from "@/components/recitals/Motion";
 import { issues, issueYears, latestIssue } from "@/data/magazine";
@@ -28,6 +28,15 @@ export default function Archive() {
   const [year, setYear] = useState(issueYears[0]);
   const [query, setQuery] = useState("");
   const rail = useRef<HTMLDivElement>(null);
+  /* Which end of the shelf we are at, so the arrows can say when they do nothing. */
+  const [atEnd, setAtEnd] = useState({ start: true, finish: false });
+
+  const syncEnds = useCallback(() => {
+    const el = rail.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    setAtEnd({ start: el.scrollLeft <= 2, finish: el.scrollLeft >= max - 2 });
+  }, []);
 
   const searching = query.trim().length > 0;
   /* Only the newest year goes on the shelf; everything older stays a grid. */
@@ -40,9 +49,21 @@ export default function Archive() {
     return issues.filter((issue) => issue.year === year);
   }, [query, searching, year]);
 
+  useEffect(syncEnds, [syncEnds, shown.length, year, query]);
+
   return (
-    <section id="archive" className="relative bg-r-cream" aria-labelledby="archive-h">
-      <div className="pointer-events-none absolute inset-0" style={patternStyle("block", "#a8341a", 0.045)} aria-hidden="true" />
+    <section id="archive" className="relative bg-[#fffcf6]" aria-labelledby="archive-h">
+      {/*
+       * The same sheet the hero is printed on, so the page stays one piece of paper, with
+       * a sown field of asterisks over it. Plain would read as a different document; the
+       * old diamond block was the wrong shape for this family.
+       */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-30"
+        style={{ backgroundImage: "url(/recitals/paper.png)", backgroundSize: "cover", backgroundPosition: "center" }}
+        aria-hidden="true"
+      />
+      <div className="pointer-events-none absolute inset-0" style={patternStyle("star", "#a8341a", 0.05)} aria-hidden="true" />
 
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-20 py-24">
         <SectionHead
@@ -65,7 +86,7 @@ export default function Archive() {
         <Stagger className="flex flex-wrap items-center gap-x-14 gap-y-6" gap={0.1}>
           {HEADLINE_FIGURES.map((figure, i) => (
             <StaggerItem key={figure.label} className="flex items-center gap-3">
-              {i > 0 && <FlowerMark size={10} className="-ml-7 mr-4 shrink-0 text-r-amber" />}
+              {i > 0 && <StarMark size={12} className="-ml-7 mr-4 shrink-0 text-r-gamboge" />}
               <span className="font-r-masthead text-[40px]/[44px] text-[#b9501f]">
                 <Counter to={figure.to} suffix={figure.suffix} />
               </span>
@@ -80,7 +101,6 @@ export default function Archive() {
         <div className="flex flex-col gap-5">
           <div className="flex items-center gap-4">
             <label className="flex h-12 flex-1 items-center gap-3 bg-r-paper px-4 shadow-[inset_0_0_0_1px_var(--color-r-line)] focus-within:shadow-[inset_0_0_0_1px_var(--color-r-rust)]">
-              <FlowerMark size={12} className="shrink-0 text-r-amber" />
               <input
                 type="search"
                 value={query}
@@ -140,13 +160,21 @@ export default function Archive() {
           <div className="flex flex-col gap-5">
             <div
               ref={rail}
-              className="-mx-20 flex snap-x snap-mandatory gap-6 overflow-x-auto px-20 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              onScroll={syncEnds}
+              /*
+               * scroll-px matches the padding. Without it, mandatory snapping aligns the
+               * first card to the scrollport edge and the rail lands at scrollLeft 80, so
+               * the shelf started one gutter left of the heading above it.
+               */
+              className="r-roster -mx-20 flex snap-x snap-mandatory scroll-px-20 gap-6 overflow-x-auto px-20 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {shown.map((issue, i) => (
                 <DealIn
                   key={issue.label}
                   index={i}
                   tilt={i % 2 === 0 ? -3.5 : 3.5}
+                  root={rail}
+                  once={false}
                   className="w-[302px] shrink-0 snap-start"
                 >
                   <IssueCard issue={issue} latest={issue.label === latestIssue.label} />
@@ -154,17 +182,26 @@ export default function Archive() {
               ))}
             </div>
             <div className="flex items-center gap-2">
-              {[-1, 1].map((dir) => (
-                <button
-                  key={dir}
-                  type="button"
-                  onClick={() => rail.current?.scrollBy({ left: dir * 326, behavior: "smooth" })}
-                  aria-label={dir < 0 ? "Scroll to earlier issues" : "Scroll to later issues"}
-                  className="flex size-10 items-center justify-center bg-r-paper text-r-ink-700 shadow-[inset_0_0_0_1px_var(--color-r-line)] transition-colors duration-200 hover:text-r-rust hover:shadow-[inset_0_0_0_1px_var(--color-r-rust)]"
-                >
-                  <ArrowRightIcon className={dir < 0 ? "rotate-180" : undefined} />
-                </button>
-              ))}
+              {[-1, 1].map((dir) => {
+                const spent = dir < 0 ? atEnd.start : atEnd.finish;
+                return (
+                  <button
+                    key={dir}
+                    type="button"
+                    disabled={spent}
+                    onClick={() => rail.current?.scrollBy({ left: dir * 326, behavior: "smooth" })}
+                    aria-label={dir < 0 ? "Scroll to earlier issues" : "Scroll to later issues"}
+                    className={cx(
+                      "flex size-10 items-center justify-center bg-r-paper transition-all duration-200",
+                      spent
+                        ? "cursor-default text-r-ink-500/40 shadow-[inset_0_0_0_1px_var(--color-r-line)]"
+                        : "text-r-ink-700 shadow-[inset_0_0_0_1px_var(--color-r-line)] hover:text-r-rust hover:shadow-[inset_0_0_0_1px_var(--color-r-rust)]",
+                    )}
+                  >
+                    <ArrowRightIcon className={dir < 0 ? "rotate-180" : undefined} />
+                  </button>
+                );
+              })}
             </div>
           </div>
         ) : (

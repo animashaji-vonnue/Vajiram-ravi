@@ -1,7 +1,7 @@
 "use client";
 
 import { animate, motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, type RefObject, useEffect, useRef, useState } from "react";
 import Lenis from "lenis";
 import { cx } from "@/lib/cx";
 
@@ -130,11 +130,16 @@ export function DealIn({
   index = 0,
   tilt = 0,
   className,
+  root,
+  once = true,
 }: {
   children: ReactNode;
   index?: number;
   tilt?: number;
   className?: string;
+  /** Watch this scroller rather than the window, so sideways movement counts too. */
+  root?: RefObject<HTMLElement | null>;
+  once?: boolean;
 }) {
   const reduce = useReducedMotion();
   return (
@@ -143,8 +148,8 @@ export function DealIn({
       style={{ transformOrigin: "bottom center" }}
       initial={reduce ? false : { opacity: 0, y: 54, rotate: tilt, scale: 0.94 }}
       whileInView={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.8, delay: index * 0.07, ease: DEAL }}
+      viewport={{ once, amount: 0.5, root }}
+      transition={{ duration: 0.7, delay: index * 0.06, ease: DEAL }}
     >
       {children}
     </motion.div>

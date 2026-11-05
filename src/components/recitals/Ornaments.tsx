@@ -28,6 +28,22 @@ export function FlowerMark({ className, size = 12 }: MarkProps) {
   );
 }
 
+/**
+ * An eight-pointed asterisk, taken from reference image 11. Shape only — two concave
+ * four-point stars, the second turned 45 degrees and set a little smaller, so the arms
+ * alternate long and short the way the reference does.
+ */
+export function StarMark({ className, size = 12 }: MarkProps) {
+  const arm =
+    "M12 1.2C12.9 7.9 16.1 11.1 22.8 12 16.1 12.9 12.9 16.1 12 22.8 11.1 16.1 7.9 12.9 1.2 12 7.9 11.1 11.1 7.9 12 1.2Z";
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" className={className}>
+      <path d={arm} fill="currentColor" />
+      <path d={arm} fill="currentColor" transform="rotate(45 12 12) translate(12 12) scale(0.72) translate(-12 -12)" />
+    </svg>
+  );
+}
+
 /** Lozenge. Sits at card corners and inside rules. */
 export function DiamondMark({ className, size = 8 }: MarkProps) {
   return (
@@ -164,7 +180,7 @@ export function SeamBand({ variant = "toran", from, to, accent = "#e9a23b", clas
  * Surface patterns — the quiet texture under a section, never over the reading area.
  * ------------------------------------------------------------------------------------ */
 
-export type PatternName = "jali" | "block" | "chevron";
+export type PatternName = "jali" | "block" | "chevron" | "star";
 
 const PATTERN_TILES: Record<PatternName, { w: number; h: number; svg: (c: string) => string }> = {
   /** A lattice screen, for wide background fields. */
@@ -190,6 +206,29 @@ const PATTERN_TILES: Record<PatternName, { w: number; h: number; svg: (c: string
           <path d='M30 24 C31.6 27.2 33.8 29.4 37 31 33.8 32.6 31.6 34.8 30 38 28.4 34.8 26.2 32.6 23 31 26.2 29.4 28.4 27.2 30 24Z'/>
         </g>
       </svg>`,
+  },
+  /** A sown field of eight-pointed asterisks. Quieter than the block stamp, and not a diamond. */
+  star: {
+    w: 52,
+    h: 52,
+    svg: (c) => {
+      const point = (cx: number, cy: number, r: number, rot: number) => {
+        const k = r * 0.3;
+        const d =
+          "M" + cx + " " + (cy - r) +
+          "C" + (cx + k * 0.4) + " " + (cy - k) + " " + (cx + k) + " " + (cy - k * 0.4) + " " + (cx + r) + " " + cy +
+          "C" + (cx + k) + " " + (cy + k * 0.4) + " " + (cx + k * 0.4) + " " + (cy + k) + " " + cx + " " + (cy + r) +
+          "C" + (cx - k * 0.4) + " " + (cy + k) + " " + (cx - k) + " " + (cy + k * 0.4) + " " + (cx - r) + " " + cy +
+          "C" + (cx - k) + " " + (cy - k * 0.4) + " " + (cx - k * 0.4) + " " + (cy - k) + " " + cx + " " + (cy - r) + "Z";
+        return "<path transform='rotate(" + rot + " " + cx + " " + cy + ")' d='" + d + "'/>";
+      };
+      const star = (cx: number, cy: number, r: number) => point(cx, cy, r, 0) + point(cx, cy, r * 0.72, 45);
+      return (
+        "<svg xmlns='http://www.w3.org/2000/svg' width='52' height='52'><g fill='" + c + "'>" +
+        star(13, 13, 5.5) + star(39, 39, 5.5) + star(39, 13, 3.4) + star(13, 39, 3.4) +
+        "</g></svg>"
+      );
+    },
   },
   /** A fine zigzag, for narrow strips and card headers. */
   chevron: {
