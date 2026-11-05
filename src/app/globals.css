@@ -293,27 +293,3 @@ body:has([data-recitals]) [data-chrome] {
   -webkit-mask-composite: source-in;
   mask-composite: intersect;
 }
-
-/*
- * How to use it: two cards, one behind the other.
- *
- * The card underneath carries when in the month a pass belongs, and slides further out
- * when the pair is pointed at. Written here rather than as a named-group Tailwind utility
- * because that class emitted no rule at all — the hover silently did nothing.
- */
-.r-pass-back {
-  top: 8px;
-  transition: top 0.42s var(--ease-settle);
-}
-
-@media (hover: hover) {
-  .r-pass:hover .r-pass-back {
-    top: -12px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .r-pass-back {
-    transition: none;
-  }
-}
