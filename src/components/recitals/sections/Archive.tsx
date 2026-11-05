@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRightIcon } from "@/components/icons";
-import { patternStyle, StarMark } from "@/components/recitals/Ornaments";
+import { StarMark } from "@/components/recitals/Ornaments";
 import { IssueCard, SectionHead } from "@/components/recitals/Parts";
 import { Counter, DealIn, Stagger, StaggerItem } from "@/components/recitals/Motion";
 import { issues, issueYears, latestIssue } from "@/data/magazine";
@@ -61,18 +61,17 @@ export default function Archive() {
   }, [syncEnds, shown.length, year, query, onShelf]);
 
   return (
-    <section id="archive" className="relative bg-[#fffcf6]" aria-labelledby="archive-h">
+    <section id="archive" className="relative bg-[#f4efe2]" aria-labelledby="archive-h">
       {/*
-       * The same sheet the hero is printed on, so the page stays one piece of paper, with
-       * a sown field of asterisks over it. Plain would read as a different document; the
-       * old diamond block was the wrong shape for this family.
+       * A real sheet, scanned: fibre, tone and torn newsprint caught at its corners. Every
+       * drawn pattern tried here — diamonds, asterisks, a ruled grid — read either as
+       * decoration or as dirt, because a flat tint with marks on it is not a surface.
        */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-30"
-        style={{ backgroundImage: "url(/recitals/paper.png)", backgroundSize: "cover", backgroundPosition: "center" }}
+        className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url(/recitals/section-paper.webp)" }}
         aria-hidden="true"
       />
-      <div className="pointer-events-none absolute inset-0" style={patternStyle("ledger", "#8a4a16", 0.07)} aria-hidden="true" />
 
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-20 py-24">
         <SectionHead
@@ -171,11 +170,14 @@ export default function Archive() {
               ref={rail}
               onScroll={syncEnds}
               /*
-               * scroll-px matches the padding. Without it, mandatory snapping aligns the
-               * first card to the scrollport edge and the rail lands at scrollLeft 80, so
-               * the shelf started one gutter left of the heading above it.
+               * The rail is exactly the content width. It used to bleed to the viewport
+               * with negative margins, which meant a card leaving the shelf stayed visible
+               * out in the gutter and broke the column the rest of the page is set to.
+               *
+               * The vertical padding is not decoration: a scroll container clips both axes,
+               * so without it a card lifting on hover is cut off along its top edge.
                */
-              className="-mx-20 flex snap-x snap-mandatory scroll-px-20 gap-6 overflow-x-auto px-20 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex snap-x snap-mandatory gap-6 overflow-x-auto px-px pt-8 pb-5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {shown.map((issue, i) => (
                 <DealIn
