@@ -1,102 +1,79 @@
-"use client";
-
-import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { stats } from "@/data/home";
 import { cx } from "@/lib/cx";
-import { prefersReducedMotion } from "@/lib/motion";
-import TornPaper, { PAPER_H } from "./TornPaper";
-
-const ROWS = 24;
+import SplitHeading from "@/components/ui/SplitHeading";
 
 /**
- * The tear that reveals the paper, as a clip-path: everything left of `x`% is kept, up to a ragged
- * vertical edge. Hidden and shown use the same jitter, so the browser slides one into the other; `seed`
- * varies the jitter.
+ * Monument line art in a corner of the band, cut from the line-art drawings used elsewhere on the site and
+ * printed in a faint white on the band, as the brief's reference does with its chhatri and elephant.
  */
-function revealEdge(x: number, seed = 78.233): string {
-  const points = ["-10% 0%"];
-  for (let row = 0; row <= ROWS; row++) {
-    const y = (row / ROWS) * 100;
-    const jag = Math.sin((row + 1) * seed) * 0.5 + Math.sin(row * 1.7) * 0.35;
-    points.push(`${(x + jag * 0.9).toFixed(2)}% ${y.toFixed(2)}%`);
-  }
-  points.push("-10% 100%");
-  return `polygon(${points.join(", ")})`;
+function CornerArt({ src, side }: { src: string; side: "left" | "right" }) {
+  return (
+    <span
+      aria-hidden="true"
+      // Each drawing fills the left two thirds of its image, so at this height it fits the box whole: none of it
+      // is cut off at the top or the side.
+      className={cx(
+        "absolute bottom-0 h-[320px] w-[390px] bg-white/20",
+        side === "left" ? "left-0" : "right-0 -scale-x-100",
+      )}
+      style={{
+        maskImage: `url(${src})`,
+        maskSize: "auto 100%",
+        maskPosition: "left bottom",
+        maskRepeat: "no-repeat",
+      }}
+    />
+  );
 }
 
-const CLIP = { "--hidden": revealEdge(-4), "--shown": revealEdge(104) } as CSSProperties;
-/** The pale fibres along the moving tear: the same tear a little ahead of the face, ragged differently. */
-const FIBRES = { "--hidden": revealEdge(-3.4, 12.9898), "--shown": revealEdge(104.6, 12.9898) } as CSSProperties;
-
-/** Both layers tear in together, easing in and out, and settle flat from a slight tilt as they go. */
-const TEAR =
-  "absolute inset-0 [clip-path:var(--hidden)] transition-[clip-path,translate,rotate] duration-[1800ms] ease-[cubic-bezier(0.65,0,0.35,1)] [rotate:-0.6deg] [translate:0_10px] group-data-shown/paper:[clip-path:var(--shown)] group-data-shown/paper:[rotate:0deg] group-data-shown/paper:[translate:0_0]";
-
-/** When each column's figures start to fade up: about when the tear, easing in and out over 1.8s, reaches them. */
-const FADE_DELAYS = [550, 780, 960, 1180];
+/**
+ * The ornament either side of the heading, after the brief's "From our blog" heading: a short rule, a small
+ * diamond, then a longer rule running to the label. `mirrored` turns it to face the heading from the right.
+ */
+function Flourish({ mirrored = false }: { mirrored?: boolean }) {
+  return (
+    <span aria-hidden="true" className={cx("flex items-center gap-2", mirrored && "-scale-x-100")}>
+      <span className="h-px w-10 bg-white/60" />
+      <span className="size-1.5 rotate-45 bg-white" />
+      <span className="h-px w-16 bg-white/60" />
+    </span>
+  );
+}
 
 /**
- * The stats on a strip of torn kraft paper, a figure with its unit and a line of context in each of four
- * columns. When the strip scrolls into view it tears in from the left, easing in and out, and settles
- * flat as it goes, with pale fibres showing along the tear; each column's figures fade up as the tear passes them. With reduced motion it's simply there.
+ * The stats band under the hero, after the brief's "Why shop with Rudhigat?" bar: an orange band (#FF8B00) with
+ * monument line art in its corners, a heading in bold serif capitals between two diamond flourishes, and a row of
+ * four stats, each a large figure over its label and a line of context, in white.
  */
 export default function Stats() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [shown, setShown] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (prefersReducedMotion() || !("IntersectionObserver" in window)) {
-      setShown(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setShown(true);
-        observer.disconnect();
-      },
-      { rootMargin: "0px 0px -12% 0px", threshold: 0.4 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section aria-label="Vajiram & Ravi in numbers" className="mx-auto w-canvas px-10 pt-12">
-      <div
-        ref={ref}
-        data-shown={shown || undefined}
-        className="group/paper relative drop-shadow-[0_10px_18px_rgb(67_45_20/0.18)]"
-        style={{ height: PAPER_H }}
-      >
-        <div style={FIBRES} className={TEAR}>
-          <TornPaper rimOnly className="absolute inset-0" />
+    <section aria-labelledby="stats-title" className="relative isolate overflow-hidden bg-[#ff8b00] py-16 text-white">
+      <CornerArt src="/images/toppers/lineart-west.webp" side="left" />
+      <CornerArt src="/images/toppers/lineart-east.webp" side="right" />
+
+      <div className="relative mx-auto flex w-[1000px] flex-col items-center">
+        <div className="flex items-center gap-4">
+          <Flourish />
+          <h2
+            data-split
+            id="stats-title"
+            className="font-noto-serif text-[22px]/[30px] font-bold tracking-[0.06em] uppercase"
+          >
+            <SplitHeading text={stats.heading} />
+          </h2>
+          <Flourish mirrored />
         </div>
-        <div style={CLIP} className={TEAR}>
-          <TornPaper className="absolute inset-0" />
-          <ul className="relative grid h-full grid-cols-4 items-center px-16">
-            {stats.map((stat, i) => (
-              <li
-                key={stat.value}
-                style={{ transitionDelay: `${FADE_DELAYS[i]}ms` }}
-                className={cx(
-                  "translate-y-2 px-8 opacity-0 transition-[opacity,translate] duration-600 ease-smooth group-data-shown/paper:translate-y-0 group-data-shown/paper:opacity-100",
-                  i === 0 ? "pl-0" : "border-l border-brown-900/20",
-                )}
-              >
-                <p className="flex flex-col gap-2 font-medium">
-                  <span className="flex items-baseline gap-2.5 font-display whitespace-nowrap text-neutral-900">
-                    <span className="text-[48px]/[56px] tracking-[-0.96px]">{stat.value}</span>
-                    <span className="text-[20px]/[28px] tracking-[-0.2px]">{stat.unit}</span>
-                  </span>
-                  <span className="font-sans text-[16px]/[24px] text-neutral-800">{stat.text}</span>
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
+
+        {/* Each stat as in the design (3790:42691): the figure large, then its label and a line of context. */}
+        <ul data-reveal-group className="mt-8 grid w-full grid-cols-4 gap-8">
+          {stats.list.map((stat) => (
+            <li key={stat.value} className="flex flex-col items-center text-center">
+              <p className="font-display text-[56px]/[64px] font-medium">{stat.value}</p>
+              <p className="mt-3 font-display text-[20px]/[28px] font-semibold">{stat.label}</p>
+              <p className="mt-1 font-sans text-[16px]/[24px] font-medium text-white/85">{stat.text}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

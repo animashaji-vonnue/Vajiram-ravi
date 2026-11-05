@@ -5,6 +5,7 @@ import SiteHeader from "@/components/layout/SiteHeader";
 import CanvasFit from "@/components/ui/CanvasFit";
 import Toast from "@/components/ui/Toast";
 import { fitCanvasScript } from "@/lib/canvas";
+import { splitReadyScript } from "@/lib/motion";
 import "./globals.css";
 
 const figtree = localFont({
@@ -31,7 +32,10 @@ const geist = localFont({
 
 // A free stand-in for Reckless (Displaay), the serif wanted for the hero heading. Variable: weight 400–700, optical size, SOFT and WONK.
 const fraunces = localFont({
-  src: [{ path: "./fonts/fraunces.woff2", weight: "400 700", style: "normal" }],
+  src: [
+    { path: "./fonts/fraunces.woff2", weight: "400 700", style: "normal" },
+    { path: "./fonts/fraunces-italic.woff2", weight: "300 700", style: "italic" },
+  ],
   // Consumed by the --font-serif theme token in globals.css.
   variable: "--font-fraunces-face",
   display: "swap",
@@ -75,6 +79,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: fitCanvasScript }} />
+        <script dangerouslySetInnerHTML={{ __html: splitReadyScript }} />
       </head>
       <body>
         <CanvasFit />

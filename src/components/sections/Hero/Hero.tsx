@@ -1,54 +1,12 @@
 "use client";
 
-import Image from "next/image";
-import { type CSSProperties, useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/Buttons";
 import { hero } from "@/data/home";
-import { cx } from "@/lib/cx";
-
-/** How long each photo stays up before the next one tears in. */
-const SLIDE_MS = 6000;
-const ROWS = 28;
-
-/**
- * A ragged, slightly slanted vertical edge as a clip-path: everything right of `x`% is kept. The same
- * `seed` always tears the same way, so the hidden and shown shapes have matching points and the browser
- * can slide one into the other.
- */
-function tornEdge(x: number, seed: number): string {
-  const points = ["300% 0%"];
-  for (let row = 0; row <= ROWS; row++) {
-    const y = (row / ROWS) * 100;
-    const jag = (Math.sin((row + 1) * 12.9898 * seed) * 43758.5453) % 1;
-    points.push(`${(x + (50 - y) * 0.12 + jag * 1.4).toFixed(2)}% ${y.toFixed(2)}%`);
-  }
-  points.push("300% 100%");
-  return `polygon(${points.join(", ")})`;
-}
-
-/** The layers of one cut, back to front: two torn papers and then the photo, each a beat behind the last. */
-const LAYERS = [
-  { seed: 1.7, delay: "delay-0" },
-  { seed: 2.9, delay: "delay-[70ms]" },
-  { seed: 4.3, delay: "delay-[160ms]" },
-].map(({ seed, delay }) => ({
-  delay,
-  style: {
-    "--hidden": tornEdge(112, seed),
-    "--shown": tornEdge(-12, seed),
-  } as CSSProperties,
-}));
-
-/** A fine grain for the papers, so they read as paper rather than flat colour. */
-const GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E\")";
-
-/**
- * Hidden until its turn, then torn in over the slide before it; "prev" stays up underneath until the
- * next cut has finished. Only the active slide's tear animates: the others jump.
- */
-const CLIP =
-  "absolute inset-0 [clip-path:var(--hidden)] group-data-[state=active]/slide:[clip-path:var(--shown)] group-data-[state=prev]/slide:[clip-path:var(--shown)] group-data-[state=active]/slide:transition-[clip-path] group-data-[state=active]/slide:duration-[1100ms] group-data-[state=active]/slide:ease-[cubic-bezier(0.7,0,0.2,1)]";
+import { canvasTop } from "@/lib/canvas";
+import { clamp01, followScroll } from "@/lib/scroll";
+import SplitHeading, { letterCount } from "@/components/ui/SplitHeading";
+import VideoLoop from "@/components/ui/VideoLoop";
 
 /**
  * A jaali lattice, after the tone-on-tone pattern in airindia.com's footer but drawn as our own: on an 80px
@@ -63,101 +21,107 @@ const JAALI = `url("data:image/svg+xml,${encodeURIComponent(
     `</svg>`,
 )}")`;
 
-/** The shadow each layer casts on the one beneath, on a wrapper so the clip doesn't cut it off. */
-const SHADOW = "absolute inset-0 drop-shadow-[-8px_0_14px_rgb(0_0_0/0.35)]";
+/**
+ * As the page scrolls away from the top, the hero draws in from the edges like a card being lifted off the
+ * orange of the stats band behind it, after concurrence.com: over the first SHRINK_DISTANCE canvas pixels of
+ * scroll it scales down until it sits INSET pixels in from each side, and its corners round to RADIUS.
+ */
+const SHRINK_DISTANCE = 600;
+const INSET = 32;
+const RADIUS = 24;
+const SMOOTHING_MS = 90;
+
+/** The heading fades away this long after the page opens, leaving the film to play on its own. */
+const TITLE_FADE_AFTER_MS = 6000;
+const TITLE_FADE_MS = 1200;
 
 /**
- * The opening hero, after amperos.com: a rounded card where photos of serving officers (IPS, IAS, IFS)
- * take turns, each one drifting slowly and the next tearing in behind two strips of torn paper in a
- * colour from its photo. The heading, a short paragraph and the buttons sit on the dark left of
- * the photos. With reduced motion the first photo stays up.
- * The card sits on a cream band, the full width of the window, with a faint jaali lattice; the lattice
- * fades out towards the band's foot and the cream fades into the white page.
+ * The opening hero: the film edge to edge, filling the window under the header, with the serif heading centred
+ * over it in white (the second line in the page's orange) on a soft dark wash; then, on the cream band with its
+ * faint jaali lattice, the heading again at a smaller size, the paragraph and the two buttons. It sits on the stats band's orange and draws in from the
+ * edges as the page scrolls. Six seconds in, the heading and its wash fade away and the film plays on alone.
  */
 export default function Hero() {
-  const { slides } = hero;
-  const [index, setIndex] = useState(0);
-  const [prev, setPrev] = useState<number | null>(null);
+  const ref = useRef<HTMLElement>(null);
+  const title = useRef<HTMLHeadingElement>(null);
+  const wash = useRef<HTMLDivElement>(null);
+
+  // After a few seconds the heading and the dark wash behind it fade out together. They stay in the page for
+  // screen readers; only their look goes.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      for (const el of [title.current, wash.current]) {
+        if (!el) continue;
+        el.style.transition = `opacity ${TITLE_FADE_MS}ms ease`;
+        el.style.opacity = "0";
+      }
+    }, TITLE_FADE_AFTER_MS);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setTimeout(() => {
-      setPrev(index);
-      setIndex((index + 1) % slides.length);
-    }, SLIDE_MS);
-    return () => window.clearTimeout(timer);
-  }, [index, slides.length]);
-
-  const state = (i: number) => (i === index ? "active" : i === prev ? "prev" : "idle");
+    const el = ref.current;
+    if (!el) return;
+    return followScroll(
+      () => clamp01(-canvasTop(el) / SHRINK_DISTANCE),
+      (progress) => {
+        const scale = 1 - (progress * INSET * 2) / el.offsetWidth;
+        el.style.transform = `scale(${scale})`;
+        el.style.borderTopLeftRadius = el.style.borderTopRightRadius = `${progress * RADIUS}px`;
+      },
+      SMOOTHING_MS,
+    );
+  }, []);
 
   return (
-    <section aria-labelledby="hero-heading" className="relative isolate bg-linear-to-b from-cream from-70% to-white">
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 mask-b-from-30% mask-b-to-100%"
-        style={{ backgroundImage: JAALI, backgroundPosition: "center top" }}
-      />
-      {/*
-        The card fills the canvas at 1440 (1360px) and grows to 1520px on wider windows, with the lattice
-        either side. It's as tall as the window allows under the header, between 600 and 860px; the photos
-        crop to fit (--vh is the window's height in canvas pixels, from lib/canvas).
-      */}
-      <div className="mx-auto w-full max-w-[1600px] px-10 pt-6 pb-12">
-        <div className="relative h-[clamp(600px,calc(var(--vh,900px)-150px),860px)] w-full overflow-hidden rounded-[24px] bg-neutral-950">
-          {slides.map((slide, i) => (
-            <div
-              key={slide.short}
-              data-state={state(i)}
-              aria-hidden={i !== index}
-              className="group/slide absolute inset-0 z-1 data-[state=active]:z-3 data-[state=prev]:z-2"
-            >
-              {[slide.paper, "var(--color-cream)"].map((colour, layer) => (
-                <div key={colour} className={SHADOW}>
-                  <div
-                    className={cx(CLIP, LAYERS[layer].delay)}
-                    style={{
-                      ...LAYERS[layer].style,
-                      backgroundColor: colour,
-                      backgroundImage: GRAIN,
-                      backgroundBlendMode: "multiply",
-                    }}
-                  />
-                </div>
-              ))}
-              <div className={SHADOW}>
-                <div className={cx(CLIP, LAYERS[2].delay, "overflow-hidden")} style={LAYERS[2].style}>
-                  <Image
-                    src={slide.photo}
-                    alt={slide.alt}
-                    fill
-                    sizes="1520px"
-                    priority={i === 0}
-                    className="object-cover group-data-[state=idle]/slide:animate-none animate-[hero-drift_9s_var(--ease-smooth)_both]"
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
+    <section
+      ref={ref}
+      aria-labelledby="hero-heading"
+      className="relative isolate z-10 origin-top overflow-hidden rounded-b-[24px] bg-linear-to-b from-cream from-70% to-white will-change-transform"
+    >
+      {/* The film fills the window below the 72px header, never less than 600px tall. */}
+      <div className="relative isolate flex h-[max(600px,calc(var(--vh,100vh)-72px))] items-center justify-center">
+        <VideoLoop clips={hero.video.clips} label={hero.video.label} className="bg-neutral-950" />
+        {/* Darkest behind the heading, so the white letters read on any frame of the film. */}
+        <div
+          ref={wash}
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgb(20_10_5/0.45),rgb(20_10_5/0.15)_70%)]"
+        />
+        <h1
+          ref={title}
+          data-split
+          id="hero-heading"
+          className="px-10 text-center font-serif text-[88px]/[0.98] font-normal tracking-[-0.025em] text-white drop-shadow-[0_2px_24px_rgb(0_0_0/0.35)] [font-variation-settings:'SOFT'_0,'WONK'_0]"
+        >
+          <SplitHeading text={hero.heading} />{" "}
+          <em className="block text-[#ff8b00]">
+            <SplitHeading text={hero.highlight} from={letterCount(hero.heading)} />
+          </em>
+        </h1>
+      </div>
 
-          {/* Darkens the left for the text. */}
-          <div className="pointer-events-none absolute inset-0 z-4 bg-linear-to-r from-black/60 via-black/20 via-45% to-transparent to-70%" />
-
-          <div className="absolute bottom-16 left-16 z-5 flex w-[600px] flex-col items-start">
-            <h1
-              id="hero-heading"
-              className="animate-[intro-rise_0.9s_var(--ease-smooth)_both] font-serif text-[76px]/[80px] font-medium tracking-[-1.5px] text-white [font-variation-settings:'SOFT'_0,'WONK'_0]"
-            >
-              {hero.heading} <span className="block text-saffron">{hero.highlight}</span>
-            </h1>
-            <p className="mt-5 w-[520px] animate-[intro-rise_0.9s_var(--ease-smooth)_0.1s_both] text-[18px]/[28px] text-white/80">
-              {hero.intro}
-            </p>
-            <div className="mt-9 flex animate-[intro-rise_0.9s_var(--ease-smooth)_0.2s_both] gap-4">
-              <Button href={hero.primary.href}>{hero.primary.label}</Button>
-              <Button href={hero.secondary.href} tone="secondary">
-                {hero.secondary.label}
-              </Button>
-            </div>
+      <div className="relative isolate">
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 -z-10 h-[360px] mask-b-from-40% mask-b-to-100%"
+          style={{ backgroundImage: JAALI, backgroundPosition: "center top" }}
+        />
+        <div className="mx-auto flex w-canvas flex-col items-center px-10 pt-14 pb-20 text-center">
+          {/* The heading again, smaller, so it stays with the paragraph once the one over the film has faded. The h1
+              already gives it to screen readers. */}
+          <p
+            aria-hidden="true"
+            className="font-serif text-[48px]/[1.05] font-normal tracking-[-0.02em] text-neutral-900 [font-variation-settings:'SOFT'_0,'WONK'_0]"
+          >
+            {hero.heading} <em className="block text-amber">{hero.highlight}</em>
+          </p>
+          <p className="mt-6 w-[620px] text-[18px]/[28px] text-neutral-600">{hero.intro}</p>
+          <div className="mt-8 flex gap-3">
+            <Button href={hero.primary.href}>{hero.primary.label}</Button>
+            <Button href={hero.secondary.href} tone="secondary">
+              {hero.secondary.label}
+            </Button>
           </div>
         </div>
       </div>

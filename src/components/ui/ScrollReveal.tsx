@@ -11,7 +11,8 @@ const SETTLE_MS = 1700;
 /**
  * Fades in `[data-reveal]` blocks and the children of `[data-reveal-group]` elements as they
  * scroll into view. Anything already on screen at load stays visible; only below-the-fold
- * blocks are pre-hidden (the `rv-pre` and `rv-in` classes live in globals.css).
+ * blocks are pre-hidden (the `rv-pre` and `rv-in` classes live in globals.css). It also starts
+ * the letters of `[data-split]` headings (SplitHeading) rising, those on screen at load included.
  *
  * It adds those classes to the server-rendered DOM, so client components must keep the
  * className of any revealed element static (toggle runtime classes through refs instead).
@@ -57,7 +58,21 @@ export default function ScrollReveal() {
       }
     }
 
+    // Split headings rise in once their top is 82% of the way down the window, those on screen at load included.
+    const headings = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          headings.unobserve(entry.target);
+          entry.target.classList.add("split-in");
+        }
+      },
+      { rootMargin: "0px 0px -18% 0px" },
+    );
+    document.querySelectorAll("[data-split]").forEach((el) => headings.observe(el));
+
     return () => {
+      headings.disconnect();
       observer.disconnect();
       timers.forEach(clearTimeout);
     };
