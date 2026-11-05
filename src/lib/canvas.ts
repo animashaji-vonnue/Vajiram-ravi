@@ -6,9 +6,14 @@ export const CANVAS_WIDTH = 1440;
 
 /**
  * Routes that are not part of the fixed canvas and must render at true size.
- * The styles kit is one: zooming it would misreport every type size on the page.
+ *
+ * The styles kit is one: zooming it would misreport every type size on the page. The
+ * Recitals is the other, and for a different reason — it is built fluid rather than as a
+ * 1440 canvas, so its hero is sized in `svh`. Under a zoomed root those units still measure
+ * the real viewport and are then scaled down with everything else, which left the hero at
+ * 70% of the window with the next section showing beneath it.
  */
-const UNZOOMED = /^\/kit(\/|$)/;
+const UNZOOMED = /^\/(kit|recitals)(\/|$)/;
 
 /** Re-fits the canvas to the current viewport and returns the zoom factor applied. */
 export function fitCanvas(): number {
@@ -22,7 +27,7 @@ export function fitCanvas(): number {
 }
 
 /** Inline <head> version of fitCanvas, so the very first paint is already scaled. */
-export const fitCanvasScript = `(function(){var p=location.pathname;if(p==="/kit"||p.indexOf("/kit/")===0)return;var r=document.documentElement,w=r.clientWidth||innerWidth,z=Math.min(1,w/${CANVAS_WIDTH});if(z<1)r.style.zoom=String(z)})();`;
+export const fitCanvasScript = `(function(){var p=location.pathname;if(/^\\/(kit|recitals)(\\/|$)/.test(p))return;var r=document.documentElement,w=r.clientWidth||innerWidth,z=Math.min(1,w/${CANVAS_WIDTH});if(z<1)r.style.zoom=String(z)})();`;
 
 /** Current canvas zoom. Pointer deltas are divided by it so drags track the pointer exactly. */
 export function getCanvasZoom(): number {

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { SmoothScroll } from "@/components/recitals/Motion";
 import RecitalsHeader from "@/components/recitals/RecitalsHeader";
-import StickyCta from "@/components/recitals/StickyCta";
 import Archive from "@/components/recitals/sections/Archive";
 import Faq from "@/components/recitals/sections/Faq";
 import Hero from "@/components/recitals/sections/Hero";
@@ -39,8 +38,6 @@ export default function RecitalsPage() {
       <ReadAlongside />
       <Faq />
       <RecitalsFooter />
-
-      <StickyCta />
     </main>
   );
 }

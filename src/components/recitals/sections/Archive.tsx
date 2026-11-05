@@ -36,7 +36,7 @@ export default function Archive() {
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-20 py-24">
         <SectionHead
           id="archive-h"
-          eyebrow="The archive"
+          eyebrow="The library"
           title="Every issue since May 2019"
           lead={`${issues.length} issues, newest first. Read online or download the PDF. No sign-in, no email.`}
         />
@@ -77,7 +77,7 @@ export default function Archive() {
                   className={cx(
                     "h-10 px-4 font-sans text-[15px]/[20px] font-semibold tabular-nums transition-colors duration-200",
                     active
-                      ? "bg-r-ink text-r-paper"
+                      ? "bg-[#e2650d] text-white"
                       : "bg-r-paper text-r-ink-700 shadow-[inset_0_0_0_1px_var(--color-r-line)] hover:text-r-rust hover:shadow-[inset_0_0_0_1px_var(--color-r-rust)]",
                   )}
                 >

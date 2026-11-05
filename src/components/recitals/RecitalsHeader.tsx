@@ -1,18 +1,19 @@
 "use client";
 
-import { Fragment } from "react";
+import { useEffect, useState } from "react";
 import { PhoneIcon } from "@/components/icons";
-import { FlowerMark } from "@/components/recitals/Ornaments";
-import { announcements } from "@/data/site";
 import { cx } from "@/lib/cx";
 
 /*
- * The header, as drawn in the approved Direction A frame: the dark running banner, then the
- * glass nav with the logo, the eight site links and the "Let's talk" pill. Nothing is added
- * to it — no wordmark, no page-section links, no restyling.
+ * The header: the glass nav with the logo, the eight site links and the "Let's talk" pill,
+ * exactly as drawn in Figma. Nothing is added to it — no wordmark, no page-section links.
  *
- * The only thing that is not in the frame is behaviour: the banner scrolls away as ordinary
- * page content and the nav sticks, so it is still there on a page this long.
+ * The running announcements banner that used to sit above it is gone. On a page whose whole
+ * job is to introduce one magazine, a strip of unrelated scrolling notices was the first
+ * thing a reader met and the first thing they ignored.
+ *
+ * The only thing not in the frame is behaviour: the nav hides on the way down and returns on
+ * the way up, so reading gets the whole window.
  */
 
 const NAV = [
@@ -26,40 +27,43 @@ const NAV = [
   { label: "Contact us", href: "#" },
 ];
 
-function BannerRun({ clone }: { clone?: boolean }) {
-  return (
-    <span className="flex shrink-0 items-center gap-[22px] pr-[22px]" aria-hidden={clone ? "true" : undefined}>
-      {announcements.map((item) => (
-        <Fragment key={item.text}>
-          <a
-            href={item.href}
-            tabIndex={clone ? -1 : undefined}
-            className="font-sans text-[12.5px]/[16px] font-medium whitespace-nowrap text-[#fff1dd]/88 transition-colors duration-200 hover:text-[#fff1dd]"
-          >
-            {item.text}
-          </a>
-          <FlowerMark size={10} className="shrink-0 text-r-amber/85" />
-        </Fragment>
-      ))}
-    </span>
-  );
-}
-
 export default function RecitalsHeader() {
+  /*
+   * Hide on the way down, come back on the way up, as on withbobbin.com. Reading gets the
+   * whole window; the moment you look for navigation, it is already there. The small
+   * threshold stops it flickering on trackpad jitter, and near the top it is always shown.
+   */
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y < 120) setHidden(false);
+      else if (y > last + 6) setHidden(true);
+      else if (y < last - 6) setHidden(false);
+      last = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <>
-      {/* Announcements. Ordinary page content: it scrolls away. */}
-      <div className="group/ann relative h-9 overflow-hidden bg-[#2a1206] px-6" aria-label="Announcements">
-        <div className="flex h-full items-center">
-          <div className="flex w-max animate-[r-marquee_52s_linear_infinite] items-center group-hover/ann:[animation-play-state:paused] motion-reduce:animate-none">
-            <BannerRun />
-            <BannerRun clone />
-          </div>
-        </div>
-      </div>
-
       {/* The glass nav, sticky so it stays with you down the page. */}
-      <div className="sticky top-0 z-50 mx-auto w-full max-w-[1440px] px-20 pt-3.5 pb-0">
+      <div
+        className={cx(
+          /*
+           * The nav floats over the hero rather than sitting above it. In Figma it lives
+           * inside the hero frame, so the paper texture runs behind it; as a block in the
+           * flow it was leaving a strip of untextured page colour across the top. The
+           * negative margin takes its 78px back out of the flow while `sticky` still works.
+           */
+          "sticky top-0 z-50 mx-auto -mb-[78px] w-full max-w-[1440px] px-20 pt-3.5 pb-0",
+          "[transition:translate_.45s_var(--ease-settle)]",
+          hidden ? "-translate-y-[130%]" : "translate-y-0",
+        )}
+      >
         <nav
           className="flex h-16 items-center justify-between rounded-full border border-white/90 bg-white/62 py-3 pr-3 pl-6 shadow-[0_12px_32px_-12px_rgba(122,52,16,.12)] backdrop-blur-[24px]"
           aria-label="Main"

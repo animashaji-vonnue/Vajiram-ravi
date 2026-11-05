@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ArrowRightIcon, ArrowRightXsIcon, ClockIcon, DownloadIcon, SelectChevronIcon } from "@/components/icons";
+import { ArrowRightIcon, ArrowRightXsIcon, ClockIcon, SelectChevronIcon } from "@/components/icons";
 import { DiamondMark, doubleRule, Eyebrow, FlowerMark } from "@/components/recitals/Ornaments";
 import type { Issue } from "@/data/magazine";
 import { cx } from "@/lib/cx";
@@ -43,77 +43,70 @@ export function MetaLine({ items, className }: { items: string[]; className?: st
 }
 
 /**
- * One issue.
+ * One issue, as a postage stamp (Figma: Card / Issue — L).
  *
- * The Indian note here is in the construction, not in applied decoration: a manuscript
- * double rule around the card, a lozenge at two corners, the cover sunk into a ruled well
- * like a plate tipped into a book, serif numerals, and a flower instead of a dot between
- * the facts. On hover the card lifts, the cover eases up inside its well and the inner
- * rule warms to amber, so the ornament reacts rather than just sitting there.
+ * The cover is never cut, masked or decorated — it is a plain rectangle inside the stamp.
+ * All the character lives in the border: a cream panel on a rust ground with the
+ * perforation bitten out of the cream. That is how a real stamp is made, and it is the one
+ * place ornament can go without fighting artwork as busy as these covers.
+ *
+ * The scallop is a grid of cream discs sitting behind the panel and overhanging it by one
+ * radius. Only the overhanging halves show, so the edge stays correct at any card height
+ * without hard-coding a count per card.
  */
 export function IssueCard({ issue, latest }: { issue: Issue; latest?: boolean }) {
   return (
     <article
       className={cx(
-        "group/issue relative flex flex-col bg-r-paper p-3.5",
+        "group/issue relative flex flex-col bg-[#b9501f] p-5",
         "[transition:translate_.4s_var(--ease-settle),box-shadow_.4s_var(--ease-settle)]",
-        "hover:-translate-y-1 hover:shadow-[0_22px_40px_-24px_rgba(94,27,16,.45)]",
-        doubleRule,
-        "hover:shadow-[inset_0_0_0_1px_var(--color-r-line),inset_0_0_0_4px_var(--color-r-paper),inset_0_0_0_5px_var(--color-r-amber),0_22px_40px_-24px_rgba(94,27,16,.45)]",
+        "hover:-translate-y-1 hover:shadow-[0_24px_44px_-24px_rgba(94,27,16,.5)]",
       )}
     >
-      <DiamondMark size={5} className="absolute top-[9px] left-[9px] text-r-amber opacity-0 transition-opacity duration-400 group-hover/issue:opacity-100" />
-      <DiamondMark size={5} className="absolute right-[9px] bottom-[9px] text-r-amber opacity-0 transition-opacity duration-400 group-hover/issue:opacity-100" />
-
-      {/* The cover, sunk into its well. */}
-      <div className="relative overflow-hidden bg-r-sand shadow-[inset_0_0_0_1px_rgba(94,27,16,.12)]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={issue.cover}
-          alt={`${issue.label} cover`}
-          width={260}
-          height={336}
-          loading="lazy"
-          decoding="async"
-          className="aspect-[260/336] w-full object-cover transition-transform duration-700 ease-[var(--ease-settle)] group-hover/issue:scale-[1.04]"
+      <div className="relative flex flex-1 flex-col">
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-[9px]"
+          style={{
+            background:
+              "radial-gradient(circle 9px at center, #fdf6e8 96%, transparent 98%) center / 19.4px 19.4px repeat",
+          }}
         />
-        {latest && (
-          <span className="absolute top-2.5 left-2.5">
-            <StampBadge>Latest</StampBadge>
-          </span>
-        )}
+
+        <div className="relative flex flex-1 flex-col gap-[11px] bg-[#fdf6e8] px-3.5 pt-3.5 pb-[13px]">
+          <div className="relative overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={issue.cover}
+              alt={`${issue.label} cover`}
+              width={260}
+              height={336}
+              loading="lazy"
+              decoding="async"
+              className="aspect-[260/336] w-full object-cover transition-transform duration-700 ease-[var(--ease-settle)] group-hover/issue:scale-[1.03]"
+            />
+            {latest && (
+              <span className="absolute top-2 left-2">
+                <StampBadge>Latest</StampBadge>
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col items-center gap-0.5 text-center">
+            <h3 className="font-r-masthead text-[27px]/[30px] text-[#8a3516]">
+              {issue.month} <span className="text-[#b9501f] italic">{issue.year}</span>
+            </h3>
+            <p className="font-sans text-[9.5px]/[13px] font-semibold tracking-[.12em] text-[#8a3516]/55 uppercase">
+              {issue.pages} pages · PDF {issue.size}
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-1 pt-3.5">
-        <h3 className="font-r-editorial text-[20px]/[26px] font-bold text-r-ink">
-          {issue.month} <span className="font-normal text-r-ink-500">{issue.year}</span>
-        </h3>
-        <MetaLine items={[`${issue.pages} pages`, `PDF ${issue.size}`]} />
-      </div>
-
-      <div className="mt-3.5 flex items-center justify-between border-t border-r-line pt-3">
-        <a
-          href={issue.pdf}
-          className="flex items-center gap-1.5 font-sans text-[14px]/[20px] font-semibold text-r-rust after:absolute after:inset-0 after:content-['']"
-        >
-          Read
-          <ArrowRightXsIcon className="transition-transform duration-300 group-hover/issue:translate-x-0.5" />
-        </a>
-        <span className="relative z-10 flex items-center gap-2">
-          <a
-            href={issue.pdf}
-            download
-            aria-label={`Download ${issue.label}`}
-            className="flex size-7 items-center justify-center text-r-ink-500 transition-colors duration-200 hover:text-r-rust"
-          >
-            <DownloadIcon />
-          </a>
-        </span>
-      </div>
+      <a href={issue.pdf} className="absolute inset-0" aria-label={`Read ${issue.label}`} />
     </article>
   );
 }
-
 /** A related free collection: Yojana, Kurukshetra, Quick Revision, Mains Probable. */
 export function CollectionCard({ title, body, icon }: { title: string; body: string; icon: ReactNode }) {
   return (
@@ -221,7 +214,7 @@ export function YearChip({ children, active }: { children: ReactNode; active?: b
     <span
       className={cx(
         "inline-flex h-9 items-center px-3.5 font-sans text-[14px]/[20px] font-semibold tabular-nums transition-colors duration-200",
-        active ? "bg-r-ink text-r-paper" : "text-r-ink-700 shadow-[inset_0_0_0_1px_var(--color-r-line)] hover:bg-r-cream",
+        active ? "bg-[#e2650d] text-white" : "text-r-ink-700 shadow-[inset_0_0_0_1px_var(--color-r-line)] hover:bg-r-cream",
       )}
     >
       {children}
