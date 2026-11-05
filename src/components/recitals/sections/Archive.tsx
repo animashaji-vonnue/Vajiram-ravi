@@ -61,14 +61,14 @@ export default function Archive() {
   }, [syncEnds, shown.length, year, query, onShelf]);
 
   return (
-    <section id="archive" className="relative bg-[#f4efe2]" aria-labelledby="archive-h">
+    <section id="archive" className="relative bg-[#fbf6ec]" aria-labelledby="archive-h">
       {/*
        * A real sheet, scanned: fibre, tone and torn newsprint caught at its corners. Every
        * drawn pattern tried here — diamonds, asterisks, a ruled grid — read either as
        * decoration or as dirt, because a flat tint with marks on it is not a surface.
        */}
       <div
-        className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[.3] mix-blend-multiply"
         style={{ backgroundImage: "url(/recitals/section-paper.webp)" }}
         aria-hidden="true"
       />
