@@ -221,7 +221,7 @@ export function SeamBand({ variant = "toran", from, to, accent = "#e9a23b", clas
  * Surface patterns — the quiet texture under a section, never over the reading area.
  * ------------------------------------------------------------------------------------ */
 
-export type PatternName = "jali" | "block" | "chevron" | "star" | "ledger";
+export type PatternName = "jali" | "block" | "chevron" | "star" | "ledger" | "register";
 
 const PATTERN_TILES: Record<PatternName, { w: number; h: number; svg: (c: string) => string }> = {
   /** A lattice screen, for wide background fields. */
@@ -282,6 +282,26 @@ const PATTERN_TILES: Record<PatternName, { w: number; h: number; svg: (c: string
       "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" +
       "<g stroke='" + c + "' stroke-width='1' fill='none'>" +
       "<path d='M0 31.5H32'/><path d='M31.5 0V32'/>" +
+      "</g></svg>",
+  },
+  /**
+   * A government noting sheet: ruled lines with a margin rule struck down the left of
+   * every column and a tick where each entry would be numbered.
+   *
+   * This is the one pattern on the page that belongs to the reader rather than to the
+   * subject. An aspirant has handled this paper — in an office, on a form, in a register
+   * — so it reads as the world they are entering rather than as decoration applied to a
+   * page about it. It is also nobody's property, which the emblem and the chakra are.
+   */
+  register: {
+    w: 148,
+    h: 34,
+    svg: (c) =>
+      "<svg xmlns='http://www.w3.org/2000/svg' width='148' height='34'>" +
+      "<g stroke='" + c + "' fill='none'>" +
+      "<path stroke-width='1' d='M0 33.5H148'/>" +
+      "<path stroke-width='1.6' d='M26.5 0V34'/>" +
+      "<path stroke-width='1' d='M10 26.5h9'/>" +
       "</g></svg>",
   },
   /** A fine zigzag, for narrow strips and card headers. */

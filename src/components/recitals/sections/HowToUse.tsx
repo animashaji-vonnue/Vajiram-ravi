@@ -1,6 +1,6 @@
 import { ClockIcon } from "@/components/icons";
 import { Reveal } from "@/components/recitals/Motion";
-import { FlowerMark, SectionGround } from "@/components/recitals/Ornaments";
+import { FlowerMark, patternStyle, SectionGround } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { readingPasses, readingTotal } from "@/data/magazine";
 
@@ -27,6 +27,12 @@ export default function HowToUse() {
   return (
     <section id="how" className="relative bg-[#faf3e6]" aria-labelledby="how-h">
       <SectionGround tint={0.24} />
+      {/*
+       * Ruled like a noting sheet. The other grounds on the page are paper; this one is
+       * paper that has been issued, which is the register an aspirant will spend a career
+       * writing in.
+       */}
+      <div className="pointer-events-none absolute inset-0" style={patternStyle("register", "#8a4a16", 0.1)} aria-hidden="true" />
       <div className="relative mx-auto flex w-full max-w-[1440px] items-start gap-20 px-20 py-24">
         <Reveal className="sticky top-32 w-[420px] shrink-0">
           <SectionHead
