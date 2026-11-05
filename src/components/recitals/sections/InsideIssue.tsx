@@ -1,29 +1,34 @@
 import { Reveal } from "@/components/recitals/Motion";
-import { SectionGround, StarMark } from "@/components/recitals/Ornaments";
+import { SectionGround } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { issueSections } from "@/data/magazine";
 
 /*
  * What is in every issue.
  *
- * The UX job is to answer "what am I actually downloading" before someone spends an hour
- * on it. Five fixed parts, in the order they appear.
+ * The cards are the magazine's own contents entries, not boxes with a bullet in them: a
+ * folio column carrying the part number, a rule, then the entry itself. Each part is a
+ * whole colour field the way a section divider is printed in a magazine, alternating deep
+ * and light down the stack — so a card is recognisable from the strip of its edge once the
+ * next one has covered it, and the five of them read as a publication rather than as a
+ * list of features.
  *
- * They are read one at a time rather than scanned as a list: the heading holds still while
- * each card rises, parks, and is covered by the next — every card `sticky` at its own
- * offset inside one column, which is the mechanism on voicetaggods.com. Each parks a
- * little lower than the last, so the edge of everything already read stays on screen.
- *
- * No entrance animation on these. A transform on a wrapper fights sticky positioning, and
- * the arrival is the interaction here.
+ * They stack: the heading holds still while each card rises, parks, and is covered by the
+ * next. No entrance animation — a transform on a wrapper fights sticky positioning.
  */
 
-/**
- * One accent per part, drawn from the palette rather than the two tones the cards had
- * before. It colours the numeral block, the wash in the corner and the asterisk behind it,
- * so each card is recognisable at a glance once it is down to a parked edge.
- */
-const ACCENTS = ["#e49b0f", "#cc5500", "#e34234", "#b87333", "#a8341a"];
+type Tone = { bg: string; fg: string; body: string; rule: string; folio: string };
+
+/** Deep, light, deep, light, deep — the way a run of section dividers is printed. */
+const TONES: Tone[] = [
+  { bg: "#a8341a", fg: "#fff4e4", body: "#ffe3c6", rule: "rgba(255,244,228,.3)", folio: "rgba(255,244,228,.45)" },
+  { bg: "#ffe0ab", fg: "#6b2a0e", body: "#8a4318", rule: "rgba(107,42,14,.24)", folio: "rgba(107,42,14,.34)" },
+  { bg: "#c0532a", fg: "#fff4e4", body: "#ffe3c6", rule: "rgba(255,244,228,.3)", folio: "rgba(255,244,228,.45)" },
+  { bg: "#f2c75c", fg: "#67290d", body: "#833f16", rule: "rgba(103,41,13,.24)", folio: "rgba(103,41,13,.34)" },
+  { bg: "#7c2a11", fg: "#fff4e4", body: "#ffdcbb", rule: "rgba(255,244,228,.28)", folio: "rgba(255,244,228,.4)" },
+];
+
+const WORDS = ["One", "Two", "Three", "Four", "Five"];
 
 /** Where the first card parks, clear of the floating nav. */
 const PARK = 128;
@@ -44,43 +49,41 @@ export default function InsideIssue() {
           />
         </Reveal>
 
-        {/*
-         * A short runway, not a long one. The stack needs the container to still be
-         * crossing the scrollport in order to hold, but too much of it leaves the finished
-         * stack hanging in dead space and then lurching upward when it finally lets go.
-         */}
         <div className="relative min-w-0 flex-1 pb-[10vh]">
           {issueSections.map((section, i) => {
-            const accent = ACCENTS[i % ACCENTS.length];
+            const tone = TONES[i % TONES.length];
             return (
               <div key={section.title} className="sticky" style={{ top: PARK + i * STEP, zIndex: i + 1 }}>
-                <article className="relative mb-6 overflow-hidden bg-r-paper shadow-[0_0_0_1px_rgba(94,27,16,.09),0_26px_46px_-34px_rgba(94,27,16,.55)]">
-                  {/* The corner: a wash of the part's own colour, and the asterisk in it. */}
+                <article
+                  className="mb-6 flex items-stretch overflow-hidden shadow-[0_26px_46px_-34px_rgba(94,27,16,.6)]"
+                  style={{ backgroundColor: tone.bg }}
+                >
+                  {/* The folio column, as a contents page sets it. */}
                   <div
-                    className="pointer-events-none absolute -top-16 -right-16 size-52 rounded-full"
-                    style={{ background: `radial-gradient(circle, ${accent}2e, transparent 68%)` }}
-                    aria-hidden="true"
-                  />
-                  <span
-                    className="pointer-events-none absolute -top-7 -right-7 opacity-[.13]"
-                    style={{ color: accent }}
-                    aria-hidden="true"
+                    className="flex w-[116px] shrink-0 flex-col justify-between py-6 pr-5 pl-7"
+                    style={{ borderRight: `1px solid ${tone.rule}` }}
                   >
-                    <StarMark size={132} />
-                  </span>
-
-                  <div className="relative flex items-start gap-6 p-8">
                     <span
-                      className="flex size-11 shrink-0 items-center justify-center font-r-display text-[17px]/[20px] font-extrabold text-white"
-                      style={{ backgroundColor: accent }}
+                      className="font-sans text-[10px]/[14px] font-semibold tracking-[.2em] uppercase"
+                      style={{ color: tone.folio }}
+                    >
+                      Part {WORDS[i]}
+                    </span>
+                    <span
+                      className="font-r-display text-[52px]/[46px] font-extrabold"
+                      style={{ color: tone.fg }}
                     >
                       {String(i + 1).padStart(2, "0")}
                     </span>
+                  </div>
 
-                    <div className="flex min-w-0 flex-1 flex-col gap-2 pr-10">
-                      <h3 className="font-r-editorial text-[22px]/[28px] font-bold text-r-ink">{section.title}</h3>
-                      <p className="font-sans text-[16px]/[25px] font-medium text-r-ink-700">{section.description}</p>
-                    </div>
+                  <div className="flex min-w-0 flex-1 flex-col gap-2.5 px-8 py-7">
+                    <h3 className="font-r-editorial text-[25px]/[31px] font-bold" style={{ color: tone.fg }}>
+                      {section.title}
+                    </h3>
+                    <p className="font-sans text-[16px]/[25px] font-medium" style={{ color: tone.body }}>
+                      {section.description}
+                    </p>
                   </div>
                 </article>
               </div>

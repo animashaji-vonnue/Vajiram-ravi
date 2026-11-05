@@ -7,32 +7,60 @@ import { readingPasses, readingTotal } from "@/data/magazine";
 /*
  * How to actually use an issue.
  *
- * This section exists because the common failure is downloading every issue and reading
- * none. Three passes with real times attached turn the magazine from a thing you collect
- * into a thing you schedule.
+ * The common failure is downloading every issue and reading none. Three passes with real
+ * times attached turn the magazine from a thing you collect into a thing you schedule.
  *
- * The passes happen in sequence across a month, so they are read in sequence: the heading
- * holds still and each pass rises, parks and is covered by the next. Every card carries
- * its place in the month on a tinted strip at its head, and that strip is sized to be
- * exactly what stays visible once the following card lands on top — so by the end of the
- * section the three strips read down the page as a timetable, which is the point.
+ * Same card language as the contents entries above — a whole colour field with a folio
+ * column — because these are pages of one publication, not a different kind of object.
+ * What differs is the head: each card carries its place in the month on a band sized to
+ * exactly what stays visible once the next card lands on top, so the three bands end up
+ * reading down the page as a timetable with only the current pass open.
  */
+
+type Tone = { bg: string; band: string; fg: string; body: string; rule: string; folio: string };
+
+const TONES: Tone[] = [
+  {
+    bg: "#b4481c",
+    band: "#9c3b14",
+    fg: "#fff4e4",
+    body: "#ffe3c6",
+    rule: "rgba(255,244,228,.28)",
+    folio: "rgba(255,244,228,.5)",
+  },
+  {
+    bg: "#f2c75c",
+    band: "#e3b23f",
+    fg: "#67290d",
+    body: "#833f16",
+    rule: "rgba(103,41,13,.24)",
+    folio: "rgba(103,41,13,.42)",
+  },
+  {
+    bg: "#7c2a11",
+    band: "#67200c",
+    fg: "#fff4e4",
+    body: "#ffdcbb",
+    rule: "rgba(255,244,228,.26)",
+    folio: "rgba(255,244,228,.46)",
+  },
+];
 
 /** Where the first card parks, clear of the floating nav. */
 const PARK = 132;
-/** The height of the strip each parked card leaves showing. */
-const STEP = 56;
+/** The height of the band each parked card leaves showing. */
+const STEP = 54;
 
 export default function HowToUse() {
   return (
     <section id="how" className="relative bg-[#faf3e6]" aria-labelledby="how-h">
       <SectionGround tint={0.24} />
-      {/*
-       * Ruled like a noting sheet. The other grounds on the page are paper; this one is
-       * paper that has been issued, which is the register an aspirant will spend a career
-       * writing in.
-       */}
-      <div className="pointer-events-none absolute inset-0" style={patternStyle("register", "#8a4a16", 0.1)} aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={patternStyle("register", "#8a4a16", 0.1)}
+        aria-hidden="true"
+      />
+
       <div className="relative mx-auto flex w-full max-w-[1440px] items-start gap-20 px-20 py-24">
         <Reveal className="sticky top-32 w-[420px] shrink-0">
           <SectionHead
@@ -47,39 +75,61 @@ export default function HowToUse() {
           </p>
         </Reveal>
 
-        {/*
-         * The padding is the runway. A sticky card only holds while its container is still
-         * passing the scrollport, so without this the stack unsticks the moment the last
-         * card is laid down and the whole arrangement slides away before it can be read.
-         */}
-        <div className="relative min-w-0 flex-1 pb-[38vh]">
-          {readingPasses.map((pass, i) => (
-            <div key={pass.title} className="sticky" style={{ top: PARK + i * STEP, zIndex: i + 1 }}>
-              <article className="mb-6 bg-r-paper shadow-[0_0_0_1px_rgba(94,27,16,.09),0_26px_46px_-34px_rgba(94,27,16,.55)]">
-                {/* The strip that stays showing once the next pass covers this one. */}
-                <div
-                  className="flex items-center justify-between bg-[#f1e3ca] px-8"
-                  style={{ height: STEP }}
+        <div className="relative min-w-0 flex-1 pb-[16vh]">
+          {readingPasses.map((pass, i) => {
+            const tone = TONES[i % TONES.length];
+            return (
+              <div key={pass.title} className="sticky" style={{ top: PARK + i * STEP, zIndex: i + 1 }}>
+                <article
+                  className="mb-6 overflow-hidden shadow-[0_26px_46px_-34px_rgba(94,27,16,.6)]"
+                  style={{ backgroundColor: tone.bg }}
                 >
-                  <span className="flex items-center gap-3 font-sans text-[12px]/[16px] font-semibold tracking-[.16em] text-r-rust uppercase">
-                    <span className="font-r-display text-[15px] font-extrabold">
-                      {String(i + 1).padStart(2, "0")}
+                  {/* The band that stays showing once the next pass covers this one. */}
+                  <div
+                    className="flex items-center justify-between px-8"
+                    style={{ height: STEP, backgroundColor: tone.band }}
+                  >
+                    <span
+                      className="flex items-center gap-3 font-sans text-[11px]/[15px] font-semibold tracking-[.2em] uppercase"
+                      style={{ color: tone.fg }}
+                    >
+                      <span className="font-r-display text-[14px] font-extrabold">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      {pass.when}
                     </span>
-                    {pass.when}
-                  </span>
-                  <span className="flex items-center gap-1.5 font-sans text-[12px]/[16px] font-semibold text-r-rust">
-                    <ClockIcon className="size-3.5" />
-                    {pass.minutes}
-                  </span>
-                </div>
+                    <span
+                      className="flex items-center gap-1.5 font-sans text-[12px]/[16px] font-semibold"
+                      style={{ color: tone.folio }}
+                    >
+                      <ClockIcon className="size-3.5" />
+                      {pass.minutes}
+                    </span>
+                  </div>
 
-                <div className="flex flex-col gap-2.5 p-8">
-                  <h3 className="font-r-editorial text-[22px]/[28px] font-bold text-r-ink">{pass.title}</h3>
-                  <p className="font-sans text-[16px]/[25px] font-medium text-r-ink-700">{pass.body}</p>
-                </div>
-              </article>
-            </div>
-          ))}
+                  <div className="flex items-stretch">
+                    <div
+                      className="flex w-[116px] shrink-0 items-start py-7 pr-5 pl-7"
+                      style={{ borderRight: `1px solid ${tone.rule}` }}
+                    >
+                      <span className="font-r-display text-[52px]/[46px] font-extrabold" style={{ color: tone.fg }}>
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+
+                    <div className="flex min-w-0 flex-1 flex-col gap-2.5 px-8 py-7">
+                      <h3 className="font-r-editorial text-[25px]/[31px] font-bold" style={{ color: tone.fg }}>
+                        {pass.title}
+                      </h3>
+                      <p className="font-sans text-[16px]/[25px] font-medium" style={{ color: tone.body }}>
+                        {pass.body}
+                      </p>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
