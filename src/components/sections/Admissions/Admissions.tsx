@@ -1,3 +1,4 @@
+import NoteCard from "@/components/ui/NoteCard";
 import { EyebrowLeft } from "@/components/ui/Ornament";
 import { batchesCopy } from "@/data/admissions";
 import { contact } from "@/data/site";
@@ -29,17 +30,26 @@ export default function Admissions() {
               {batchesCopy.heading}
             </h2>
           </div>
-          <div className="w-[406px] shrink-0">
-            <p data-reveal="sub" className="w-[420px] text-[16px]/[1.55] text-[#6b6560]">
-              {batchesCopy.introBefore}{" "}
-              <a
-                href={contact.phoneHref}
-                className="underline-offset-[3px] [transition:color_var(--dur-fast)_var(--ease-out)] hover:text-ink hover:underline"
-              >
-                {contact.phone}
-              </a>{" "}
-              {batchesCopy.introAfter}
-            </p>
+          {/*
+           * The intro on the note card of the toppers band (ui/NoteCard). The card is taller than the
+           * heading column, so it stands on the row's foot and rises into the band's top padding: the row
+           * keeps its height and the board stays inside the double-rule frame, which is drawn to size.
+           */}
+          <div className="relative w-[372px] shrink-0 self-stretch">
+            <div data-reveal="sub" className="absolute right-0 bottom-0">
+              <NoteCard>
+                <p className="text-[16px]/[1.55] text-[#6b6560]">
+                  {batchesCopy.introBefore}{" "}
+                  <a
+                    href={contact.phoneHref}
+                    className="underline-offset-[3px] [transition:color_var(--dur-fast)_var(--ease-out)] hover:text-ink hover:underline"
+                  >
+                    {contact.phone}
+                  </a>{" "}
+                  {batchesCopy.introAfter}
+                </p>
+              </NoteCard>
+            </div>
           </div>
         </div>
 

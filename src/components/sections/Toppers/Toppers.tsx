@@ -1,3 +1,4 @@
+import NoteCard from "@/components/ui/NoteCard";
 import { EyebrowLeft } from "@/components/ui/Ornament";
 import { toppersByYear, toppersSection, toppersYear } from "@/data/toppers";
 import ToppersCarousel from "./ToppersCarousel";
@@ -26,7 +27,12 @@ export default function Toppers() {
               </em>
             </h2>
           </div>
-          <NoteCard text={toppersSection.note} />
+          {/* The note card (ui/NoteCard) in a 194px box, so the top row is as tall as drawn. */}
+          <div data-reveal="sub" className="h-[194px] w-[372px] shrink-0 pt-[35.45px]">
+            <NoteCard>
+              <p className="text-[15px]/[22px] font-medium text-clay">{toppersSection.note}</p>
+            </NoteCard>
+          </div>
         </div>
 
         <ToppersCarousel
@@ -37,34 +43,5 @@ export default function Toppers() {
         />
       </div>
     </section>
-  );
-}
-
-/**
- * The note beside the heading: the design's invitation card in a short, 372 × 125 cut (cream paper with a
- * burnt hairline, scalloped corners and a peak at the top centre) inside a 194px box, so the top row is
- * as tall as drawn. The two outlines are the design's own drawings.
- */
-function NoteCard({ text }: { text: string }) {
-  return (
-    <div data-reveal="sub" className="relative h-[194px] w-[372px] shrink-0">
-      <img
-        src="/images/toppers/note-card.svg"
-        alt=""
-        aria-hidden="true"
-        width={373}
-        height={126.044}
-        className="pointer-events-none absolute top-[35.45px] left-[-0.5px] h-[126.044px] w-[373px] max-w-none"
-      />
-      <img
-        src="/images/toppers/note-inner-border.svg"
-        alt=""
-        aria-hidden="true"
-        width={357.75}
-        height={107.78}
-        className="pointer-events-none absolute top-[45.6px] left-[6.625px] h-[107.78px] w-[357.75px] max-w-none"
-      />
-      <p className="absolute top-[60px] left-6 w-[324px] text-[15px]/[22px] font-medium text-clay">{text}</p>
-    </div>
   );
 }
