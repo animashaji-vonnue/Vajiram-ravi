@@ -89,8 +89,8 @@ export default function Courses() {
       left: x,
       top: y,
       transform: hovered === i && picked === null ? "translateY(-12px)" : "none",
-      filter: picked !== null ? "blur(12px)" : "none",
-      opacity: picked !== null ? 0.35 : 1,
+      filter: picked !== null ? "blur(20px)" : "none",
+      opacity: picked !== null ? 0.25 : 1,
     };
   };
 
@@ -99,7 +99,7 @@ export default function Courses() {
       <div className="relative isolate overflow-hidden rounded-[32px] bg-[radial-gradient(ellipse_at_center,#ffa04a_20%,#f68026)] py-24 text-white">
         {/*
           The ruins of Nalanda in line art, across the card's foot behind the shelves, in dark brown: its lines are
-          darkened and warmed, and its white paper drops out against the orange. It fades back while a course is picked.
+          darkened and warmed, and its white paper drops out against the orange. It fades and blurs back while a course is picked.
         */}
         <Image
           src={courses.backdrop}
@@ -108,8 +108,8 @@ export default function Courses() {
           height={576}
           sizes="100vw"
           className={cx(
-            "absolute inset-x-0 bottom-0 -z-10 w-full mix-blend-multiply brightness-75 contrast-200 sepia transition-opacity duration-700",
-            picked !== null && "opacity-30",
+            "absolute inset-x-0 bottom-0 -z-10 w-full mix-blend-multiply brightness-75 contrast-200 sepia transition-[opacity,filter] duration-700",
+            picked !== null && "opacity-20 blur-[6px]",
           )}
         />
         {/* The heading as on the faculty section: spaced capitals between gilt double rules, a lozenge under it. */}
@@ -142,7 +142,7 @@ export default function Courses() {
               aria-hidden="true"
               className={cx(
                 "pointer-events-none absolute h-4 rounded-[2px] border-b-[3px] border-[#ddd6cd] bg-linear-to-b from-white to-[#f4f1ec] shadow-[0_26px_34px_-14px_rgb(40_25_15/0.45)] transition-[filter,opacity] duration-700",
-                picked !== null && "opacity-35 blur-[12px]",
+                picked !== null && "opacity-25 blur-[20px]",
               )}
               // Each shelf runs SHELF_OVERHANG past the sleeves at either end.
               style={{
