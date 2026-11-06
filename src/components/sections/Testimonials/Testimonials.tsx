@@ -140,7 +140,7 @@ export default function Testimonials() {
     <section aria-labelledby="testimonials-title" className="px-10 pb-32">
       {/* A card over the two films, washed dark so the light heading and the peach stamps stand out on it. */}
       <div className="relative isolate overflow-hidden rounded-[32px] py-24 text-white">
-        <VideoLoop clips={testimonials.backdrop} className="bg-neutral-950" />
+        <VideoLoop clips={testimonials.backdrop} lazy className="bg-neutral-950" />
         <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[rgb(25_14_8/0.62)]" />
         {/* The heading as on the faculty section: spaced capitals between gilt double rules, a lozenge under it. */}
         <div data-reveal className="mx-auto flex w-canvas flex-col items-center text-center">

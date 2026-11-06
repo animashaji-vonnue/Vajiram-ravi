@@ -69,7 +69,13 @@ export default function ScrollReveal() {
       },
       { rootMargin: "0px 0px -18% 0px" },
     );
-    document.querySelectorAll("[data-split]").forEach((el) => headings.observe(el));
+    // Only take the headings over if the head script is still holding them hidden; once it has given up and shown
+    // them in place, leave them be.
+    const root = document.documentElement;
+    if (root.classList.contains("split-ready")) {
+      root.setAttribute("data-split-live", "");
+      document.querySelectorAll("[data-split]").forEach((el) => headings.observe(el));
+    }
 
     return () => {
       headings.disconnect();
