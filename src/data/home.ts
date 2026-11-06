@@ -272,6 +272,8 @@ export const testimonials = {
 export const courses = {
   heading: "Our courses",
   intro: "Every programme we run, on one wall. Pick a course to take a closer look.",
+  /** The ruins of Nalanda in line art, along the foot of the section. */
+  backdrop: "/images/courses/nalanda.webp",
   list: [
     {
       name: "UPSC GS Foundation Course - PCM",
