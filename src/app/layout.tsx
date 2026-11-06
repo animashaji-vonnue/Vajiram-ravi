@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
+import SiteFooter from "@/components/layout/SiteFooter";
 import SiteHeader from "@/components/layout/SiteHeader";
 import CanvasFit from "@/components/ui/CanvasFit";
 import Toast from "@/components/ui/Toast";
@@ -92,6 +93,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </a>
         <SiteHeader />
         {children}
+        <SiteFooter />
         <Toast />
       </body>
     </html>

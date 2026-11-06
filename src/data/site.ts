@@ -45,7 +45,10 @@ export const mainNav: (LinkItem | NavMenu)[] = [
     label: "Study Materials",
     heading: "UPSC Study Materials",
     links: [
-      { label: "The Recitals - Monthly Magazine", href: `${SITE}/upsc-study-materials/monthly-current-affairs-magazine/` },
+      {
+        label: "The Recitals - Monthly Magazine",
+        href: `${SITE}/upsc-study-materials/monthly-current-affairs-magazine/`,
+      },
       { label: "QUEST UPSC Notes", href: `${SITE}/upsc-exam/free-upsc-study-material-notes/` },
       { label: "Pensive - Weekly Essay", href: `${SITE}/upsc-study-materials/weekly-essay/` },
       { label: "Infographic", href: `${SITE}/upsc-study-materials/infographics/` },
@@ -112,3 +115,123 @@ export const mainNav: (LinkItem | NavMenu)[] = [
 ];
 
 export const isNavMenu = (item: LinkItem | NavMenu): item is NavMenu => "links" in item;
+
+/**
+ * The site footer's links, from the design (3347:42630). Every link points to "#" until the pages it names exist;
+ * the social links likewise wait for the institute's account addresses.
+ */
+const footerGroup = (title: string, labels: string[]) => ({
+  title,
+  links: labels.map((label) => ({ label, href: "#" })),
+});
+
+export const footer = {
+  /**
+   * The contact block at the top of the footer, from the design's "CTA updated" (3267:42644). Booking and WhatsApp
+   * point to "#" until their addresses are known; email and phone use the institute's contact details.
+   */
+  contact: {
+    eyebrow: "Contact us",
+    heading: "What are you looking for?",
+    intro: "We’re here to help you anytime, any way",
+    cards: [
+      {
+        icon: "user",
+        title: "Course counselling",
+        text: "Not sure which programme fits? A counsellor can help you.",
+        action: { label: "Book a free session", href: "#" },
+      },
+      {
+        icon: "whatsapp",
+        title: "Chat on WhatsApp",
+        text: "Quick answers on courses, batches and fees from our admissions team.",
+        action: { label: "Chat on WhatsApp", href: "#" },
+      },
+      {
+        icon: "mail",
+        title: "Email us",
+        text: "Write to us on:",
+        detail: contact.email,
+        action: { label: "Send an email", href: `mailto:${contact.email}` },
+      },
+      {
+        icon: "phone",
+        title: "Talk to us",
+        text: "Contact us on:",
+        detail: contact.phone,
+        action: { label: "Call now", href: contact.phoneHref },
+      },
+    ] as const,
+    /** The Qutub Minar and the Charminar in line art, standing either side of the contact block. */
+    monuments: { left: "/images/footer/qutub-minar.webp", right: "/images/footer/charminar.webp" },
+  },
+  /** The link groups, column by column; a column can hold more than one group. */
+  columns: [
+    [
+      footerGroup("Courses", [
+        "UPSC GS Course 2027",
+        "UPSC GS Online Course 2027",
+        "UPSC 2 Year Course",
+        "UPSC 2 Year Online Course",
+        "UPSC Online Coaching",
+        "UPSC CSAT Course",
+        "Current Affairs Course",
+        "UPSC Study Material",
+      ]),
+    ],
+    [
+      footerGroup("Test series & mentorship", [
+        "UPSC Prelims Test Series 2027",
+        "UPSC Mains Test Series 2027",
+        "UPSC Mains Test Series Hindi Medium",
+        "UPSC Optional Test Series",
+        "UPSC Mentorship Program 2027",
+        "UPSC Mentorship Program Hindi Medium",
+        "UPSC Interview Guidance Program IGP",
+      ]),
+      footerGroup("Vajiram & Ravi", ["About Us", "Careers", "Contact Us", "FAQs"]),
+    ],
+    [
+      footerGroup("UPSC exam", [
+        "UPSC 2027",
+        "UPSC Exam Pattern",
+        "UPSC Syllabus",
+        "UPSC CSAT Syllabus",
+        "UPSC Optional Subjects List",
+        "UPSC Selection Process",
+        "UPSC Interview",
+        "UPSC Age Limit",
+        "IAS Salary",
+      ]),
+    ],
+    [
+      footerGroup("Exam updates", [
+        "UPSC Calendar 2027",
+        "UPSC Admit Card",
+        "UPSC Prelims Answer Key",
+        "UPSC Cut Off",
+        "UPSC Final Result 2025",
+      ]),
+      footerGroup("Free resources", [
+        "UPSC Current Affairs",
+        "UPSC Previous Year Papers",
+        "UPSC Books",
+        "Model Answers for UPSC Mains 2026",
+      ]),
+    ],
+  ],
+  copyright: "© 2026 Vajiram & Ravi. All rights reserved",
+  social: [
+    { name: "YouTube", href: "#" },
+    { name: "Facebook", href: "#" },
+    { name: "Instagram", href: "#" },
+    { name: "Telegram", href: "#" },
+    { name: "Quora", href: "#" },
+    { name: "WhatsApp channel", href: "#" },
+  ],
+  policies: [
+    { label: "Terms and Conditions", href: "#" },
+    { label: "Privacy Policy", href: "#" },
+    { label: "Grievance Redressal", href: "#" },
+  ],
+};

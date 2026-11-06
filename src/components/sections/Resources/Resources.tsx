@@ -55,8 +55,12 @@ export default function Resources() {
 
   return (
     <section aria-labelledby="resources-title" className="px-10 pb-32">
-      <div className="relative isolate overflow-hidden rounded-[32px] bg-[#fafaf9] px-14 py-24">
-        {/* The trellis is drawn upright; turned on its side it spans the card. */}
+      <div className="relative isolate overflow-hidden rounded-[32px] bg-[#fafaf9] px-14 py-24 [container-type:inline-size]">
+        {/*
+          The trellis is drawn upright; turned on its side it spans the card. Its drawn height becomes its width across
+          the card, so it grows with the card, padding included (at least its own 1392px), and never stops short of
+          the edges.
+        */}
         <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element -- a decorative SVG pattern, drawn at its own size */}
           <img
@@ -64,7 +68,8 @@ export default function Resources() {
             alt=""
             width={925}
             height={1392}
-            className="absolute top-1/2 left-1/2 h-[1392px] w-[925px] max-w-none -translate-x-1/2 -translate-y-1/2 rotate-90"
+            className="absolute top-1/2 left-1/2 w-auto max-w-none -translate-x-1/2 -translate-y-1/2 rotate-90"
+            style={{ height: "max(1392px, calc(100cqw + 112px))" }}
           />
         </div>
 
