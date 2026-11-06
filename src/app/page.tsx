@@ -1,3 +1,4 @@
+import Courses from "@/components/sections/Courses/Courses";
 import CtaBanner from "@/components/sections/CtaBanner/CtaBanner";
 import Faculty from "@/components/sections/Faculty/Faculty";
 import Faq from "@/components/sections/Faq/Faq";
@@ -25,6 +26,7 @@ export default function HomePage() {
       <WhyChoose />
       <CtaBanner />
       <GsProgramme />
+      <Courses />
       <Faculty />
       <Resources />
       <Testimonials />

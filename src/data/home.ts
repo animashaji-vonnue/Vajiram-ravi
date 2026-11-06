@@ -263,3 +263,63 @@ export const testimonials = {
   /** The card's perforated stamp edge, from the design. */
   stamp: "/images/testimonials/stamp.svg",
 };
+
+/**
+ * The course wall, with the courses, counts, lines and colours of the design's course cards (3860:405). Each sleeve
+ * is still drawn as a plain cover in `colour` with the course's name on it until there is artwork, and the links
+ * point nowhere yet.
+ */
+export const courses = {
+  heading: "Our courses",
+  intro: "Every programme we run, on one wall. Pick a course to take a closer look.",
+  list: [
+    {
+      name: "UPSC GS Foundation Course - PCM",
+      count: 4,
+      line: "1-year and 2-year General Studies programmes that take you from the basics to Prelims and Mains.",
+      colour: "#805c4e",
+    },
+    {
+      name: "Optional Subject Programme",
+      count: 26,
+      line: "Coaching in 13 optional subjects, from Anthropology to Sociology, in Classroom and LIVE-Online.",
+      colour: "#09735c",
+    },
+    {
+      name: "CSAT Course",
+      count: 2,
+      line: "Prepare for Prelims Paper II and clear the 33% qualifying mark with confidence.",
+      colour: "#274fa6",
+    },
+    {
+      name: "Interview Guidance Programme",
+      count: 2,
+      line: "Guidance for the UPSC CSE and IFoS interviews once you have cleared Mains.",
+      colour: "#b83a68",
+    },
+    {
+      name: "Mentorship Programme",
+      count: 6,
+      line: "StepUp mentorship pairs regular tests with a personal mentor, from Prelims to Mains.",
+      colour: "#d1570e",
+    },
+    {
+      name: "Mains Test Series",
+      count: 11,
+      line: "Sure Shot test series, Mains CAMP and Essay tests to sharpen your answer writing.",
+      colour: "#5b2a86",
+    },
+    {
+      name: "Prelims Test Series",
+      count: 7,
+      line: "PowerUp test series, Prelims CAMP and current affairs tests to get Prelims-ready.",
+      colour: "#a32a2a",
+    },
+    {
+      name: "Optional Test Series",
+      count: 16,
+      line: "Year-long and Mains test series to practise answer writing in your optional subject.",
+      colour: "#2b2322",
+    },
+  ].map((course) => ({ ...course, nextBatch: "14 Oct 2026", href: "#" })),
+};
