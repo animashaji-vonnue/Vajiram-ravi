@@ -18,6 +18,29 @@ import { cx } from "@/lib/cx";
  * and it looks across every year at once.
  */
 /* The three figures that used to close the hero. */
+/** One wax for all three, so the seals read as one hand sealing three notes. */
+const SEAL = "#b03a2e";
+
+/*
+ * How each figure card is set down: its width, how far across, how far round, and the
+ * corners it is torn to.
+ *
+ * Laid off the grid on purpose, so the three read as notes someone put down rather than
+ * a control panel. The turn is bigger here than it was on the plain labels — these have
+ * a seal to anchor them, and a sealed note that sits perfectly square looks printed
+ * rather than placed. Every card's right edge still lands inside the 300px column, so
+ * nothing overhangs the section's margin.
+ *
+ * The four corner radii are all different and rotate between cards. At this size that is
+ * what stands in for a deckle edge: an actual torn outline would need a mask per card
+ * for something a reader only registers as "not cut by a machine".
+ */
+const FIGURE_SET = [
+  { w: 296, x: -8, r: -1.9, radius: "2px 8px 3px 9px" },
+  { w: 288, x: 11, r: 1.3, radius: "8px 3px 9px 2px" },
+  { w: 292, x: 1, r: -0.9, radius: "3px 9px 2px 8px" },
+];
+
 const HEADLINE_FIGURES = [
   { to: 600, suffix: "+", label: "Prelims MCQs a year" },
   { to: 600, suffix: "+", label: "Mains Q&A a year" },
@@ -47,8 +70,16 @@ export default function Archive() {
   }, []);
 
   const searching = query.trim().length > 0;
-  /* Only the newest year goes on the shelf; everything older stays a grid. */
-  const onShelf = !searching && year === issueYears[0];
+  /*
+   * Every year goes on the shelf, not just the newest.
+   *
+   * It used to be the current year on a rail and older years in a grid, on the reasoning
+   * that digging through an archive wants everything visible at once. In use that reads
+   * as a fault rather than a distinction: you pick 2025 and the carousel you were just
+   * using disappears, with no way to tell whether the page broke or the layout changed
+   * on purpose. One control for all nine years is worth more than the better layout for
+   * eight of them.
+   */
   const shown = useMemo(() => {
     if (searching) {
       const q = query.trim().toLowerCase();
@@ -66,7 +97,7 @@ export default function Archive() {
   useEffect(() => {
     if (rail.current) rail.current.scrollLeft = 0;
     syncEnds();
-  }, [syncEnds, shown.length, year, query, onShelf]);
+  }, [syncEnds, shown.length, year, query]);
 
   /* Arm the deal the first time the shelf itself crosses into the page's viewport. */
   useEffect(() => {
@@ -83,10 +114,10 @@ export default function Archive() {
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [armed, onShelf]);
+  }, [armed]);
 
   return (
-    <section id="archive" className="relative bg-[#fdf8ef]" aria-labelledby="archive-h">
+    <section id="archive" className="relative bg-[#ffefd5]" aria-labelledby="archive-h">
       {/*
        * A real sheet, scanned: fibre, tone and torn newsprint caught at its corners. Every
        * drawn pattern tried here — diamonds, asterisks, a ruled grid — read either as
@@ -97,7 +128,7 @@ export default function Archive() {
        * page had a visible change of paper at the section joins.
        */}
       <SectionGround tint={0.2} />
-      <SectionGlow at="bottom right" strength={0.15} />
+      <SectionGlow at="bottom right" strength={0.42} />
       {/* A figure in the margin, struck faint. The section is not clipped: overflow-hidden
           here would turn it into a scroll container and break the sticky stack inside. */}
       <MarginMark src="/recitals/mark-volumes.webp" className="bottom-12 left-6" size={400} opacity={0.24} />
@@ -139,21 +170,50 @@ export default function Archive() {
            * only interesting thing about three numbers. The arrival comes from the count
            * instead — each runs up as it enters view, a tenth of a second apart.
            */}
-          <Stagger className="flex w-[300px] shrink-0 flex-col gap-1.5" gap={0.1}>
-            {HEADLINE_FIGURES.map((figure) => (
-              <StaggerItem
-                key={figure.label}
-                className="flex items-center gap-3 rounded-lg border-[0.8px] border-[#b9501f]/30 bg-[#fffbf2] px-3.5 py-1.5 shadow-[0_10px_22px_-18px_rgba(94,27,16,.5)]"
-              >
-                <RosetteMark size={12} className="shrink-0 text-r-amber" />
-                <span className="font-r-masthead text-[22px]/[26px] text-[#b9501f]">
-                  <Counter to={figure.to} suffix={figure.suffix} />
-                </span>
-                <span className="font-sans text-[10px]/[13px] font-semibold tracking-[.1em] text-r-ink-700 uppercase">
-                  {figure.label}
-                </span>
-              </StaggerItem>
-            ))}
+          <Stagger className="flex w-[300px] shrink-0 flex-col gap-[5px]" gap={0.1}>
+            {HEADLINE_FIGURES.map((figure, i) => {
+              const set = FIGURE_SET[i];
+              return (
+                <StaggerItem key={figure.label}>
+                  {/*
+                   * The offset and the turn go on this inner element, never on the
+                   * StaggerItem: that one is a motion element and Framer owns its
+                   * transform, so anything written there is overwritten the moment the
+                   * entrance animation runs. A transform costs no layout either, so the
+                   * stack still measures as three flush rows and keeps its promise not
+                   * to push the search bar down the page.
+                   */}
+                  <div
+                    className="flex items-center gap-2.5 bg-[#fdf6e4] py-1.5 pr-3 pl-2 shadow-[0_11px_22px_-13px_rgba(94,27,16,.42)]"
+                    style={{
+                      width: set.w,
+                      borderRadius: set.radius,
+                      transform: `translateX(${set.x}px) rotate(${set.r}deg)`,
+                    }}
+                  >
+                    {/*
+                     * A blob of wax with the house rosette pressed into it. The inner
+                     * ring is the raised lip a real seal leaves where the stamp bit into
+                     * the wax, and it is the one detail that stops this reading as a
+                     * coloured dot.
+                     */}
+                    <span
+                      className="relative flex size-[32px] shrink-0 items-center justify-center rounded-full"
+                      style={{ background: SEAL }}
+                    >
+                      <span className="pointer-events-none absolute inset-[3px] rounded-full ring-1 ring-white/30" />
+                      <RosetteMark size={16} className="relative text-[#ffe9c9] opacity-85" />
+                    </span>
+                    <span className="font-r-masthead text-[21px]/[25px] text-[#8a3516]">
+                      <Counter to={figure.to} suffix={figure.suffix} />
+                    </span>
+                    <span className="font-sans text-[9px]/[12px] font-semibold tracking-[.09em] text-[#6b4a33] uppercase">
+                      {figure.label}
+                    </span>
+                  </div>
+                </StaggerItem>
+              );
+            })}
           </Stagger>
         </div>
 
@@ -216,7 +276,7 @@ export default function Archive() {
           <p className="py-16 text-center font-sans text-[16px]/[24px] font-medium text-r-ink-500">
             Nothing matches “{query}”. Try a month, a year, or both.
           </p>
-        ) : onShelf ? (
+        ) : (
           <div ref={shelf} className="flex flex-col gap-5">
             <div
               ref={rail}
@@ -267,14 +327,6 @@ export default function Archive() {
               })}
             </div>
           </div>
-        ) : (
-          <Stagger key={searching ? `q:${query}` : `y:${year}`} className="grid grid-cols-4 gap-6" gap={0.05}>
-            {shown.map((issue) => (
-              <StaggerItem key={issue.label}>
-                <IssueCard issue={issue} latest={issue.label === latestIssue.label} />
-              </StaggerItem>
-            ))}
-          </Stagger>
         )}
       </div>
 

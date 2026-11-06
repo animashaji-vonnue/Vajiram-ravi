@@ -29,13 +29,13 @@ const STEP = 22;
 
 export default function InsideIssue() {
   return (
-    <section id="inside" className="relative bg-[#fdf8ef]" aria-labelledby="inside-h">
+    <section id="inside" className="relative bg-[#ffefd5]" aria-labelledby="inside-h">
       <SectionGround tint={0.2} />
-      <SectionGlow at="top right" strength={0.15} />
+      <SectionGlow at="top right" strength={0.4} />
       {/* A figure in the margin, struck faint. The section is not clipped: overflow-hidden
           here would turn it into a scroll container and break the sticky stack inside. */}
-      <MarginMark src="/recitals/mark-morning.webp" className="bottom-10 left-4" size={370} opacity={0.24} />
-      <MarginMark src="/recitals/mark-briefing.webp" className="bottom-6 right-6" size={330} opacity={0.18} />
+      <MarginMark src="/recitals/mark-konark.webp" className="bottom-10 left-4" size={370} opacity={0.24} />
+      <MarginMark src="/recitals/mark-indiagate.webp" className="bottom-6 right-6" size={330} opacity={0.18} />
       <div className="relative mx-auto flex w-full max-w-[1440px] items-start gap-20 px-20 py-24">
         <Reveal className="sticky top-32 w-[420px] shrink-0">
           <SectionHead

@@ -89,17 +89,17 @@ const PAINT = 68;
 
 export default function HowToUse() {
   return (
-    <section id="how" className="relative bg-[#fdf8ef]" aria-labelledby="how-h">
+    <section id="how" className="relative bg-[#ffefd5]" aria-labelledby="how-h">
       {/*
        * The same sheet, at the same strength, as every other light section. This one used
        * to carry a ruled "register" pattern over a different cream, which made the join
        * with the sections either side read as a change of paper.
        */}
       <SectionGround tint={0.2} />
-      <SectionGlow at="bottom left" strength={0.17} />
+      <SectionGlow at="bottom left" strength={0.44} />
       {/* A figure in the margin, struck faint. The section is not clipped: overflow-hidden
           here would turn it into a scroll container and break the sticky stack inside. */}
-      <MarginMark src="/recitals/mark-desk.webp" className="bottom-14 left-6" size={370} opacity={0.24} />
+      <MarginMark src="/recitals/mark-redfort.webp" className="bottom-14 left-6" size={370} opacity={0.24} />
       <MarginMark src="/recitals/mark-files.webp" className="bottom-8 right-6" size={340} opacity={0.18} />
 
       <div className="relative mx-auto flex w-full max-w-[1440px] items-start gap-20 px-20 py-24">

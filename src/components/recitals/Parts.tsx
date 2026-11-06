@@ -276,7 +276,7 @@ export function SectionHead({
   return (
     <div className={cx("flex flex-col gap-4", center && "items-center text-center", className)}>
       <Eyebrow className={center ? "justify-center" : undefined}>{eyebrow}</Eyebrow>
-      <h2 id={id} className="max-w-[760px] font-r-editorial text-[40px]/[48px] font-bold text-r-ink">
+      <h2 id={id} className="max-w-[760px] text-balance font-r-editorial text-[40px]/[48px] font-bold text-r-ink">
         {title}
       </h2>
       {lead && <p className="max-w-[640px] font-sans text-[17px]/[27px] font-medium text-r-ink-700">{lead}</p>}

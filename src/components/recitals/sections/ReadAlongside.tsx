@@ -1,6 +1,6 @@
 import { ArrowRightXsIcon } from "@/components/icons";
 import { Reveal, Stagger, StaggerItem } from "@/components/recitals/Motion";
-import { RosetteMark, SectionGlow, SectionGround } from "@/components/recitals/Ornaments";
+import { MarginMark, RosetteMark, SectionGlow, SectionGround } from "@/components/recitals/Ornaments";
 import { SectionHead } from "@/components/recitals/Parts";
 import { collections } from "@/data/magazine";
 
@@ -38,9 +38,10 @@ const PLATES: Plate[] = [
 
 export default function ReadAlongside() {
   return (
-    <section id="alongside" className="relative overflow-hidden bg-[#fdf8ef]" aria-labelledby="alongside-h">
+    <section id="alongside" className="relative overflow-hidden bg-[#ffefd5]" aria-labelledby="alongside-h">
       <SectionGround tint={0.2} />
-      <SectionGlow at="top left" strength={0.16} />
+      <SectionGlow at="top left" strength={0.42} />
+      <MarginMark src="/recitals/mark-lion.webp" className="bottom-6 right-6" size={340} opacity={0.2} />
 
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-12 px-20 py-24">
         <Reveal>

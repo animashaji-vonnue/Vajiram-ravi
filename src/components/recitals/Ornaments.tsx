@@ -101,7 +101,7 @@ export function SectionGlow({
   at = "top right",
   tone = "#ff8a2b",
   counter = "#f4c430",
-  strength = 0.2,
+  strength = 0.45,
 }: {
   at?: "top left" | "top right" | "bottom left" | "bottom right";
   tone?: string;
@@ -115,9 +115,19 @@ export function SectionGlow({
       aria-hidden="true"
       className="pointer-events-none absolute inset-0"
       style={{
+        /*
+         * The radii are in pixels, not percentages.
+         *
+         * As percentages they were read against the section's own height, and these
+         * sections run 1500 to 2500px tall — so a "55%" bloom spread over more than a
+         * thousand pixels and faded to nothing long before it was ever dense enough to
+         * see. Raising the opacity did nothing, because the problem was the falloff, not
+         * the strength. A fixed pool is the same size whatever the section's length, so
+         * it reads as light falling on paper rather than as a tint nobody notices.
+         */
         background: [
-          `radial-gradient(60% 55% at ${at}, ${tone} 0%, transparent 68%)`,
-          `radial-gradient(52% 48% at ${opposite}, ${counter} 0%, transparent 70%)`,
+          `radial-gradient(900px 700px at ${at}, ${tone} 0%, transparent 72%)`,
+          `radial-gradient(760px 600px at ${opposite}, ${counter} 0%, transparent 74%)`,
         ].join(","),
         opacity: strength,
       }}

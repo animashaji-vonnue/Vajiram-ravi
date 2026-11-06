@@ -107,7 +107,13 @@
   /* Ink — warm near-black, so text sits on warm paper instead of floating above it. */
   --color-r-ink: #2b1710;
   --color-r-ink-700: #5e4336;
-  --color-r-ink-500: #8c7264;
+  /*
+   * Darkened from #8c7264 when the light sections moved to the brighter Papaya ground.
+   * The muted tone was already marginal on the old cream (about 4.2:1 at 14px) and fell
+   * under 4:1 on the new one, which is a fail for normal text — and it is used for the
+   * issue count, the empty-search line and every select label, all of them small.
+   */
+  --color-r-ink-500: #7a6053;
 
   /* The two mains, taken off the logo. */
   --color-r-orange: #f58025; /* Princeton Orange */

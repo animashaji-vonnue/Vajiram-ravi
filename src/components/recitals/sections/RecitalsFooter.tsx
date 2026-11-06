@@ -11,13 +11,17 @@ import { issues, magazine } from "@/data/magazine";
  * dark orange is the same hue twice, so nothing read as an accent and the whole block
  * went muddy.
  *
- * So the footer is now a time of day rather than a panel. It opens in the indigo the
- * section above ends on, warms down through it, and finishes on a lit horizon with the
- * building standing against it. That is what the painting was always better suited to:
- * multiply on a dark ground turns it into a silhouette, and a silhouette needs something
- * behind it to be a silhouette against. The links sit high, on the indigo, where they
- * have the contrast they need; the colour is spent at the bottom of the page where there
- * is nothing left to read.
+ * So the footer is now a time of day rather than a panel. It opens in the same deep
+ * ember brown the section above ends on, warms down through it, and finishes on a lit
+ * horizon with the building standing against it. That is what the painting was always
+ * better suited to: multiply on a dark ground turns it into a silhouette, and a
+ * silhouette needs something behind it to be a silhouette against. The links sit high on
+ * the dark, where they have the contrast they need; the colour is spent at the bottom of
+ * the page where there is nothing left to read.
+ *
+ * The brown matters as much as the dawn. This footer was briefly indigo, which made the
+ * last two screens of the page the only cool thing on it — the join at the top of the
+ * band read as a seam between two different sites.
  */
 
 /**
@@ -26,7 +30,7 @@ import { issues, magazine } from "@/data/magazine";
  * bright orange at about 2.5:1, which is unreadable. So the light peaks behind the
  * building and is spent before it reaches the last rule.
  */
-const SKY = "linear-gradient(180deg,#101637 0%,#18214e 36%,#3a2f55 64%,#5e3630 88%,#3d2430 100%)";
+const SKY = "linear-gradient(180deg,#24150b 0%,#35200f 36%,#5a3520 64%,#7b4428 88%,#3b210f 100%)";
 /** The sun just under the skyline, which is what makes the building read as a cut-out. */
 const DAWN = "radial-gradient(58% 54% at 50% 82%,#ffa23c 0%,#e2725b 36%,transparent 74%)";
 
@@ -86,7 +90,7 @@ export default function RecitalsFooter() {
        */}
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px]"
-        style={{ background: "linear-gradient(to top,#201630 0%,#201630 34%,transparent 100%)" }}
+        style={{ background: "linear-gradient(to top,#24150b 0%,#24150b 34%,transparent 100%)" }}
         aria-hidden="true"
       />
 

@@ -11,19 +11,26 @@ import { whyMonthlyArguments, whyMonthlyStats } from "@/data/magazine";
  * reader should stop at: the case sits on the left and stays put while the four points
  * move past it, so the claim and its evidence are never separated.
  *
- * Indigo, not maroon. The maroon was a darker mix of the page's own orange, so the band
- * read as the same colour turned down rather than as a change of material, and gold on it
- * sat too close in hue to carry an accent. Indigo is the one deep colour this palette can
- * take that is still Indian to its roots — it is the dye, and the colour of the chakra
- * already on the cards above — and gold on indigo is a pairing that has been working for
- * several centuries. It is laid as a gradient with a saffron bloom at one shoulder so the
- * band has light in it rather than being a flat rectangle.
+ * Deep ember brown, after two wrong answers.
+ *
+ * It was maroon first, which failed because it was a darker mix of the page's own orange:
+ * the band read as the same colour turned down rather than as a change of material, and
+ * gold on it sat too close in hue to carry an accent. Indigo fixed the accent and broke
+ * something larger — it was the only cool hue anywhere on a page that is otherwise all
+ * saffron and papaya, so instead of being the page's dark band it read as a different
+ * site wedged into the middle of this one.
+ *
+ * The answer was not a third hue. This brown is dark enough to behave as near-black, so
+ * it carries gold and cream at nine and fifteen to one, and warm enough to belong to the
+ * family either side of it. The colour on this band comes from the accents, not from the
+ * ground — which is what the first two attempts both got backwards. Laid as a gradient
+ * with a saffron bloom at one shoulder so it has light in it rather than being flat.
  */
 
 /**
  * The band sits on a photograph now rather than on a colour.
  *
- * A reading room at night, under a scrim of the same indigo. The scrim carries alpha
+ * A reading room at night, under a scrim of the same brown. The scrim carries alpha
  * instead of being opaque, which is the whole point: the desk lamps come through it as
  * warm points of light, so the ground has depth and incident in it that no gradient can
  * fake. It is also the right picture for the argument being made beside it.
@@ -32,8 +39,8 @@ import { whyMonthlyArguments, whyMonthlyStats } from "@/data/magazine";
  * competes with a line of type, and the section's own colour shows through underneath if
  * the image is slow or fails.
  */
-const GROUND = "linear-gradient(168deg,#1d2f6b 0%,#16204f 46%,#101637 100%)";
-const SCRIM = "linear-gradient(168deg,rgba(29,47,107,.8) 0%,rgba(22,32,79,.87) 46%,rgba(14,20,50,.92) 100%)";
+const GROUND = "linear-gradient(168deg,#4c2b17 0%,#35200f 46%,#24150b 100%)";
+const SCRIM = "linear-gradient(168deg,rgba(76,43,23,.58) 0%,rgba(53,32,15,.66) 46%,rgba(36,21,11,.74) 100%)";
 /** Heat bleeding in from the page above, so the join is a transition and not a cut. */
 const BLOOM =
   "radial-gradient(58% 48% at 88% -4%,#ff8a2b 0%,transparent 64%)," +
@@ -85,7 +92,7 @@ export default function WhyMonthly() {
              */}
             <div className="grid grid-cols-2 gap-px bg-r-paper/20">
               {whyMonthlyStats.map((stat) => (
-                <div key={stat.label} className="flex flex-col gap-1.5 bg-[#16204f]/80 p-5 backdrop-blur-[2px]">
+                <div key={stat.label} className="flex flex-col gap-1.5 bg-[#35200f]/80 p-5 backdrop-blur-[2px]">
                   <p className="font-r-display text-[32px]/[36px] font-extrabold text-r-saffron">{stat.value}</p>
                   <p className="font-sans text-[14px]/[20px] font-medium text-r-sand/85">{stat.label}</p>
                 </div>
@@ -95,7 +102,7 @@ export default function WhyMonthly() {
             <div className="flex items-center gap-4">
               <a
                 href="#latest"
-                className="group/btn inline-flex h-12 items-center gap-2.5 bg-r-saffron px-6 font-sans text-[15px]/[20px] font-semibold text-[#141d49] transition-colors duration-250 hover:bg-r-amber"
+                className="group/btn inline-flex h-12 items-center gap-2.5 bg-r-saffron px-6 font-sans text-[15px]/[20px] font-semibold text-[#2a1708] transition-colors duration-250 hover:bg-r-amber"
               >
                 Read the latest issue
                 <ArrowRightIcon className="transition-transform duration-300 group-hover/btn:translate-x-0.5" />
@@ -116,7 +123,7 @@ export default function WhyMonthly() {
             <StaggerItem key={argument.title}>
               <article className="group/arg flex items-start gap-7 border-b border-r-paper/14 py-8 last:border-b-0 last:pb-0">
                 <span className="relative w-14 shrink-0 pt-1">
-                  <span className="font-r-display text-[30px]/[32px] font-extrabold text-r-paper/30 transition-colors duration-400 group-hover/arg:text-r-saffron">
+                  <span className="font-r-display text-[30px]/[32px] font-extrabold text-r-paper/55 transition-colors duration-400 group-hover/arg:text-r-saffron">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <RosetteMark

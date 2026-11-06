@@ -19,9 +19,9 @@ export default function Faq() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative bg-[#fdf8ef]" aria-labelledby="faq-h">
+    <section id="faq" className="relative bg-[#ffefd5]" aria-labelledby="faq-h">
       <SectionGround tint={0.2} />
-      <SectionGlow at="bottom right" strength={0.14} />
+      <SectionGlow at="bottom right" strength={0.38} />
       {/*
        * The scripts live here now. This is the one light section with wide empty margins
        * either side of a centred column, which is exactly what a field of large glyphs
