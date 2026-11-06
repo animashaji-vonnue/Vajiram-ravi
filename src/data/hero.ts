@@ -10,8 +10,11 @@ export const heroIntro = {
   /** The ornament eyebrow above the heading (set in uppercase as drawn). */
   eyebrow: "SINCE 1976 · NEW DELHI · CHENNAI",
   headline: "Best IAS Coaching",
-  /** The second line of the heading, in saffron italic. */
-  accent: "in Delhi, India",
+  /**
+   * The second line of the heading, in saffron italic: "in" and one place at a time, rolling from Delhi up to
+   * India and back. Screen readers and search engines read `text`, the whole line.
+   */
+  accent: { lead: "in", places: ["Delhi", "India"] as const, text: "in Delhi, India" },
   lead: "For five decades, aspirants have trusted us to take them from their first class to the interview with experienced faculty, a structured method and honest guidance.",
   primary: { label: "Find your course", href: "#courses" },
   /** The postcard enquiry form. */

@@ -79,7 +79,7 @@ export type Campus = {
   address: string;
   /** Left out where the CMS has none: the landmark row then hides. */
   landmark?: string;
-  /** The nearest metro station, drawn as a line with the station dot. Left out where there is none. */
+  /** The nearest metro station and its exit, a line under the address. Left out where there is none. */
   metro?: { label: string };
   hours: string;
   phone: string;

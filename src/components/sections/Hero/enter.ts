@@ -8,7 +8,7 @@ import type { CSSProperties } from "react";
  * and where @starting-style is unsupported everything is simply at rest. Reduced motion: globals.css
  * zeroes transition times and delays, so everything shows in its final state at once.
  *
- * The intro (layout/Preloader) plays first, on a visitor's first page of the session: its head script
+ * The intro (layout/Preloader) plays first, on every page load: its head script
  * sets `--intro` on <html> to the time the curtain clears the hero, and every start time here (and the
  * niche-line draw) is offset by it, so the whole sequence plays as the curtain lifts. Both run on the same
  * clock (the first paint), so they stay in step however late the script arrives. Without the intro

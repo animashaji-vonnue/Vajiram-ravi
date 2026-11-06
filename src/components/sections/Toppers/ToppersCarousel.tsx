@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type 
 import { CarouselArrow } from "@/components/ui/CarouselControls";
 import Cta from "@/components/ui/Cta";
 import CursorLabel from "@/components/ui/CursorLabel";
+import ProgressRule, { setProgress } from "@/components/ui/ProgressRule";
 import Photo from "@/components/ui/Photo";
 import { links } from "@/data/links";
 import type { Topper } from "@/data/toppers";
@@ -44,11 +45,9 @@ function token(name: string, fallback: string) {
  * while a drag follows the pointer.
  */
 function place(track: HTMLElement, fill: HTMLElement, offset: number, count: number, animate: boolean) {
-  const transition = animate ? "transform var(--dur-base) var(--ease-in-out)" : "none";
-  track.style.transition = transition;
-  fill.style.transition = transition;
+  track.style.transition = animate ? "transform var(--dur-base) var(--ease-in-out)" : "none";
   track.style.transform = `translate3d(${-offset}px, 0, 0)`;
-  fill.style.transform = `scaleX(${clamp((offset / STEP + PAGE) / count, 0, 1)})`;
+  setProgress(fill, clamp((offset / STEP + PAGE) / count, 0, 1), animate);
 }
 
 type ToppersCarouselProps = {
@@ -64,7 +63,8 @@ type ToppersCarouselProps = {
 /**
  * The stamp carousel (Figma "film strip" and its controls, motion spec "03 Toppers stamp carousel").
  *   - Five 240 × 300 stamps show at once; the arrows move a page of five, hiding at the ends. The track
- *     slides over --dur-base with --ease-in-out, and the orange line under it fills with the slide.
+ *     slides over --dur-base with --ease-in-out, and the ornamented rule under it (ui/ProgressRule) fills
+ *     with the slide.
  *   - Mouse drag and touch swipe move the track with the pointer and snap to the nearest card.
  *   - Arrow keys move: from a stamp to the next or previous stamp (the track follows focus), elsewhere in
  *     the carousel a page at a time. Each stamp is a slide announced as "3 of 10".
@@ -83,7 +83,7 @@ export default function ToppersCarousel({ toppers, label, stamp, cta }: ToppersC
   const [moved, setMoved] = useState(false);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const fillRef = useRef<HTMLSpanElement>(null);
+  const fillRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
   const linkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
@@ -284,14 +284,8 @@ export default function ToppersCarousel({ toppers, label, stamp, cta }: ToppersC
       </div>
 
       <div ref={controlsRef} data-reveal className="flex items-center justify-between">
-        {/* The progress line: 900 wide; the orange fill is the share of the stamps seen so far. */}
-        <div aria-hidden="true" className="relative h-0.5 w-[900px] overflow-clip bg-[#1a1714]/10">
-          <span
-            ref={fillRef}
-            className="absolute inset-0 origin-left bg-orange"
-            style={{ transform: `scaleX(${count ? Math.min(1, PAGE / count) : 1})` }}
-          />
-        </div>
+        {/* The progress line (ui/ProgressRule), 900 wide: the filled share is the part of the stamps seen so far. */}
+        <ProgressRule rootRef={fillRef} progress={count ? Math.min(1, PAGE / count) : 1} className="w-[900px]" />
         <div className="flex items-center gap-2.5">
           <CarouselArrow direction="prev" label="Previous toppers" shape="square" size={48} hidden={index === 0} onClick={() => page(-1)} />
           <CarouselArrow direction="next" label="Next toppers" tone="solid" shape="square" size={48} hidden={index >= last} onClick={() => page(1)} />

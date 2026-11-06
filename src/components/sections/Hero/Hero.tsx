@@ -3,11 +3,11 @@ import IndianLink from "@/components/ui/IndianLink";
 import { EyebrowLeft } from "@/components/ui/Ornament";
 import { heroIntro } from "@/data/hero";
 import { cx } from "@/lib/cx";
-import Aurora from "./Aurora";
 import { AT, ENTER, RISE, at } from "./enter";
 import HeroGlow from "./HeroGlow";
 import NicheLines from "./NicheLines";
 import Parallax from "./Parallax";
+import PlaceRoll from "./PlaceRoll";
 import ProofCard from "./ProofCard";
 
 /** The eyebrow's rule grows out from the label (as the ornament's own reveal does), with the fade. */
@@ -23,9 +23,8 @@ const EYEBROW_RULE =
  *
  * Motion (spec, "01 Hero"): a once-only load sequence in CSS (see ./enter and ./NicheLines), the glow's
  * slow breathing while in view (HeroGlow), and a light scroll parallax on the statue (0.9×) and the line
- * art (0.8×) (Parallax). None of it uses data-reveal: the hero is on screen at load. On a visitor's first
- * page of the session the load sequence waits for the intro curtain (layout/Preloader, `--intro`).
- * Added ambience: a soft WebGL aurora across the top, under all the art (Aurora).
+ * art (0.8×) (Parallax). None of it uses data-reveal: the hero is on screen at load. On every load the
+ * sequence waits for the intro curtain (layout/Preloader, `--intro`).
  */
 export default function Hero() {
   return (
@@ -36,8 +35,6 @@ export default function Hero() {
     >
       {/* The art, back to front as in Figma. No transform on the canvas boxes: the grain blends with all below it. */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        {/* Over the background gradient, under the line art, glow, grain, niche and statue; the full band wide. */}
-        <Aurora />
         <div className="absolute inset-y-0 left-1/2 -ml-[720px] w-canvas">
           <Parallax speed={0.8} className="absolute top-[29px] left-px h-[944px] w-canvas overflow-hidden opacity-16">
             <img
@@ -90,7 +87,11 @@ export default function Hero() {
               {heroIntro.headline}
             </span>
             <span className={cx("block text-saffron italic", RISE)} style={at(AT.accent)}>
-              {heroIntro.accent}
+              {/* Read once, in full; the rolling place below is for the eye. */}
+              <span className="sr-only">{heroIntro.accent.text}</span>
+              <span aria-hidden="true">
+                {heroIntro.accent.lead} <PlaceRoll places={heroIntro.accent.places} />
+              </span>
             </span>
           </h1>
 

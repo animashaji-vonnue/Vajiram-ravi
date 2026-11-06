@@ -3,10 +3,16 @@ import { cx } from "@/lib/cx";
 
 /*
  * The scalloped arrow medallion (Figma "Arrow medallion" in "CTA / Indian", 2262:5786): the page-wide
- * signal for "this is clickable". Its two layers are drawn from the design's own paths, inline, because
- * the motion spec moves them apart: on hover of any `group/medal` ancestor the scallop turns 30° while the
- * arrow slides 3px right. Decoration only: hidden from assistive technology.
+ * signal for "this is clickable". Its two layers are drawn from the design's own paths, inline, so they
+ * can move apart: while any `group/medal` ancestor is hovered the scalloped flower turns round and round
+ * (a full turn every 4s, `TURN`) and the arrow holds still. When the pointer leaves, the flower stops
+ * where it is rather than snapping back, and picks up from there on the next hover; at any angle it looks
+ * the same at a glance. Not with reduced motion. Decoration only: hidden from assistive technology.
  */
+
+/** The flower's loop: paused at rest, running on hover. */
+export const TURN =
+  "origin-center [transform-box:fill-box] animate-spin [animation-duration:4s] [animation-play-state:paused] group-hover/medal:[animation-play-state:running] motion-reduce:animate-none";
 
 /** The design's 30px scallop and arrow paths (the 26px medallion is the same drawing, scaled). */
 const SCALLOP =
@@ -28,7 +34,7 @@ type MedallionProps = {
   size?: number;
   /** Links: pressing nudges the arrow 5px right (buttons press as a whole instead). */
   pressNudge?: boolean;
-  /** An icon in place of the arrow (the contact cards). It stays still while the scallop turns. */
+  /** An icon in place of the arrow. It stays still while the scallop turns. */
   children?: ReactNode;
   className?: string;
 };
@@ -41,7 +47,7 @@ export default function Medallion({ tone, size = 30, pressNudge = false, childre
         <path
           d={SCALLOP}
           fill={colours.scallop}
-          className="origin-center [transform-box:fill-box] [transition:rotate_var(--dur-fast)_var(--ease-out)] group-hover/medal:rotate-30"
+          className={TURN}
         />
         {!children && (
           <path
@@ -51,10 +57,7 @@ export default function Medallion({ tone, size = 30, pressNudge = false, childre
             strokeLinecap="round"
             strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"
-            className={cx(
-              "[transition:translate_var(--dur-fast)_var(--ease-out)] group-hover/medal:translate-x-[3px]",
-              pressNudge && "group-active/medal:translate-x-[5px]",
-            )}
+            className={cx(pressNudge && "[transition:translate_var(--dur-fast)_var(--ease-out)] group-active/medal:translate-x-[5px]")}
           />
         )}
       </svg>

@@ -6,8 +6,6 @@
 export type Reason = {
   title: string;
   description: string;
-  /** "dark": the mahogany card with the saffron medallion (card 01, as drawn); "cream" for the rest. */
-  tone: "dark" | "cream";
 };
 
 export const whyChoose = {
@@ -29,31 +27,25 @@ export const reasons: Reason[] = [
   {
     title: "Proven track record",
     description: "Five decades of experience and a steady record of producing UPSC toppers.",
-    tone: "dark",
   },
   {
     title: "Expert faculty",
     description: "Learn from subject specialists for every GS paper, optional and the essay.",
-    tone: "cream",
   },
   {
     title: "Personal guidance",
     description: "A preparation plan shaped around your strengths and weak areas.",
-    tone: "cream",
   },
   {
     title: "Complete study material",
     description: "Detailed notes, test series and interview prep for every stage of the exam.",
-    tone: "cream",
   },
   {
     title: "Prime location",
     description: "Study at our campus in Old Rajinder Nagar, the heart of UPSC preparation in Delhi.",
-    tone: "cream",
   },
   {
     title: "Classroom or online",
     description: "Choose classroom or LIVE-Online for any course, and learn from anywhere.",
-    tone: "cream",
   },
 ];

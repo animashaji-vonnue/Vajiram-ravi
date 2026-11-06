@@ -10,11 +10,12 @@ import { cx } from "@/lib/cx";
  *   primary-dark    saffron with ink text and an ink medallion (on dark bands)
  *   secondary       white with an ink border and text and a burnt medallion
  *   secondary-dark  a cream outline with cream text and a saffron medallion (on dark bands)
- * Motion spec: on hover the fill darkens 8% (secondary: the border turns burnt) while the medallion turns
- * 30° and its arrow slides 3px; pressing scales it to 0.98 for 80ms; focus shows the saffron ring.
+ * Motion spec: on hover the fill darkens 8% (secondary: the border turns burnt) while the medallion's
+ * flower turns round and round (ui/Medallion); pressing scales it to 0.98 for 80ms; focus shows the saffron
+ * ring. A button given a set width keeps its label at the left and the medallion at the right end.
  * Disabled dims to 40% and ignores hover; loading keeps the label and swaps the medallion for a spinner
  * (and back) with the icon-swap transition below.
- * `icon` puts an icon in the medallion in place of the arrow (the header's phone): the scallop still turns.
+ * `icon` puts an icon in the medallion in place of the arrow (the header's phone): the flower still turns.
  */
 
 const VARIANT = {
@@ -43,7 +44,7 @@ const SWAP =
 const SWAPPED_OUT = "invisible scale-25 opacity-0 blur-[4px]";
 
 const BASE =
-  "group/medal relative inline-flex shrink-0 cursor-pointer items-center gap-3.5 rounded-lg font-sans font-semibold whitespace-nowrap [transition:background-color_var(--dur-fast)_var(--ease-out),border-color_var(--dur-fast)_var(--ease-out),scale_80ms_var(--ease-out)] active:scale-[.98]";
+  "group/medal relative inline-flex shrink-0 cursor-pointer items-center justify-between gap-3.5 rounded-lg font-sans font-semibold whitespace-nowrap [transition:background-color_var(--dur-fast)_var(--ease-out),border-color_var(--dur-fast)_var(--ease-out),scale_80ms_var(--ease-out)] active:scale-[.98]";
 
 type CtaProps = {
   children: ReactNode;

@@ -17,7 +17,7 @@ import { cx } from "@/lib/cx";
  * The content below should cross-fade over 200ms: see CrossFade.
  */
 
-export type TabItem = { id: string; label: ReactNode; count?: number };
+export type TabItem = { id: string; label: ReactNode };
 
 type TraditionalTabsProps = {
   tabs: TabItem[];
@@ -89,11 +89,6 @@ export default function TraditionalTabs({ tabs, value, onChange, label, idPrefix
                 >
                   {tab.label}
                 </span>
-                {tab.count !== undefined && (
-                  <span className={cx("font-mono text-[10px]/[12px]", active ? "text-burnt/80" : "text-clay/80 group-hover/tab:text-burnt/80")}>
-                    {tab.count}
-                  </span>
-                )}
               </span>
               {/* Each tab's own indicator only shows, faintly, on hover; the active one slides below. */}
               <img

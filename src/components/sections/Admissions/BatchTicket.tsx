@@ -2,7 +2,6 @@
 
 import type { PointerEvent } from "react";
 import IndianLink from "@/components/ui/IndianLink";
-import PointerGlow from "@/components/ui/PointerGlow";
 import type { Batch } from "@/data/admissions";
 import { cx } from "@/lib/cx";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -41,8 +40,9 @@ type BatchTicketProps = {
  * the postcard form with this programme. A batch with limited seats carries the round rubber stamp.
  *
  * Hover lifts the ticket, runs the perforation's dashes along once as if it were being torn, and turns the
- * Register medallion (the ticket is its `group/medal`); a soft saffron glow follows the pointer over the
- * cream paper (ui/PointerGlow). The departure-board flip of the date and the stamp
+ * Register medallion (the ticket is its `group/medal`). Its shadow is a soft contact shadow: a warm,
+ * blurred patch a little narrower than the ticket and set below it, so it reads as lifted off the page and
+ * stays within the room the track leaves around it. The departure-board flip of the date and the stamp
  * coming down are played by the track when it is first seen (`data-flip-digit`, `data-stamp`).
  */
 export default function BatchTicket({ batch, tone }: BatchTicketProps) {
@@ -67,26 +67,12 @@ export default function BatchTicket({ batch, tone }: BatchTicketProps) {
       onPointerEnter={tear}
       className="group/medal relative h-[360px] w-[308px] [transition:translate_var(--dur-fast)_var(--ease-out)] hover:-translate-y-1"
     >
-      {/* The lifted ticket's shadow, in the ticket's own shape: it only fades in. */}
-      <img
-        src="/images/admissions/ticket-body.svg"
-        alt=""
+      {/* The lifted ticket's shadow: it only fades in. */}
+      <span
         aria-hidden="true"
-        width={308}
-        height={360}
-        className="pointer-events-none absolute top-0 left-0 opacity-0 [filter:drop-shadow(0_18px_36px_rgb(77_31_8/0.2))] [transition:opacity_var(--dur-fast)_var(--ease-out)] group-hover/medal:opacity-100"
+        className="pointer-events-none absolute inset-x-5 top-6 -bottom-2 rounded-[18px] bg-[#4d1f08] opacity-0 blur-[11px] [transition:opacity_var(--dur-fast)_var(--ease-out)] group-hover/medal:opacity-24"
       />
       <img src="/images/admissions/ticket-body.svg" alt="" aria-hidden="true" width={308} height={360} className="absolute top-0 left-0" />
-      {/*
-        A warm saffron glow under the pointer, cut to the ticket's outline (notches and corners) by the body
-        drawing itself. It sits on the cream paper, under the head and the text, and multiplies like ink.
-      */}
-      <PointerGlow
-        color="rgb(240 150 30 / 0.3)"
-        size={260}
-        blend="multiply"
-        className="[mask-image:url(/images/admissions/ticket-body.svg)] [mask-size:100%_100%] [mask-repeat:no-repeat]"
-      />
 
       <div className={cx("absolute inset-x-0 top-0 h-[108px] overflow-clip rounded-t-[18px] whitespace-nowrap", look.head)}>
         {look.lotus && (

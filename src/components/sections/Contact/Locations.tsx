@@ -9,7 +9,6 @@ import TraditionalTabs from "@/components/ui/TraditionalTabs";
 import { campuses, locationsIntro } from "@/data/contact";
 import { cx } from "@/lib/cx";
 import { useInView } from "@/lib/useInView";
-import MetroLine from "./MetroLine";
 
 const ART = "/images/locations";
 const ID = "locations";
@@ -25,7 +24,7 @@ const MAP_W = 1470.86;
  * tabs, and the framed street map with its pin. Motion spec:
  *   - City tabs (traditional tabs): switching cross-fades the card's content and pans and zooms the map
  *     to the city, 300ms.
- *   - The metro line draws on reveal (see MetroLine).
+ *   - The nearest metro station and its exit are a line of text under the address, after a small station dot.
  *   - The map pin's ring pulses (scale 1 to 1.8, opacity 0.4 to 0, 2s) while the map is in view; it
  *     stays still with reduced motion.
  *   - "View on maps" opens Google Maps in a new tab.
@@ -81,7 +80,14 @@ export default function Locations() {
               <p className="text-[12px]/[16px] font-bold tracking-[1.44px] whitespace-nowrap text-burnt uppercase">{locationsIntro.label}</p>
               <CrossFade id={campus.id} duration={SWITCH_MS} className="flex flex-col items-start gap-4">
                 <p className="w-[460px] font-serif text-[24px]/[30px] text-mahogany">{campus.address}</p>
-                {campus.metro && <MetroLine label={campus.metro.label} />}
+                {campus.metro && (
+                  <p className="flex w-[460px] items-center gap-2 text-[14px]/[20px] font-bold text-mahogany">
+                    <svg aria-hidden="true" viewBox="0 0 12 12" width={12} height={12} className="shrink-0">
+                      <circle cx="6" cy="6" r="4.5" fill="#fff8ec" stroke="#cc5500" strokeWidth="2" />
+                    </svg>
+                    {campus.metro.label}
+                  </p>
+                )}
                 {campus.landmark && (
                   <p className="w-[460px] text-[14px]/[20px] font-medium text-clay">
                     {locationsIntro.landmarkPrefix}

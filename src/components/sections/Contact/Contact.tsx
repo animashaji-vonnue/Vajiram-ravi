@@ -1,5 +1,5 @@
 import IndianLink from "@/components/ui/IndianLink";
-import PointerGlow from "@/components/ui/PointerGlow";
+import { TURN } from "@/components/ui/Medallion";
 import { EyebrowLeft } from "@/components/ui/Ornament";
 import { contactIntro, contactWays, type ContactWay } from "@/data/contact";
 import { cx } from "@/lib/cx";
@@ -8,20 +8,16 @@ import { ParallaxLayer } from "@/lib/parallax";
 
 const ART = "/images/contact";
 
-/** The card's outline (the frame drawing's path, moved into the card's own box), to cut the pointer glow to it. */
-const WAY_CARD_SHAPE =
-  "path('M0 256V28C9.333 28 14 23.333 14 14H120.4C140 14 145.6 5.6 154 0C162.4 5.6 168 14 187.6 14H294C294 23.333 298.667 28 308 28V256C298.667 256 294 260.667 294 270H14C14 260.667 9.333 256 0 256Z')";
-
 /**
  * The scalloped icon medallion at a card's head, 64px, from the design's own layers: the 14-lobed scallop
- * and its stitched ring turn 30° together on card hover (as the arrow medallions do, --dur-fast, --ease-out)
- * while the icon stays upright. It is not ui/Medallion: that draws the 10-lobed arrow medallion, and this
+ * and its stitched ring turn round together while the card is hovered (as the arrow medallions do, see
+ * ui/Medallion's TURN) while the icon stays upright. It is not ui/Medallion: that draws the 10-lobed arrow medallion, and this
  * one's scallop, colour (#ec5800) and stitch differ.
  */
 function IconMedallion({ icon, dark }: Pick<ContactWay, "icon" | "dark">) {
   return (
     <span aria-hidden="true" className="absolute top-8 left-6 size-16">
-      <span className="absolute inset-0 [transition:rotate_var(--dur-fast)_var(--ease-out)] group-hover/medal:rotate-30">
+      <span className={`absolute inset-0 ${TURN}`}>
         <img
           src={`${ART}/scallop-${dark ? "saffron" : "burnt"}.svg`}
           alt=""
@@ -69,13 +65,6 @@ function WayCard({ way }: { way: ContactWay }) {
         width={361}
         height={323.101}
         className="absolute top-[-14.6px] left-[-26.5px] h-[323.101px] w-[361px] max-w-none opacity-0 [filter:drop-shadow(var(--shadow-hover))] [transition:opacity_var(--dur-fast)_var(--ease-out)] group-hover/card:opacity-100"
-      />
-      {/* A soft glow that follows the pointer across the card (after Skiper UI's gradient hover card). */}
-      <PointerGlow
-        size={260}
-        color={dark ? "rgb(244 196 48 / 0.22)" : "rgb(240 150 30 / 0.26)"}
-        blend={dark ? "screen" : "multiply"}
-        style={{ clipPath: WAY_CARD_SHAPE }}
       />
       <img
         src={`${ART}/inner-border-${dark ? "dark" : "light"}.svg`}

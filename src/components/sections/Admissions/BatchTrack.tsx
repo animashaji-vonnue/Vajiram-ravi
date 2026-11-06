@@ -379,7 +379,7 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
       <div data-reveal className="relative flex h-11 w-full items-center justify-between">
         {filters}
         <div className="flex shrink-0 items-center gap-2.5">
-          {/* The tabs show the counts; this tells screen readers what a new selection holds. */}
+          {/* This tells screen readers how many batches a new selection holds. */}
           <p aria-live="polite" className="sr-only">
             {count} {count === 1 ? "batch" : "batches"}
           </p>
@@ -391,7 +391,7 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
       {/* The panels of both tab lists: the mode's, and the month's inside it. */}
       <div id="batch-mode-panel" role="tabpanel" aria-labelledby={`batch-mode-tab-${panel.mode}`} data-reveal className="relative w-full">
         <div id="batch-month-panel" role="tabpanel" aria-labelledby={`batch-month-tab-${panel.month}`} className="relative">
-          {/* 24px of room above and below the 360px tickets, for the hover lift and its shadow. */}
+          {/* Room around the 360px tickets for the hover lift and its shadow: 32px above, 48px below. */}
           <div
             ref={trackRef}
             role="region"
@@ -406,7 +406,7 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
             onClickCapture={onClickCapture}
             onKeyDown={onKeyDown}
             onDragStart={(event) => event.preventDefault()}
-            className={`relative -my-6 flex h-[408px] snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain py-6 select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
+            className={`relative -mt-8 -mb-12 flex h-[440px] snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain pt-8 pb-12 select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
           >
             {tickets.map((batch, i) => (
               <div

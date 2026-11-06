@@ -44,7 +44,6 @@ export default function AdmissionsBoard() {
   const monthTabs: TabItem[] = [ALL_MONTHS, ...monthNames.keys()].map((key) => ({
     id: key,
     label: monthNames.get(key) ?? "All",
-    count: inMonth(key).length,
   }));
 
   return (

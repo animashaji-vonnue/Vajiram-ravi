@@ -13,9 +13,14 @@ import PreloaderCurtain from "./PreloaderCurtain";
  * sequence, which waits for `--intro` (Hero/enter). PreloaderCurtain locks the page's scroll meanwhile and
  * removes `intro` when the curtain's transitions are done.
  *
- * Once per browser session (sessionStorage), never with reduced motion, never without JavaScript (no head
+ * On every page load (a reload included), never with reduced motion, never without JavaScript (no head
  * script, no `intro`, no curtain), and where @starting-style is unsupported the curtain rests off screen.
- * Decorative and short: aria-hidden, nothing to focus.
+ * A page restored from the back-forward cache does not replay it. Decorative and short: aria-hidden,
+ * nothing to focus.
+ *
+ * The timing: the first "Namaste" fades in and holds long enough to read, the other languages follow at
+ * an even beat, and the closing "Namaste" holds again before the curtain lifts, so the greeting ends on a
+ * word rather than mid-cycle. About 3.1 seconds in all, the hero starting 2.8s in.
  */
 
 /** The greeting, in this order. Latin in Newsreader; the Indic scripts fall back to the system's fonts. */
@@ -33,13 +38,15 @@ const WORDS = [
 ] as const;
 
 /** The first word's time on screen (it fades in over FIRST_FADE), ms. */
-const FIRST = 450;
-/** Each later word's time on screen (it fades in over FADE), ms. */
-const STEP = 150;
+const FIRST = 600;
+/** Each of the languages in between: an even beat, quick but readable, ms. */
+const STEP = 160;
 const FIRST_FADE = 320;
 const FADE = 100;
-/** The curtain starts to lift once the last word has had its turn: 1.8s. */
-const LIFT_AT = FIRST + (WORDS.length - 1) * STEP;
+/** How long the closing "Namaste" holds before the curtain lifts, ms. */
+const HOLD = 420;
+/** The curtain starts to lift once the last word has held: 2.3s. */
+const LIFT_AT = FIRST + (WORDS.length - 2) * STEP + HOLD;
 /** The lift, ms; the curve flattens over all but the first FLATTEN_LAG of it. */
 const LIFT = 800;
 const FLATTEN_LAG = 100;
@@ -49,18 +56,15 @@ const FLATTEN_LAG = 100;
  */
 const HERO_AT = LIFT_AT + 500;
 
-const SESSION_KEY = "vr-intro";
-
 /** When word `i` comes on (and word `i - 1` goes off), ms after the first paint. */
 const showAt = (i: number) => (i === 0 ? 0 : FIRST + (i - 1) * STEP);
 
 /**
- * Inline <head> script: decides before the first paint whether the intro plays (not yet this session, no
- * reduced motion) and, if so, marks <html> with `intro` and sets `--intro` to the hero's start time. The
- * session flag is set at once, so a reload during the intro does not replay it. If storage is blocked the
- * intro is skipped rather than shown on every page.
+ * Inline <head> script: decides before the first paint whether the intro plays (on every load, unless the
+ * visitor prefers reduced motion) and, if so, marks <html> with `intro` and sets `--intro` to the hero's
+ * start time.
  */
-export const introScript = `(function(){try{var r=document.documentElement;if(sessionStorage.getItem("${SESSION_KEY}")||matchMedia("(prefers-reduced-motion: reduce)").matches)return;sessionStorage.setItem("${SESSION_KEY}","1");r.classList.add("intro");r.style.setProperty("--intro","${HERO_AT}ms")}catch(e){}})();`;
+export const introScript = `(function(){try{var r=document.documentElement;if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;r.classList.add("intro");r.style.setProperty("--intro","${HERO_AT}ms")}catch(e){}})();`;
 
 export default function Preloader() {
   const last = WORDS.length - 1;

@@ -99,7 +99,7 @@ type PostcardProps = {
 };
 
 /**
- * The India Post postcard (Figma "Postcard", 700 × 428): the title, the V&R stamp with its
+ * The India Post postcard (Figma "Postcard", 700 × 428): the title, the stamp (the Vajiram & Ravi emblem) with its
  * postmark waves, and the enquiry form. Labels are real labels; each field is checked when it is left
  * (once something is in it) and all of them on Submit, an error showing under its field with a 4px shake.
  * Submit shows the button's loading state while submitEnquiry runs. When it goes through the form fades
@@ -341,7 +341,7 @@ export default function Postcard({ programmes, timePreferences, className }: Pos
         {copy.postcardTitle}
       </h3>
 
-      {/* The postmark's wavy cancellation lines, then the V&R stamp (88 × 104, turned 4°). */}
+      {/* The postmark's wavy cancellation lines, then the stamp with the emblem (88 × 104, turned 4°). */}
       {["top-[49.25px]", "top-[60.25px]", "top-[71.25px]"].map((top) => (
         <img
           key={top}
@@ -358,9 +358,12 @@ export default function Postcard({ programmes, timePreferences, className }: Pos
         <div ref={stampSpinRef} className="pointer-events-none absolute inset-0">
           <div ref={stampRef} className="absolute inset-0">
             <img src="/images/talk-to-us/stamp-edge.svg" alt="" width={104} height={120} className="absolute -top-[5px] -left-2 max-w-none" />
+            {/* The stamp's face, as on a real stamp: an orange frame, the Vajiram & Ravi emblem on a cream panel, the year under it. */}
             <div className="absolute top-2 left-2 h-[88px] w-[72px] rounded-[2px] bg-[#ec5800] whitespace-nowrap">
-              <p className="absolute inset-x-0 top-6 text-center font-serif text-[24px]/[26px] text-white">V&amp;R</p>
-              <p className="absolute inset-x-0 top-14 pl-px text-center text-[10px]/[12px] font-bold tracking-[1px] text-saffron">1976</p>
+              <div className="absolute inset-x-[5px] top-[5px] flex h-[60px] items-center justify-center rounded-[1px] bg-cream">
+                <img src="/images/talk-to-us/stamp-emblem.webp" alt="" width={52} height={52} className="size-[52px] max-w-none" />
+              </div>
+              <p className="absolute inset-x-0 bottom-[5px] pl-px text-center text-[10px]/[12px] font-bold tracking-[1px] text-saffron">1976</p>
             </div>
           </div>
         </div>

@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: fitCanvasScript }} />
         <script dangerouslySetInnerHTML={{ __html: startAtTopScript }} />
-        {/* Decides before the first paint whether the once-per-visit "Namaste" intro plays. */}
+        {/* Decides before the first paint whether the "Namaste" intro plays (every load, not with reduced motion). */}
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
       </head>
       <body>

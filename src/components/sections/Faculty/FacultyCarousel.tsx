@@ -6,6 +6,7 @@ import CursorLabel from "@/components/ui/CursorLabel";
 import IndianLink from "@/components/ui/IndianLink";
 import Photo from "@/components/ui/Photo";
 import PointerGlow, { hasFinePointer } from "@/components/ui/PointerGlow";
+import ProgressRule, { setProgress } from "@/components/ui/ProgressRule";
 import type { Educator } from "@/data/faculty";
 import { getCanvasZoom } from "@/lib/canvas";
 import { cx } from "@/lib/cx";
@@ -128,11 +129,9 @@ function useTilt(ref: RefObject<HTMLElement | null>) {
 
 /** Moves the track and fills the progress line to the share of the faculty seen so far, as transforms. */
 function place(track: HTMLElement, fill: HTMLElement, offset: number, count: number, animate: boolean) {
-  const transition = animate ? "transform var(--dur-base) var(--ease-in-out)" : "none";
-  track.style.transition = transition;
-  fill.style.transition = transition;
+  track.style.transition = animate ? "transform var(--dur-base) var(--ease-in-out)" : "none";
   track.style.transform = `translate3d(${-offset}px, 0, 0)`;
-  fill.style.transform = `scaleX(${count ? clamp((offset / STEP + VISIBLE) / count, 0, 1) : 1})`;
+  setProgress(fill, count ? clamp((offset / STEP + VISIBLE) / count, 0, 1) : 1, animate);
 }
 
 type Drag = { id: number; x: number; y: number; dx: number; dragging: boolean };
@@ -150,7 +149,8 @@ type FacultyCarouselProps = {
  * carousel behaviour (motion spec, "Carousel arrows + dots"):
  *   - 200px cards, 16px apart; the arrows move a card at a time and hide when there is nothing further
  *     that way; mouse drag and touch swipe follow the pointer and snap to the nearest card; with focus in
- *     the carousel the arrow keys move it. The orange line under the row fills to show the position.
+ *     the carousel the arrow keys move it. The ornamented rule under the row (ui/ProgressRule)
+ *     fills to show the position.
  *   - The design's hover state, drawn on the first card, is the active look: the card turns maroon with a
  *     soft orange glow, its arch line and chip turn saffron, and the profile link appears. It rests on the
  *     first card on show and follows the pointer (and keyboard focus once the cards link to profiles).
@@ -168,7 +168,7 @@ export default function FacultyCarousel({ educators, heading, profileLabel }: Fa
   const [moved, setMoved] = useState(false);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const fillRef = useRef<HTMLSpanElement>(null);
+  const fillRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<Array<HTMLElement | null>>([]);
   const drag = useRef<Drag | null>(null);
   const swallowClick = useRef(false);
@@ -318,10 +318,11 @@ export default function FacultyCarousel({ educators, heading, profileLabel }: Fa
         </div>
       </div>
 
-      {/* The progress line: the orange share is the part of the faculty seen so far. */}
-      <div data-reveal="fade" aria-hidden="true" className="relative h-[3px] w-full overflow-clip rounded-[2px] bg-ink/8">
-        <span ref={fillRef} className="absolute inset-0 origin-left bg-orange" style={{ transform: `scaleX(${count ? Math.min(1, VISIBLE / count) : 1})` }} />
-      </div>
+      {/*
+        The progress line (ui/ProgressRule): the filled share is the part of the faculty seen so far. The
+        negative margins keep the 3px of the row the plain line had, so nothing below moves.
+      */}
+      <ProgressRule data-reveal="fade" rootRef={fillRef} progress={count ? Math.min(1, VISIBLE / count) : 1} className="-my-[5.5px] w-full" />
 
       <p aria-live="polite" className="sr-only">
         {moved ? `Showing educators ${index + 1} to ${Math.min(index + VISIBLE, count)} of ${count}` : ""}

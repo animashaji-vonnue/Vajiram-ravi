@@ -6,22 +6,15 @@ import AdmissionsBoard from "./AdmissionsBoard";
 
 /**
  * Admissions (Figma "Batches", 2257:9039): a white band framed by a double rule with diamonds at its
- * corners. The heading row, then the mode and month tabs with the round arrows, the railway-ticket track of
+ * corners (DoubleRuleFrame). The heading row, then the mode and month tabs with the round arrows, the railway-ticket track of
  * the next batches, and "View all batches". The postcard form that "Register now" opens is the next
  * section (TalkToUs).
  */
 export default function Admissions() {
   return (
     <section id="batches" aria-labelledby="batches-h" className="relative bg-white">
-      <div className="relative mx-auto flex w-canvas flex-col items-start gap-12 px-20 pt-24 pb-30">
-        <img
-          src="/images/admissions/frame-double-rule.svg"
-          alt=""
-          aria-hidden="true"
-          width={1410.6}
-          height={873.6}
-          className="pointer-events-none absolute top-3.5 left-4 max-w-none"
-        />
+      <div className="relative mx-auto flex w-canvas flex-col items-start gap-12 px-20 pt-24 pb-16">
+        <DoubleRuleFrame />
 
         <div className="relative flex w-full items-end justify-between">
           <div className="flex flex-col items-start gap-4">
@@ -56,5 +49,28 @@ export default function Admissions() {
         <AdmissionsBoard />
       </div>
     </section>
+  );
+}
+
+/** The frame's four corner diamonds, 18px, at the corners of its box. */
+const CORNERS = ["top-0 left-0", "bottom-[0.6px] left-0", "top-0 right-[0.6px]", "right-[0.6px] bottom-[0.6px]"];
+
+/**
+ * The band's frame, as drawn (Figma's 1410.6 × 873.6 drawing): a 1.2px maroon rule, a hairline 5px inside
+ * it, and a diamond at each corner. Built from boxes rather than the drawing itself, so it fits the band
+ * whatever its height: it keeps 14px from the band's top and foot, as at its drawn size. The hairline is a
+ * 1px rule at 60%, which reads as the drawing's 0.6px stroke.
+ */
+function DoubleRuleFrame() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute top-3.5 right-[13.4px] bottom-3.5 left-4">
+      <span className="absolute top-[8.4px] right-0 bottom-0 left-[9.4px] border-[1.2px] border-[#7a1f12]" />
+      <span className="absolute top-[13.7px] right-[6.3px] bottom-[6.3px] left-[14.7px] border border-[#7a1f12]/60" />
+      {CORNERS.map((corner) => (
+        <svg key={corner} viewBox="0 0 18 18" width={18} height={18} className={`absolute ${corner}`}>
+          <path d="M9 0L18 9L9 18L0 9Z" fill="#7a1f12" />
+        </svg>
+      ))}
+    </div>
   );
 }

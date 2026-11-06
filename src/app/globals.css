@@ -238,3 +238,83 @@
 .js [data-count-scope]:has([data-counted]) [data-count-label] {
   opacity: 1;
 }
+
+/*
+ * The closing banner's ambient loops (ClosingCta/SunRise), while it is on screen. halo-ripple: a ring's
+ * brighter copy swells through its place as it brightens and fades, so a wave of light runs out through
+ * the rings. sun-breathe: the glow around the sun swells and brightens, then back (it alternates).
+ */
+@keyframes halo-ripple {
+  0% {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  14% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  42%,
+  100% {
+    opacity: 0;
+    transform: scale(1.01);
+  }
+}
+@keyframes sun-breathe {
+  from {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+/*
+ * The hero's rolling place (Hero/PlaceRoll): a 7s loop for two places. "a" shows first: it holds, rolls up
+ * and out (42% to 50%) while "b" rises in from below, waits out of sight, and rises back in (92% to 100%)
+ * as "b" rolls up and out. The moving word is softly blurred.
+ */
+@keyframes place-roll-a {
+  0%,
+  42% {
+    transform: none;
+    opacity: 1;
+    filter: blur(0);
+  }
+  50% {
+    transform: translateY(-0.45em);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  51%,
+  92% {
+    transform: translateY(0.45em);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+@keyframes place-roll-b {
+  0%,
+  42% {
+    transform: translateY(0.45em);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  50%,
+  92% {
+    transform: none;
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: translateY(-0.45em);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
