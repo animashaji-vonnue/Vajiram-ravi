@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="308" height="220" viewBox="0 0 308 220" fill="none">
+  <defs>
+    <pattern id="butta" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="translate(204 40) rotate(45)">
+      <path d="M7 0C10.64 2.352 9.184 5.32 7 5.88C4.816 5.32 3.36 2.352 7 0ZM7 14C10.64 11.648 9.184 8.68 7 8.12C4.816 8.68 3.36 11.648 7 14ZM0 7C2.352 3.36 5.32 4.816 5.88 7C5.32 9.184 2.352 10.64 0 7ZM14 7C11.648 3.36 8.68 4.816 8.12 7C8.68 9.184 11.648 10.64 14 7ZM6.02 7C6.02 6.45875 6.45875 6.02 7 6.02C7.54125 6.02 7.98 6.45875 7.98 7C7.98 7.54125 7.54125 7.98 7 7.98C6.45875 7.98 6.02 7.54125 6.02 7Z" transform="translate(4 4)" fill="#cc5500" fill-opacity="0.11"/>
+    </pattern>
+    <clipPath id="disc"><circle cx="204" cy="40" r="74"/></clipPath>
+  </defs>
+  <circle cx="204" cy="40" r="74" fill="#ffe3bd"/>
+  <rect x="130" y="-34" width="148" height="148" fill="url(#butta)" clip-path="url(#disc)"/>
+  <circle cx="204" cy="40" r="83" stroke="#e57512" stroke-opacity="0.45" stroke-width="1.6" stroke-dasharray="0.1 6" stroke-linecap="round"/>
+  <circle cx="204" cy="40" r="88" stroke="#e57512" stroke-opacity="0.16" stroke-width="1"/>
+  <ellipse cx="204" cy="121" rx="66" ry="5.5" fill="#2b1206" fill-opacity="0.09"/>
+  <g transform="rotate(-8 160 116)">
+    <rect x="144" y="48" width="26" height="70" rx="2" fill="#f4c430" stroke="#2b1206" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M146 56H168M146 110H168" stroke="#cc5500" stroke-width="2.4"/>
+    <rect x="153.5" y="64" width="7" height="22" rx="1.5" fill="#cc5500" fill-opacity="0.85"/>
+  </g>
+  <rect x="164" y="34" width="78" height="86" rx="6" fill="#cc5500" stroke="#2b1206" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <rect x="170" y="42" width="66" height="72" rx="2" fill="#fff8ec" stroke="#2b1206" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <rect x="189" y="28" width="28" height="12" rx="3" fill="#8a4b2a" stroke="#2b1206" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="203" cy="32" r="2.2" fill="#ffe3bd"/>
+  <rect x="178" y="49.5" width="9" height="9" rx="1.5" fill="#fff8ec" stroke="#2b1206" stroke-width="1.3"/>
+  <path d="M179.5 54L182.5 57L188.5 49.5" stroke="#e57512" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M194 54H226" stroke="#2b1206" stroke-opacity="0.45" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="178" y="64.5" width="9" height="9" rx="1.5" fill="#fff8ec" stroke="#2b1206" stroke-width="1.3"/>
+  <path d="M179.5 69L182.5 72L188.5 64.5" stroke="#e57512" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M194 69H220" stroke="#2b1206" stroke-opacity="0.45" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="178" y="79.5" width="9" height="9" rx="1.5" fill="#fff8ec" stroke="#2b1206" stroke-width="1.3"/>
+  <path d="M179.5 84L182.5 87L188.5 79.5" stroke="#e57512" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M194 84H214" stroke="#2b1206" stroke-opacity="0.45" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="178" y="94.5" width="9" height="9" rx="1.5" fill="#fff8ec" stroke="#2b1206" stroke-width="1.3"/>
+  <path d="M194 99H222" stroke="#2b1206" stroke-opacity="0.45" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M232 110L227 126L233 123L236 129L240 112Z" fill="#e57512" stroke="#2b1206" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M242 110L247 126L241 123L238 129L234 112Z" fill="#cc5500" stroke="#2b1206" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="237" cy="104" r="11" fill="#f4c430" stroke="#2b1206" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M7 0C10.64 2.352 9.184 5.32 7 5.88C4.816 5.32 3.36 2.352 7 0ZM7 14C10.64 11.648 9.184 8.68 7 8.12C4.816 8.68 3.36 11.648 7 14ZM0 7C2.352 3.36 5.32 4.816 5.88 7C5.32 9.184 2.352 10.64 0 7ZM14 7C11.648 3.36 8.68 4.816 8.12 7C8.68 9.184 11.648 10.64 14 7ZM6.02 7C6.02 6.45875 6.45875 6.02 7 6.02C7.54125 6.02 7.98 6.45875 7.98 7C7.98 7.54125 7.54125 7.98 7 7.98C6.45875 7.98 6.02 7.54125 6.02 7Z" transform="translate(230 97)" fill="#cc5500"/>
+</svg>

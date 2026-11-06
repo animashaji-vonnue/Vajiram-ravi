@@ -2,7 +2,7 @@ import { links, type Href } from "@/data/links";
 
 /**
  * "Featured UPSC CSE programmes" (final design "07 · Programmes", 2257:8844): the programme stages as tabs
- * (All / Learn / Practise / Guidance) over a 4 × 2 grid of photo cards, then a line pointing to a counsellor.
+ * (All / Learn / Practise / Guidance) over a 4 × 2 grid of illustrated cards, then a line pointing to a counsellor.
  */
 
 export type Stage = "learn" | "practise" | "guidance";
@@ -21,8 +21,8 @@ export type BentoProgramme = {
   courseCount?: number;
   /** The programme's page; null while it does not exist yet, and the card then renders without a link. */
   href: Href;
-  /** The card's monument photo and how strongly it shows over the card's paper (as drawn, 0 to 1). */
-  photo: { src: string; opacity: number };
+  /** The card's illustration of the course (public/images/courses/art, drawn to the card's 308 × 220 box). */
+  art: string;
   /** The flagship card: a dark card with a saffron stage chip and the orange ↗ knob. */
   featured?: boolean;
 };
@@ -38,7 +38,7 @@ export const bentoProgrammes: BentoProgramme[] = [
     modes: MODES,
     courseCount: 4,
     href: links.gsCourse,
-    photo: { src: "/images/courses/programme-gs-foundation.webp", opacity: 0.28 },
+    art: "/images/courses/art/gs-foundation.svg",
     featured: true,
   },
   {
@@ -47,43 +47,43 @@ export const bentoProgrammes: BentoProgramme[] = [
     modes: MODES,
     courseCount: 26,
     href: links.optionalSubject,
-    photo: { src: "/images/courses/programme-optional-subject.webp", opacity: 0.68 },
+    art: "/images/courses/art/optional-subject.svg",
   },
-  { title: "CSAT Course", stage: "learn", modes: MODES, href: links.csat, photo: { src: "/images/courses/programme-csat.webp", opacity: 0.66 } },
+  { title: "CSAT Course", stage: "learn", modes: MODES, href: links.csat, art: "/images/courses/art/csat.svg" },
   {
     title: "Prelims Test Series",
     stage: "practise",
     modes: MODES,
     href: links.prelimsTestSeries,
-    photo: { src: "/images/courses/programme-prelims-test-series.webp", opacity: 1 },
+    art: "/images/courses/art/prelims-test-series.svg",
   },
   {
     title: "Mains Test Series",
     stage: "practise",
     modes: MODES,
     href: links.mainsTestSeries,
-    photo: { src: "/images/courses/programme-mains-test-series.webp", opacity: 0.69 },
+    art: "/images/courses/art/mains-test-series.svg",
   },
   {
     title: "Optional Test Series",
     stage: "practise",
     modes: MODES,
     href: links.optionalTestSeries,
-    photo: { src: "/images/courses/programme-optional-test-series.webp", opacity: 0.41 },
+    art: "/images/courses/art/optional-test-series.svg",
   },
   {
     title: "Mentorship Programme",
     stage: "guidance",
     modes: MODES,
     href: links.mentorship,
-    photo: { src: "/images/courses/programme-mentorship.webp", opacity: 0.45 },
+    art: "/images/courses/art/mentorship.svg",
   },
   {
     title: "Interview Guidance Programme",
     stage: "guidance",
     modes: MODES,
     href: links.interviewGuidance,
-    photo: { src: "/images/courses/programme-interview-guidance.webp", opacity: 0.56 },
+    art: "/images/courses/art/interview-guidance.svg",
   },
 ];
 
