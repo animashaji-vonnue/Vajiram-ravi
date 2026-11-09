@@ -68,7 +68,7 @@ export default function RecitalsHeader() {
           className="flex h-16 items-center justify-between rounded-full border border-white/90 bg-white/62 py-3 pr-3 pl-6 shadow-[0_12px_32px_-12px_rgba(122,52,16,.12)] backdrop-blur-[24px]"
           aria-label="Main"
         >
-          <a href="/recitals" className="flex shrink-0 items-center" aria-label="Vajiram & Ravi">
+          <a href="/new-home" className="flex shrink-0 items-center" aria-label="Vajiram & Ravi home">
             <span
               className="block h-9 w-[158px] bg-contain bg-left bg-no-repeat [background-image:var(--image-logo)]"
               role="img"
