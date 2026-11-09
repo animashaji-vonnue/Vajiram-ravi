@@ -55,6 +55,30 @@ const martel = localFont({
   display: "swap",
 });
 
+// The new homepage (/new-home): Mukta for headings, Source Sans 3 for reading.
+// Mukta is Ek Type's sans, drawn alongside Devanagari, so it carries an Indian voice
+// without turning decorative; Source Sans 3 is a calm, very readable text face.
+const mukta = localFont({
+  src: [
+    { path: "./fonts/mukta-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/mukta-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/mukta-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/mukta-700.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/mukta-800.woff2", weight: "800", style: "normal" },
+  ],
+  variable: "--font-mukta-face",
+  display: "swap",
+});
+
+const sourceSans = localFont({
+  src: [
+    { path: "./fonts/source-sans-3-variable.woff2", weight: "200 900", style: "normal" },
+    { path: "./fonts/source-sans-3-variable-italic.woff2", weight: "200 900", style: "italic" },
+  ],
+  variable: "--font-source-sans-face",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Vajiram & Ravi Homepage",
   description: "Working prototype of the redesigned Vajiram & Ravi homepage.",
@@ -71,7 +95,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // The canvas-fit script sets an inline zoom on <html> before hydration.
     <html
       lang="en"
-      className={`${figtree.variable} ${geist.variable} ${martel.variable} ${instrument.variable}`}
+      className={`${figtree.variable} ${geist.variable} ${martel.variable} ${instrument.variable} ${mukta.variable} ${sourceSans.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

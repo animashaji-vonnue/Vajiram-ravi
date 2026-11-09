@@ -299,3 +299,68 @@ body:has([data-recitals]) [data-chrome] {
   -webkit-mask-composite: source-in;
   mask-composite: intersect;
 }
+
+/* =====================================================================================
+ * THE NEW HOMEPAGE (/new-home) — palette and type.
+ *
+ * Orange leads. The saffron `orange-500` carries large fields with ink text on it (about
+ * 6:1); `orange-600` is the deeper orange that white text can sit on and still pass 4.5:1,
+ * so it is the one used for filled buttons and the guidance band. Everything else is warm
+ * paper and a warm near-black ink, so the orange always reads as the loudest thing.
+ * Namespaced `v-` so it cannot collide with the old homepage or the Recitals tokens.
+ * ===================================================================================== */
+@theme {
+  --color-v-paper: #fffaf3;
+  --color-v-cream: #fff2e2;
+  --color-v-sand: #ffe2c2;
+
+  --color-v-orange-200: #ffd0a1;
+  --color-v-orange-300: #ffab5e;
+  --color-v-orange-400: #ff8a2b;
+  --color-v-orange-500: #f46a12;
+  --color-v-orange-600: #c94a0a;
+  --color-v-orange-700: #a83c07;
+  --color-v-orange-900: #5a2004;
+  --color-v-marigold: #ffc23d;
+
+  --color-v-ink: #23140c;
+  --color-v-ink-700: #4f3a2d;
+  --color-v-ink-500: #75604f;
+  --color-v-line: #efdcc5;
+  --color-v-night: #1d0b04;
+  --color-v-maroon: #3b1407;
+
+  --font-v-head: var(--font-mukta-face), "Segoe UI", system-ui, sans-serif;
+  --font-v-body: var(--font-source-sans-face), "Segoe UI", system-ui, sans-serif;
+
+  --ease-v-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* The new homepage carries its own ticker, header and footer, so the old chrome is hidden. */
+body:has([data-newhome]) [data-chrome] {
+  display: none;
+}
+
+/* Running ticker: the track holds two copies, so -50% loops without a seam. */
+@keyframes v-ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* A slow turn for the large rosettes on the closing band. */
+@keyframes v-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* The "live" dot on LIVE-Online batches. */
+@keyframes v-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(244 106 18 / 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 9px rgb(244 106 18 / 0);
+  }
+}
