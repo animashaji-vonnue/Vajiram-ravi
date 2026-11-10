@@ -1,74 +1,208 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Cta from "@/components/ui/Cta";
-import { EyebrowLeft } from "@/components/ui/Ornament";
-import { achievements, achievementsLabel, hero } from "@/data/hero";
+import { achievements, achievementsLabel, hero, heroSlides, type HeroSlide } from "@/data/hero";
+import { links } from "@/data/links";
+import { toppers, toppersYear } from "@/data/toppers";
 import { cx } from "@/lib/cx";
-import Chakra from "./Chakra";
+import { prefersReducedMotion } from "@/lib/motion";
 import { AT, ENTER, LINE, RISE, at } from "./enter";
 import HeroFigure from "./HeroFigure";
 
-/** The eyebrow's rule grows out from the label (as the ornament's own reveal does), with the fade. */
-const EYEBROW_RULE =
-  "[&_[data-eyebrow-rule]]:transition-[clip-path] [&_[data-eyebrow-rule]]:duration-400 [&_[data-eyebrow-rule]]:ease-out [&_[data-eyebrow-rule]]:delay-(--at) [&_[data-eyebrow-rule]]:starting:[clip-path:inset(0_100%_0_0)]";
+/** How long each topper stays before the next comes in, and how long the hand-over takes. */
+const SLIDE_MS = 6500;
+const FADE_MS = 1000;
 
-/** The photo settles from a slight zoom, slower than the copy so it is still easing in as the copy lands. */
-const SETTLE = "transition-[scale] duration-[1400ms] ease-out delay-(--at) starting:scale-[1.06]";
+const pad = (n: number) => String(n).padStart(2, "0");
 
-/** The short rule between two achievements, as drawn (38px, ink at 10%). */
-const DIVIDER =
-  "before:absolute before:top-1/2 before:left-0 before:h-[38px] before:w-px before:-translate-y-1/2 before:bg-ink/10";
+/** The edge of a torn piece of paper, for the coloured scrap that tears into a corner of each slide. */
+const TORN =
+  "polygon(0% 46%, 5% 38%, 9% 44%, 15% 30%, 21% 36%, 27% 22%, 33% 28%, 40% 14%, 47% 22%, 53% 8%, 60% 16%, 67% 4%, 74% 12%, 81% 0%, 88% 9%, 94% 2%, 100% 6%, 100% 100%, 0% 100%)";
+
+/** The rest of the year's top ten, after the three in the slideshow: small portraits under the panel. */
+const others = toppers.filter((topper) => topper.rank > heroSlides.length && topper.rank <= 10);
+
+/** What is left of the intro curtain (layout/Preloader's `--intro`, in ms from the first paint), or 0. */
+function introLeft() {
+  const intro = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--intro"));
+  return Number.isFinite(intro) ? Math.max(0, intro - performance.now()) : 0;
+}
 
 /**
- * The outcome-led hero (Figma "01 · Hero", 2392:5234): a 1280 × 585 banner, 40px under the header, and the
- * achievements bar 20px below it.
+ * The pill over the headline: a tag, then a window through which the current topper's line glides past,
+ * faded at both ends, and an arrow. It links to the institute's selections page.
+ */
+function Ticker({ slide }: { slide: HeroSlide }) {
+  const line = `${slide.name} · AIR ${slide.rank}, UPSC CSE ${slide.year} · See all the results`;
+  return (
+    <a
+      href={links.toppers}
+      className="group/ticker inline-flex w-[470px] items-center gap-4 rounded-full bg-black/25 py-1.5 pr-4 pl-1.5 text-white ring-1 ring-white/25 backdrop-blur-md [transition:background-color_var(--dur-fast)_var(--ease-out)] hover:bg-black/35"
+    >
+      <span className="shrink-0 rounded-full bg-cream px-3 py-1 font-mono text-[11px]/[16px] tracking-[0.08em] text-burnt uppercase">
+        CSE {slide.year} results
+      </span>
+      <span className="relative h-5 min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_24px,black_calc(100%-24px),transparent)]">
+        <span key={slide.name} className="hero-glide absolute top-0 left-0 flex text-[14px]/[20px] whitespace-nowrap">
+          <span className="pr-10">{line}</span>
+          <span className="pr-10" aria-hidden="true">
+            {line}
+          </span>
+        </span>
+      </span>
+      <svg aria-hidden="true" viewBox="0 0 16 16" width={16} height={16} fill="none" className="shrink-0 [transition:translate_var(--dur-fast)_var(--ease-out)] group-hover/ticker:translate-x-0.5">
+        <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </a>
+  );
+}
+
+/**
+ * The opening of the page, outcome first (the `kevin` branch's hero, in this site's type and colours): on
+ * the orange ground, a large rounded panel inset a little from the edges, in which the top three of UPSC
+ * CSE 2025 follow one another in their portraits.
  *
- * The banner (2392:5235) is the design's photo of four aspirants before Parliament with the flag and the
- * Ashoka chakra, a saffron sky and an orange ribbon at its foot. The copy sits on its sky at the left, 56px
- * in: the eyebrow, the heading (Newsreader 64, its emphasis in italic burnt), the lead and the two CTAs.
- * In the design the lead and buttons run over the people; here the photo is extended on its left (its own
- * sky, and the ribbon curling down towards the corner) so the people stand to the right of the copy, and
- * every line of text is on sky: the heading and lead in ink, the emphasis in burnt (AA for large text).
+ *   - Each portrait pushes in slowly while it is shown and hands over to the next with a soft cross-fade
+ *     (6.5s each, 1s hand-over). A coloured scrap of torn paper tears into a corner, top and bottom in
+ *     turn; the topper's rank is marked beside them (the rank large in the serif, their name, the exam,
+ *     a fine line drawn out to a dot); a dark wash from the left and a halftone grain keep the type legible.
+ *   - Over it, on the left: the pill whose line glides past with the topper's name and rank, the client's
+ *     headline, the lead on a frosted card and the two buttons. A button to pause the slideshow appears
+ *     when reached with the keyboard.
+ *   - Under the panel, on the orange: the statement, the three results of UPSC 2025 (their figures roll in)
+ *     and the rest of the year's top ten as small portraits, linking to the selections page.
  *
- * The achievements bar (2392:5257): the three results of the content, evenly spread, each a laurel (burnt)
- * holding its figure in Newsreader, with the name and the exam beside it, and short rules between them.
- *
- * Motion (once, on load; see ./enter for how it waits for the intro curtain): the banner fades in while
- * the photo settles from 1.06 over 1.4s; the eyebrow (its rule growing out), then the heading line by line,
- * each rising 24px out of a 6px blur, 80ms apart; the lead; the CTAs; and the three achievements, each
- * rising as its figure rolls into place (./HeroFigure). Ambient: the chakra turns once every two minutes
- * while the banner is on screen (./Chakra). Reduced motion: everything is in place at once and the wheel
- * stands still.
+ * Load (once, after the intro curtain; see ./enter): the pill, the heading line by line, the lead card,
+ * the buttons and the results rise in; the slideshow starts its clock when the curtain has lifted. The
+ * orange's glow drifts slowly. Reduced motion: everything is in place, the first topper stays, nothing
+ * pushes in or drifts.
  */
 export default function Hero() {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [still, setStill] = useState(false);
+  // Bumped when the slideshow is played again, so the current slide gets its full time.
+  const [cycle, setCycle] = useState(0);
+  // The first slide waits for the intro curtain to lift.
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const reduced = prefersReducedMotion();
+    setStill(reduced);
+    if (reduced) return;
+    const timer = window.setTimeout(() => setReady(true), introLeft());
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!ready || paused || still) return;
+    const timer = window.setTimeout(() => setCurrent((i) => (i + 1) % heroSlides.length), SLIDE_MS);
+    return () => window.clearTimeout(timer);
+  }, [current, cycle, paused, ready, still]);
+
+  const togglePause = () => {
+    if (paused) setCycle((c) => c + 1);
+    setPaused((p) => !p);
+  };
+
+  const slide = heroSlides[current];
+
   return (
-    <section id="hero" aria-labelledby="hero-h" className="bg-paper">
-      <div className="mx-auto w-canvas px-20 pt-10">
-        <div className={cx("relative isolate h-[585px] overflow-clip rounded-[27px] bg-cream", ENTER)} style={at(AT.art)}>
-          {/* The art: the photo (without its wheel) and the wheel, which turns. Decoration. */}
-          <div aria-hidden="true" className={cx("absolute inset-0", SETTLE)} style={at(AT.art)}>
-            <img
-              src="/images/hero/banner.webp"
-              alt=""
-              width={2059}
-              height={941}
-              fetchPriority="high"
-              className="absolute inset-0 size-full max-w-none object-cover"
-            />
-            <Chakra />
+    <section id="hero" aria-labelledby="hero-h" className="hero-ember text-white">
+      <div className="px-4 pt-4">
+        <div
+          aria-roledescription="carousel"
+          aria-label={`UPSC CSE ${slide.year} toppers`}
+          className={cx(
+            // The header (159) and the strip under the panel (130) stay on the first screen with it.
+            "relative h-[clamp(500px,calc(100svh/var(--canvas-zoom,1)-159px-16px-130px),820px)] overflow-clip rounded-[28px] bg-mahogany",
+            ENTER,
+          )}
+          style={at(AT.art)}
+        >
+          {heroSlides.map((s, i) => {
+            const shown = i === current;
+            const top = i % 2 === 1;
+            return (
+              <div
+                key={s.name}
+                aria-hidden={!shown}
+                className="absolute inset-0 transition-opacity ease-out"
+                style={{ opacity: shown ? 1 : 0, transitionDuration: `${FADE_MS}ms` }}
+              >
+                <img
+                  src={s.photo}
+                  alt={shown ? `${s.name}, AIR ${s.rank}, UPSC CSE ${s.year}` : ""}
+                  width={1920}
+                  height={822}
+                  fetchPriority={i === 0 ? "high" : undefined}
+                  decoding="async"
+                  className="absolute inset-0 size-full max-w-none object-cover object-[80%_center]"
+                  style={{
+                    scale: shown && ready && !still ? "1.07" : "1",
+                    transition: shown ? `scale ${SLIDE_MS + FADE_MS}ms linear` : `scale 0s linear ${FADE_MS}ms`,
+                  }}
+                />
+                {/* The torn scrap, a lighter paper edge behind the coloured one, tearing into a corner. */}
+                <span
+                  aria-hidden="true"
+                  className={cx(
+                    "absolute right-[-4px] h-[130px] w-[320px] [transition:translate_900ms_var(--ease-out),rotate_900ms_var(--ease-out)]",
+                    top ? "top-[-4px] -scale-y-100" : "bottom-[-4px]",
+                  )}
+                  style={{
+                    translate: shown ? "0 0" : `60px ${top ? "-70px" : "70px"}`,
+                    rotate: shown ? "0deg" : "-6deg",
+                    transitionDelay: shown ? "250ms" : "0ms",
+                  }}
+                >
+                  <span className="absolute inset-0 bg-paper/80" style={{ clipPath: TORN, translate: "-6px -5px" }} />
+                  <span className="absolute inset-0" style={{ clipPath: TORN, background: s.accent }} />
+                </span>
+              </div>
+            );
+          })}
+
+          {/* A dark wash from the left for the type, and a fine halftone grain over everything. */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-linear-to-r from-black/65 via-black/30 to-transparent" />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-35 mix-blend-overlay [background-image:radial-gradient(rgb(0_0_0/0.65)_1px,transparent_1.5px)] [background-size:6px_6px]"
+          />
+
+          {/* The topper's rank marked beside them, drawn in with each slide. */}
+          <div
+            key={`mark-${current}-${cycle}`}
+            aria-hidden="true"
+            className="hero-mark pointer-events-none absolute top-[11%] left-[47%] flex items-start gap-3"
+          >
+            <div>
+              <p className="font-mono text-[11px]/[14px] tracking-[0.2em] text-white/80 uppercase">All India Rank</p>
+              <p className="mt-2 flex items-baseline gap-2 font-serif text-white">
+                <span className="text-[26px]/[1] text-saffron italic">AIR</span>
+                <span className="text-[96px]/[0.82] tracking-[-0.03em]">{pad(slide.rank)}</span>
+              </p>
+              <p className="mt-4 text-[16px]/[21px] font-semibold">{slide.name}</p>
+              <p className="text-[13px]/[18px] text-white/80">UPSC CSE {slide.year}</p>
+            </div>
+            <span className="mt-[62px] flex items-center">
+              <span className="hero-mark-line block h-px w-14 origin-left bg-white/70" />
+              <span className="block size-2.5 rounded-full bg-white ring-4 ring-white/25" />
+            </span>
           </div>
 
-          <div className="relative flex flex-col items-start px-14 pt-14">
-            <div className={cx(ENTER, EYEBROW_RULE)} style={at(AT.eyebrow)}>
-              <EyebrowLeft reveal={false} labelClassName="text-burnt">
-                {hero.eyebrow}
-              </EyebrowLeft>
+          {/* The type, on the left. */}
+          <div className="relative z-10 mx-auto flex h-full w-canvas flex-col items-start justify-center px-12 pb-2">
+            <div className={RISE} style={at(AT.eyebrow)}>
+              <Ticker slide={slide} />
             </div>
-
-            <h1 id="hero-h" className="mt-5 font-serif text-[64px]/[1.06] font-normal tracking-[-0.02em] text-ink">
+            <h1 id="hero-h" className="mt-6 font-serif text-[56px]/[1.06] font-normal tracking-[-0.02em]">
               {hero.headline.map((line, i) => (
                 <span key={i} className={cx("block whitespace-nowrap", LINE)} style={at(AT.lines[i])}>
                   {line.map((run) =>
                     run.em ? (
-                      <em key={run.text} className="text-burnt italic">
+                      <em key={run.text} className="text-saffron italic">
                         {run.text}
                       </em>
                     ) : (
@@ -78,48 +212,77 @@ export default function Hero() {
                 </span>
               ))}
             </h1>
-
-            {/* 440 wide, so it sets in three even lines, all on the sky. */}
-            <p className={cx("mt-5 w-[440px] text-[17px]/[1.55] text-ink", RISE)} style={at(AT.lead)}>
+            <p
+              className={cx("mt-6 w-[460px] rounded-[18px] bg-black/25 px-5 py-4 text-[16px]/[1.55] ring-1 ring-white/20 backdrop-blur-md", RISE)}
+              style={at(AT.lead)}
+            >
               {hero.lead}
             </p>
-
-            <div className="mt-8 flex items-start gap-3">
+            <div className="mt-7 flex items-start gap-3">
               <span className={cx("flex", RISE)} style={at(AT.ctas[0])}>
-                <Cta variant="primary" size="lg" href={hero.primary.href}>
+                <Cta variant="primary-dark" size="lg" href={hero.primary.href}>
                   {hero.primary.label}
                 </Cta>
               </span>
               <span className={cx("flex", RISE)} style={at(AT.ctas[1])}>
-                <Cta variant="secondary" size="lg" href={hero.secondary.href}>
+                <Cta variant="secondary-dark" size="lg" href={hero.secondary.href}>
                   {hero.secondary.label}
                 </Cta>
               </span>
             </div>
           </div>
-        </div>
 
-        <ul aria-label={achievementsLabel} className="mt-5 grid grid-cols-3 py-6">
-          {achievements.map((item, i) => (
-            <li
-              key={item.name}
-              data-enter
-              className={cx("relative flex items-center justify-center gap-4", i > 0 && DIVIDER, RISE)}
-              style={at(AT.achievements[i])}
+          {/* A way to stop the slideshow, kept out of sight until reached with the keyboard. */}
+          {!still && (
+            <button
+              type="button"
+              onClick={togglePause}
+              className="sr-only z-20 cursor-pointer rounded-full bg-cream px-4 py-2 text-[14px] font-semibold text-ink focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-6 focus-visible:left-6 focus-visible:inline-flex focus-visible:items-center focus-visible:gap-2"
             >
-              <span className="relative flex h-[89px] w-[111px] shrink-0 items-center justify-center">
-                <img src="/images/hero/laurel.svg" alt="" aria-hidden="true" width={111} height={89} className="absolute inset-0 size-full" />
-                <span className="relative font-serif text-[32px]/[1.1] font-medium tracking-[-0.015em] whitespace-nowrap text-mahogany">
-                  <HeroFigure value={item.figure} />
-                </span>
+              <svg aria-hidden="true" viewBox="0 0 14 14" width={14} height={14} fill="currentColor">
+                {paused ? <path d="M3 1.5L12 7L3 12.5Z" /> : <path d="M3 1.5H5.6V12.5H3ZM8.4 1.5H11V12.5H8.4Z" />}
+              </svg>
+              {paused ? "Play the toppers' slideshow" : "Pause the toppers' slideshow"}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Under the panel: the statement, the three results and the rest of the top ten. */}
+      <div className="mx-auto grid w-canvas grid-cols-[230px_repeat(3,minmax(0,1fr))_auto] items-center gap-10 px-12 py-6">
+        <p className={cx("font-serif text-[24px]/[1.15] italic", RISE)} style={at(AT.achievements[0] - 80)}>
+          {hero.statement}
+        </p>
+        <ul aria-label={achievementsLabel} className="contents">
+          {achievements.map((item, i) => (
+            <li key={item.name} data-enter className={cx("flex flex-col border-l border-white/30 pl-6", RISE)} style={at(AT.achievements[i])}>
+              <span className="font-serif text-[40px]/[1] whitespace-nowrap">
+                <HeroFigure value={item.figure} />
               </span>
-              <span className="flex flex-col gap-1">
-                <span className="text-[17px]/[1.35] font-medium whitespace-nowrap text-ink">{item.name}</span>
-                <span className="font-mono text-[12px]/[normal] tracking-[0.08em] text-clay uppercase">{item.exam}</span>
-              </span>
+              <span className="mt-1.5 text-[15px]/[20px] font-semibold whitespace-nowrap">{item.name}</span>
+              <span className="font-mono text-[11px]/[16px] tracking-[0.08em] text-white/80 uppercase">{item.exam}</span>
             </li>
           ))}
         </ul>
+        <a
+          href={links.toppers}
+          className={cx("group/others flex items-center gap-4 border-l border-white/30 pl-6", RISE)}
+          style={at(AT.achievements[2] + 80)}
+        >
+          <span className="flex">
+            {others.map((topper, i) => (
+              <span key={topper.rank} className={cx("relative size-10 overflow-clip rounded-full bg-[#8a2812] ring-2 ring-[#b23b16]", i > 0 && "-ml-3")}>
+                <img src={topper.image} alt="" width={40} height={40} loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover object-top" />
+              </span>
+            ))}
+          </span>
+          <span className="text-[14px]/[19px]">
+            <span className="block font-semibold">And {others.length} more in the top ten</span>
+            <span className="text-white/80 [transition:color_var(--dur-fast)_var(--ease-out)] group-hover/others:text-white">
+              UPSC CSE {toppersYear} results
+            </span>
+          </span>
+        </a>
       </div>
     </section>
   );

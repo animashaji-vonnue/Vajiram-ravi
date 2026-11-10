@@ -5,7 +5,7 @@ import { faqEntries } from "@/data/faq-chat";
 import { flagshipProgramme, programmes } from "@/data/programmes";
 import { mainNav } from "@/data/site";
 import { freeResourceList } from "@/data/study-materials";
-import { toppersByYear, toppersYear } from "@/data/toppers";
+import { toppers, toppersYear } from "@/data/toppers";
 
 /** One thing the nav search can find, and where on the page it leads. */
 export type SearchItem = {
@@ -35,12 +35,12 @@ export const searchIndex: SearchItem[] = [
   ...educators.map((e) => ({ group: "Faculty" as const, title: e.name, detail: e.focus, href: "#educators" })),
   ...freeResourceList.map((r) => ({ group: "Study materials" as const, title: r.title, href: "#resources" })),
   ...faqEntries.map((f) => ({ group: "FAQs" as const, title: f.question, href: "#faq" })),
-  // The toppers of the first year on show, ranks 1 to 10 (the board lists the other years too).
-  ...(toppersByYear[toppersYear] ?? []).map((t) => ({
+  // The latest year's top ten, who lead the hero.
+  ...toppers.slice(0, 10).map((t) => ({
     group: "Toppers" as const,
     title: t.name,
     detail: `AIR ${t.rank} · CSE ${toppersYear}`,
-    href: "#results",
+    href: "#hero",
   })),
 ];
 

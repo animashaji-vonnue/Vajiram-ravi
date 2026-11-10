@@ -269,3 +269,91 @@
     transform: scale(1.04);
   }
 }
+
+/*
+ * The hero (Hero/Hero, after the `kevin` branch). hero-ember: its orange ground, a gradient from orange into
+ * deep rust, lit by a bloom of bright orange and a soft gold glow that drift slowly, under a fine film
+ * grain; white text reads on it (about 4:1 at the lightest). hero-glide: the pill's line, two copies side by
+ * side moved left by one copy's width. hero-mark: the topper's rank rising in with each slide, its line
+ * drawn out after it.
+ */
+.hero-ember {
+  position: relative;
+  isolation: isolate;
+  /* Clipped rather than hidden, so that focusing something inside can never scroll the glow into view. */
+  overflow: clip;
+  background-color: #c84317;
+  background-image: linear-gradient(180deg, #d84b17 0%, #c84317 40%, #a9351a 78%, #8a2812 100%);
+}
+.hero-ember::before,
+.hero-ember::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.hero-ember::before {
+  inset: -10%;
+  background:
+    radial-gradient(40% 45% at 86% 34%, rgb(255 87 0 / 0.42), transparent 72%),
+    radial-gradient(34% 30% at 68% 64%, rgb(253 180 83 / 0.26), transparent 72%),
+    radial-gradient(44% 38% at 6% 2%, rgb(250 113 42 / 0.4), transparent 72%);
+  animation: hero-ember-drift 24s ease-in-out infinite alternate;
+}
+.hero-ember::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  mix-blend-mode: overlay;
+  opacity: 0.16;
+}
+@keyframes hero-ember-drift {
+  to {
+    transform: translate3d(-4%, 3%, 0) scale(1.06);
+  }
+}
+.hero-glide {
+  animation: hero-glide 14s linear infinite;
+}
+@keyframes hero-glide {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.hero-mark {
+  animation: hero-mark 0.8s var(--ease-out) 0.35s both;
+}
+.hero-mark-line {
+  animation: hero-mark-line 0.9s var(--ease-out) 0.55s both;
+}
+@keyframes hero-mark {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+@keyframes hero-mark-line {
+  from {
+    transform: scaleX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-ember::before,
+  .hero-glide,
+  .hero-mark,
+  .hero-mark-line {
+    animation: none;
+  }
+}
+
+/* A small arrow that nudges forward and back, pointing the way (the open book's "Turn the pages"). */
+@keyframes nudge {
+  50% {
+    translate: 4px 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-\[nudge_1\.6s_ease-in-out_infinite\] {
+    animation: none;
+  }
+}

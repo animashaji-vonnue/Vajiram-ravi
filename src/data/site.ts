@@ -130,7 +130,7 @@ export type NavItem = LinkItem & { menu?: MenuId };
 
 export const mainNav: NavItem[] = [
   { label: "All Courses", href: "#programmes", menu: "courses" },
-  { label: "Toppers", href: "#results" },
+  { label: "Toppers", href: links.toppers },
   { label: "Study Materials", href: "#resources", menu: "study" },
   { label: "Current Affairs", href: links.currentAffairs },
   { label: "UPSC Exam", href: links.upscExam, menu: "exam" },

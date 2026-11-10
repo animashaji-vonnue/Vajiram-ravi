@@ -393,7 +393,7 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
         <div id="batch-month-panel" role="tabpanel" aria-labelledby={`batch-month-tab-${panel.month}`} className="relative">
           {/*
            * Room around the 360px tickets, which the scroller would otherwise clip: 48px above (the whole gap
-           * to the tabs row) for the hover lift and the paper slips floating up behind a ticket, 48px below
+           * to the tabs row) for the hover lift, 48px below
            * for the lifted ticket's shadow.
            */}
           <div

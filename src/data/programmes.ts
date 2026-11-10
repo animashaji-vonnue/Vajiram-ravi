@@ -70,13 +70,10 @@ export type Programme = {
   /** How it is taught, as the all-courses page lists it. */
   modes: string;
   cta: ProgrammeLink;
-  /** The illustration (public/images/courses/art, drawn by scripts/course-art.py to a 308 × 220 box). */
-  art: string;
   /** Its cover on the course shelf: the cover's colour, and whether the type on it is light or dark. */
   cover: { colour: string; type: "light" | "dark" };
 };
 
-const ART = "/images/courses/art";
 const VIEW = "View courses";
 
 /**
@@ -91,7 +88,6 @@ export const programmes: Programme[] = [
     text: "General Studies over two years for CSE 2028, from the basics in the first year to full Prelims and Mains preparation in the second.",
     modes: "Classroom · LIVE-Online",
     cta: { label: VIEW, href: links.twoYearCourse },
-    art: `${ART}/gs-fledgling.svg`,
     cover: { colour: "#e57512", type: "light" },
   },
   {
@@ -100,7 +96,6 @@ export const programmes: Programme[] = [
     text: "StepUp mentorship that plans, tracks and guides your preparation, in English and Hindi medium.",
     modes: "Offline · Online",
     cta: { label: VIEW, href: links.mentorshipPrograms },
-    art: `${ART}/mentorship.svg`,
     cover: { colour: "#2b1206", type: "light" },
   },
   {
@@ -109,7 +104,6 @@ export const programmes: Programme[] = [
     text: "Focused modules for SMART Current Affairs, Economics, Ethics and Essay, and the Ranker's Programme.",
     modes: "Classroom · LIVE-Online",
     cta: { label: VIEW, href: links.moduleCourses },
-    art: `${ART}/module-courses.svg`,
     cover: { colour: "#f4c430", type: "dark" },
   },
   {
@@ -118,7 +112,6 @@ export const programmes: Programme[] = [
     text: "Develop in-depth subject knowledge and prepare for the Optional Papers with focused teaching and examination-oriented practice.",
     modes: "13 subjects · Classroom · LIVE-Online",
     cta: { label: VIEW, href: links.optionalSubject },
-    art: `${ART}/optional-subject.svg`,
     cover: { colour: "#fff8ec", type: "dark" },
   },
   {
@@ -127,7 +120,6 @@ export const programmes: Programme[] = [
     text: "Build the aptitude, reasoning and comprehension that the CSAT paper of Prelims asks for.",
     modes: "Classroom · LIVE-Online",
     cta: { label: VIEW, href: links.csatCourses },
-    art: `${ART}/csat.svg`,
     cover: { colour: "#cc5500", type: "light" },
   },
   {
@@ -136,7 +128,6 @@ export const programmes: Programme[] = [
     text: "Sure Shot Mains, Mains CAMP, Essay and PYQ test series, with evaluation and feedback on every answer.",
     modes: "Offline · Online",
     cta: { label: VIEW, href: links.mainsTestSeriesAll },
-    art: `${ART}/mains-test-series.svg`,
     cover: { colour: "#3b2416", type: "light" },
   },
   {
@@ -145,7 +136,6 @@ export const programmes: Programme[] = [
     text: "Fast-paced revision with test practice for Sociology, History, PSIR, Mathematics and more.",
     modes: "Offline · Online",
     cta: { label: VIEW, href: links.crashCourses },
-    art: `${ART}/optional-crash-course.svg`,
     cover: { colour: "#ffd98a", type: "dark" },
   },
   {
@@ -154,7 +144,6 @@ export const programmes: Programme[] = [
     text: "PowerUp, Prelims Camp and Prelims Plus tests, practised under examination conditions.",
     modes: "Offline · Online",
     cta: { label: VIEW, href: links.prelimsTestSeries },
-    art: `${ART}/prelims-test-series.svg`,
     cover: { colour: "#fff1dc", type: "dark" },
   },
   {
@@ -163,7 +152,6 @@ export const programmes: Programme[] = [
     text: "Mock interviews, DAF guidance and feedback for the UPSC CSE and IFoS Personality Tests.",
     modes: "Offline · Online",
     cta: { label: VIEW, href: links.interviewGuidance },
-    art: `${ART}/interview-guidance.svg`,
     cover: { colour: "#5a160f", type: "light" },
   },
   {
@@ -172,7 +160,6 @@ export const programmes: Programme[] = [
     text: "Forestry and Geology optionals, their test series and interview guidance for the Indian Forest Service.",
     modes: "Classroom · LIVE-Online",
     cta: { label: VIEW, href: links.ifos },
-    art: `${ART}/ifos.svg`,
     cover: { colour: "#a8431a", type: "light" },
   },
 ];
