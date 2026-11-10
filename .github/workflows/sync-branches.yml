@@ -1,0 +1,36 @@
+# Keeps this copy's team branches identical to the shared repository, so the Netlify
+# sites built from them update whenever Anima, Kevin or Solomon push there.
+# Runs every few minutes (GitHub may delay scheduled runs) and can be run by hand
+# from the Actions tab. Only these three branches are touched; main is left alone so
+# this file is never overwritten.
+name: Sync team branches
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-team-branches
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy anima/magazine-page, kevin and soloboy from the shared repository
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          git init -q mirror
+          cd mirror
+          git remote add upstream https://github.com/solomonmathai-coder/Vajiram-ravi.git
+          git remote add origin "https://x-access-token:${TOKEN}@github.com/${REPO}.git"
+          for b in anima/magazine-page kevin soloboy; do
+            git fetch -q upstream "+refs/heads/$b:refs/remotes/upstream/$b"
+            git push -f origin "refs/remotes/upstream/$b:refs/heads/$b"
+          done
