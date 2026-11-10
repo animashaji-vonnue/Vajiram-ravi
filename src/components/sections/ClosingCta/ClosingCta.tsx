@@ -12,13 +12,12 @@ const FOLLOW_MS = "300";
  * The band clips the disc.
  */
 export default function ClosingCta() {
-  const { call } = closingCta;
   return (
     <section id="closing" aria-labelledby="closing-h" className="relative h-[720px] overflow-hidden bg-linear-to-b from-orange to-[#ae3b0f]">
       <div className="relative mx-auto h-full w-canvas">
         <SunRise />
 
-        <div className="relative mx-auto flex w-[960px] flex-col items-center gap-[22px] pt-24">
+        <div className="relative mx-auto flex w-[1040px] flex-col items-center gap-[22px] pt-24">
           {/* The design's rules are white here; the ornament's orange rules are turned white to match. */}
           <EyebrowCentred labelClassName="text-white" className="[&_img]:brightness-0 [&_img]:invert">
             {closingCta.proof}
@@ -27,10 +26,10 @@ export default function ClosingCta() {
             id="closing-h"
             data-reveal="heading"
             data-reveal-delay={FOLLOW_MS}
-            className="w-[900px] text-center font-serif text-[84px]/[1.04] tracking-[-2.1px] text-white"
+            className="w-[1040px] text-center font-serif text-[68px]/[1.06] tracking-[-0.02em] text-white"
           >
             {closingCta.title.lead}
-            {/* The emphasis takes the second line, as drawn ("UPSC" only just misses the first). */}
+            {/* The emphasis takes the second line. */}
             <br />
             <em data-reveal-em className="text-[#fff1c2]">
               {closingCta.title.em}
@@ -48,18 +47,6 @@ export default function ClosingCta() {
               {closingCta.secondary.label}
             </Cta>
           </div>
-
-          <p data-reveal="fade" data-reveal-delay={FOLLOW_MS} className="text-[14px]/[normal] whitespace-nowrap text-white/85">
-            {call.lead}{" "}
-            <a href={call.phoneHref} className="group/tel relative inline-block [transition:color_var(--dur-fast)_var(--ease-out)] hover:text-white">
-              {call.phone}
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-current [transition:scale_var(--dur-fast)_var(--ease-out)] group-hover/tel:scale-x-100"
-              />
-            </a>
-            {` · ${call.hours}`}
-          </p>
         </div>
       </div>
     </section>

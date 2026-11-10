@@ -1,49 +1,51 @@
-import { contact } from "./site";
-
 export type FaqEntry = { question: string; answer: string };
 
-/** The FAQ scroll (Figma "11 · FAQ — the scroll", 2258:9884). */
+/** The FAQ band (Figma "11 · FAQ", 2392:7383; copy from the homepage content of 10 Nov 2026). */
 export const faqIntro = {
   /** The centred eyebrow, shown in capitals. */
-  eyebrow: "Frequently asked",
-  title: "Questions aspirants",
-  /** The Newsreader italic words after the title. */
-  accent: "ask us",
-};
-
-/** The line along the foot of the scroll, and its button to the enquiry form. */
-export const faqFooter = {
-  note: `Still have questions? A counsellor will listen and help you choose · ${contact.hours}`,
-  cta: "Talk to a counsellor",
-  /** The section holding the enquiry form. */
-  href: "#counsellor",
+  eyebrow: "Have questions?",
+  /** The heading, its last words in Newsreader italic. */
+  title: "Things you may want to know",
+  accent: "before you begin.",
 };
 
 /**
- * The questions of the FAQ accordion. The first answer is the design's; the others are the answers
- * vajiramandravi.com publishes for the same questions today. A question whose answer is not approved yet
- * has `answer: null` and stays off the page and out of the FAQPage schema.
+ * The questions of the FAQ accordion, as the client wrote them. A question whose answer is not approved yet
+ * can be given `answer: null`: it then stays off the page and out of the FAQPage schema.
  */
 const faqs: Array<{ question: string; answer: string | null }> = [
   {
-    question: "Which coaching is best for UPSC?",
+    question: "Which programmes does Vajiram & Ravi offer for UPSC preparation?",
     answer:
-      "Vajiram & Ravi is renowned for its comprehensive and structured approach, making it one of the top choices for UPSC coaching in India.",
+      "Vajiram & Ravi offers General Studies, Optional Subjects, Test Series, CSAT, Current Affairs, Mentorship and Interview Guidance programmes.",
   },
   {
-    question: "Which UPSC coaching is best in Delhi?",
+    question: "Are classroom and online learning options available?",
     answer:
-      "Vajiram & Ravi is considered one of the best UPSC coaching institutes in Delhi for its proven track record and effective teaching methods.",
+      "Classroom and LIVE-Online learning options are available for selected programmes. Check the individual programme page for available learning modes.",
   },
   {
-    question: "Which coaching is best for IAS in Delhi?",
+    question: "How do I choose the right programme?",
     answer:
-      "Vajiram & Ravi is highly regarded as one of the best coaching institutes for IAS preparation in Delhi due to its expert faculty and comprehensive study materials.",
+      "Explore the programme details or request a counselling call to understand which programme aligns with your preparation stage and requirements.",
   },
   {
-    question: "Which coaching institute has the most UPSC toppers?",
+    question: "Does the General Studies programme cover both Prelims and Mains?",
     answer:
-      "Vajiram & Ravi is known for producing a significant number of UPSC toppers, reflecting its strong track record in IAS coaching.",
+      "The General Studies Prelims-cum-Mains programme is designed to cover both stages. Its published features include classroom teaching, study material, tests and additional Mains support.",
+  },
+  {
+    question: "Does Vajiram & Ravi provide study material?",
+    answer:
+      "Yes. The institute provides programme-specific study materials and also publishes free resources, current affairs updates and The Recitals.",
+  },
+  {
+    question: "How can I find upcoming batch dates?",
+    answer: "Visit the Upcoming Batches section to check commencement dates and programme details.",
+  },
+  {
+    question: "How can I speak with an academic counsellor?",
+    answer: "Submit the counselling request form on the homepage to connect with the academic team.",
   },
 ];
 

@@ -1,16 +1,17 @@
 """
-The programme cards' illustrations (src/components/sections/Courses/ProgrammeCard.tsx): one SVG per course,
-drawn to the card's 308 x 220 box, written to public/images/courses/art.
+The programme illustrations: one SVG per course, each drawn to a 308 x 220 box, written to
+public/images/courses/art. The homepage's programme cards (src/components/sections/Programmes/ProgrammeCard.tsx)
+set the box in their top right corner; the other drawings are kept for any section that shows those courses.
 
     python scripts/course-art.py [preview-dir]
 
-With a preview directory it also writes preview.html there: the eight cards mocked up in their final look.
+With a preview directory it also writes preview.html there: every illustration in a programme card.
 
 The style ("block-print vignettes"): a soft peach disc printed with the butta flower and ringed by a dotted
 block-print border, cropped by the card's top; on it one flat object for the course, in the site's palette
-with fine mahogany outlines and a soft ground shadow. Everything sits in the card's upper right, clear of
-the chip (top left) and the knob (top right), so the title and meta stay on plain paper. The flagship card
-(GS Foundation) is dark, so its disc and print are saffron at low strength instead of peach.
+with fine mahogany outlines and a soft ground shadow. Everything sits in the box's upper right, so the
+card's number (top left), title and text stay on plain paper. The GS Foundation drawing was made for a dark
+card, so its disc and print are saffron at low strength instead of peach.
 """
 import math
 import sys
@@ -75,37 +76,6 @@ def pencil(x1, y1, x2, y2, w=10, body=ORANGE):
     <rect x="{length - 14}" y="{-h}" width="6" height="{w}" fill="{SAFFRON}" {LINE}/>
     <path d="M{length - 8} {-h}H{length - 3}Q{length} {-h} {length} {-h + 3}V{h - 3}Q{length} {h} {length - 3} {h}H{length - 8}Z" fill="#e8916a" {LINE}/>
   </g>"""
-
-
-# 1. UPSC GS Foundation Course - PCM (the dark flagship card): a stack of books with a globe on top.
-def gs_foundation():
-    def book(x, y, w, h, fill, band, pages_left):
-        px = x + 4 if pages_left else x + w - 14
-        return f"""  <rect x="{x}" y="{y}" width="{w}" height="{h}" rx="2.5" fill="{fill}" {LINE}/>
-  <rect x="{px}" y="{y + 3}" width="10" height="{h - 6}" rx="1" fill="{CREAM}" {LINE}/>
-  <path d="M{px + 2} {y + 6.5}H{px + 8}M{px + 2} {y + h / 2}H{px + 8}M{px + 2} {y + h - 6.5}H{px + 8}" stroke="{INK}" stroke-opacity="0.35" stroke-width="1"/>
-  <path d="M{x + (w - 34 if pages_left else 18)} {y}V{y + h}M{x + (w - 28 if pages_left else 24)} {y}V{y + h}" stroke="{band}" stroke-width="2"/>"""
-
-    globe = f"""  <path d="M190 58H218L214 52H194Z" fill="{BURNT}" {LINE}/>
-  <path d="M204 52V48" {LINE}/>
-  <path d="M181.5 27A24 24 0 0 0 222 44" stroke="{SAFFRON}" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="202" cy="28" r="19" fill="#fdf2dc" {LINE}/>
-  <path d="M191 17C196 15 199 19 197 23C195 27 189 25 187 30C185.5 25 186.5 19 191 17Z" fill="{ORANGE}"/>
-  <path d="M206 24C211 21 217 24 218 30C215 35 209 34 207 39C204 35 202 28 206 24Z" fill="{ORANGE}"/>
-  <path d="M196 40C199 39 202 41 201 44C198 45 195 43 196 40Z" fill="{ORANGE}"/>
-  <ellipse cx="202" cy="28" rx="8" ry="19" stroke="{BURNT}" stroke-opacity="0.55" stroke-width="1"/>
-  <path d="M183 28H221" stroke="{BURNT}" stroke-opacity="0.55" stroke-width="1"/>
-  <circle cx="202" cy="28" r="19" {LINE}/>"""
-    body = (
-        book(140, 98, 128, 20, ORANGE, SAFFRON, False)
-        + "\n"
-        + book(150, 78, 112, 20, SAFFRON, BURNT, True)
-        + "\n"
-        + book(144, 58, 118, 20, "#a8431a", SAFFRON, False)
-        + "\n"
-        + globe
-    )
-    svg("gs-foundation", body, dark=True)
 
 
 # 2. Optional Subject Programme: a shelf of upright subject books, one leaning.
@@ -211,32 +181,6 @@ def mains():
     svg("mains-test-series", body)
 
 
-# 6. Optional Test Series: a subject book behind a clipboard checklist with a rosette.
-def optional_test():
-    rows = []
-    for i, done in enumerate([True, True, True, False]):
-        y = 54 + i * 15
-        rows.append(f'  <rect x="178" y="{y - 4.5}" width="9" height="9" rx="1.5" fill="{CREAM}" stroke="{INK}" stroke-width="1.3"/>')
-        if done:
-            rows.append(f'  <path d="M179.5 {y}L182.5 {y + 3}L188.5 {y - 4.5}" stroke="{ORANGE}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>')
-        rows.append(f'  <path d="M194 {y}H{226 - (i * 6) % 14}" stroke="{INK}" stroke-opacity="0.45" stroke-width="1.6" stroke-linecap="round"/>')
-    body = f"""  <g transform="rotate(-8 160 116)">
-    <rect x="144" y="48" width="26" height="70" rx="2" fill="{SAFFRON}" {LINE}/>
-    <path d="M146 56H168M146 110H168" stroke="{BURNT}" stroke-width="2.4"/>
-    <rect x="153.5" y="64" width="7" height="22" rx="1.5" fill="{BURNT}" fill-opacity="0.85"/>
-  </g>
-  <rect x="164" y="34" width="78" height="86" rx="6" fill="{BURNT}" {LINE}/>
-  <rect x="170" y="42" width="66" height="72" rx="2" fill="{CREAM}" {LINE}/>
-  <rect x="189" y="28" width="28" height="12" rx="3" fill="{CLAY}" {LINE}/>
-  <circle cx="203" cy="32" r="2.2" fill="{PEACH}"/>
-{chr(10).join(rows)}
-  <path d="M232 110L227 126L233 123L236 129L240 112Z" fill="{ORANGE}" {LINE}/>
-  <path d="M242 110L247 126L241 123L238 129L234 112Z" fill="{BURNT}" {LINE}/>
-  <circle cx="237" cy="104" r="11" fill="{SAFFRON}" {LINE}/>
-  <path d="{BUTTA}" transform="translate(230 97)" fill="{BURNT}"/>"""
-    svg("optional-test-series", body)
-
-
 # 7. Mentorship Programme: a lit diya passing its flame to a smaller one.
 def mentorship():
     def diya(cx, base, w, fill, rim):
@@ -276,41 +220,118 @@ def interview():
     svg("interview-guidance", body)
 
 
-for make in (gs_foundation, optional_subject, csat, prelims, mains, optional_test, mentorship, interview):
+# 9. Specialised Programmes: four tiles, one for each of CSAT (the four operations), Current Affairs (a
+# 9. GS PCM 2-Year Fledgling: a fledgling perched on a stack of two books, ready for its first flight.
+def fledgling():
+    body = f"""  <rect x="150" y="100" width="116" height="18" rx="2.5" fill="{ORANGE}" {LINE}/>
+  <rect x="252" y="103" width="10" height="12" rx="1" fill="{CREAM}" {LINE}/>
+  <path d="M168 100V118M174 100V118" stroke="{SAFFRON}" stroke-width="2"/>
+  <rect x="160" y="83" width="96" height="17" rx="2.5" fill="{SAFFRON}" {LINE}/>
+  <rect x="164" y="86" width="10" height="11" rx="1" fill="{CREAM}" {LINE}/>
+  <path d="M232 83V100M238 83V100" stroke="{BURNT}" stroke-width="2"/>
+  <path d="M188 82V74M214 82V74" stroke="{INK}" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M184 82H192M210 82H218" stroke="{INK}" stroke-width="2" stroke-linecap="round"/>
+  <path d="M180 62L160 54L166 64L158 70L180 70Z" fill="{BURNT}" {LINE}/>
+  <ellipse cx="200" cy="60" rx="24" ry="18" fill="{ORANGE}" {LINE}/>
+  <ellipse cx="206" cy="66" rx="14" ry="10" fill="{CREAM}"/>
+  <path d="M186 56C192 50 204 50 210 58C202 60 194 62 186 56Z" fill="{BURNT}" {LINE}/>
+  <circle cx="214" cy="40" r="13" fill="{ORANGE}" {LINE}/>
+  <circle cx="218" cy="38" r="2.2" fill="{INK}"/>
+  <path d="M226 40L237 43L226 47Z" fill="{SAFFRON}" {LINE}/>
+  <path d="M209 28C210 22 216 21 217 26" stroke="{BURNT}" stroke-width="2" stroke-linecap="round"/>
+  <path d="M238 24L244 18M242 32L250 30M232 18L234 10" stroke="{SAFFRON}" stroke-width="2.4" stroke-linecap="round"/>"""
+    svg("gs-fledgling", body)
+
+
+# 10. Module Courses: three module cards fanned out like a hand, each with its heading bar and lines.
+def module_courses():
+    def card(angle, fill, bar, lines):
+        rows = "".join(f'<path d="M184 {68 + i * 9}H{216 - (i * 7) % 12}" stroke="{INK}" stroke-opacity="0.4" stroke-width="1.6" stroke-linecap="round"/>' for i in range(lines))
+        return f"""  <g transform="rotate({angle} 204 124)">
+    <rect x="176" y="38" width="56" height="78" rx="5" fill="{fill}" {LINE}/>
+    <path d="M176 43A5 5 0 0 1 181 38H227A5 5 0 0 1 232 43V54H176Z" fill="{bar}" {LINE}/>
+    <circle cx="186" cy="46" r="2.4" fill="{CREAM}"/>
+    {rows}
+  </g>"""
+    body = (
+        card(-16, CREAM, BURNT, 4)
+        + "\n"
+        + card(16, CREAM, SAFFRON, 4)
+        + "\n"
+        + card(0, "#fffaf0", ORANGE, 5)
+        + f'\n  <path d="{BUTTA}" transform="translate(197 92)" fill="{BURNT}"/>'
+    )
+    svg("module-courses", body)
+
+
+# 11. Optional Subject Crash Course: an open subject book under a lightning bolt, and a stopwatch.
+def crash_course():
+    body = f"""  <path d="M142 74Q164 68 186 76V120Q164 112 142 118Z" fill="{CREAM}" {LINE}/>
+  <path d="M186 76Q208 68 230 74V118Q208 112 186 120Z" fill="#fdf0da" {LINE}/>
+  <path d="M186 76V120" stroke="{BURNT}" stroke-width="2"/>
+  <path d="M150 88H178M150 96H174M150 104H178M194 88H222M194 96H218M194 104H222" stroke="{INK}" stroke-opacity="0.4" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M196 14L170 54H188L180 82L210 38H192L200 14Z" fill="{SAFFRON}" {LINE}/>
+  <circle cx="246" cy="92" r="21" fill="{CREAM}" {LINE}/>
+  <circle cx="246" cy="92" r="16" fill="#fdf0da" stroke="{ORANGE}" stroke-width="2"/>
+  <rect x="241" y="64" width="10" height="7" rx="2" fill="{BURNT}" {LINE}/>
+  <path d="M262 74L267 69" stroke="{INK}" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M246 92V80M246 92L254 97" stroke="{INK}" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="246" cy="92" r="2" fill="{INK}"/>"""
+    svg("optional-crash-course", body)
+
+
+# 12. IFoS Programmes: a grove of three trees on a rise of ground, a sal leaf drifting down beside them.
+def ifos():
+    def pine(x, base, h, fill, shade):
+        w = h * 0.62
+        tiers = ""
+        for i, (top, half) in enumerate(((base - h, w * 0.32), (base - h * 0.68, w * 0.42), (base - h * 0.38, w * 0.5))):
+            tiers += f'<path d="M{x} {top:.1f}L{x + half:.1f} {top + h * 0.42:.1f}H{x - half:.1f}Z" fill="{fill if i % 2 == 0 else shade}" {LINE}/>'
+        return f"""  <path d="M{x} {base - h * 0.06:.1f}V{base + 2}" stroke="{INK}" stroke-width="3" stroke-linecap="round"/>
+  {tiers}"""
+    body = f"""  <path d="M140 120Q204 100 272 120Z" fill="{SAFFRON}" fill-opacity="0.45" {LINE}/>
+{pine(176, 112, 74, BURNT, ORANGE)}
+{pine(232, 114, 60, ORANGE, BURNT)}
+  <path d="M204 112V96" stroke="{INK}" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="204" cy="78" r="20" fill="{SAFFRON}" {LINE}/>
+  <path d="M204 92V70M204 80L196 72M204 76L212 68" stroke="{BURNT}" stroke-width="1.8" stroke-linecap="round"/>
+  <g transform="rotate(-28 254 52)">
+    <path d="M254 32C266 42 266 60 254 72C242 60 242 42 254 32Z" fill="{ORANGE}" {LINE}/>
+    <path d="M254 36V70M254 46L260 42M254 54L261 50M254 62L259 59M254 46L248 42M254 54L247 50M254 62L249 59" stroke="{CREAM}" stroke-width="1.3" stroke-linecap="round"/>
+  </g>"""
+    svg("ifos", body)
+
+
+for make in (optional_subject, csat, prelims, mains, mentorship, interview, fledgling, module_courses, crash_course, ifos):
     make()
 
-# A preview of the cards in their new look: plain paper under the text, ink title (cream on the dark card).
+# A preview of every illustration in the homepage's programme card: 416 wide, the drawing's box in its top
+# right corner, the number at the top left and the title on plain paper below (cream on the dark card).
 cards = [
-    ("gs-foundation", "LEARN", "UPSC GS Foundation Course - PCM", "Classroom · LIVE-Online · 4 courses", True),
-    ("optional-subject", "LEARN", "Optional Subject Programme", "Classroom · LIVE-Online · 26 courses", False),
-    ("csat", "LEARN", "CSAT Course", "Classroom · LIVE-Online", False),
-    ("prelims-test-series", "PRACTISE", "Prelims Test Series", "Classroom · LIVE-Online", False),
-    ("mains-test-series", "PRACTISE", "Mains Test Series", "Classroom · LIVE-Online", False),
-    ("optional-test-series", "PRACTISE", "Optional Test Series", "Classroom · LIVE-Online", False),
-    ("mentorship", "GUIDANCE", "Mentorship Programme", "Classroom · LIVE-Online", False),
-    ("interview-guidance", "GUIDANCE", "Interview Guidance Programme", "Classroom · LIVE-Online", False),
+    ("gs-fledgling", "GS PCM 2-Year Fledgling", False),
+    ("mentorship", "UPSC Mentorship Program", False),
+    ("module-courses", "Module Courses", False),
+    ("optional-subject", "Optional Subjects", False),
+    ("csat", "CSAT", False),
+    ("mains-test-series", "Mains Test Series", False),
+    ("optional-crash-course", "Optional Subject Crash Course", False),
+    ("prelims-test-series", "Prelims Test Series", False),
+    ("interview-guidance", "Interview Guidance Programme", False),
+    ("ifos", "IFoS Programmes", False),
 ]
 art = OUT.as_uri()
 html = ["""<!doctype html><meta charset="utf-8"><style>
-body{margin:0;padding:24px;background:#fffaf2;font-family:'Hanken Grotesk','Segoe UI',sans-serif;display:grid;grid-template-columns:repeat(4,308px);gap:16px}
-.card{position:relative;width:308px;height:220px;border-radius:16px;overflow:hidden;background:#fff8ec;border:1px solid #eadbc4;box-sizing:border-box;padding:22px;display:flex;flex-direction:column;justify-content:space-between}
+body{margin:0;padding:24px;background:#fffdf9;font-family:'Hanken Grotesk','Segoe UI',sans-serif;display:grid;grid-template-columns:repeat(3,416px);gap:20px}
+.card{position:relative;width:416px;height:260px;border-radius:16px;overflow:hidden;background:#fff8ec;border:1px solid #eadbc4;box-sizing:border-box;padding:28px}
 .card.dark{background:#3b2416;border:none}
-.card img{position:absolute;inset:0;width:308px;height:220px}
-.top{position:relative;display:flex;justify-content:space-between;align-items:center}
-.chip{font-size:11px;font-weight:700;letter-spacing:.88px;color:#cc5500;background:rgba(229,117,18,.1);border-radius:99px;padding:5px 10px}
-.dark .chip{color:#f4c430;background:rgba(255,255,255,.15)}
-.knob{width:36px;height:36px;border-radius:50%;background:#ffefd5;display:grid;place-items:center;color:#cc5500;font-weight:700}
-.dark .knob{background:#e57512;color:#fff}
-.foot{position:relative}
-h3{margin:0 0 6px;width:264px;font-size:20px;line-height:1.22;color:#2a1a12;letter-spacing:-.2px}
+.card img{position:absolute;top:0;right:0;width:308px;height:220px}
+.num{position:relative;font:12px ui-monospace,monospace;letter-spacing:.96px;color:#cc5500}
+.dark .num{color:#f4c430}
+h3{position:absolute;left:28px;top:150px;margin:0;font:400 24px/1.2 Newsreader,Georgia,serif;color:#2a1a12}
 .dark h3{color:#fff8ec}
-p{margin:0;font-size:13px;color:#6b4a3a}.dark p{color:rgba(255,248,236,.82)}
 </style>"""]
-for name, chip, title, meta, dark in cards:
-    html.append(
-        f'<div class="card{" dark" if dark else ""}"><img src="{art}/{name}.svg"><div class="top"><span class="chip">✣ {chip}</span><span class="knob">↗</span></div>'
-        f'<div class="foot"><h3>{title}</h3><p>{meta}</p></div></div>'
-    )
+for i, (name, title, dark) in enumerate(cards, 1):
+    html.append(f'<div class="card{" dark" if dark else ""}"><img src="{art}/{name}.svg"><span class="num">{i:02d}</span><h3>{title}</h3></div>')
 if PREVIEW:
     PREVIEW.mkdir(parents=True, exist_ok=True)
     (PREVIEW / "preview.html").write_text("".join(html), encoding="utf-8")

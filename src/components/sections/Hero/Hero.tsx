@@ -1,126 +1,125 @@
 import Cta from "@/components/ui/Cta";
-import IndianLink from "@/components/ui/IndianLink";
 import { EyebrowLeft } from "@/components/ui/Ornament";
-import { heroIntro } from "@/data/hero";
+import { achievements, achievementsLabel, hero } from "@/data/hero";
 import { cx } from "@/lib/cx";
-import { AT, ENTER, RISE, at } from "./enter";
-import HeroGlow from "./HeroGlow";
-import NicheLines from "./NicheLines";
-import Parallax from "./Parallax";
-import PlaceRoll from "./PlaceRoll";
-import ProofCard from "./ProofCard";
+import Chakra from "./Chakra";
+import { AT, ENTER, LINE, RISE, at } from "./enter";
+import HeroFigure from "./HeroFigure";
 
 /** The eyebrow's rule grows out from the label (as the ornament's own reveal does), with the fade. */
 const EYEBROW_RULE =
   "[&_[data-eyebrow-rule]]:transition-[clip-path] [&_[data-eyebrow-rule]]:duration-400 [&_[data-eyebrow-rule]]:ease-out [&_[data-eyebrow-rule]]:delay-(--at) [&_[data-eyebrow-rule]]:starting:[clip-path:inset(0_100%_0_0)]";
 
+/** The photo settles from a slight zoom, slower than the copy so it is still easing in as the copy lands. */
+const SETTLE = "transition-[scale] duration-[1400ms] ease-out delay-(--at) starting:scale-[1.06]";
+
+/** The short rule between two achievements, as drawn (38px, ink at 10%). */
+const DIVIDER =
+  "before:absolute before:top-1/2 before:left-0 before:h-[38px] before:w-px before:-translate-y-1/2 before:bg-ink/10";
+
 /**
- * The hero (Figma "01 Hero – Lady Justice niche (dark)", 2256:5586): an 820px mahogany band. At the left,
- * 88px down, the eyebrow, the 80px Newsreader heading with its saffron italic second line, the lead, the
- * two CTAs and the "New to UPSC?" link; at the right, Lady Justice in a gold-lined arched niche on a
- * saffron plinth line, with the proof card over its foot. Behind: the Sansad Bhavan line art at 16%, a
- * warm glow and a paper grain in overlay. Every layer sits on the 1440 canvas where Figma puts it.
+ * The outcome-led hero (Figma "01 · Hero", 2392:5234): a 1280 × 585 banner, 40px under the header, and the
+ * achievements bar 20px below it.
  *
- * Motion (spec, "01 Hero"): a once-only load sequence in CSS (see ./enter and ./NicheLines), the glow's
- * slow breathing while in view (HeroGlow), and a light scroll parallax on the statue (0.9×) and the line
- * art (0.8×) (Parallax). None of it uses data-reveal: the hero is on screen at load. On every load the
- * sequence waits for the intro curtain (layout/Preloader, `--intro`).
+ * The banner (2392:5235) is the design's photo of four aspirants before Parliament with the flag and the
+ * Ashoka chakra, a saffron sky and an orange ribbon at its foot. The copy sits on its sky at the left, 56px
+ * in: the eyebrow, the heading (Newsreader 64, its emphasis in italic burnt), the lead and the two CTAs.
+ * In the design the lead and buttons run over the people; here the photo is extended on its left (its own
+ * sky, and the ribbon curling down towards the corner) so the people stand to the right of the copy, and
+ * every line of text is on sky: the heading and lead in ink, the emphasis in burnt (AA for large text).
+ *
+ * The achievements bar (2392:5257): the three results of the content, evenly spread, each a laurel (burnt)
+ * holding its figure in Newsreader, with the name and the exam beside it, and short rules between them.
+ *
+ * Motion (once, on load; see ./enter for how it waits for the intro curtain): the banner fades in while
+ * the photo settles from 1.06 over 1.4s; the eyebrow (its rule growing out), then the heading line by line,
+ * each rising 24px out of a 6px blur, 80ms apart; the lead; the CTAs; and the three achievements, each
+ * rising as its figure rolls into place (./HeroFigure). Ambient: the chakra turns once every two minutes
+ * while the banner is on screen (./Chakra). Reduced motion: everything is in place at once and the wheel
+ * stands still.
  */
 export default function Hero() {
   return (
-    <section
-      id="hero"
-      aria-labelledby="hero-h"
-      className="relative isolate h-[820px] overflow-clip bg-linear-to-r from-mahogany to-[#3d1c0c]"
-    >
-      {/* The art, back to front as in Figma. No transform on the canvas boxes: the grain blends with all below it. */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute inset-y-0 left-1/2 -ml-[720px] w-canvas">
-          <Parallax speed={0.8} className="absolute top-[29px] left-px h-[944px] w-canvas overflow-hidden opacity-16">
+    <section id="hero" aria-labelledby="hero-h" className="bg-paper">
+      <div className="mx-auto w-canvas px-20 pt-10">
+        <div className={cx("relative isolate h-[585px] overflow-clip rounded-[27px] bg-cream", ENTER)} style={at(AT.art)}>
+          {/* The art: the photo (without its wheel) and the wheel, which turns. Decoration. */}
+          <div aria-hidden="true" className={cx("absolute inset-0", SETTLE)} style={at(AT.art)}>
             <img
-              src="/images/hero/sansad-bhavan-line-art.webp"
+              src="/images/hero/banner.webp"
               alt=""
-              width={626}
-              height={626}
-              decoding="async"
-              className="absolute top-0 left-[7.95%] h-[128.18%] w-[84.03%] max-w-none"
-            />
-          </Parallax>
-          <HeroGlow />
-        </div>
-        <img
-          src="/images/hero/paper-grain.webp"
-          alt=""
-          width={1024}
-          height={1440}
-          decoding="async"
-          className="absolute inset-0 size-full object-cover opacity-14 mix-blend-overlay"
-        />
-        <div className="absolute inset-y-0 left-1/2 -ml-[720px] w-canvas">
-          <NicheLines />
-          <Parallax speed={0.9} className="absolute top-[33px] left-[940px] h-[697px] w-[360px]">
-            <img
-              src="/images/hero/lady-justice.webp"
-              alt=""
-              width={517}
-              height={1000}
+              width={2059}
+              height={941}
               fetchPriority="high"
-              className={cx(
-                "size-full object-contain drop-shadow-[0_24px_40px_rgba(20,8,3,0.5)] starting:translate-y-8",
-                ENTER,
-              )}
-              style={at(AT.statue)}
+              className="absolute inset-0 size-full max-w-none object-cover"
             />
-          </Parallax>
-          <div className="absolute top-[730px] left-[890px] h-0.5 w-[460px] bg-saffron/50" />
-        </div>
-      </div>
-
-      <div className="relative mx-auto h-full w-canvas px-20 pt-[88px]">
-        <div className="flex w-[640px] flex-col items-start gap-6">
-          <div className={cx(ENTER, EYEBROW_RULE)} style={at(AT.eyebrow)}>
-            <EyebrowLeft reveal={false}>{heroIntro.eyebrow}</EyebrowLeft>
+            <Chakra />
           </div>
 
-          <h1 id="hero-h" className="font-serif text-[80px]/[1.08] tracking-[-1.2px] whitespace-nowrap text-parchment">
-            <span className={cx("block", RISE)} style={at(AT.headline)}>
-              {heroIntro.headline}
-            </span>
-            <span className={cx("block text-saffron italic", RISE)} style={at(AT.accent)}>
-              {/* Read once, in full; the rolling place below is for the eye. */}
-              <span className="sr-only">{heroIntro.accent.text}</span>
-              <span aria-hidden="true">
-                {heroIntro.accent.lead} <PlaceRoll places={heroIntro.accent.places} />
+          <div className="relative flex flex-col items-start px-14 pt-14">
+            <div className={cx(ENTER, EYEBROW_RULE)} style={at(AT.eyebrow)}>
+              <EyebrowLeft reveal={false} labelClassName="text-burnt">
+                {hero.eyebrow}
+              </EyebrowLeft>
+            </div>
+
+            <h1 id="hero-h" className="mt-5 font-serif text-[64px]/[1.06] font-normal tracking-[-0.02em] text-ink">
+              {hero.headline.map((line, i) => (
+                <span key={i} className={cx("block whitespace-nowrap", LINE)} style={at(AT.lines[i])}>
+                  {line.map((run) =>
+                    run.em ? (
+                      <em key={run.text} className="text-burnt italic">
+                        {run.text}
+                      </em>
+                    ) : (
+                      run.text
+                    ),
+                  )}
+                </span>
+              ))}
+            </h1>
+
+            {/* 440 wide, so it sets in three even lines, all on the sky. */}
+            <p className={cx("mt-5 w-[440px] text-[17px]/[1.55] text-ink", RISE)} style={at(AT.lead)}>
+              {hero.lead}
+            </p>
+
+            <div className="mt-8 flex items-start gap-3">
+              <span className={cx("flex", RISE)} style={at(AT.ctas[0])}>
+                <Cta variant="primary" size="lg" href={hero.primary.href}>
+                  {hero.primary.label}
+                </Cta>
               </span>
-            </span>
-          </h1>
-
-          <p className={cx("w-[540px] text-[18px]/[28px] font-medium text-parchment/80", RISE)} style={at(AT.lead)}>
-            {heroIntro.lead}
-          </p>
-
-          <div className="flex items-start gap-3">
-            <span className={cx("flex", RISE)} style={at(AT.ctas)}>
-              <Cta variant="primary-dark" size="lg" href={heroIntro.primary.href}>
-                {heroIntro.primary.label}
-              </Cta>
-            </span>
-            <span className={cx("flex", RISE)} style={at(AT.ctas + 60)}>
-              <Cta variant="secondary-dark" size="lg" href={heroIntro.secondary.href}>
-                {heroIntro.secondary.label}
-              </Cta>
-            </span>
+              <span className={cx("flex", RISE)} style={at(AT.ctas[1])}>
+                <Cta variant="secondary" size="lg" href={hero.secondary.href}>
+                  {hero.secondary.label}
+                </Cta>
+              </span>
+            </div>
           </div>
-
-          <p className={cx("flex items-center gap-1.5 text-[15px]/[22px] font-medium whitespace-nowrap text-parchment/70", RISE)} style={at(AT.ctas + 120)}>
-            {heroIntro.newToUpsc.text}
-            <IndianLink tone="dark" underlined href={heroIntro.newToUpsc.href}>
-              {heroIntro.newToUpsc.link}
-            </IndianLink>
-          </p>
         </div>
 
-        <ProofCard />
+        <ul aria-label={achievementsLabel} className="mt-5 grid grid-cols-3 py-6">
+          {achievements.map((item, i) => (
+            <li
+              key={item.name}
+              data-enter
+              className={cx("relative flex items-center justify-center gap-4", i > 0 && DIVIDER, RISE)}
+              style={at(AT.achievements[i])}
+            >
+              <span className="relative flex h-[89px] w-[111px] shrink-0 items-center justify-center">
+                <img src="/images/hero/laurel.svg" alt="" aria-hidden="true" width={111} height={89} className="absolute inset-0 size-full" />
+                <span className="relative font-serif text-[32px]/[1.1] font-medium tracking-[-0.015em] whitespace-nowrap text-mahogany">
+                  <HeroFigure value={item.figure} />
+                </span>
+              </span>
+              <span className="flex flex-col gap-1">
+                <span className="text-[17px]/[1.35] font-medium whitespace-nowrap text-ink">{item.name}</span>
+                <span className="font-mono text-[12px]/[normal] tracking-[0.08em] text-clay uppercase">{item.exam}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

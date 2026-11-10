@@ -53,13 +53,13 @@ export default function Locations() {
         <div className="absolute top-24 left-20 flex w-[520px] flex-col items-start">
           <div className="flex flex-col items-start gap-3">
             <EyebrowLeft>{locationsIntro.eyebrow}</EyebrowLeft>
-            <h2 id="locations-h" data-reveal="heading" className="font-serif text-[60px]/[1.08] tracking-[-0.9px] whitespace-nowrap text-mahogany">
+            <h2 id="locations-h" data-reveal="heading" className="font-serif text-[56px]/[1.08] tracking-[-0.02em] whitespace-nowrap text-ink">
               {locationsIntro.title.lead}
-              <em data-reveal-em className="text-burnt">
+              <em data-reveal-em className="text-orange italic">
                 {locationsIntro.title.em}
               </em>
             </h2>
-            <p data-reveal="sub" className="w-[520px] text-[18px]/[27px] font-medium text-clay">
+            <p data-reveal="sub" className="w-[520px] text-[17px]/[1.55] text-clay">
               {locationsIntro.text}
             </p>
           </div>

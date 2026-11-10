@@ -15,8 +15,8 @@ type PreloaderCurtainProps = {
  * The intro's curtain element and the little the script does for it (see ./Preloader): while <html> has
  * `intro`, the page cannot scroll (Lenis stopped, via lockScroll); when the curtain's own CSS transitions
  * are over, it removes `intro` (the curtain goes back to display: none) and lets the page scroll. `--intro`
- * stays: the hero's rolling place (Hero/PlaceRoll) is a CSS animation timed from it, and taking it away
- * would make that jump ahead. If the script arrives after the intro has already played, it tidies up at once. It never
+ * stays: the hero's entrance transitions (Hero/enter) are timed from it, and taking it away early would
+ * make them jump ahead. If the script arrives after the intro has already played, it tidies up at once. It never
  * traps focus: the curtain is aria-hidden and holds nothing focusable.
  */
 export default function PreloaderCurtain({ until, className, style, children }: PreloaderCurtainProps) {

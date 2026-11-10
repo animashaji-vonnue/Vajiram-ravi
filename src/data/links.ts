@@ -36,6 +36,13 @@ export const links = {
   mentorship: `${SITE}/courses/upsc-mentorship-program/`,
   mentorshipHindi: `${SITE}/courses/upsc-mentorship-program-hindi-medium/`,
   interviewGuidance: `${SITE}/courses/interview-guidance-program/`,
+  // The programme families of the all-courses page (checked 13 Nov 2026), for the homepage's programme grid.
+  mentorshipPrograms: `${SITE}/courses/mentorship-programs/`,
+  moduleCourses: `${SITE}/courses/upsc-module-courses/`,
+  csatCourses: `${SITE}/courses/upsc-csat/`,
+  mainsTestSeriesAll: `${SITE}/courses/mains-test-series/`,
+  crashCourses: `${SITE}/courses/upsc-crash-courses/`,
+  ifos: `${SITE}/courses/upsc-indian-forest-service-ifos-coaching/`,
 
   // Free resources.
   currentAffairsPrelims: `${SITE}/current-affairs/upsc-prelims-current-affairs/`,
@@ -51,6 +58,12 @@ export const links = {
   essayPractice: `${SITE}/upsc-study-materials/weekly-essay/`,
   upscBooks: `${SITE}/upsc-exam/upsc-book-list/`,
   modelAnswers: `${SITE}/upsc-exam/model-answers-for-upsc-mains/`,
+  // The free resources of the homepage content (10 Nov 2026). The Recitals is the monthly magazine page.
+  theRecitals: `${SITE}/upsc-study-materials/monthly-current-affairs-magazine/`,
+  dailyCurrentAffairs: `${SITE}/current-affairs/`,
+  // TODO: the live site has no Prelims Pointers page; this opens the Prelims current affairs, the nearest.
+  prelimsPointers: `${SITE}/current-affairs/upsc-prelims-current-affairs/`,
+  mainsArticles: `${SITE}/current-affairs/upsc-mains-current-affairs/`,
 
   // UPSC exam guides and updates.
   upsc2027: `${SITE}/upsc-exam/upsc-2027/`,
@@ -70,6 +83,10 @@ export const links = {
 
   // The institute.
   aboutUs: `${SITE}/about-us/`,
+  faculty: null, // TODO: the live site has no faculty page yet ("Meet Our Faculty")
+  studentStories: null, // TODO: student stories and video testimonials ("Watch Student Stories"); no page or channel yet
+  // TODO: the live site has no test series hub; "Explore Test Series" opens the Prelims test series.
+  testSeries: `${SITE}/courses/prelims-test-series/`,
   careers: `${SITE}/careers/`, // The live site sends this on to vajiramias.com/careers/.
   termsAndConditions: `${SITE}/terms-and-conditions/`,
   privacyPolicy: `${SITE}/privacy-policy/`,

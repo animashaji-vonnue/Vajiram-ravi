@@ -14,10 +14,10 @@ import { canvasTop } from "@/lib/canvas";
 import { prefersReducedMotion } from "@/lib/motion";
 import { scrollToElement } from "@/lib/smoothScroll";
 
-/** Scroll distance (canvas px) after which the utility bar tucks away and the header gains its shadow. */
-const TUCK_AFTER = 80;
-/** How far the page must scroll back up to bring the utility bar back. */
-const REVEAL_AFTER = 40;
+/** Scroll distance (canvas px) after which the header hides on the way down and gains its shadow. */
+const HIDE_AFTER = 80;
+/** How far the page must scroll back up (canvas px) to bring the header back: a small, deliberate move. */
+const SHOW_AFTER = 12;
 /** A section is "current" while it crosses a thin band just below the middle of the viewport. */
 const BAND = { rootMargin: "-45% 0px -50% 0px" };
 /** The phone in "Let's talk" rings on the first hover of a visit only. */
@@ -28,13 +28,13 @@ const RANG_KEY = "vr-header-phone-rang";
  * 39px mahogany utility bar, the 80px white main header (logo, the links and "Let's talk", the site's ink
  * CTA with the phone in its medallion) and the 40px burnt announcement strip. The hero starts under it.
  *
- * Motion spec: it is sticky. After 80px of scroll the whole header slides up by the utility bar's height
- * (translateY(-39px), --dur-base), so the utility bar leaves the view and the main header and strip, 120px
- * (lib/smoothScroll's HEADER_OFFSET), stay at the top; a shadow (--shadow-rest) fades in under them.
- * Scrolling back up 40px brings the utility bar back; scrolling down tucks it again. One rAF-throttled
- * scroll listener drives this, writing data attributes so React does not re-render. While the page
- * glides to a section (an in-page link or a search result) the bar stays tucked, so the section lands
- * right under the 120px.
+ * Motion: it is sticky, and it gets out of the way while reading. At the top of the page it is whole.
+ * Scrolling down past 80px slides it up out of view (data-hidden, --dur-base, --ease-in-out); scrolling back
+ * up by 12px brings the main header and the strip back (120px, lib/smoothScroll's HEADER_OFFSET), with the
+ * utility bar tucked above them (data-tucked, translateY(-39px)) and a shadow (--shadow-rest) under them;
+ * back at the top the utility bar returns. It stays in view while it holds the keyboard focus or a menu is
+ * open. One rAF-throttled scroll listener drives this, writing data attributes so React does not
+ * re-render. While the page glides to a section (an in-page link or a search result) it stays hidden.
  *
  * "Let's talk" opens the contact sheet, and ⌘K / Ctrl+K anywhere opens the search box (the design has no
  * search button).
@@ -81,20 +81,24 @@ export default function SiteHeader() {
       frame = 0;
       // How far the page has scrolled, in canvas pixels (the canvas may be zoomed down).
       const y = Math.max(0, -canvasTop(document.body));
-      let tucked = header.hasAttribute("data-tucked");
-      if (y <= TUCK_AFTER) {
-        tucked = false;
+      // Never hide a header the visitor is using: focus inside it, or one of its menus open.
+      const inUse = header.matches(":focus-within") || !!header.querySelector('[aria-expanded="true"]');
+      let hidden = header.hasAttribute("data-hidden");
+      if (y <= HIDE_AFTER) {
+        hidden = false;
         peak = y;
-      } else if (jumping || y > last) {
-        tucked = true;
+      } else if ((jumping || y > last) && !inUse) {
+        hidden = true;
         peak = y;
-      } else if (peak - y >= REVEAL_AFTER) {
-        tucked = false;
+      } else if (peak - y >= SHOW_AFTER || inUse) {
+        hidden = false;
       }
       if (jumping) endJumpSoon(200);
       last = y;
-      header.toggleAttribute("data-tucked", tucked);
-      header.toggleAttribute("data-raised", y > TUCK_AFTER);
+      header.toggleAttribute("data-hidden", hidden);
+      // Shown again mid-page: the main header and the strip only, the utility bar tucked above them.
+      header.toggleAttribute("data-tucked", !hidden && y > HIDE_AFTER);
+      header.toggleAttribute("data-raised", y > HIDE_AFTER);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -146,8 +150,12 @@ export default function SiteHeader() {
     return () => observer.disconnect();
   }, []);
 
-  // Focus reaching the tucked utility bar (Tab from the top) brings it back into view.
-  const revealUtility = () => headerRef.current?.removeAttribute("data-tucked");
+  // Focus reaching the header (Tab from the top) brings it back into view, the utility bar too.
+  const revealUtility = () => {
+    headerRef.current?.removeAttribute("data-hidden");
+    headerRef.current?.removeAttribute("data-tucked");
+  };
+  const revealHeader = () => headerRef.current?.removeAttribute("data-hidden");
 
   // The logo goes back to the very top, past the sticky header's offset.
   const toTop = (event: MouseEvent) => {
@@ -183,7 +191,8 @@ export default function SiteHeader() {
     <>
       <header
         ref={headerRef}
-        className="group/header sticky top-0 z-50 [transition:translate_var(--dur-base)_var(--ease-in-out)] data-tucked:-translate-y-[39px]"
+        onFocus={revealHeader}
+        className="group/header sticky top-0 z-50 [transition:translate_var(--dur-base)_var(--ease-in-out)] data-tucked:-translate-y-[39px] data-hidden:-translate-y-full"
       >
         {/* --shadow-rest under the main header and strip once the page has scrolled (fades; never animates the shadow itself). */}
         <span

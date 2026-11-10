@@ -391,7 +391,11 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
       {/* The panels of both tab lists: the mode's, and the month's inside it. */}
       <div id="batch-mode-panel" role="tabpanel" aria-labelledby={`batch-mode-tab-${panel.mode}`} data-reveal className="relative w-full">
         <div id="batch-month-panel" role="tabpanel" aria-labelledby={`batch-month-tab-${panel.month}`} className="relative">
-          {/* Room around the 360px tickets for the hover lift and its shadow: 32px above, 48px below. */}
+          {/*
+           * Room around the 360px tickets, which the scroller would otherwise clip: 48px above (the whole gap
+           * to the tabs row) for the hover lift and the paper slips floating up behind a ticket, 48px below
+           * for the lifted ticket's shadow.
+           */}
           <div
             ref={trackRef}
             role="region"
@@ -406,7 +410,7 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
             onClickCapture={onClickCapture}
             onKeyDown={onKeyDown}
             onDragStart={(event) => event.preventDefault()}
-            className={`relative -mt-8 -mb-12 flex h-[440px] snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain pt-8 pb-12 select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
+            className={`relative -mt-12 -mb-12 flex h-[456px] snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain pt-12 pb-12 select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
           >
             {tickets.map((batch, i) => (
               <div
@@ -429,7 +433,7 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
               <span>
                 {batchesCopy.empty} —{" "}
                 <a
-                  href="#counsellor"
+                  href="#counselling"
                   className="font-bold text-burnt underline decoration-burnt/40 underline-offset-[3px] [transition:text-decoration-color_var(--dur-fast)_var(--ease-out)] hover:decoration-burnt"
                 >
                   {batchesCopy.emptyLink}

@@ -3,7 +3,8 @@ import FooterWordmark from "@/components/sections/ClosingCta/FooterWordmark";
 import LinkOrText from "@/components/ui/LinkOrText";
 import { Flourish } from "@/components/ui/Ornament";
 import Photo from "@/components/ui/Photo";
-import { footerColumns, footerCopyright, footerLegal, footerWordmark } from "@/data/footer";
+import { campuses } from "@/data/contact";
+import { footerColumns, footerContactHeading, footerCopyright, footerLegal, footerTagline, footerWordmark } from "@/data/footer";
 import { contact } from "@/data/site";
 import { cx } from "@/lib/cx";
 
@@ -27,9 +28,12 @@ function FooterLink({ href, children }: { href: string | null; children: string 
 }
 
 /**
- * The paper footer after the closing call to action (Figma 2258:10170): the logo and email beside six link
- * columns, the line-art skyline of Raisina Hill behind them (built like a construction, FooterSkyline), the flourish, the giant orange wordmark
- * (whose letters arrive one by one, FooterWordmark) and the legal bar.
+ * The paper footer after the closing call to action (IA 12; Figma "14 · Footer", 2392:7437): the brand
+ * block (logo, the one-line promise and the contact details: both campuses, the phone with its hours, the
+ * email) beside the client's three link columns (Explore, Resources, Support), the line-art skyline of
+ * Raisina Hill behind them (built like a construction, FooterSkyline), the flourish, the giant orange
+ * wordmark (whose letters arrive one by one, FooterWordmark) and the legal bar. "Contact Us" in the
+ * Support column jumps to the contact block (#contact).
  */
 export default function SiteFooter() {
   return (
@@ -39,18 +43,33 @@ export default function SiteFooter() {
         <FooterSkyline className="pointer-events-none absolute top-[315.35px] left-20" />
 
         <div data-reveal-group className={cx("relative flex w-[1280px] items-start justify-between", TEXT)}>
-          <div className="flex w-[230px] shrink-0 flex-col items-start gap-4">
+          <div className="flex w-[420px] shrink-0 flex-col items-start gap-5">
             <a href="#top" aria-label="Vajiram & Ravi, back to top" className="block">
               <Photo src="/images/logo.webp" alt="" sizes="176px" className="relative h-10 w-44 bg-paper" />
             </a>
-            <a href={`mailto:${contact.email}`} className={cx("text-[13.5px]/[normal] whitespace-nowrap", LINK)}>
-              {contact.email}
-            </a>
+            <p className="w-[380px] font-serif text-[20px]/[1.35] text-ink">{footerTagline}</p>
+            <address id="contact" className="flex scroll-mt-32 flex-col items-start gap-3 text-[13.5px]/[1.5] not-italic">
+              <h2 className="font-serif text-[17px]/[normal] text-[#1a1714]">{footerContactHeading}</h2>
+              {campuses.map((campus) => (
+                <p key={campus.id} className="w-[360px]">
+                  <span className="font-semibold text-ink">{campus.city}</span> · {campus.address}
+                </p>
+              ))}
+              <p className="whitespace-nowrap">
+                <a href={contact.phoneHref} className={LINK}>
+                  {contact.phone}
+                </a>
+                {` · ${contact.hours}`}
+              </p>
+              <a href={`mailto:${contact.email}`} className={cx("whitespace-nowrap", LINK)}>
+                {contact.email}
+              </a>
+            </address>
           </div>
           {footerColumns.map((column) => (
-            <div key={column.heading} className="flex w-[156px] shrink-0 flex-col items-start gap-3">
-              <h2 className="w-[156px] font-serif text-[17px]/[normal] text-[#1a1714]">{column.heading}</h2>
-              <ul className="flex w-[152px] flex-col items-start gap-3 text-[13.5px]/[1.4]">
+            <div key={column.heading} className="flex w-[200px] shrink-0 flex-col items-start gap-3">
+              <h2 className="w-[200px] font-serif text-[17px]/[normal] text-[#1a1714]">{column.heading}</h2>
+              <ul className="flex w-[200px] flex-col items-start gap-3 text-[13.5px]/[1.4]">
                 {column.links.map((link) => (
                   <li key={link.label}>
                     <FooterLink href={link.href}>{link.label}</FooterLink>

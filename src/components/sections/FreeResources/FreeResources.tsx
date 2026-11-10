@@ -1,16 +1,17 @@
-import { defaultStage, otherResources, studyIntro, studyStages } from "@/data/study-materials";
+import BlockPrintBand from "@/components/ui/BlockPrintBand";
 import FrontPage from "./FrontPage";
 
 /**
- * Free study material (Figma "10 · Free study material — newspaper front page", 2258:9835): a sand band
- * holding one newspaper sheet, 1280 wide, with the masthead and edition tabs, the edition's lead story
- * and five headlines, and the other free resources along its foot. A plain full-bleed band.
+ * Free study materials & resources (IA 9; Figma "10 Free resources · newspaper front page", 2392:5785):
+ * a parchment band with the burnt block-print strip along its top, holding one newspaper sheet, 1280
+ * wide, whose masthead is the section's heading (FrontPage).
  */
 export default function FreeResources() {
   return (
-    <section id="resources" aria-labelledby="resources-h" className="relative bg-[#e9dcc4]">
-      <div className="mx-auto w-canvas px-20 pt-[68px] pb-24">
-        <FrontPage stages={studyStages} initialStage={defaultStage} intro={studyIntro} resources={otherResources} />
+    <section id="resources" aria-labelledby="resources-h" className="relative isolate overflow-clip bg-[#ffefd5]">
+      <BlockPrintBand colour="#cc5500" opacity={0.4} className="top-6" />
+      <div className="mx-auto w-canvas px-20 pt-24 pb-26">
+        <FrontPage />
       </div>
     </section>
   );

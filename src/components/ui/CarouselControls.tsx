@@ -19,6 +19,8 @@ type CarouselArrowProps = {
   label: string;
   /** Nothing further this way: hide without removing. */
   hidden?: boolean;
+  /** Nothing further this way, but stay in view, dimmed (for a carousel whose arrows always show). */
+  disabled?: boolean;
   /** "light": white with a hairline; "solid": filled ink, as the design's "next" arrows. */
   tone?: "light" | "solid";
   /** "circle" or the toppers' rounded "square". */
@@ -28,11 +30,12 @@ type CarouselArrowProps = {
   className?: string;
 };
 
-export function CarouselArrow({ direction, onClick, label, hidden = false, tone = "light", shape = "circle", size = 44, className }: CarouselArrowProps) {
+export function CarouselArrow({ direction, onClick, label, hidden = false, disabled = false, tone = "light", shape = "circle", size = 44, className }: CarouselArrowProps) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       aria-label={label}
       aria-hidden={hidden || undefined}
       tabIndex={hidden ? -1 : undefined}
@@ -42,6 +45,8 @@ export function CarouselArrow({ direction, onClick, label, hidden = false, tone 
         shape === "circle" ? "rounded-full" : "rounded-lg",
         tone === "light" ? "border border-ink/15 bg-white text-ink hover:border-ink" : "bg-ink text-cream",
         hidden && "pointer-events-none opacity-0",
+        disabled && "cursor-default opacity-35 hover:bg-white hover:text-ink",
+        disabled && tone === "light" && "hover:border-ink/15",
         className,
       )}
     >

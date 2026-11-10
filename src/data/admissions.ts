@@ -1,3 +1,6 @@
+import type { HeadingParts } from "@/data/programmes";
+import { links, type Href } from "@/data/links";
+
 export type BatchMode = "Classroom" | "LIVE-Online";
 
 /** A batch, as the batch CMS will send it. */
@@ -10,14 +13,17 @@ export type Batch = {
   modes: BatchMode[];
   /** The UPSC CSE year the batch prepares for. */
   targetYear: number;
-  /** Only when the batch is actually flagged. */
+  /** Only when the batch is actually flagged: the ticket then carries the "Limited seats" stamp. */
   seatStatus?: "limited";
+  /** Only when admissions have confirmed it: the ticket then reads "Admissions open". */
   admissionOpen?: boolean;
 };
 
 const BOTH: BatchMode[] = ["Classroom", "LIVE-Online"];
 
 /** Every batch in the CMS. The page shows those that have not started yet (see upcomingBatches). */
+// TODO: per-batch detail pages. Until the CMS gives each batch its page, "Details" opens the programme's page
+// where we know it (the GS programme) and the live site's upcoming batches listing otherwise.
 export const batches: Batch[] = [
   {
     id: "gs-pcm-2027",
@@ -76,58 +82,75 @@ export function upcomingBatches(today: string): Batch[] {
 export const batchFilters = ["All", "Classroom", "LIVE-Online"] as const;
 export type BatchFilter = (typeof batchFilters)[number];
 
-/** Choices for "Select Programmes" in the enquiry form: the batches above, then the main courses. */
-export const enquiryProgrammes: string[] = [
-  ...batches.map((batch) => batch.programme),
-  "UPSC GS Foundation Course - PCM",
-  "GS 2-Year Fledgling Programme",
-  "Optional Subject Programme",
-  "CSAT Course",
-  "Interview Guidance Programme",
-  "Mentorship Programme",
-  "Mains Test Series",
-  "Prelims Test Series",
-  "Optional Test Series",
-];
-
-export const timePreferences = ["Morning (9 AM – 12 PM)", "Afternoon (12 PM – 4 PM)", "Evening (4 PM – 7 PM)"];
-
-/** The batches section (Figma "Batches", 2257:9039). The phone number in the intro comes from data/site. */
+/** Upcoming Batches & Admissions (IA 5; Figma "04 · Upcoming Batches", 2377:4662), in the client's copy of 10 Nov 2026. */
 export const batchesCopy = {
-  eyebrow: "ADMISSIONS",
-  heading: "Next batches starting soon.",
-  /** The intro, around the phone number: "Register online, or call 080-6220-6330 for registration or seat allotment." */
-  introBefore: "Register online, or call",
-  introAfter: "for registration or seat allotment.",
-  viewAll: "View all batches",
+  eyebrow: "UPCOMING BATCHES",
+  title: { before: "Your", em: "next step", after: "starts here." } satisfies HeadingParts,
+  lead: "Find an upcoming batch and get the details you need to plan your preparation.",
+  viewAll: "View All Upcoming Batches",
   empty: "No batches for this selection",
   emptyLink: "get notified",
 };
 
-/** The "Talk to us" postcard (Figma "08 Talk to us · India Post postcard form", 2258:9692). */
-export const talkToUsCopy = {
-  eyebrow: "TALK TO US",
-  heading: "Need assistance? Talk to our",
-  headingEm: "expert counsellor.",
-  text: "Schedule a free call with a Vajiram & Ravi counsellor to answer your questions—no pressure to enrol.",
+/** The featured batch, on the wide ticket above the batch tabs. */
+export const featuredBatch = {
+  label: "Featured Batch",
+  programme: "General Studies – Prelims & Mains",
+  status: "Admissions Open",
+  targetYear: 2028,
+  kind: "UPSC CSE Preparation Programme",
+  /** The batch's start, as the ticket shows it under "Batch starts". */
+  // TODO: placeholder. The client's copy has "[Verified date]" here: replace this with the verified start
+  // date (e.g. "12 July 2027") when admissions confirm it.
+  start: "January 2027 (to be confirmed)",
+  /** The ticket's details, in the copy's order. */
+  details: { start: "Batch starts", mode: "Mode", location: "Location" },
+  mode: "Classroom / LIVE-Online",
+  location: "New Delhi (for classroom)",
+  cta: { label: "View Programme Details", href: links.gsCourse as Href },
+};
+
+/** The choices of "Preferred Learning Mode" in the counselling form. */
+export const learningModes: BatchMode[] = ["Classroom", "LIVE-Online"];
+
+/** Counselling & Academic Guidance (IA 6; Figma "05 · Personalised Counselling", 2377:4839) and its postcard form. */
+export const counsellingCopy = {
+  eyebrow: "NEED HELP GETTING STARTED?",
+  title: { before: "Find", em: "clarity", after: "on your next step." } satisfies HeadingParts,
+  text: [
+    "Choosing a programme is an important part of your preparation. Whether you’re starting from the beginning, planning your next attempt or looking for focused support, our academic counsellors can help you understand the available options.",
+    "Speak with our team to find a programme that aligns with your preparation needs.",
+  ],
+  cta: "Get Expert Guidance",
   postcardTitle: "Book your free session today!",
+  labels: {
+    name: "Full Name",
+    phone: "Mobile Number",
+    email: "Email Address",
+    programme: "Programme of Interest",
+    mode: "Preferred Learning Mode",
+    query: "Your Query",
+  },
+  /** After "Your Query", which is the one field that may stay empty. */
+  optional: "(optional)",
   placeholders: {
     name: "Your full name",
     email: "you@email.com",
     programme: "Pick a programme",
-    time: "Preferred time",
+    mode: "Pick a mode",
+    query: "What would you like to ask?",
   },
-  submit: "Submit",
+  submit: "Request a Call Back",
   thanks: "Thank you",
   thanksText: "Your postcard is on its way. A counsellor will call you soon.",
   again: "Book another session",
-  /** Shown above Submit when sending fails; one line in the 306px column. */
+  /** Shown above the button when sending fails. */
   failed: "Couldn’t send that. Please try again.",
   errors: {
     name: "Enter your name",
-    email: "Enter a valid email",
     phone: "Enter a 10-digit mobile number",
+    email: "Enter a valid email",
     programme: "Choose a programme",
-    time: "Choose a time",
+    mode: "Choose a learning mode",
   },
 };

@@ -1,56 +1,42 @@
 /**
- * The hero and the stats band under it (Figma "the final design": "01 Hero – Lady Justice niche (dark)",
- * 2256:5586, and "04 · Stats band", 2256:5656).
+ * The hero (Figma "01 · Hero", 2392:5234): the banner and the achievements bar under it. The copy is the
+ * client's (homepage content, "01. Hero section"), word for word.
  */
 
-import { links } from "@/data/links";
-import { toppers } from "@/data/toppers";
+/** A run of the heading; `em` runs are set in italic burnt orange. */
+export type HeadlineRun = { text: string; em?: boolean };
 
-export const heroIntro = {
-  /** The ornament eyebrow above the heading (set in uppercase as drawn). */
-  eyebrow: "SINCE 1976 · NEW DELHI · CHENNAI",
-  headline: "Best IAS Coaching",
+export const hero = {
+  eyebrow: "UPSC CIVIL SERVICES EXAMINATION PREPARATION",
   /**
-   * The second line of the heading, in saffron italic: "in" and one place at a time, rolling from Delhi up to
-   * India and back. Screen readers and search engines read `text`, the whole line.
+   * "You have the ambition. Now build the preparation to match it.", in the three lines it is set in (each
+   * line rises in on its own), with "the preparation to match it" as the emphasis. Each line ends in a space
+   * so the heading reads as one sentence; the space is not drawn at the end of a line.
    */
-  accent: { lead: "in", places: ["Delhi", "India"] as const, text: "in Delhi, India" },
-  lead: "For five decades, aspirants have trusted us to take them from their first class to the interview with experienced faculty, a structured method and honest guidance.",
-  primary: { label: "Find your course", href: "#courses" },
-  /** The postcard enquiry form. */
-  secondary: { label: "Talk to a counsellor", href: "#counsellor" },
-  // TODO: confirm the target with the client; a "how the preparation works" page could replace the GS programme section.
-  newToUpsc: { text: "New to UPSC?", link: "See how the preparation works", href: "#gs-programme" },
+  headline: [
+    [{ text: "You have the ambition. " }],
+    [{ text: "Now build " }, { text: "the preparation", em: true }, { text: " " }],
+    [{ text: "to match it", em: true }, { text: "." }],
+  ] satisfies HeadlineRun[][],
+  lead: "Prepare for the Civil Services Examination with experienced educators, structured programmes and focused academic guidance at every stage.",
+  primary: { label: "Explore Programmes", href: "#programmes" },
+  secondary: { label: "Get Expert Guidance", href: "#counselling" },
 };
 
-export type HeroAvatar = { rank: number; name: string; image: string };
-
-/**
- * The proof card on the statue's plinth: AIR 1 to 8 of UPSC CSE 2025 as avatars (the design's own
- * photos, which differ from the portrait cut-outs used elsewhere). Names and ranks come from the toppers
- * data. The card links to the selections page.
- */
-export const heroProof = {
-  eyebrow: "UPSC CSE 2025",
-  title: "Ranks 1 to 10 all studied with us",
-  href: links.toppers,
-  avatars: toppers.slice(0, 8).map(
-    (topper): HeroAvatar => ({ rank: topper.rank, name: topper.name, image: `/images/hero/avatars/air-${topper.rank}.webp` }),
-  ),
+export type Achievement = {
+  /** The figure in the laurel; its number rolls in (ui/CountUp). */
+  figure: string;
+  /** Who or what it is. */
+  name: string;
+  exam: string;
 };
 
-export type HeroStat = {
-  /** The figure as shown; its first number counts up (see CountUp). */
-  value: string;
-  label: string;
-  /** Set in saffron instead of white, as drawn. */
-  accent?: boolean;
-};
+/** The achievements bar's accessible name. */
+export const achievementsLabel = "UPSC 2025 results";
 
-/** The stats band, left to right. */
-export const heroStats: HeroStat[] = [
-  { value: "59", label: "Questions reflected in Prelims" },
-  { value: "50+", label: "Years of experience since 1976" },
-  { value: "10/10", label: "Top rankers from V&R courses", accent: true },
-  { value: "36/50", label: "CSE 2025 rankers from V&R", accent: true },
+/** The achievements bar, left to right. */
+export const achievements: Achievement[] = [
+  { figure: "AIR 1", name: "Anuj Agnihotri", exam: "UPSC 2025" },
+  { figure: "AIR 2", name: "Rajeshwari Suve M", exam: "UPSC 2025" },
+  { figure: "36/50", name: "Top 50 associates", exam: "UPSC 2025" },
 ];

@@ -1,38 +1,43 @@
-import { EyebrowCentred } from "@/components/ui/Ornament";
+import IndianLink from "@/components/ui/IndianLink";
+import { EyebrowLeft } from "@/components/ui/Ornament";
 import { stories, storiesIntro } from "@/data/stories";
-import { ParallaxLayer } from "@/lib/parallax";
-import StoryCarousel from "./StoryCarousel";
+import Postcards from "./Postcards";
 
 /**
- * Success stories (Figma "Success stories", 2258:9790): a warm band with the Gateway of India faint
- * behind it, the "In their words" eyebrow, then one large glass card holding a student's words, with the
- * dots and the ← → buttons below it on the right. A plain full-bleed band, 758px tall as drawn.
- *
- * Scroll (fine pointers, where ViewTimeline exists, motion allowed): the Gateway drifts 7% of the band's
- * height behind the card as the band crosses the screen (lib/parallax).
+ * Student stories & experiences (IA 8; Figma "09 · Student Stories", 2392:5350): a paper band with the
+ * left-aligned heading row (eyebrow, heading with its italic second beat, lead) and under it the
+ * students' words written on postcards, dealt onto the table (Postcards). "Watch Student Stories" goes
+ * under the lead once that page exists (links.studentStories is null today), as on the educators' note.
  */
 export default function SuccessStories() {
+  const { eyebrow, heading, lead, cta } = storiesIntro;
   return (
-    <section id="stories" aria-labelledby="stories-h" className="relative isolate overflow-clip bg-linear-to-b from-[#ffeedb] to-[#fff7ee]">
-      {/* The Gateway of India at 20%, over the band's gradient and under everything else; it drifts with the scroll. */}
-      <ParallaxLayer speed={5} className="pointer-events-none absolute inset-0 -z-1">
-        <img
-          src="/images/stories/gateway-of-india.webp"
-          alt=""
-          aria-hidden="true"
-          width={730}
-          height={459}
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 size-full max-w-none object-cover opacity-20"
+    <section id="stories" aria-labelledby="stories-h" className="relative bg-paper">
+      <div className="mx-auto w-canvas px-20 py-24">
+        <Postcards
+          stories={stories}
+          heading={
+            <div className="flex flex-col items-start gap-5">
+              <EyebrowLeft>{eyebrow}</EyebrowLeft>
+              <h2 id="stories-h" data-reveal="heading" className="w-[760px] font-serif text-[56px]/[1.08] font-normal tracking-[-0.02em] text-ink">
+                {heading.lead}{" "}
+                <em data-reveal-em className="text-orange italic">
+                  {heading.emphasis}
+                </em>
+              </h2>
+              <p data-reveal="sub" className="w-[640px] text-[17px]/[1.55] text-clay">
+                {lead}
+              </p>
+              {cta.href !== null && (
+                <span data-reveal="sub">
+                  <IndianLink tone="light" href={cta.href}>
+                    {cta.label}
+                  </IndianLink>
+                </span>
+              )}
+            </div>
+          }
         />
-      </ParallaxLayer>
-      <div className="mx-auto flex w-canvas flex-col items-start gap-10 px-20 pt-24 pb-[62px]">
-        <h2 id="stories-h" className="sr-only">
-          {storiesIntro.title}
-        </h2>
-        <EyebrowCentred labelClassName="text-orange uppercase">{storiesIntro.eyebrow}</EyebrowCentred>
-        <StoryCarousel stories={stories} />
       </div>
     </section>
   );

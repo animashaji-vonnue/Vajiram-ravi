@@ -2,9 +2,9 @@ import { batches } from "@/data/admissions";
 import { campuses } from "@/data/contact";
 import { educators } from "@/data/faculty";
 import { faqEntries } from "@/data/faq-chat";
-import { bentoProgrammes } from "@/data/programme-bento";
+import { flagshipProgramme, programmes } from "@/data/programmes";
 import { mainNav } from "@/data/site";
-import { studyStages } from "@/data/study-materials";
+import { freeResourceList } from "@/data/study-materials";
 import { toppersByYear, toppersYear } from "@/data/toppers";
 
 /** One thing the nav search can find, and where on the page it leads. */
@@ -21,29 +21,26 @@ const formatDate = (iso: string) =>
 
 const sections: SearchItem[] = [
   ...mainNav.filter((link) => link.href.startsWith("#") && link.href.length > 1).map((link) => ({ group: "Sections" as const, title: link.label, href: link.href })),
-  { group: "Sections", title: "General Studies programme", detail: "Our flagship programme", href: "#gs-programme" },
-  { group: "Sections", title: "Learn from top educators", detail: "Faculty", href: "#faculty" },
-  { group: "Sections", title: "Talk to a counsellor", detail: "Book your free session", href: "#counsellor" },
-  { group: "Sections", title: "Hear it from our students", detail: "Success stories", href: "#stories" },
+  { group: "Sections", title: "Meet our educators", detail: "Faculty", href: "#educators" },
+  { group: "Sections", title: "Speak to an academic counsellor", detail: "Request a call back", href: "#counselling" },
+  { group: "Sections", title: "Student stories", detail: "Experiences that speak", href: "#stories" },
   { group: "Sections", title: "Our locations", detail: campuses.map((campus) => campus.city).join(" and "), href: "#locations" },
 ];
 
 /** Everything the search looks through, built from the page's own data. */
 export const searchIndex: SearchItem[] = [
   ...sections,
-  ...bentoProgrammes.map((p) => ({ group: "Programmes" as const, title: p.title, detail: p.modes, href: "#courses" })),
+  ...[flagshipProgramme, ...programmes].map((p) => ({ group: "Programmes" as const, title: p.title, href: "#programmes" })),
   ...batches.map((b) => ({ group: "Upcoming batches" as const, title: b.programme, detail: `Starts ${formatDate(b.startDate)}`, href: "#batches" })),
-  ...educators.map((e) => ({ group: "Faculty" as const, title: e.name, detail: e.focus, href: "#faculty" })),
-  ...studyStages.flatMap((stage) =>
-    stage.articles.map((a) => ({ group: "Study materials" as const, title: a.title, detail: stage.label, href: "#resources" })),
-  ),
+  ...educators.map((e) => ({ group: "Faculty" as const, title: e.name, detail: e.focus, href: "#educators" })),
+  ...freeResourceList.map((r) => ({ group: "Study materials" as const, title: r.title, href: "#resources" })),
   ...faqEntries.map((f) => ({ group: "FAQs" as const, title: f.question, href: "#faq" })),
-  // The toppers on the page: this year's ranks 1 to 10 (the stamp carousel has no year switch).
+  // The toppers of the first year on show, ranks 1 to 10 (the board lists the other years too).
   ...(toppersByYear[toppersYear] ?? []).map((t) => ({
     group: "Toppers" as const,
     title: t.name,
     detail: `AIR ${t.rank} · CSE ${toppersYear}`,
-    href: "#toppers",
+    href: "#results",
   })),
 ];
 

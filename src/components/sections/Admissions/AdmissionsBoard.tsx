@@ -17,7 +17,7 @@ const toneOf = (id: string) => TONE_INDEX.get(id) ?? 0;
 
 /**
  * The batches under the heading: the mode tabs (All / Classroom / LIVE-Online) and the month tabs, the
- * arrows and the ticket track, then "View all batches". The two tab lists combine: the month tabs list each
+ * arrows and the ticket track, then "View All Upcoming Batches". The two tab lists combine: the month tabs list each
  * month that has upcoming batches, and their counts follow the chosen mode.
  * Batches that have started are hidden. "Today" is read on the client, so the server render lists them all.
  */
@@ -63,7 +63,7 @@ export default function AdmissionsBoard() {
       />
 
       <div data-reveal className="relative flex w-full justify-end">
-        <Cta variant="secondary" size="md" href={links.upcomingBatches} className="w-[200px]">
+        <Cta variant="secondary" size="md" href={links.upcomingBatches}>
           {batchesCopy.viewAll}
         </Cta>
       </div>

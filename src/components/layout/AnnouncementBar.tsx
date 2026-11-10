@@ -5,6 +5,9 @@ import { announcementIcons, announcements, announcementsMore, type Announcement 
 import { cx } from "@/lib/cx";
 import { prefersReducedMotion, whenFontsReady } from "@/lib/motion";
 
+/** The copies of the items after the real ones: three keep a short list seamless on a 2560px screen. */
+const CLONES = 3;
+
 /** The page link's hover: an underline drawing in from the left under the text (no medallion here). */
 function Underline() {
   return (
@@ -42,8 +45,8 @@ function Item({ item, index, clone, onFocus }: { item: Announcement; index: numb
  * burnt band of white 16px Hanken Medium items, each after its saffron iconoir icon, 56px apart.
  *
  * Motion spec: a continuous right-to-left marquee, one full loop every --dur-ambient (40s). The items are
- * rendered twice and the track slides by exactly one set's width (measured once the fonts have loaded),
- * so the loop is seamless; the copies are hidden from assistive tech and skipped by Tab. Hovering or
+ * rendered once and then CLONES more times, and the track slides by exactly one set's width (measured once
+ * the fonts have loaded), so the loop is seamless however short the list; the copies are hidden from assistive tech and skipped by Tab. Hovering or
  * focusing the strip pauses it, and a focused item that sits outside the band is brought to its left
  * edge. Each item is a link whose underline draws in on hover. Reduced motion: no scroll; the first two
  * items stand in a static row followed by "View all updates".
@@ -95,9 +98,10 @@ export default function AnnouncementBar() {
         {announcements.map((item, i) => (
           <Item key={item.text} item={item} index={i} onFocus={onItemFocus} />
         ))}
-        {announcements.map((item, i) => (
-          <Item key={`clone-${item.text}`} item={item} index={i} clone />
-        ))}
+        {/* Enough copies that the loop never shows a gap, even where one set is narrower than a wide screen. */}
+        {Array.from({ length: CLONES }, (_, copy) =>
+          announcements.map((item, i) => <Item key={`clone-${copy}-${item.text}`} item={item} index={i} clone />),
+        )}
         {/* White, underlined at rest (saffron would be too faint on burnt); the hover thickens the line. */}
         <a
           href={announcementsMore.href}

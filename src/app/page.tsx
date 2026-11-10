@@ -1,43 +1,50 @@
+import About from "@/components/sections/About/About";
 import Admissions from "@/components/sections/Admissions/Admissions";
+import Counselling from "@/components/sections/Admissions/Counselling";
 import ClosingCta from "@/components/sections/ClosingCta/ClosingCta";
-import Contact from "@/components/sections/Contact/Contact";
 import Locations from "@/components/sections/Contact/Locations";
-import Courses from "@/components/sections/Courses/Courses";
 import Faculty from "@/components/sections/Faculty/Faculty";
 import Faq from "@/components/sections/Faq/Faq";
 import FreeResources from "@/components/sections/FreeResources/FreeResources";
-import GsProgramme from "@/components/sections/GsProgramme/GsProgramme";
 import Hero from "@/components/sections/Hero/Hero";
-import StatsBand from "@/components/sections/Hero/StatsBand";
-import TalkToUs from "@/components/sections/Admissions/TalkToUs";
+import Journey from "@/components/sections/Journey/Journey";
+import Programmes from "@/components/sections/Programmes/Programmes";
 import SuccessStories from "@/components/sections/SuccessStories/SuccessStories";
 import Toppers from "@/components/sections/Toppers/Toppers";
-import WhyChoose from "@/components/sections/WhyChoose/WhyChoose";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
 /**
- * The homepage, in the order of the Figma frame "the final design" (2258:10453), with the faculty band
- * ("10 · Faculty — subject gurus", 2271:10583) after the flagship programme. The header (utility bar, main
- * header and announcement strip) and the footer come from the root layout.
+ * The homepage, in the order of the client's information architecture (10 Nov 2026), laid out after the
+ * Figma frame 2377:4172:
+ *   1. the outcome-led hero (#hero) and the verified results (#results)
+ *   2. the UPSC preparation journey and the academic support at each stage (#journey)
+ *   3. about Vajiram & Ravi (#about) and its campuses (#locations)
+ *   4. the UPSC programmes (#programmes)
+ *   5. upcoming batches and admissions (#batches)
+ *   6. counselling and academic guidance (#counselling)
+ *   7. the educators (#educators)
+ *   8. student stories (#stories)
+ *   9. free study materials (#resources)
+ *   10. FAQs (#faq)
+ *   11. the final call to action (#closing)
+ * The header (utility bar, main header and announcement ticker) and the footer (12) come from the root layout.
  */
 export default function HomePage() {
   return (
     <main id="main">
       <span id="top" />
       <Hero />
-      <StatsBand />
       <Toppers />
-      <WhyChoose />
-      <Courses />
-      <GsProgramme />
-      <Faculty />
+      <Journey />
+      <About />
+      <Locations />
+      <Programmes />
       <Admissions />
-      <TalkToUs />
+      <Counselling />
+      <Faculty />
       <SuccessStories />
       <FreeResources />
       <Faq />
-      <Contact />
-      <Locations />
       <ClosingCta />
       <ScrollReveal />
     </main>

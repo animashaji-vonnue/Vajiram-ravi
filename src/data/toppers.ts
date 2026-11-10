@@ -6,21 +6,25 @@ export type Topper = {
   image: string;
 };
 
-/** The result year the toppers band shows (the final design has no year switch). */
+/** The latest result year: the one the results band opens on. */
 export const toppersYear = 2025;
 
-/** The toppers band's copy (Figma "03 · Results · Toppers CSE 2025", 2257:5843). */
+/**
+ * The results band's copy (Figma "08 · Our Results & Student Stories", 2392:5005). The eyebrow, the grid's
+ * name, its announcement and the button follow the year chosen on the ruler.
+ */
 export const toppersSection = {
-  eyebrow: "UPSC CSE 2025 · RANKS 1–10",
+  /** "UPSC CSE 2025 · RANKS 1–10" when all ten are ours, else e.g. "UPSC CSE 2023 · 8 IN THE TOP 10". */
+  eyebrow: (year: number, count: number) => `UPSC CSE ${year} · ${count >= 10 ? "RANKS 1–10" : `${count} IN THE TOP 10`}`,
   /** The heading; its emphasis is set in orange italic. */
   heading: { lead: "Toppers who prepared", emphasis: "with Vajiram & Ravi" },
-  /** The scalloped note beside the heading (the design ends it with "..", taken as a typo). */
-  note: "Ranks 1 to 10 in UPSC CSE 2025 all studied with us. Each took at least one of our programmes: a classroom course, a test series or the Interview Guidance Programme.",
-  /** The two lines printed on each stamp, under the photo. */
-  stamp: { exam: "UPSC CSE 2025", institute: "VAJIRAM & RAVI" },
-  /** The carousel's accessible name. */
-  carouselLabel: "UPSC CSE 2025 toppers",
-  cta: "See all CSE 2025 selections",
+  /** The year ruler's accessible name. */
+  rulerLabel: "Result year",
+  /** The grid's accessible name. */
+  gridLabel: (year: number) => `UPSC CSE ${year} toppers`,
+  /** Read out (politely) when the grid changes year. */
+  announcement: (year: number, count: number) => `UPSC CSE ${year}: ${count} toppers`,
+  cta: (year: number) => `See all CSE ${year} selections`,
 };
 
 /**
@@ -47,10 +51,10 @@ export const toppers: Topper[] = [
 ];
 
 /**
- * Ranks 1 to 10 for the stamp carousel, with the cut-out portraits the design places in each stamp
- * ("stamp sheet", 2257:5946), saved at 480px for their 222px frames.
+ * Ranks 1 to 10 for the results grid, with the design's cut-out portraits (saved at 480px square), which
+ * stand on the cards' dark ground.
  */
-const stampToppers = toppers.slice(0, 10).map((topper) => ({
+const latestToppers = toppers.slice(0, 10).map((topper) => ({
   ...topper,
   image: `/images/toppers/stamps/air-${topper.rank}.webp`,
 }));
@@ -145,8 +149,10 @@ const earlierYears: Record<number, Topper[]> = {
   ],
 };
 
-/**
- * Every year's toppers. The band shows only `toppersYear`; the earlier years feed the site search and stay
- * ready for a year switch (motion spec: if one is added, the cards cross-fade 200ms and do not slide).
- */
-export const toppersByYear: Record<number, Topper[]> = { [toppersYear]: stampToppers, ...earlierYears };
+/** Every year's toppers, in rank order: the results band's year ruler offers each year. */
+export const toppersByYear: Record<number, Topper[]> = { [toppersYear]: latestToppers, ...earlierYears };
+
+/** The years on the ruler, latest first. */
+export const toppersYears = Object.keys(toppersByYear)
+  .map(Number)
+  .sort((a, b) => b - a);

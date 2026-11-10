@@ -13,7 +13,7 @@ type LetsTalkSheetProps = { open: boolean; onClose: () => void };
 
 /** The same ways to reach us as the contact section, in its words. */
 const OPTIONS = [
-  { title: "Course counselling", text: "Not sure which programme fits? A counsellor can help you.", action: "Book a free session", href: "#counsellor" },
+  { title: "Course counselling", text: "Not sure which programme fits? A counsellor can help you.", action: "Book a free session", href: "#counselling" },
   { title: "Chat on WhatsApp", text: "Quick answers on courses, batches and fees from our admissions team.", action: "Chat on WhatsApp", href: links.whatsapp },
   { title: "Email us", text: `Write to us on: ${contact.email}`, action: "Send an email", href: `mailto:${contact.email}` },
   { title: "Talk to us", text: `Contact us on: ${contact.phone}`, action: "Call now", href: contact.phoneHref },

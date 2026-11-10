@@ -1,79 +1,51 @@
-/** Site footer (Figma 2258:10170): link columns, the line-art skyline, the giant wordmark and the legal bar. */
+/** Site footer (Figma 2392:7437; IA 12): the brand and contact block, three link columns, the line-art skyline, the giant wordmark and the legal bar. */
 
 import { links, type Href } from "./links";
 
 /** A footer link. Its address comes from data/links; one whose page does not exist yet renders as text. */
 export type FooterLink = { label: string; href: Href };
 
+/** The brand line under the logo (IA 12, the client's copy of 10 Nov 2026). */
+export const footerTagline = "Preparing aspirants for the Civil Services Examination since 1976.";
+
+/** The footer's three link columns, as the client listed them. */
 export const footerColumns: { heading: string; links: FooterLink[] }[] = [
   {
-    heading: "Vajiram & Ravi",
+    heading: "Explore",
     links: [
       { label: "About Us", href: links.aboutUs },
-      { label: "Careers", href: links.careers },
+      { label: "General Studies", href: links.gsCourse },
+      { label: "Optional Subjects", href: links.optionalSubject },
+      { label: "Test Series", href: links.testSeries },
+      { label: "Mentorship", href: links.mentorship },
+      { label: "Interview Guidance", href: links.interviewGuidance },
+    ],
+  },
+  {
+    heading: "Resources",
+    links: [
+      { label: "The Recitals", href: links.theRecitals },
+      { label: "Current Affairs", href: links.dailyCurrentAffairs },
+      { label: "Study Materials", href: links.studyMaterial },
+      { label: "Prelims Pointers", href: links.prelimsPointers },
+      { label: "Mains Articles", href: links.mainsArticles },
+    ],
+  },
+  {
+    heading: "Support",
+    links: [
+      // The footer's own contact block (#contact) holds the addresses, phone and email.
       { label: "Contact Us", href: "#contact" },
+      { label: "Counselling", href: "#counselling" },
       { label: "FAQs", href: "#faq" },
-    ],
-  },
-  {
-    heading: "Courses",
-    links: [
-      { label: "UPSC GS Course 2027", href: links.gsClassroom },
-      { label: "UPSC GS Online Course 2027", href: links.gsOnline },
-      { label: "UPSC 2 Year Course", href: links.twoYearCourse },
-      { label: "UPSC 2 Year Online Course", href: links.twoYearOnline },
-      { label: "UPSC Online Coaching", href: links.onlineCoaching },
-      { label: "UPSC CSAT Course", href: links.csat },
-      { label: "Current Affairs Course", href: links.currentAffairsCourse },
-      { label: "UPSC Study Material", href: links.studyMaterial },
-    ],
-  },
-  {
-    heading: "Test series & mentorship",
-    links: [
-      { label: "UPSC Prelims Test Series 2027", href: links.prelimsTestSeries },
-      { label: "UPSC Mains Test Series 2027", href: links.mainsTestSeries },
-      { label: "UPSC Mains Test Series Hindi Medium", href: links.mainsTestSeriesHindi },
-      { label: "UPSC Optional Test Series", href: links.optionalTestSeries },
-      { label: "UPSC Mentorship Program 2027", href: links.mentorship },
-      { label: "UPSC Mentorship Program Hindi Medium", href: links.mentorshipHindi },
-      { label: "UPSC Interview Guidance Program IGP", href: links.interviewGuidance },
-    ],
-  },
-  {
-    heading: "UPSC exam",
-    links: [
-      { label: "UPSC 2027", href: links.upsc2027 },
-      { label: "UPSC Exam Pattern", href: links.examPattern },
-      { label: "UPSC Syllabus", href: links.syllabus },
-      { label: "UPSC CSAT Syllabus", href: links.csatSyllabus },
-      { label: "UPSC Optional Subjects List", href: links.optionalSubjectsList },
-      { label: "UPSC Selection Process", href: links.selectionProcess },
-      { label: "UPSC Interview", href: links.interview },
-      { label: "UPSC Age Limit", href: links.ageLimit },
-      { label: "IAS Salary", href: links.iasSalary },
-    ],
-  },
-  {
-    heading: "Exam updates",
-    links: [
-      { label: "UPSC Calendar 2027", href: links.calendar },
-      { label: "UPSC Admit Card", href: links.admitCard },
-      { label: "UPSC Prelims Answer Key", href: links.prelimsAnswerKey },
-      { label: "UPSC Cut Off", href: links.cutOff },
-      { label: "UPSC Final Result 2025", href: links.finalResult },
-    ],
-  },
-  {
-    heading: "Free resources",
-    links: [
-      { label: "UPSC Current Affairs", href: "#resources" },
-      { label: "UPSC Previous Year Papers", href: links.previousYearPapers },
-      { label: "UPSC Books", href: links.upscBooks },
-      { label: "Model Answers for UPSC Mains 2026", href: links.modelAnswers },
+      { label: "Upcoming Batches", href: "#batches" },
     ],
   },
 ];
+
+/** The heading of the contact block. Its campuses come from data/contact, its phone and email from data/site. */
+export const footerContactHeading = "Contact";
+// TODO: the client's content asks for social media links; the live site lists none yet, so the footer has none.
 
 export const footerWordmark = "Vajiram & Ravi";
 

@@ -1,69 +1,12 @@
 /**
- * "What are you looking for?" (Figma 2258:9941): the four ways to reach V&R, and "Our locations"
- * (2258:10026): the campus card with its city tabs, the metro line and the street map.
+ * "Our locations" (Figma 2258:10026): the campus card with its city tabs, the metro note and the street map.
+ * The campuses' addresses also fill the footer's contact block.
  */
 
-import { links } from "@/data/links";
 import { contact } from "@/data/site";
 
 /** A heading as the design sets it: upright words, then the italic emphasis. */
 export type SplitHeading = { lead: string; em: string };
-
-export const contactIntro = {
-  eyebrow: "CONTACT US",
-  title: { lead: "What are you ", em: "looking for?" } satisfies SplitHeading,
-  lead: "We’re here to help you anytime, any way",
-};
-
-/** The icon inside a card's scalloped medallion (iconoir, from the design). */
-export type ContactIcon = "graduation-cap" | "whatsapp" | "mail" | "phone";
-
-export type ContactWay = {
-  title: string;
-  text: string;
-  /** The Indian link at the card's foot. */
-  cta: string;
-  href: string;
-  icon: ContactIcon;
-  /** Opens in a new tab (WhatsApp). */
-  external?: boolean;
-  /** The dark card (the last one); the others are cream. */
-  dark?: boolean;
-};
-
-export const contactWays: ContactWay[] = [
-  {
-    title: "Course counselling",
-    text: "Not sure which programme fits? A counsellor can help you.",
-    cta: "Book a free session",
-    // The free-session form sits in the admissions section, under the batches.
-    href: "#counsellor",
-    icon: "graduation-cap",
-  },
-  {
-    title: "Chat on WhatsApp",
-    text: "Quick answers on courses, batches and fees from our admissions team.",
-    cta: "Chat on WhatsApp",
-    href: links.whatsapp,
-    icon: "whatsapp",
-    external: true,
-  },
-  {
-    title: "Email us",
-    text: `Write to us on: ${contact.email}`,
-    cta: "Send an email",
-    href: `mailto:${contact.email}`,
-    icon: "mail",
-  },
-  {
-    title: "Talk to us",
-    text: `Contact us on: ${contact.phone}`,
-    cta: "Call now",
-    href: contact.phoneHref,
-    icon: "phone",
-    dark: true,
-  },
-];
 
 /**
  * Where the street map sits for a campus: a pan (px on the 1440 canvas) and a zoom applied to the one map

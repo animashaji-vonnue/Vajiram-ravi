@@ -2,7 +2,7 @@ import type { FaqEntry } from "@/data/faq-chat";
 import { cx } from "@/lib/cx";
 
 /*
- * The questions on the scroll, each between hairlines, with its roman numeral in the margin. Motion spec
+ * The questions, each between hairlines, with its roman numeral in the margin. Motion spec
  * (Shared components, "Accordion toggle", and 11 FAQ):
  *   - The whole row (numeral, question and toggle) is the button, so the focus ring wraps all of it.
  *   - Hover: the toggle's border turns burnt and its plus thickens.
@@ -26,7 +26,7 @@ export default function FaqAccordion({ entries, open, onToggle }: FaqAccordionPr
   return entries.map((entry, i) => {
     const expanded = i === open;
     return (
-      <div key={entry.question} data-unroll className="relative w-[788px] shrink-0 border-t border-[rgb(94_23_16/0.25)] py-4">
+      <div key={entry.question} data-reveal="sm" className="relative w-[788px] shrink-0 border-t border-[rgb(94_23_16/0.25)] py-4">
         <h3>
           <button
             type="button"

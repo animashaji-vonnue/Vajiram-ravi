@@ -1,15 +1,14 @@
 /** The closing call to action: the sun rising over the skyline above the footer (Figma 2258:10076). */
 
 import type { SplitHeading } from "@/data/contact";
-import { contact } from "@/data/site";
 
 export const closingCta = {
-  proof: "36/50 CSE 2025 RANKERS FROM V&R",
-  title: { lead: "Ready to start your ", em: "UPSC preparation?" } satisfies SplitHeading,
-  text: "Find the programme that fits your stage, or talk to a counsellor who will help you choose. No pressure to enrol.",
-  primary: { label: "Find your course", href: "#courses" },
-  secondary: { label: "Talk to a counsellor", href: "#counsellor" },
-  call: { lead: "Prefer to call?", phone: contact.phone, phoneHref: contact.phoneHref, hours: contact.hours },
+  /** The eyebrow (IA 11, the client's copy of 10 Nov 2026), shown in capitals. */
+  proof: "YOUR PREPARATION BEGINS WITH A DECISION",
+  title: { lead: "Take the next step towards your ", em: "Civil Services ambition." } satisfies SplitHeading,
+  text: "Explore the programmes, understand your options and begin preparing with a clear direction.",
+  primary: { label: "Explore Programmes", href: "#programmes" },
+  secondary: { label: "Speak to an Academic Counsellor", href: "#counselling" },
 };
 
 /** A silhouette of the skyline behind the sun: its box in the 1440 × 258.75 skyline band, in px, as drawn. */
