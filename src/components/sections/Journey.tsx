@@ -188,7 +188,7 @@ export default function Journey() {
   return (
     <section id="journey" aria-labelledby="journey-title" className="scroll-mt-[76px] bg-paper pt-36 pb-28">
       <div className="fade-up mx-auto flex w-canvas flex-col items-center px-12 text-center">
-        <Eyebrow className="text-muted">{journey.eyebrow}</Eyebrow>
+        <Eyebrow>{journey.eyebrow}</Eyebrow>
         <h2
           id="journey-title"
           className="mt-7 max-w-[900px] font-serif text-[76px]/[1] tracking-[-0.02em] text-balance text-ink-900"

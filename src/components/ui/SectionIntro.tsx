@@ -1,22 +1,37 @@
 import type { ReactNode } from "react";
 import { cx } from "@/lib/cx";
 
-/** A section's small label: capitals with a rule before them, saffron on paper and pale gold on the orange. */
+/**
+ * A section's small label, in the design file's style (Figma 2479:4253): a block-print butta, the label in spaced
+ * monospace capitals, and a fine rule that ends in a diamond. In marigold on paper and white, and in cream on the
+ * orange ground; the ornaments are masks, so they take the text's colour.
+ */
 export function Eyebrow({
   children,
   className,
-  rule = "bg-saffron-500",
+  tone = "paper",
 }: {
   children: ReactNode;
   className?: string;
-  rule?: string;
+  tone?: "paper" | "ember";
 }) {
   return (
     <p
-      className={cx("flex items-center gap-3 text-[13px]/[18px] font-semibold tracking-[0.16em] uppercase", className)}
+      className={cx(
+        "flex items-center gap-2.5 font-mono text-[12px]/[16px] tracking-[0.06em] uppercase",
+        tone === "ember" ? "text-[#fff8ec]" : "text-marigold",
+        className,
+      )}
     >
-      <span aria-hidden="true" className={cx("h-px w-8", rule)} />
+      <span
+        aria-hidden="true"
+        className="size-[14px] shrink-0 bg-current [mask:url(/images/ornaments/butta.svg)_center/contain_no-repeat]"
+      />
       {children}
+      <span
+        aria-hidden="true"
+        className="h-2 w-[84px] shrink-0 bg-current [mask:url(/images/ornaments/eyebrow-rule.svg)_center/contain_no-repeat]"
+      />
     </p>
   );
 }
@@ -60,9 +75,7 @@ export default function SectionIntro({
       className={cx("fade-up", (description || statement) && "grid grid-cols-[1fr_440px] items-end gap-20", className)}
     >
       <div>
-        <Eyebrow className={ember ? "text-white" : "text-muted"} rule={ember ? "bg-glow" : undefined}>
-          {eyebrow}
-        </Eyebrow>
+        <Eyebrow tone={ember ? "ember" : "paper"}>{eyebrow}</Eyebrow>
         <h2
           id={id}
           className={cx(

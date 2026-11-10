@@ -1,249 +1,225 @@
 "use client";
 
-import Image from "next/image";
-import { useState, type FormEvent } from "react";
-import { ArrowLeft, ArrowRight, Check, Phone } from "iconoir-react";
+import { useState, type ReactNode } from "react";
+import { ArrowRight, NavArrowDown } from "iconoir-react";
 import { contact, counselling } from "@/data/content";
-import SectionIntro from "@/components/ui/SectionIntro";
+import { Eyebrow } from "@/components/ui/SectionIntro";
 import { cx } from "@/lib/cx";
 
-type Answers = { who?: string; stage?: string; guidance?: string; connect?: string };
+const FIELD =
+  "h-[52px] w-full rounded-[14px] border border-ink-900/45 bg-white px-4 text-[15px] font-medium text-ink-900 outline-none transition-colors placeholder:text-faint focus:border-saffron-600 focus:ring-2 focus:ring-saffron-500/25";
 
-const STEP_COUNT = 5;
-
-/** A choice in the enquiry: a wide button that fills with ink once picked. */
-function Choice({ label, picked, onPick }: { label: string; picked: boolean; onPick: () => void }) {
+/** One labelled field on the postcard. */
+function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: ReactNode }) {
   return (
-    <button
-      type="button"
-      aria-pressed={picked}
-      onClick={onPick}
-      className={cx(
-        "flex h-14 items-center justify-between rounded-[16px] border px-5 text-left text-[16px] font-semibold transition-colors",
-        picked
-          ? "border-transparent ember-pill text-white"
-          : "border-ink-900/15 bg-white text-ink-900 hover:border-ink-900/50",
-      )}
-    >
-      {label}
-      <span
-        className={cx(
-          "flex size-6 items-center justify-center rounded-full border transition-colors",
-          picked ? "border-white bg-white" : "border-ink-900/25",
-        )}
-      >
-        {picked && <Check width={14} height={14} strokeWidth={2.4} className="text-saffron-600" />}
-      </span>
-    </button>
+    <div className="flex flex-col gap-1.5">
+      <label htmlFor={htmlFor} className="text-[13px]/[18px] font-semibold text-ink-900">
+        {label}
+      </label>
+      {children}
+    </div>
   );
 }
 
-/**
- * The enquiry, one question at a time: who is asking, where they are (the options follow the first answer), what
- * they want guidance on, how they'd like to be reached, and then only the details that way of connecting needs.
- * A thin bar shows how far along it is. Enquiries aren't connected to anything yet, so the last step says so.
- */
-function Enquiry() {
-  const { steps } = counselling;
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({});
-  const [sent, setSent] = useState(false);
-
-  const pick = (key: keyof Answers, value: string) => {
-    setAnswers((a) => ({ ...a, [key]: value, ...(key === "who" ? { stage: undefined } : {}) }));
-    setStep((s) => s + 1);
-  };
-
-  const isParent = answers.who === steps.who.options[1];
-  const byEmail = answers.connect === "Email";
-
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSent(true);
-  };
-
-  const question = [
-    steps.who.question,
-    steps.stage.question,
-    steps.guidance.question,
-    steps.connect.question,
-    steps.details.question,
-  ][step];
-
+/** A select on the postcard, styled like the text fields, with a chevron. */
+function Select({
+  id,
+  name,
+  placeholder,
+  options,
+}: {
+  id: string;
+  name: string;
+  placeholder: string;
+  options: string[];
+}) {
   return (
-    <div className="flex h-full flex-col rounded-[28px] bg-white p-10 shadow-[0_40px_80px_-50px_rgb(8_17_32/0.6)]">
-      <div className="flex items-center justify-between">
-        <p className="text-[13px] font-semibold tracking-[0.16em] text-muted uppercase">
-          Step {Math.min(step + 1, STEP_COUNT)} of {STEP_COUNT}
-        </p>
-        {step > 0 && !sent && (
-          <button
-            type="button"
-            onClick={() => setStep((s) => s - 1)}
-            className="flex items-center gap-1.5 text-[14px] font-semibold text-ink-900 hover:text-saffron-600"
-          >
-            <ArrowLeft width={16} height={16} strokeWidth={1.8} />
-            Back
-          </button>
-        )}
-      </div>
-      <div className="mt-4 h-1 overflow-hidden rounded-full bg-ink-900/[0.08]">
-        <div
-          className="h-full rounded-full bg-saffron-500 transition-[width] duration-500 ease-out-soft"
-          style={{ width: `${((sent ? STEP_COUNT : step) / STEP_COUNT) * 100}%` }}
-        />
-      </div>
-
-      {sent ? (
-        <div className="stage-in my-auto py-6">
-          <p className="font-serif text-[40px]/[1.1] text-ink-900">Thank you.</p>
-          <p className="mt-4 text-[17px]/[27px] text-muted">
-            This preview doesn’t send enquiries yet, so nobody has been contacted. To speak to a counsellor now, call{" "}
-            <a href={contact.phoneHref} className="font-semibold text-ink-900 underline-offset-4 hover:underline">
-              {contact.phone}
-            </a>{" "}
-            ({contact.hours}).
-          </p>
-        </div>
-      ) : (
-        <div key={step} className="stage-in mt-10 flex flex-1 flex-col">
-          <h3 className="font-serif text-[36px]/[1.1] text-ink-900">{question}</h3>
-          <div className="mt-8 flex flex-col gap-3">
-            {step === 0 &&
-              steps.who.options.map((o) => (
-                <Choice key={o} label={o} picked={answers.who === o} onPick={() => pick("who", o)} />
-              ))}
-            {step === 1 &&
-              (isParent ? steps.stage.parent : steps.stage.student).map((o) => (
-                <Choice key={o} label={o} picked={answers.stage === o} onPick={() => pick("stage", o)} />
-              ))}
-            {step === 2 &&
-              steps.guidance.options.map((o) => (
-                <Choice key={o} label={o} picked={answers.guidance === o} onPick={() => pick("guidance", o)} />
-              ))}
-            {step === 3 &&
-              steps.connect.options.map((o) => (
-                <Choice key={o} label={o} picked={answers.connect === o} onPick={() => pick("connect", o)} />
-              ))}
-            {step === 4 && (
-              <form onSubmit={onSubmit} className="flex flex-col gap-4">
-                <label className="flex flex-col gap-2 text-[14px] font-semibold text-ink-900">
-                  Your name
-                  <input
-                    name="name"
-                    required
-                    autoComplete="name"
-                    className="h-14 rounded-[16px] border border-ink-900/15 px-5 text-[16px] font-normal outline-none focus:border-ink-900"
-                  />
-                </label>
-                <label className="flex flex-col gap-2 text-[14px] font-semibold text-ink-900">
-                  {byEmail ? "Email" : answers.connect === "WhatsApp" ? "WhatsApp number" : "Phone number"}
-                  <input
-                    name={byEmail ? "email" : "phone"}
-                    type={byEmail ? "email" : "tel"}
-                    required
-                    autoComplete={byEmail ? "email" : "tel"}
-                    placeholder={byEmail ? "" : "+91"}
-                    className="h-14 rounded-[16px] border border-ink-900/15 px-5 text-[16px] font-normal outline-none focus:border-ink-900"
-                  />
-                </label>
-                <button
-                  type="submit"
-                  className="group mt-3 flex h-14 items-center justify-center gap-2 rounded-full bg-saffron-500 text-[16px] font-semibold text-white transition-colors hover:bg-saffron-600"
-                >
-                  Request a conversation
-                  <ArrowRight
-                    width={18}
-                    height={18}
-                    strokeWidth={1.8}
-                    className="transition-transform group-hover:translate-x-1"
-                  />
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
+    <div className="relative">
+      <select
+        id={id}
+        name={name}
+        required
+        defaultValue=""
+        className={cx(FIELD, "cursor-pointer appearance-none pr-11")}
+      >
+        <option value="" disabled>
+          {placeholder}
+        </option>
+        {options.map((option) => (
+          <option key={option}>{option}</option>
+        ))}
+      </select>
+      <NavArrowDown
+        width={18}
+        height={18}
+        strokeWidth={1.8}
+        className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-ink-700"
+      />
     </div>
   );
 }
 
 /**
- * Personalised counselling, on white: on the left the intro (stacked), a preview of the four steps a conversation
- * takes, and the button to start; on the right a photograph of a counselling conversation, which the enquiry takes
- * the place of once started.
+ * Talk to us, after the "India Post postcard" design (Figma 2258:9692): on an orange panel, the label, the headline
+ * with its last words in italic, a line and the counsellors' number and hours in a dark pill; beside them a peach
+ * postcard, with an inner frame line, "Post card" and the title, a tilted V&R 1976 stamp with postmark waves, and the
+ * enquiry: name, email, contact number, programme and preferred time, and the site's saffron button to send it. This preview
+ * doesn't send enquiries yet; sending shows a note that says so, with the number to call.
  */
 export default function Counselling() {
-  const [started, setStarted] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [lead, accent] = counselling.headline.split(/(?<=our )/);
 
   return (
-    <section id="counselling" aria-labelledby="counselling-title" className="scroll-mt-[76px] bg-white py-32">
-      <div className="mx-auto grid w-canvas grid-cols-[1fr_600px] gap-20 px-12">
-        <div className="flex flex-col">
-          <SectionIntro id="counselling-title" eyebrow={counselling.eyebrow} headline={counselling.headline} />
-          <p className="mt-8 max-w-[560px] text-[19px]/[30px] text-muted">{counselling.description}</p>
-          <p className="mt-6 max-w-[560px] border-t border-line pt-5 font-serif text-[24px]/[1.3] text-ink-900 italic">
-            {counselling.statement}
-          </p>
-
-          {/* What a conversation looks like, step by step. */}
-          <ol className="mt-12 grid grid-cols-4 gap-3">
-            {counselling.process.map((label, i) => (
-              <li key={label} className="relative rounded-[18px] bg-paper px-5 py-5">
-                <span className="text-[13px] font-semibold text-saffron-600">{String(i + 1).padStart(2, "0")}</span>
-                <span className="mt-6 block text-[16px]/[22px] font-semibold text-ink-900">{label}</span>
-              </li>
-            ))}
-          </ol>
-
-          <div className="mt-auto flex items-center gap-8 pt-12">
-            {!started && (
-              <button
-                type="button"
-                onClick={() => setStarted(true)}
-                className="group inline-flex h-14 items-center gap-2.5 rounded-full bg-saffron-500 px-7 text-[16px] font-semibold text-white transition-colors hover:bg-saffron-600"
-              >
-                {counselling.cta}
-                <ArrowRight
-                  width={18}
-                  height={18}
-                  strokeWidth={1.8}
-                  className="transition-transform group-hover:translate-x-1"
-                />
-              </button>
-            )}
-            <a href={contact.phoneHref} className="flex items-center gap-3 text-[15px] text-muted">
-              <span className="ember-pill flex size-11 items-center justify-center rounded-full text-white">
-                <Phone width={18} height={18} strokeWidth={1.8} />
-              </span>
-              <span>
-                <span className="block font-semibold text-ink-900">{contact.phone}</span>
-                {contact.hours}
-              </span>
+    <section id="counselling" aria-labelledby="counselling-title" className="scroll-mt-[76px] bg-white px-10 py-24">
+      <div className="ember rounded-[32px]">
+        <div className="grid grid-cols-[minmax(0,1fr)_700px] items-center gap-16 px-[70px] py-24 text-white">
+          <div className="fade-up">
+            <Eyebrow tone="ember">{counselling.eyebrow}</Eyebrow>
+            <h2 id="counselling-title" className="mt-6 font-serif text-[64px]/[1.04] tracking-[-0.015em] text-balance">
+              {lead}
+              <em className="text-glow italic">{accent}</em>
+            </h2>
+            <p className="mt-6 max-w-[470px] text-[18px]/[27px] font-semibold text-white/95">
+              {counselling.description}
+            </p>
+            <a
+              href={contact.phoneHref}
+              className="mt-7 inline-flex items-baseline gap-2.5 rounded-[14px] bg-[rgb(43_18_6/0.25)] px-[18px] py-3.5 transition-colors hover:bg-[rgb(43_18_6/0.4)]"
+            >
+              <span className="font-serif text-[24px]/[26px]">{contact.phone}</span>
+              <span className="text-[14px]/[20px] font-semibold text-white/90">· {contact.hours}</span>
             </a>
           </div>
-        </div>
 
-        <div className="relative min-h-[640px] overflow-hidden rounded-[32px]">
-          <Image
-            src={counselling.photo}
-            alt="An academic counsellor talking with a student"
-            fill
-            sizes="600px"
-            className="object-cover"
-          />
-          {started ? (
-            <div className="stage-in absolute inset-0 bg-ink-950/45 p-6 backdrop-blur-sm">
-              <Enquiry />
+          {/* The postcard. */}
+          <div className="fade-up relative rounded-[16px] bg-[#ffefd5] p-9 text-ink-900 shadow-[0_24px_24px_rgb(43_18_5/0.3)]">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-3 rounded-[10px] border border-[rgb(204_85_0/0.6)]"
+            />
+
+            <div className="relative flex items-start justify-between">
+              <div>
+                <p className="text-[11px]/[14px] font-semibold tracking-[0.2em] text-[#c50] uppercase">
+                  {counselling.card.tag}
+                </p>
+                <h3 className="mt-1.5 w-[440px] font-serif text-[32px]/[36px]">{counselling.card.title}</h3>
+              </div>
+              {/* Postmark waves and the stamp. */}
+              <div aria-hidden="true" className="-mt-3 -mr-3 flex items-start gap-3">
+                <span className="mt-[26px] flex flex-col gap-[7.5px]">
+                  {[0, 1, 2].map((i) => (
+                    // eslint-disable-next-line @next/next/no-img-element -- a fixed-size SVG ornament
+                    <img key={i} src="/images/talk/postmark-wave.svg" alt="" width={88} height={4} />
+                  ))}
+                </span>
+                <span className="relative block h-[104px] w-[88px] -rotate-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- the stamp's perforated edge */}
+                  <img
+                    src="/images/talk/stamp-edge.svg"
+                    alt=""
+                    width={104}
+                    height={120}
+                    className="absolute top-[-5px] left-[-8px] max-w-none"
+                  />
+                  <span className="absolute inset-2 flex flex-col items-center justify-center rounded-[2px] bg-[#ec5800]">
+                    <span className="font-serif text-[24px]/[26px] text-white">V&amp;R</span>
+                    <span className="mt-1.5 text-[10px]/[12px] font-semibold tracking-[0.1em] text-[#f4c430]">
+                      1976
+                    </span>
+                  </span>
+                </span>
+              </div>
             </div>
-          ) : (
-            <div className="absolute inset-x-6 bottom-6 rounded-[22px] bg-white/90 p-6 backdrop-blur">
-              <p className="font-serif text-[26px]/[1.2] text-ink-900">
-                Five quick questions, then a real conversation.
-              </p>
-              <p className="mt-2 text-[15px]/[23px] text-muted">We only ask what we need to help you.</p>
-            </div>
-          )}
+
+            {sent ? (
+              <div className="relative mt-8 min-h-[230px] rounded-[14px] bg-white/70 p-7" role="status">
+                <p className="font-serif text-[30px]/[1.1]">Thank you.</p>
+                <p className="mt-3 max-w-[520px] text-[16px]/[25px] text-muted">
+                  This preview doesn’t send enquiries yet, so nobody has been contacted. To speak to a counsellor now,
+                  call{" "}
+                  <a href={contact.phoneHref} className="font-semibold text-ink-900 underline-offset-4 hover:underline">
+                    {contact.phone}
+                  </a>{" "}
+                  ({contact.hours}).
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setSent(false)}
+                  className="mt-5 text-[15px] font-semibold text-[#c50] underline-offset-4 hover:underline"
+                >
+                  Fill in the postcard again
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  setSent(true);
+                }}
+                className="relative mt-8 grid grid-cols-2 gap-x-4 gap-y-3.5"
+              >
+                <Field label="Name" htmlFor="talk-name">
+                  <input
+                    id="talk-name"
+                    name="name"
+                    required
+                    autoComplete="name"
+                    placeholder="Your full name"
+                    className={FIELD}
+                  />
+                </Field>
+                <Field label="Email" htmlFor="talk-email">
+                  <input
+                    id="talk-email"
+                    name="email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    placeholder="you@email.com"
+                    className={FIELD}
+                  />
+                </Field>
+                <Field label="Contact number" htmlFor="talk-phone">
+                  <input
+                    id="talk-phone"
+                    name="phone"
+                    type="tel"
+                    required
+                    autoComplete="tel"
+                    placeholder="+91"
+                    className={FIELD}
+                  />
+                </Field>
+                <Field label="Programme" htmlFor="talk-programme">
+                  <Select
+                    id="talk-programme"
+                    name="programme"
+                    placeholder="Pick a programme"
+                    options={counselling.programmes}
+                  />
+                </Field>
+                <Field label="Preferred time" htmlFor="talk-time">
+                  <Select id="talk-time" name="time" placeholder="Preferred time" options={counselling.times} />
+                </Field>
+                <div className="flex items-end">
+                  <button
+                    type="submit"
+                    className="group/button inline-flex h-[52px] w-full items-center justify-center gap-2.5 rounded-full bg-saffron-500 px-7 text-[16px] font-semibold text-white transition-colors duration-200 hover:bg-saffron-600"
+                  >
+                    {counselling.card.cta}
+                    <ArrowRight
+                      width={18}
+                      height={18}
+                      strokeWidth={1.8}
+                      className="transition-transform duration-300 ease-out-soft group-hover/button:translate-x-1"
+                    />
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </section>

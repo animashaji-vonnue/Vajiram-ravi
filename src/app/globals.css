@@ -52,6 +52,8 @@
   --color-saffron-500: #f26419;
   --color-saffron-600: #d9520c;
   --color-saffron-700: #b2410a;
+  /* Marigold, the eyebrows' orange, from the design file. */
+  --color-marigold: #e57512;
 
   /* A muted gold for fine rules and small marks of distinction. */
   --color-gold: #c6a15b;
@@ -64,6 +66,7 @@
 
   --font-serif: var(--font-instrument-serif-face), "Times New Roman", serif;
   --font-sans: var(--font-instrument-sans-face), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono-face), ui-monospace, "SFMono-Regular", monospace;
 
   --container-canvas: 1440px;
 
@@ -197,6 +200,13 @@
   animation: stage-in 0.6s var(--ease-out-soft) both;
 }
 
+/* A small arrow that nudges forward and back, pointing the way (the open book's "turn the pages"). */
+@keyframes nudge {
+  50% {
+    translate: 4px 0;
+  }
+}
+
 /* The hero: the topper's rank marked beside them, drawn in with each slide. */
 @keyframes hero-mark {
   from {
@@ -223,6 +233,7 @@
   .drift,
   .hero-mark,
   .hero-mark-line,
+  [class*="animate-[nudge"],
   .ember::before {
     animation: none;
   }

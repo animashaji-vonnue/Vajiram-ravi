@@ -184,186 +184,155 @@ export const programmes = {
     ],
   },
   /**
-   * The other programmes, with the brief's lines. "Duration" is a placeholder until the programme details are
-   * confirmed.
+   * Every programme group, for the record-shelf wall (the v4 design, after Figma 3860:405): its name, how many
+   * courses it holds, a line and a cover colour. Counts and lines are from the design and to be confirmed; the next
+   * batch dates are to be filled in by admissions. `courses` are only the courses each line names (one page each in
+   * the open book); the rest are reached through "View all", and each course's details are to be added.
    */
-  categories: [
-    {
-      name: "Foundation programmes",
-      line: "Build a strong base for UPSC preparation.",
-      for: "Graduates and college students beginning their preparation",
-      mode: "Classroom, Delhi · LIVE-Online",
-      duration: "[1 year / 2 years]",
-      cta: "Explore foundation programmes",
-      photo: "/images/courses/gs-foundation.jpg",
-    },
-    {
-      name: "Optional subjects",
-      line: "Develop deeper knowledge of your chosen subject.",
-      for: "Aspirants who have chosen, or are choosing, their optional",
-      mode: "Classroom, Delhi · LIVE-Online",
-      duration: "[Duration to be confirmed]",
-      cta: "Explore optional subjects",
-      photo: "/images/courses/optional-subject.jpg",
-    },
-    {
-      name: "CSAT",
-      line: "Strengthen your aptitude and problem-solving skills.",
-      for: "Aspirants preparing for Prelims Paper II",
-      mode: "Classroom, Delhi · LIVE-Online",
-      duration: "[Duration to be confirmed]",
-      cta: "Explore CSAT",
-      photo: "/images/courses/csat.jpg",
-    },
-    {
-      name: "Test series",
-      line: "Practise, evaluate and improve your performance.",
-      for: "Aspirants who want to test themselves for Prelims, Mains or an optional",
-      mode: "Online · Offline",
-      duration: "[Duration to be confirmed]",
-      cta: "Explore test series",
-      photo: "/images/courses/mains-test-series.jpg",
-    },
-    {
-      name: "Interview guidance",
-      line: "Prepare for the final stage of the examination.",
-      for: "Candidates who have cleared Mains",
-      mode: "Classroom, Delhi · LIVE-Online",
-      duration: "[Duration to be confirmed]",
-      cta: "Explore interview guidance",
-      photo: "/images/courses/interview-guidance.jpg",
-    },
-  ].map((c) => ({ ...c, href: "#" })),
+  wall: {
+    title: "More UPSC programmes",
+    intro: "Every programme we run, on one wall. Pick a course to take a closer look.",
+    backdrop: "/images/courses/nalanda.webp",
+    list: [
+      {
+        name: "UPSC GS Foundation Course - PCM",
+        count: 4,
+        courses: ["1-year GS Foundation Course", "2-year GS Foundation Course"],
+        line: "1-year and 2-year General Studies programmes that take you from the basics to Prelims and Mains.",
+        colour: "#805c4e",
+      },
+      {
+        name: "Optional Subject Programme",
+        count: 26,
+        courses: ["Anthropology", "Sociology"],
+        line: "Coaching in 13 optional subjects, from Anthropology to Sociology, in Classroom and LIVE-Online.",
+        colour: "#09735c",
+      },
+      {
+        name: "CSAT Course",
+        count: 2,
+        courses: ["CSAT Course"],
+        line: "Prepare for Prelims Paper II and clear the 33% qualifying mark with confidence.",
+        colour: "#274fa6",
+      },
+      {
+        name: "Interview Guidance Programme",
+        count: 2,
+        courses: ["UPSC CSE Interview Guidance", "IFoS Interview Guidance"],
+        line: "Guidance for the UPSC CSE and IFoS interviews once you have cleared Mains.",
+        colour: "#b83a68",
+      },
+      {
+        name: "Mentorship Programme",
+        count: 6,
+        courses: ["StepUp Mentorship"],
+        line: "StepUp mentorship pairs regular tests with a personal mentor, from Prelims to Mains.",
+        colour: "#d1570e",
+      },
+      {
+        name: "Mains Test Series",
+        count: 11,
+        courses: ["Sure Shot Test Series", "Mains CAMP", "Essay Tests"],
+        line: "Sure Shot test series, Mains CAMP and Essay tests to sharpen your answer writing.",
+        colour: "#5b2a86",
+      },
+      {
+        name: "Prelims Test Series",
+        count: 7,
+        courses: ["PowerUp Test Series", "Prelims CAMP", "Current Affairs Tests"],
+        line: "PowerUp test series, Prelims CAMP and current affairs tests to get Prelims-ready.",
+        colour: "#a32a2a",
+      },
+      {
+        name: "Optional Test Series",
+        count: 16,
+        courses: ["Year-long Optional Test Series", "Optional Mains Test Series"],
+        line: "Year-long and Mains test series to practise answer writing in your optional subject.",
+        colour: "#2b2322",
+      },
+    ].map((course) => ({ ...course, nextBatch: "[Date to be confirmed]", href: "#" })),
+  },
 };
 
 /* ------------------------------------------------------------------ 05 · Batches */
 
-export type BatchStatus = "open" | "upcoming" | "closed";
 export type Batch = {
-  programme: string;
-  category: string;
-  mode: "Classroom" | "LIVE-Online";
-  location?: string;
-  start: string;
+  day: string;
   month: string;
-  duration: string;
-  status: BatchStatus;
-  details: string;
+  title: string;
+  target: string;
+  mode?: string;
+  /** The colour of the ticket's head, and whether its text is light (on a dark head) or dark. */
+  head: string;
+  tone: "light" | "dark";
+  limited?: boolean;
+  /** The lotus mark drawn into the head of the first ticket. */
+  mark?: boolean;
   href: string;
 };
 
 export const batches = {
-  eyebrow: "Upcoming batches & admissions",
-  headline: "The right time to start is when you're ready.",
-  description: "Find an upcoming batch that matches your preparation needs and take the next step towards your goal.",
-  statement: "Your next step starts here.",
+  eyebrow: "Admissions",
+  headline: "Next batches starting soon.",
+  description: `Register online, or call ${contact.phone} for registration or seat allotment.`,
   /**
-   * Placeholder schedule. The brief asks for only verified dates and admission status: replace every row with the
-   * admissions team's schedule before publishing.
+   * The batches as given in the design file (Figma 2257:9039). Dates, targets and "limited seats" are to be
+   * confirmed by the admissions team before publishing.
    */
-  placeholder: true,
   list: [
     {
-      programme: "GS Prelims & Mains",
-      category: "General Studies",
-      mode: "Classroom",
-      location: "Old Rajinder Nagar, Delhi",
-      start: "7 Dec 2026",
-      month: "December",
-      duration: "[1 year]",
-      status: "open",
-      details: "[Weekday morning batch · timings to be confirmed]",
+      day: "27",
+      month: "Nov",
+      title: "General Studies Prelims cum Mains Programme 2027",
+      target: "UPSC CSE 2027",
+      mode: "Classroom & LIVE-Online",
+      head: "#ec5800",
+      tone: "light",
+      mark: true,
     },
     {
-      programme: "GS Prelims & Mains",
-      category: "General Studies",
-      mode: "LIVE-Online",
-      start: "7 Dec 2026",
-      month: "December",
-      duration: "[1 year]",
-      status: "open",
-      details: "[Evening batch · live classes with recordings]",
+      day: "3",
+      month: "Jan",
+      title: "Prelims CAMP Batch 3",
+      target: "UPSC CSE 2027",
+      mode: "Classroom & LIVE-Online",
+      head: "#ff9f02",
+      tone: "dark",
+      limited: true,
     },
     {
-      programme: "Foundation programme",
-      category: "Foundation programmes",
-      mode: "Classroom",
-      location: "Old Rajinder Nagar, Delhi",
-      start: "11 Jan 2027",
-      month: "January",
-      duration: "[6 months]",
-      status: "upcoming",
-      details: "[Admissions open soon]",
+      day: "17",
+      month: "Jan",
+      title: "SMART Current Affairs Program 2026",
+      target: "UPSC CSE 2026",
+      head: "#e2725b",
+      tone: "dark",
+      limited: true,
     },
     {
-      programme: "CSAT",
-      category: "CSAT",
-      mode: "LIVE-Online",
-      start: "14 Dec 2026",
-      month: "December",
-      duration: "[3 months]",
-      status: "open",
-      details: "[Evening batch]",
-    },
-    {
-      programme: "Sociology optional",
-      category: "Optional subjects",
-      mode: "Classroom",
-      location: "Old Rajinder Nagar, Delhi",
-      start: "18 Jan 2027",
-      month: "January",
-      duration: "[6 months]",
-      status: "upcoming",
-      details: "[Afternoon batch]",
-    },
-    {
-      programme: "Mains test series",
-      category: "Test series",
-      mode: "LIVE-Online",
-      start: "1 Feb 2027",
-      month: "February",
-      duration: "[6 months]",
-      status: "upcoming",
-      details: "[Weekly tests with evaluation]",
-    },
-    {
-      programme: "Prelims test series",
-      category: "Test series",
-      mode: "LIVE-Online",
-      start: "1 Dec 2026",
-      month: "December",
-      duration: "[8 months]",
-      status: "closed",
-      details: "[Batch full]",
+      day: "29",
+      month: "Jan",
+      title: "11 Months Prelims cum Mains General Studies Comprehensive Programme",
+      target: "UPSC CSE 2027",
+      mode: "Classroom & LIVE-Online",
+      head: "#2b1206",
+      tone: "light",
     },
   ].map((b) => ({ ...b, href: "#" })) as Batch[],
+  all: { label: "View all batches", href: "#" },
 };
 
 /* ------------------------------------------------------------------ 06 · Counselling */
 
 export const counselling = {
-  eyebrow: "Personalised counselling",
-  headline: "Have questions? Let's find the answers together.",
+  eyebrow: "Talk to us",
+  headline: "Need assistance? Talk to our expert counsellor.",
   description:
-    "Every aspirant has different needs. Talk to our academic counsellors and get guidance on the right programme and your next steps.",
-  statement: "A better decision starts with the right conversation.",
-  cta: "Talk to an academic counsellor",
-  photo: "/images/why/why-personal-guidance.png",
-  process: ["Tell us about you", "Choose what you need", "Talk to a counsellor", "Get your next steps"],
-  steps: {
-    who: { question: "Are you a student or a parent?", options: ["I'm a student", "I'm a parent"] },
-    stage: {
-      question: "What is your current preparation stage?",
-      student: ["Just starting out", "Preparing for Prelims", "Preparing for Mains", "Preparing for the Interview"],
-      parent: ["My child is just starting", "My child is already preparing", "My child is choosing an institute"],
-    },
-    guidance: {
-      question: "What would you like guidance on?",
-      options: ["Choosing a programme", "Classroom or LIVE-Online", "Batches and admissions", "Preparation strategy"],
-    },
-    connect: { question: "How would you prefer to connect?", options: ["Phone call", "WhatsApp", "Email"] },
-    details: { question: "How can we reach you?" },
-  },
+    "Schedule a free call with a Vajiram & Ravi counsellor to answer your questions, with no pressure to enrol.",
+  card: { tag: "Post card", title: "Book your free session today!", cta: "Book my free call" },
+  /** The programmes a visitor can ask about: the featured programme, then the others. */
+  programmes: [programmes.featured.name, ...programmes.wall.list.map((c) => c.name), "Not sure yet"],
+  times: ["Morning, 9 AM – 12 PM", "Afternoon, 12 – 4 PM", "Evening, 4 – 7 PM"],
 };
 
 /* ------------------------------------------------------------------ 07 · Mentors */
@@ -401,14 +370,19 @@ export const stories = {
   description:
     "Every aspirant faces challenges, learns new things and grows through the journey. Hear directly from students who have been through it.",
   statement: "Their experiences. Their words. Their journeys.",
-  categories: ["Preparation experience", "Faculty experience", "Success stories"] as const,
-  /**
-   * No testimonials are written here: the brief rules out fabricated ones. Each story shows the programme the student
-   * chose, the academic support they had, what improved in their preparation and their verified outcome. Success
-   * stories carry the CSE 2025 achievers' names and ranks with the rest still to be recorded; the other two
-   * categories wait for real students.
-   */
+  /** Two films of students, played one after the other behind the stories. */
   films: ["/videos/testimonials-1.mp4", "/videos/testimonials-2.mp4"],
+  /**
+   * The stories: the CSE 2025 toppers, their names, ranks and photos from our records. No words are written for
+   * them (the brief rules out fabricated testimonials): each quote is a marked placeholder until the student's own,
+   * approved words are in, and their programme is to be verified.
+   */
+  list: hero.years[2025].slice(0, 6).map((a) => ({
+    name: a.name,
+    meta: `AIR ${a.rank} · CSE ${a.year} · ${a.programme}`,
+    quote: `[${a.name}'s own words on preparing with Vajiram & Ravi, to be added with their approval.]`,
+    photo: a.photo,
+  })) as { name: string; meta: string; quote: string; photo?: string }[],
 };
 
 /* ------------------------------------------------------------------ 09 · Life */
@@ -433,22 +407,6 @@ export const about = {
   /** Who the institute is: the brief's copy. */
   intro:
     "Since 1976, Vajiram & Ravi has been part of the civil services preparation journey of generations of students. Our legacy is built on academic experience, dedicated educators and a continued commitment to helping aspirants move forward.",
-  statement: "A tradition of learning. A future of possibilities.",
-  /** What the institute does best: drawn from its programmes and the brief's copy, to be confirmed by the institute. */
-  best: [
-    {
-      name: "Preparation for every stage",
-      text: "Prelims, Mains and the Personality Test, from a first foundation to the interview.",
-    },
-    {
-      name: "Experienced educators",
-      text: "Teachers who bring knowledge, experience and direction to your UPSC preparation.",
-    },
-    {
-      name: "Structured learning and assessment",
-      text: "Classes, study material and regular tests that show you where you stand.",
-    },
-  ],
   record: {
     title: "A proven track record",
     text: "Five decades of preparing aspirants for the civil services, and results that speak.",
@@ -478,11 +436,7 @@ export const about = {
       },
     ],
   },
-  location: {
-    title: "Visit our centre",
-    text: "Come and see where generations of aspirants have prepared, and meet our counsellors in person.",
-    photo: "/images/hero/campus.webp",
-  },
+  location: { title: "Visit our centre" },
 };
 
 /* ------------------------------------------------------------------ 09 · Free resources */

@@ -1,194 +1,201 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ArrowRight, MapPin, NavArrowDown } from "iconoir-react";
-import { batches, type Batch, type BatchStatus } from "@/data/content";
-import SectionIntro from "@/components/ui/SectionIntro";
+import { useEffect, useRef, useState } from "react";
+import { batches, type Batch } from "@/data/content";
+import { Button } from "@/components/ui/Button";
+import { Eyebrow } from "@/components/ui/SectionIntro";
 import { cx } from "@/lib/cx";
 
-const STATUS: Record<BatchStatus, { label: string; tone: string }> = {
-  open: { label: "Admissions open", tone: "bg-open-soft text-open" },
-  upcoming: { label: "Upcoming", tone: "bg-upcoming-soft text-upcoming" },
-  closed: { label: "Admissions closed", tone: "bg-ink-900/[0.06] text-muted" },
-};
-
-const ALL = "All";
-
-/** A filter as a native select, dressed as a pill, so it works with every keyboard and screen reader. */
-function Filter({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  options: string[];
-  onChange: (value: string) => void;
-}) {
-  return (
-    <label className="relative flex h-12 items-center gap-2 rounded-full border border-ink-900/15 bg-white pr-11 pl-5 text-[15px] transition-colors focus-within:border-ink-900 hover:border-ink-900/40">
-      <span className="text-muted">{label}</span>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="cursor-pointer appearance-none bg-transparent font-semibold text-ink-900 outline-none"
-      >
-        {[ALL, ...options].map((option) => (
-          <option key={option}>{option}</option>
-        ))}
-      </select>
-      <NavArrowDown width={16} height={16} className="pointer-events-none absolute right-4 text-ink-900" />
-    </label>
-  );
-}
-
-/** "14 Oct 2026" as its day, short month and year. */
-function splitDate(date: string) {
-  const [day, month, year] = date.split(" ");
-  return { day, month, year };
-}
-
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-/** "14 Oct 2026" as a number that sorts by date, read by hand since browsers parse this format differently. */
-function startTime(date: string) {
-  const { day, month, year } = splitDate(date);
-  return new Date(Number(year), MONTHS.indexOf(month), Number(day)).getTime();
-}
-
-/** Every batch, earliest first. */
-const BY_DATE = [...batches.list].sort((a, b) => startTime(a.start) - startTime(b.start));
+/** Card width plus the gap between cards: how far one press of an arrow moves the rail. */
+const STEP = 308 + 16;
 
 /**
- * Upcoming batches, on paper: the intro, three filters (programme, learning mode, starting month) and the schedule,
- * grouped by month like a calendar. Each batch is a row with its start date set large, the programme, how and where
- * it is taught, its duration, its admission status and a button; pointing at a row lifts it and reveals a line of
- * further detail. The dates are a placeholder schedule, labelled as such, until verified ones are connected.
+ * One batch as an admission ticket, after the design (Figma 2257:9039): a peach ticket with a notch either side of a
+ * dashed tear line; a coloured head with the start month, the day large in the serif and the examination it targets
+ * (the first carries a lotus mark); then the programme, how it is taught, a "limited seats" rubber stamp where it
+ * applies, and under the tear line a link to register.
+ */
+function Ticket({ batch }: { batch: Batch }) {
+  const light = batch.tone === "light";
+  return (
+    <li className="relative h-[360px] w-[308px] shrink-0 snap-start">
+      {/* eslint-disable-next-line @next/next/no-img-element -- the ticket's notched outline, a fixed-size SVG */}
+      <img src="/images/batches/ticket-body.svg" alt="" width={308} height={360} className="absolute inset-0" />
+      <div
+        className={cx(
+          "absolute inset-x-0 top-0 h-[108px] overflow-clip rounded-t-[18px] px-5",
+          light ? "text-white" : "text-ink-900",
+        )}
+        style={{ background: batch.head }}
+      >
+        {batch.mark && (
+          // eslint-disable-next-line @next/next/no-img-element -- the lotus mark, a fixed-size SVG
+          <img
+            src="/images/batches/mark-lotus.svg"
+            alt=""
+            width={204}
+            height={108}
+            className="absolute top-0 left-[104px]"
+          />
+        )}
+        <p className="relative flex items-start justify-between pt-[22px]">
+          <span
+            className={cx(
+              "text-[13px]/[16px] font-semibold tracking-[0.14em] uppercase",
+              light ? "text-[#f4c430]" : "text-ink-900",
+            )}
+          >
+            {batch.month}
+          </span>
+          <span className={cx("text-[11px]/[14px] font-semibold tracking-[0.06em]", light && "text-white/90")}>
+            Target: {batch.target}
+          </span>
+        </p>
+        <p className="relative font-serif text-[64px]/[64px]">{batch.day}</p>
+      </div>
+
+      <div className="absolute inset-x-5 top-[128px]">
+        <h3 className="text-[18px]/[24px] font-semibold text-[#2b1206]">{batch.title}</h3>
+        {batch.mode && <p className="mt-2 text-[13px]/[18px] font-medium text-[#6b4a3a]">{batch.mode}</p>}
+      </div>
+
+      {batch.limited && (
+        <span
+          aria-label="Limited seats"
+          className="absolute top-[182px] left-[185px] flex size-[96px] rotate-14 flex-col items-center justify-center opacity-85"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element -- the rubber stamp's ring, a fixed-size SVG */}
+          <img src="/images/batches/stamp-ring.svg" alt="" width={94} height={94} className="absolute top-px left-px" />
+          <span aria-hidden="true" className="text-[12px]/[16px] font-bold tracking-[0.1em] text-[#e34234]">
+            LIMITED
+          </span>
+          <span aria-hidden="true" className="text-[12px]/[16px] font-bold tracking-[0.1em] text-[#e34234]">
+            SEATS
+          </span>
+        </span>
+      )}
+
+      {/* eslint-disable-next-line @next/next/no-img-element -- the dashed tear line, a fixed-size SVG */}
+      <img src="/images/batches/tear-line.svg" alt="" width={268} height={2} className="absolute top-[275px] left-5" />
+      <a
+        href={batch.href}
+        className="group absolute top-[304px] left-5 flex items-center gap-2 text-[15px]/[22px] font-semibold text-[#c50]"
+        aria-label={`Register now for ${batch.title}`}
+      >
+        Register now
+        {/* eslint-disable-next-line @next/next/no-img-element -- the arrow medallion, a fixed-size SVG */}
+        <img
+          src="/images/batches/arrow-medallion.svg"
+          alt=""
+          width={26}
+          height={26}
+          className="transition-transform duration-300 group-hover:translate-x-1"
+        />
+      </a>
+    </li>
+  );
+}
+
+/** A round arrow button for the rail; dark when it can move the rail, faded when it can't. */
+function RailButton({
+  label,
+  icon,
+  primary,
+  disabled,
+  onClick,
+}: {
+  label: string;
+  icon: string;
+  primary?: boolean;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={disabled}
+      onClick={onClick}
+      className={cx(
+        "flex size-11 items-center justify-center rounded-full border transition-[background-color,opacity] disabled:cursor-default disabled:opacity-35",
+        primary ? "border-ink-900 bg-ink-900 hover:bg-ink-700" : "border-ink-900/15 bg-white hover:bg-paper",
+      )}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element -- the arrow icon, a fixed-size SVG */}
+      <img src={icon} alt="" width={14} height={14} />
+    </button>
+  );
+}
+
+/**
+ * Upcoming batches and admissions, on white, after the design (Figma 2257:9039): the "Admissions" label and headline
+ * beside a line on how to register; previous and next buttons above a rail of batch tickets, which scrolls sideways
+ * when there are more than fit; and a button to view all batches.
  */
 export default function Batches() {
-  const [programme, setProgramme] = useState(ALL);
-  const [mode, setMode] = useState(ALL);
-  const [month, setMonth] = useState(ALL);
+  const rail = useRef<HTMLUListElement>(null);
+  const [edges, setEdges] = useState({ start: true, end: true });
 
-  const options = useMemo(
-    () => ({
-      programmes: [...new Set(batches.list.map((b) => b.category))],
-      modes: [...new Set(batches.list.map((b) => b.mode))],
-      months: [...new Set(BY_DATE.map((b) => b.month))],
-    }),
-    [],
-  );
+  // Which ends of the rail are reached, so each arrow is only live when it can move it.
+  useEffect(() => {
+    const el = rail.current;
+    if (!el) return;
+    const update = () =>
+      setEdges({ start: el.scrollLeft <= 1, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 1 });
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
 
-  const shown = BY_DATE.filter((b) => programme === ALL || b.category === programme)
-    .filter((b) => mode === ALL || b.mode === mode)
-    .filter((b) => month === ALL || b.month === month);
-
-  // The shown batches, grouped by the month they start in.
-  const byMonth = shown.reduce<Record<string, Batch[]>>((groups, b) => {
-    const key = `${b.month} ${splitDate(b.start).year}`;
-    (groups[key] ??= []).push(b);
-    return groups;
-  }, {});
+  const move = (direction: number) => rail.current?.scrollBy({ left: direction * STEP, behavior: "smooth" });
 
   return (
-    <section id="batches" aria-labelledby="batches-title" className="scroll-mt-[76px] bg-paper py-32">
-      <div className="mx-auto w-canvas px-12">
-        <SectionIntro
-          id="batches-title"
-          eyebrow={batches.eyebrow}
-          headline={batches.headline}
-          description={batches.description}
-          statement={batches.statement}
-        />
-
-        <div className="mt-16 flex items-center justify-between">
-          <div className="flex gap-3">
-            <Filter label="Programme" value={programme} options={options.programmes} onChange={setProgramme} />
-            <Filter label="Learning mode" value={mode} options={options.modes} onChange={setMode} />
-            <Filter label="Starting month" value={month} options={options.months} onChange={setMonth} />
+    <section id="batches" aria-labelledby="batches-title" className="scroll-mt-[76px] bg-white pt-24 pb-28">
+      <div className="mx-auto w-canvas px-20">
+        <div className="fade-up flex items-end justify-between gap-16">
+          <div>
+            <Eyebrow>{batches.eyebrow}</Eyebrow>
+            <h2 id="batches-title" className="mt-4 font-serif text-[60px]/[1.04] tracking-[-0.015em] text-ink-900">
+              {batches.headline}
+            </h2>
           </div>
-          {batches.placeholder && (
-            <p className="rounded-full border border-dashed border-ink-900/25 px-4 py-2 text-[13px] text-muted">
-              Sample schedule: dates to be confirmed by admissions
-            </p>
-          )}
+          <p className="w-[420px] pb-3 text-[16px]/[1.55] text-muted">{batches.description}</p>
         </div>
 
-        <div className="mt-10 flex flex-col gap-12">
-          {Object.entries(byMonth).map(([monthLabel, list]) => (
-            <div key={monthLabel} className="grid grid-cols-[220px_1fr] gap-8">
-              <h3 className="pt-5 font-serif text-[40px]/[1] text-ink-900">{monthLabel.split(" ")[0]}</h3>
-              <ul className="flex flex-col gap-3">
-                {list.map((b) => {
-                  const date = splitDate(b.start);
-                  const status = STATUS[b.status];
-                  return (
-                    <li
-                      key={`${b.programme}-${b.mode}-${b.start}`}
-                      className="group grid grid-cols-[96px_1fr_auto] items-center gap-8 rounded-[22px] border border-transparent bg-white px-6 py-5 shadow-[0_1px_0_rgb(20_27_42/0.06)] transition-[border-color,box-shadow,translate] duration-300 hover:-translate-y-0.5 hover:border-ink-900/10 hover:shadow-[0_20px_40px_-28px_rgb(20_27_42/0.45)]"
-                    >
-                      <p className="flex flex-col items-center justify-center rounded-[16px] bg-paper py-3 text-center">
-                        <span className="font-serif text-[44px]/[1] text-ink-900">{date.day}</span>
-                        <span className="mt-1 text-[13px] font-semibold tracking-[0.14em] text-muted uppercase">
-                          {date.month}
-                        </span>
-                      </p>
-                      <div>
-                        <div className="flex items-center gap-3">
-                          <p className="text-[20px]/[26px] font-semibold text-ink-900">{b.programme}</p>
-                          <span className={cx("rounded-full px-3 py-1 text-[12px]/[16px] font-semibold", status.tone)}>
-                            {status.label}
-                          </span>
-                        </div>
-                        <p className="mt-1.5 flex items-center gap-x-4 text-[15px]/[22px] text-muted">
-                          <span>{b.mode}</span>
-                          {b.location && (
-                            <span className="flex items-center gap-1.5">
-                              <MapPin width={15} height={15} />
-                              {b.location}
-                            </span>
-                          )}
-                          <span>Duration {b.duration}</span>
-                        </p>
-                        {/* Further detail, revealed when the row is pointed at or focused. */}
-                        <p className="grid grid-rows-[0fr] text-[14px]/[20px] text-muted transition-[grid-template-rows] duration-300 group-focus-within:grid-rows-[1fr] group-hover:grid-rows-[1fr]">
-                          <span className="overflow-hidden">
-                            <span className="block pt-2">{b.details}</span>
-                          </span>
-                        </p>
-                      </div>
-                      {b.status === "closed" ? (
-                        <span className="text-[15px] font-semibold text-faint">Admissions closed</span>
-                      ) : (
-                        <a
-                          href={b.href}
-                          className="group/cta inline-flex h-12 items-center gap-2 rounded-full px-6 text-[15px] font-semibold text-white ember-pill transition-[filter] hover:brightness-110"
-                        >
-                          {b.status === "open" ? "Enrol now" : "Explore batch"}
-                          <ArrowRight
-                            width={18}
-                            height={18}
-                            strokeWidth={1.8}
-                            className="transition-transform group-hover/cta:translate-x-1"
-                          />
-                        </a>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+        <div className="mt-12 flex justify-end gap-2.5">
+          <RailButton
+            label="Previous batches"
+            icon="/images/batches/icon-left.svg"
+            disabled={edges.start}
+            onClick={() => move(-1)}
+          />
+          <RailButton
+            label="Next batches"
+            icon="/images/batches/icon-right.svg"
+            primary
+            disabled={edges.end}
+            onClick={() => move(1)}
+          />
+        </div>
+
+        <ul
+          ref={rail}
+          aria-label="Upcoming batches"
+          className="mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {batches.list.map((batch) => (
+            <Ticket key={batch.title} batch={batch} />
           ))}
-          {shown.length === 0 && (
-            <p className="rounded-[22px] bg-white px-8 py-10 text-center text-[17px] text-muted">
-              No batches match these filters. Try another month or{" "}
-              <a href="#counselling" className="font-semibold text-saffron-600 underline-offset-4 hover:underline">
-                ask a counsellor
-              </a>
-              .
-            </p>
-          )}
+        </ul>
+
+        <div className="mt-12 flex justify-end">
+          <Button href={batches.all.href} tone="ghost-dark" size="md">
+            {batches.all.label}
+          </Button>
         </div>
       </div>
     </section>

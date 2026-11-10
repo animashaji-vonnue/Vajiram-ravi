@@ -24,6 +24,13 @@ const instrumentSans = localFont({
   display: "swap",
 });
 
+// Geist Mono, for the small labels over the headings (the eyebrows).
+const geistMono = localFont({
+  src: [{ path: "./fonts/geist-mono.woff2", weight: "400", style: "normal" }],
+  variable: "--font-geist-mono-face",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Vajiram & Ravi — UPSC preparation since 1976",
   description: "Working prototype of the redesigned Vajiram & Ravi homepage.",
@@ -40,7 +47,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // The canvas-fit script sets an inline zoom on <html> before hydration.
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${instrumentSans.variable}`}
+      className={`${instrumentSerif.variable} ${instrumentSans.variable} ${geistMono.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

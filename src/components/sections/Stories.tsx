@@ -1,218 +1,203 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
-import { Play } from "iconoir-react";
-import { hero, stories } from "@/data/content";
-import SectionIntro from "@/components/ui/SectionIntro";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { NavArrowLeft, NavArrowRight } from "iconoir-react";
+import { stories } from "@/data/content";
+import { Lozenge, TitleRule } from "@/components/ui/Ornaments";
+import VideoLoop from "@/components/ui/VideoLoop";
 import { cx } from "@/lib/cx";
+import { mod, prefersReducedMotion } from "@/lib/motion";
 
-type Story = {
-  name: string;
-  rank?: number;
-  year?: number;
-  photo?: string;
-  film?: string;
-  programme: string;
-  support: string;
-  improvement: string;
-  outcome: string;
-};
+type Story = (typeof stories.list)[number];
+
+/** The heading's ornaments' colour: a muted gilt. */
+const GILT = "#c9a96a";
+
+/** How long each card stays at the front before the next comes round. */
+const ADVANCE_MS = 4500;
 
 /**
- * The stories for each category. None is written for anyone: success stories carry the CSE 2025 achievers' names,
- * ranks and photos (their rank is the verified outcome) with their films and words still to be recorded, and the
- * other two categories hold clearly marked slots, with stand-in films, until real students' stories are in.
+ * Where each card sits for its distance from the front, after the template carousel on wix.com: the front card
+ * flat; the next out on each side turned 66° away, set back and a little smaller; the pair beyond turned further and
+ * set further back. Cards any further out are hidden. Distances are in canvas pixels.
  */
-const SLOT = {
-  programme: "[The programme they chose]",
-  support: "[The academic support that helped them]",
-  improvement: "[What improved in their preparation]",
-  outcome: "[Their verified outcome]",
-};
-const STORIES: Record<(typeof stories.categories)[number], Story[]> = {
-  "Preparation experience": [0, 1, 2].map((i) => ({
-    name: "[Student name]",
-    film: stories.films[i % stories.films.length],
-    ...SLOT,
-  })),
-  "Faculty experience": [0, 1].map((i) => ({
-    name: "[Student name]",
-    film: stories.films[(i + 1) % stories.films.length],
-    ...SLOT,
-  })),
-  "Success stories": hero.years[2025].slice(0, 5).map((a) => ({
-    name: a.name,
-    rank: a.rank,
-    year: a.year,
-    photo: a.photo,
-    ...SLOT,
-    programme: a.programme,
-    outcome: `AIR ${a.rank}, CSE ${a.year}`,
-  })),
+const PLACES: Record<number, { x: number; z: number; turn: number; scale: number }> = {
+  0: { x: 0, z: 0, turn: 0, scale: 1 },
+  1: { x: 470, z: -140, turn: 66, scale: 0.9 },
+  2: { x: 650, z: -320, turn: 78, scale: 0.95 },
 };
 
+function place(offset: number): CSSProperties {
+  const spot = PLACES[Math.min(Math.abs(offset), 2)];
+  const side = Math.sign(offset);
+  return {
+    transform: `translate(-50%, -50%) translate3d(${side * spot.x}px, 0, ${spot.z}px) rotateY(${-side * spot.turn}deg) scale(${spot.scale})`,
+    zIndex: 10 - Math.abs(offset),
+    opacity: Math.abs(offset) > 2 ? 0 : 1,
+    pointerEvents: Math.abs(offset) > 2 ? "none" : undefined,
+  };
+}
+
 /**
- * Student stories, on white: the intro, a switch between the three categories, and a featured story (a large film,
- * or the achiever's portrait until their film is recorded, beside their name, rank and year, the programme they
- * chose, the academic support they had, what improved and their verified outcome) above a film strip of the
- * category's stories. Films never play on their own or with
- * sound until asked.
+ * One student's story on a card, as in v4 but without the stamp's perforated edge: a rounded peach card with an
+ * orange frame line inside its edge, the student's photo down the left (or their initials, until there is a photo) and on the right their words
+ * in the serif, with their name and their rank, year and programme under it.
+ */
+function StampCard({ item }: { item: Story }) {
+  const initials = item.name
+    .split(" ")
+    .map((part) => part[0])
+    .join("");
+  return (
+    <figure className="relative isolate flex h-[440px] w-[760px] gap-10 rounded-[22px] bg-[#ffe5b4] py-3.5 pr-9 pl-3.5">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-3.5 rounded-[14px] border border-[#fea500]"
+      />
+      <div className="relative w-[340px] shrink-0 overflow-clip rounded-[14px] bg-[linear-gradient(170deg,#f6c08a,#e2864a)]">
+        {item.photo ? (
+          <Image src={item.photo} alt="" fill sizes="340px" className="object-cover object-top" />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="flex size-full items-center justify-center bg-[#f3d29a] font-serif text-[120px] text-ink-900/40"
+          >
+            {initials}
+          </span>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col justify-between pt-[22px] pb-2.5 text-left">
+        <blockquote className="font-serif text-[30px]/[36px] tracking-[-0.01em] text-ink-900">
+          “{item.quote}”
+        </blockquote>
+        <figcaption>
+          <p className="text-[16px]/[22px] font-semibold text-ink-900">{item.name}</p>
+          <p className="mt-0.5 text-[14px]/[20px] text-ink-800">{item.meta}</p>
+        </figcaption>
+      </div>
+    </figure>
+  );
+}
+
+/**
+ * A round arrow button beside the front card. It stays hidden until the pointer is over the ring (the `group`) or
+ * the button itself has focus.
+ */
+function Arrow({
+  label,
+  side,
+  onClick,
+  children,
+}: {
+  label: string;
+  side: "left" | "right";
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClick}
+      className={cx(
+        "absolute top-1/2 z-20 flex size-14 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-900 opacity-0 shadow-[0_10px_30px_-10px_rgb(0_0_0/0.5)] transition-[opacity,background-color,color] duration-300 group-hover:opacity-100 hover:bg-[#fea500] hover:text-white focus-visible:opacity-100",
+        side === "left" ? "left-[calc(50%-452px)]" : "right-[calc(50%-452px)]",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+/**
+ * Student stories, in the v4 design: a rounded card over two films of students played one after the other and
+ * washed dark, with the heading centred (spaced capitals between gilt double rules, a lozenge, and the description
+ * under it) in light text, then the students' cards in a 3D ring, the front one flat and those either side
+ * turned away in perspective, after the template carousel on wix.com. Every few seconds the next card comes round to
+ * the front; clicking a card at the side, or the arrows that show beside the front card while the pointer is over
+ * the ring, brings another forward. It pauses while the pointer or focus is on it, and doesn't turn on its own when
+ * motion is reduced.
  */
 export default function Stories() {
-  const [category, setCategory] = useState<(typeof stories.categories)[number]>(stories.categories[0]);
-  const [index, setIndex] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const film = useRef<HTMLVideoElement>(null);
-  const list = STORIES[category];
-  const story = list[Math.min(index, list.length - 1)];
+  const list = stories.list;
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
 
-  const choose = (i: number) => {
-    setIndex(i);
-    setPlaying(false);
-  };
+  useEffect(() => {
+    if (paused || prefersReducedMotion()) return;
+    const timer = setTimeout(() => setActive((i) => (i + 1) % list.length), ADVANCE_MS);
+    return () => clearTimeout(timer);
+  }, [active, paused, list.length]);
 
-  const play = () => {
-    setPlaying(true);
-    requestAnimationFrame(() => void film.current?.play());
+  // Each card's distance from the front, the shorter way round the ring.
+  const offsetOf = (i: number) => {
+    const d = mod(i - active, list.length);
+    return d > list.length / 2 ? d - list.length : d;
   };
 
   return (
-    <section id="stories" aria-labelledby="stories-title" className="scroll-mt-[76px] bg-white py-32">
-      <div className="mx-auto w-canvas px-12">
-        <SectionIntro
-          id="stories-title"
-          eyebrow={stories.eyebrow}
-          headline={stories.headline}
-          description={stories.description}
-          statement={stories.statement}
-        />
-
-        <div role="tablist" aria-label="Story categories" className="mt-14 inline-flex rounded-full bg-paper p-1.5">
-          {stories.categories.map((c) => (
-            <button
-              key={c}
-              type="button"
-              role="tab"
-              aria-selected={c === category}
-              onClick={() => {
-                setCategory(c);
-                choose(0);
-              }}
-              className={cx(
-                "h-11 rounded-full px-6 text-[15px] font-semibold transition-colors",
-                c === category ? "ember-pill text-white" : "text-ink-900/70 hover:text-ink-900",
-              )}
-            >
-              {c}
-            </button>
-          ))}
+    <section id="stories" aria-labelledby="stories-title" className="scroll-mt-[76px] bg-white px-10 py-24">
+      {/* A card over the two films, washed dark so the light heading and the peach cards stand out on it. */}
+      <div className="relative isolate overflow-clip rounded-[32px] py-24 text-white">
+        <VideoLoop clips={stories.films} lazy className="bg-ink-950" />
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[rgb(25_14_8/0.62)]" />
+        <div className="fade-up mx-auto flex w-canvas flex-col items-center text-center">
+          <div className="flex items-center gap-5">
+            <TitleRule colour={GILT} className="w-[150px] flex-none" />
+            <h2 id="stories-title" className="font-serif text-[40px]/[48px] tracking-[0.12em] uppercase">
+              {stories.eyebrow}
+            </h2>
+            <TitleRule colour={GILT} mirrored className="w-[150px] flex-none" />
+          </div>
+          <Lozenge colour={GILT} className="mt-3" />
+          <p className="mt-6 w-[560px] text-[18px]/[30px] text-white/85">{stories.description}</p>
         </div>
 
-        <div key={`${category}-${index}`} className="stage-in mt-10 grid grid-cols-[780px_1fr] gap-14">
-          <div className="relative h-[440px] overflow-hidden rounded-[28px] bg-ink-900">
-            {story.film ? (
-              <>
-                <video
-                  ref={film}
-                  src={story.film}
-                  preload="metadata"
-                  playsInline
-                  controls={playing}
-                  className="absolute inset-0 size-full object-cover"
-                />
-                {!playing && (
-                  <button
-                    type="button"
-                    onClick={play}
-                    aria-label={`Play ${story.name}'s story`}
-                    className="group absolute inset-0 flex items-center justify-center bg-ink-950/30"
-                  >
-                    <span className="flex size-20 items-center justify-center rounded-full bg-white text-ink-900 transition-transform duration-300 group-hover:scale-110">
-                      <Play width={30} height={30} className="translate-x-0.5" />
-                    </span>
-                  </button>
-                )}
-              </>
-            ) : (
-              <>
-                {story.photo && (
-                  <Image src={story.photo} alt={story.name} fill sizes="780px" className="object-cover object-top" />
-                )}
-                <span className="absolute bottom-5 left-5 rounded-full bg-ink-950/75 px-4 py-2 text-[14px] font-semibold text-white backdrop-blur-sm">
-                  Film to be recorded
-                </span>
-              </>
-            )}
-          </div>
-
-          <div className="flex flex-col justify-center">
-            {story.rank && (
-              <p className="font-serif text-[22px] text-saffron-600">
-                AIR {story.rank} · CSE {story.year}
-              </p>
-            )}
-            <h3 className="mt-2 font-serif text-[54px]/[1.02] text-ink-900">{story.name}</h3>
-            <dl className="mt-8 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-line pt-6">
-              {[
-                ["Programme", story.programme],
-                ["Academic support", story.support],
-                ["What improved", story.improvement],
-                ["Outcome", story.outcome],
-              ].map(([term, value]) => (
-                <div key={term}>
-                  <dt className="text-[13px] font-semibold tracking-[0.14em] text-muted uppercase">{term}</dt>
-                  <dd className="mt-2 text-[17px]/[26px] text-ink-900">{value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </div>
-
-        {/* The film strip: every story in the category, the featured one marked. */}
-        <ul className="mt-10 flex gap-4 overflow-x-auto pb-2">
-          {list.map((s, i) => (
-            <li key={`${s.name}-${i}`} className="shrink-0">
-              <button
-                type="button"
-                aria-pressed={i === index}
-                onClick={() => choose(i)}
-                className={cx(
-                  "group relative block h-[150px] w-[230px] overflow-hidden rounded-[18px] bg-ink-900 text-left text-white transition-opacity",
-                  i === index ? "ring-2 ring-saffron-500 ring-offset-2" : "opacity-75 hover:opacity-100",
-                )}
-              >
-                {s.photo ? (
-                  <Image src={s.photo} alt="" fill sizes="230px" className="object-cover object-top" />
-                ) : (
-                  s.film && (
-                    <video
-                      src={s.film}
-                      preload="metadata"
-                      muted
-                      playsInline
-                      className="absolute inset-0 size-full object-cover"
-                    />
-                  )
-                )}
-                <span className="absolute inset-0 bg-linear-to-t from-ink-950/90 to-transparent" />
-                <span className="absolute bottom-3 left-3.5">
-                  <span className="block text-[14px]/[18px] font-semibold">{s.name}</span>
-                  {s.rank && (
-                    <span className="block text-[12px] text-white/70">
-                      AIR {s.rank} · CSE {s.year}
-                    </span>
+        <div
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocus={() => setPaused(true)}
+          onBlur={() => setPaused(false)}
+          className="group"
+        >
+          {/* The ring: every card is centred on the stage and moved to its place in 3D. */}
+          <div
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Students' stories"
+            className="relative mt-16 h-[520px] [perspective:1200px]"
+          >
+            {list.map((item, i) => {
+              const offset = offsetOf(i);
+              return (
+                <div
+                  key={item.name}
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={`${i + 1} of ${list.length}`}
+                  aria-hidden={offset !== 0}
+                  onClick={() => offset !== 0 && setActive(i)}
+                  className={cx(
+                    "absolute top-1/2 left-1/2 drop-shadow-[0_30px_40px_rgb(0_0_0/0.35)] transition-[transform,opacity] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] [transform-style:preserve-3d]",
+                    offset !== 0 && "cursor-pointer",
                   )}
-                </span>
-                {s.film && (
-                  <span className="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full bg-white/90 text-ink-900">
-                    <Play width={14} height={14} />
-                  </span>
-                )}
-              </button>
-            </li>
-          ))}
-        </ul>
+                  style={place(offset)}
+                >
+                  <StampCard item={item} />
+                </div>
+              );
+            })}
+
+            {/* Arrows either side of the front card, shown while the pointer is over the ring or one has focus. */}
+            <Arrow label="Previous student" side="left" onClick={() => setActive((i) => mod(i - 1, list.length))}>
+              <NavArrowLeft width={24} height={24} />
+            </Arrow>
+            <Arrow label="Next student" side="right" onClick={() => setActive((i) => (i + 1) % list.length)}>
+              <NavArrowRight width={24} height={24} />
+            </Arrow>
+          </div>
+        </div>
       </div>
     </section>
   );
