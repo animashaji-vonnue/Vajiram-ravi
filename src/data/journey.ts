@@ -1,6 +1,6 @@
 /**
  * "UPSC preparation journey & academic support" (the client's homepage content of 10 Nov 2026, section 02):
- * the three stages of the examination as a path, Prelims → Mains → Personality Test, each with how the
+ * the three stages of the examination as a path, Prelims → Mains → Interview, each with how the
  * institute supports it. There is no Figma frame for this section; see Journey/Journey.tsx.
  */
 
@@ -10,7 +10,7 @@ export type StageId = "prelims" | "mains" | "interview";
 
 /** One line of "How Vajiram supports you". */
 export type SupportItem = {
-  /** The bold run-in label, with its colon (the Personality Test's lines). */
+  /** The bold run-in label, with its colon (the Interview's lines). */
   label?: string;
   text: string;
   /** Numbers in `text` set as Mukta figures; the words stay exactly as written. */
@@ -31,13 +31,12 @@ export type JourneyStage = {
 };
 
 export const journeyIntro = {
-  eyebrow: "YOUR PREPARATION, EVERY STEP OF THE WAY",
   /** The heading; its emphasis is set in orange italic. */
   heading: {
-    lead: "From building your foundation to facing the final interview, prepare with",
-    emphasis: "the right academic support.",
+    lead: "Guidance at every stage of",
+    emphasis: "your UPSC journey.",
   },
-  lead: "UPSC preparation doesn't stand still. As you move from one stage to the next, your preparation needs to evolve too. Vajiram & Ravi brings together structured teaching, focused study materials, regular assessments, answer evaluation and interview guidance to support you along the way.",
+  lead: "From Prelims to Mains and the Personality Test, Vajiram & Ravi brings together structured teaching, focused study materials, regular assessments and expert guidance to support your preparation throughout the journey.",
   /** The heading of each stage's support list. */
   supportLabel: "How Vajiram supports you",
   /** The stage rail's accessible name. */
@@ -51,9 +50,9 @@ export const journeyStages: JourneyStage[] = [
     name: "Prelims",
     title: "Build your foundation. Test your readiness.",
     description:
-      "Start with a structured understanding of General Studies. Learn through subject-focused classes, strengthen your concepts with syllabus-aligned Yellow Books and bring current affairs into your preparation. Put your knowledge to the test through regular assessments and identify where you need to improve.",
+      "Build a strong foundation in General Studies through subject-focused classes and syllabus-aligned Yellow Books. Strengthen your understanding with current affairs and regular assessments that help you evaluate your preparation and identify areas for improvement.",
     support: [
-      { text: "300+ GS class lectures and 900+ teaching hours in the GS 2028 programme.", figures: ["300+", "900+"] },
+      { text: "300+ General Studies class lectures and 900+ teaching hours in the GS 2028 programme.", figures: ["300+", "900+"] },
       { text: "18 Yellow Books covering the General Studies syllabus.", figures: ["18"] },
       { text: "30 Prelims tests covering General Studies and Current Affairs.", figures: ["30"] },
     ],
@@ -63,30 +62,30 @@ export const journeyStages: JourneyStage[] = [
     id: "mains",
     number: "02",
     name: "Mains",
-    title: "Turn what you know into strong answers.",
+    title: "Turn your knowledge into well-structured answers.",
     description:
-      "Knowing a subject is one thing. Expressing your understanding through clear, relevant and well-structured answers is another. Develop your answer-writing approach through focused practice, evaluate your performance and understand exactly where your answers need improvement.",
+      "Go beyond understanding concepts to expressing them effectively. Develop your answer-writing skills through focused practice, regular evaluation and expert feedback. Identify gaps in your approach and learn to write clear, relevant and well-structured answers.",
     support: [
       { text: "Structured answer-writing practice." },
       { text: "Sectional and full-length Mains tests." },
-      { text: "Detailed evaluation and feedback." },
+      { text: "Detailed evaluation and personalised feedback." },
       { text: "Model answers and explanatory sessions." },
-      { text: "Mentorship and post-test guidance through relevant programmes." },
+      { text: "One-to-one mentorship and post-test guidance." },
     ],
     cta: { label: "Explore Mains Preparation", href: links.mainsTestSeries },
   },
   {
     id: "interview",
     number: "03",
-    name: "Personality Test",
-    title: "Prepare to present your perspective.",
+    name: "Interview",
+    title: "Present your knowledge with confidence.",
     description:
-      "Reaching the interview stage is a significant milestone. Now it's about presenting your knowledge, experiences and perspectives with clarity. Prepare to approach the Personality Test with greater confidence through focused guidance and practice.",
+      "Communicate your knowledge, experiences and perspectives with clarity through focused guidance, mock interviews and expert feedback. Build the confidence to present yourself effectively before the interview board.",
     support: [
-      { label: "DAF Guidance:", text: "Guidance on your Detailed Application Form (DAF) and focused interview preparation." },
-      { label: "Mock Interviews:", text: "Practice facing an interview panel and responding to questions." },
-      { label: "Personalised Feedback:", text: "Understand your strengths and areas that need improvement." },
-      { label: "Current Affairs Sessions:", text: "Strengthen your understanding of important national and international developments." },
+      { label: "DAF Guidance:", text: "Assistance with Detailed Application Form (DAF-II) preparation." },
+      { label: "Mock Interviews:", text: "Practice sessions with expert interview panels." },
+      { label: "Personalised Feedback:", text: "Individual guidance to improve interview readiness." },
+      { label: "Current Affairs Sessions:", text: "Focused discussions on important national and international issues." },
     ],
     cta: { label: "Explore Interview Guidance", href: links.interviewGuidance },
   },

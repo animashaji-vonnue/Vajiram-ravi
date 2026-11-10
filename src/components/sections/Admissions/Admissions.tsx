@@ -1,5 +1,4 @@
 import NoteCard from "@/components/ui/NoteCard";
-import { EyebrowLeft } from "@/components/ui/Ornament";
 import { batchesCopy } from "@/data/admissions";
 import AdmissionsBoard from "./AdmissionsBoard";
 import FeaturedBatch from "./FeaturedBatch";
@@ -19,7 +18,6 @@ export default function Admissions() {
 
         <div className="relative flex w-full items-end justify-between">
           <div className="flex flex-col items-start gap-4">
-            <EyebrowLeft>{batchesCopy.eyebrow}</EyebrowLeft>
             <h2 id="batches-h" data-split className="w-[760px] font-heading text-[56px]/[1.08] tracking-[-0.02em] text-ink">
               {title.before}{" "}
               <em data-reveal-em className="text-orange italic">

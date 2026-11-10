@@ -9,15 +9,6 @@ import { prefersReducedMotion, whenFontsReady } from "@/lib/motion";
 const CLONES = 3;
 
 /** The page link's hover: an underline drawing in from the left under the text (no medallion here). */
-function Underline() {
-  return (
-    <span
-      aria-hidden="true"
-      className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-current [transition:scale_var(--dur-fast)_var(--ease-out)] group-hover/item:scale-x-100 group-focus-visible/item:scale-x-100"
-    />
-  );
-}
-
 function Item({ item, index, clone, onFocus }: { item: Announcement; index: number; clone?: boolean; onFocus?: (event: FocusEvent<HTMLAnchorElement>) => void }) {
   return (
     <a
@@ -26,7 +17,7 @@ function Item({ item, index, clone, onFocus }: { item: Announcement; index: numb
       tabIndex={clone ? -1 : undefined}
       onFocus={onFocus}
       className={cx(
-        "group/item flex shrink-0 items-center gap-2.5 text-[16px]/[22px] font-medium whitespace-nowrap text-white",
+        "group/item flex shrink-0 items-center gap-2.5 text-[16px]/[22px] font-medium whitespace-nowrap text-white [transition:color_var(--dur-fast)_var(--ease-out)] hover:text-saffron focus-visible:text-saffron",
         // Reduced motion: the strip stands still and shows its first two items only.
         (clone || index > 1) && "motion-reduce:hidden",
       )}
@@ -34,7 +25,6 @@ function Item({ item, index, clone, onFocus }: { item: Announcement; index: numb
       <img src={announcementIcons[item.icon]} alt="" width={20} height={20} className="size-5" />
       <span className="relative">
         {item.text}
-        <Underline />
       </span>
     </a>
   );
@@ -49,7 +39,7 @@ function Item({ item, index, clone, onFocus }: { item: Announcement; index: numb
  * rendered once and then CLONES more times, and the track slides by exactly one set's width (measured once
  * the fonts have loaded), so the loop is seamless however short the list; the copies are hidden from assistive tech and skipped by Tab. Hovering or
  * focusing the strip pauses it, and a focused item that sits outside the band is brought to its left
- * edge. Each item is a link whose underline draws in on hover. Reduced motion: no scroll; the first two
+ * edge. Each item is a link whose text turns saffron on hover. Reduced motion: no scroll; the first two
  * items stand in a static row followed by "View all updates".
  */
 export default function AnnouncementBar() {

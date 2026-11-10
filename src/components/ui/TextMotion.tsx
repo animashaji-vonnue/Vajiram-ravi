@@ -10,12 +10,18 @@ import { prefersReducedMotion } from "@/lib/motion";
  *   data-split    a heading: its letters, each word in its own mask, rise into place from below the mask
  *                 (from 110% down, 1s, 11ms apart, --ease-out-like "power3.out") once its top passes 82%
  *                 of the screen. Other elements inside it (the orange emphasis) keep their own colour.
- *   data-words    a lead paragraph (or a block of them): its words go from faint to full one after another
- *                 as the page scrolls through it (from its top at 78% of the screen to its foot at 55%).
+ *   data-words    a lead paragraph (or a block of them): its words go from 40% to full one after another
+ *                 as it rises into the screen (from its top at the foot of the screen to 65% up), and stay
+ *                 full once lit, so a paragraph is never left faint where the page stops.
  *   data-par      a picture's wrapper: it drifts against the scroll (from -6% to 6% of its height while
  *                 its frame crosses the screen).
  *   data-curtain  a band: it starts a little inset with rounded corners and opens out to the full width as
  *                 it rises into the screen (its top from the foot of the screen to 40% up).
+ *   data-zoom     a card: once, as it comes into view, it rises 48px and grows from 94% into place (900ms).
+ *   data-stagger  a list: once, as it comes into view, its children rise 24px and fade in one after
+ *                 another, 70ms apart.
+ *   (headings)    every split heading drifts a few pixels against the scroll while it crosses the screen,
+ *                 so the sections never sit dead still.
  *
  * The split heading keeps its words for assistive technology (aria-label; the letters are hidden from it),
  * and nothing is hidden before the script has run. Reduced motion: none of this; the text is simply there.
@@ -25,8 +31,8 @@ import { prefersReducedMotion } from "@/lib/motion";
 const EASE = "cubic-bezier(0.215, 0.61, 0.355, 1)";
 const CHAR_MS = 1000;
 const CHAR_STAGGER = 11;
-/** The faintest a word gets before the scroll reaches it. */
-const WORD_FLOOR = 0.18;
+/** The faintest a word gets before the scroll reaches it: still readable, never washed out. */
+const WORD_FLOOR = 0.4;
 
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 
@@ -119,8 +125,38 @@ export default function TextMotion() {
     });
     cleanups.push(() => observer.disconnect());
 
+    // Cards and lists: entrances, once, as they come into view (not when already on screen).
+    const below = (el: Element) => el.getBoundingClientRect().top > window.innerHeight * 0.92;
+    const enter = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          enter.unobserve(entry.target);
+          (entry.target as HTMLElement & { tmPlay?: () => void }).tmPlay?.();
+        }
+      },
+      { rootMargin: "0px 0px -12% 0px" },
+    );
+    const arm = (el: HTMLElement, animations: Animation[]) => {
+      animations.forEach((a) => a.pause());
+      (el as HTMLElement & { tmPlay?: () => void }).tmPlay = () => animations.forEach((a) => a.play());
+      enter.observe(el);
+      cleanups.push(() => animations.forEach((a) => a.finish()));
+    };
+    document.querySelectorAll<HTMLElement>("[data-zoom]").forEach((el) => {
+      if (!below(el)) return;
+      arm(el, [el.animate([{ opacity: 0, transform: "translateY(48px) scale(0.94)" }, { opacity: 1, transform: "none" }], { duration: 900, easing: EASE, fill: "backwards" })]);
+    });
+    document.querySelectorAll<HTMLElement>("[data-stagger]").forEach((el) => {
+      if (!below(el)) return;
+      const items = Array.from(el.children) as HTMLElement[];
+      arm(el, items.map((item, i) => item.animate([{ opacity: 0, transform: "translateY(24px)" }, { opacity: 1, transform: "none" }], { duration: 700, delay: i * 70, easing: EASE, fill: "backwards" })));
+    });
+    cleanups.push(() => enter.disconnect());
+    const drifting = Array.from(document.querySelectorAll<HTMLElement>("h2[data-split]"));
+
     // Leads, pictures and bands: driven by the scroll position.
-    const leads = Array.from(document.querySelectorAll<HTMLElement>("[data-words]"), (el) => ({ el, words: el.dataset.tmDone ? [] : splitWords(el) }));
+    const leads = Array.from(document.querySelectorAll<HTMLElement>("[data-words]"), (el) => ({ el, words: el.dataset.tmDone ? [] : splitWords(el), lit: 0 }));
     leads.forEach(({ el }) => (el.dataset.tmDone = "1"));
     const pictures = Array.from(document.querySelectorAll<HTMLElement>("[data-par]"));
     const curtains = Array.from(document.querySelectorAll<HTMLElement>("[data-curtain]"));
@@ -129,17 +165,23 @@ export default function TextMotion() {
     const update = () => {
       frame = 0;
       const vh = window.innerHeight;
-      for (const { el, words } of leads) {
-        if (!words.length) continue;
-        const box = el.getBoundingClientRect();
-        const start = vh * 0.78;
-        const end = vh * 0.55;
-        // 0 when the top is at 78% of the screen, 1 when the foot has risen to 55%.
-        const progress = clamp01((start - box.top) / Math.max(1, start - end + box.height));
-        const lit = progress * words.length;
+      for (const lead of leads) {
+        const { el, words } = lead;
+        if (!words.length || lead.lit >= words.length) continue;
+        const top = el.getBoundingClientRect().top;
+        // 0 when its top is at the foot of the screen, 1 when it has risen to 65% (or is above it).
+        const progress = clamp01((vh - top) / (vh * 0.35));
+        const lit = Math.max(lead.lit, progress * words.length);
+        if (lit === lead.lit) continue;
+        lead.lit = lit;
         words.forEach((word, i) => {
           word.style.opacity = String(WORD_FLOOR + (1 - WORD_FLOOR) * clamp01(lit - i));
         });
+      }
+      for (const el of drifting) {
+        const box = el.getBoundingClientRect();
+        const progress = clamp01((vh - box.top) / (vh + box.height));
+        el.style.translate = `0 ${(14 - 28 * progress).toFixed(1)}px`;
       }
       for (const el of pictures) {
         const frameBox = (el.parentElement ?? el).getBoundingClientRect();

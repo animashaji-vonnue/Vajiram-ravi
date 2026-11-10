@@ -3,29 +3,14 @@
 import type { SplitHeading } from "@/data/contact";
 
 export const closingCta = {
-  /** The eyebrow (IA 11, the client's copy of 10 Nov 2026), shown in capitals. */
-  proof: "YOUR PREPARATION BEGINS WITH A DECISION",
-  title: { lead: "Take the next step towards your ", em: "Civil Services ambition." } satisfies SplitHeading,
-  text: "Explore the programmes, understand your options and begin preparing with a clear direction.",
+  /** Two lines: the question, then "with" and the emphasis. */
+  title: { lead: "Ready to begin your UPSC preparation", em: "Vajiram & Ravi?" } satisfies SplitHeading,
+  bridge: "with ",
+  text: "Take a confident step towards your Civil Services goal with the right preparation, academic support and guidance at every stage.",
   primary: { label: "Explore Programmes", href: "#programmes" },
   secondary: { label: "Speak to an Academic Counsellor", href: "#counselling" },
 };
 
-/** A silhouette of the skyline behind the sun: its box in the 1440 × 258.75 skyline band, in px, as drawn. */
-export type Monument = { name: string; src: string; x: number; y: number; width: number; height: number };
-
-/** The skyline from left to right. */
-export const closingSkyline: Monument[] = [
-  { name: "Qutub Minar", src: "/images/closing/skyline-qutub.svg", x: 0, y: 17.78, width: 51.5025, height: 240.975 },
-  { name: "Gateway of India", src: "/images/closing/skyline-gateway.svg", x: 4.61, y: 98.32, width: 209.25, height: 160.425 },
-  { name: "India Gate", src: "/images/closing/skyline-indiagate.svg", x: 161.77, y: 28.35, width: 154.8, height: 230.4 },
-  { name: "Rashtrapati Bhavan", src: "/images/closing/skyline-rashtrapati.svg", x: 253.69, y: 153.45, width: 364.5, height: 105.3 },
-  { name: "Sansad Bhavan", src: "/images/closing/skyline-sansad.svg", x: 566.1, y: 204.75, width: 318.6, height: 54 },
-  { name: "Charminar", src: "/images/closing/skyline-charminar.svg", x: 829.01, y: 68.18, width: 210.375, height: 190.575 },
-  { name: "Lotus Temple", src: "/images/closing/skyline-lotus.svg", x: 987.3, y: 163.13, width: 225, height: 95.625 },
-  { name: "Gopuram", src: "/images/closing/skyline-gopuram.svg", x: 1171.46, y: 46.8, width: 135, height: 211.95 },
-  { name: "Hawa Mahal", src: "/images/closing/skyline-hawa.svg", x: 1254.38, y: 76.84, width: 185.625, height: 181.912 },
-];
 
 /**
  * The halo rings around the sun, from the inside out: their file and the SVG's own size (the ring plus its

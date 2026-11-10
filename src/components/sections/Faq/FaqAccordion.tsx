@@ -26,7 +26,7 @@ export default function FaqAccordion({ entries, open, onToggle }: FaqAccordionPr
   return entries.map((entry, i) => {
     const expanded = i === open;
     return (
-      <div key={entry.question} data-reveal="sm" className="relative w-[788px] shrink-0 border-t border-[rgb(94_23_16/0.25)] py-4">
+      <div key={entry.question} className="relative w-[788px] shrink-0 border-t border-[rgb(94_23_16/0.25)] py-4">
         <h3>
           <button
             type="button"

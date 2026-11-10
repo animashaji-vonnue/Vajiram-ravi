@@ -1,5 +1,5 @@
 /**
- * "Our locations" (Figma 1901:47945): the "Location & Timing" card with its city tabs over the street map.
+ * "Our locations" (Figma 2533:5566, "Location · concept B"): the map beside the "Location & Timing" card.
  * The campuses' addresses also fill the footer's contact block.
  */
 
@@ -9,12 +9,10 @@ import { contact } from "@/data/site";
 export type SplitHeading = { lead: string; em: string };
 
 /**
- * Where the street map sits for a campus: a pan (px) and a zoom applied to the one map image, which covers
- * the 1280 × 476 frame (1280 × 543 at rest), about the frame's centre; at a zoom of s it can pan up to
- * 640 × (s − 1) sideways and 271 × s − 238 up or down. The drawing's own pin marks New Delhi;
- * `pin` places another (its tip, px on the frame before the pan) for a campus the drawing does not mark.
+ * Where the street map is centred for a campus, as a point on the map image (fractions of its width and
+ * height), and whether to set a pin there: the drawing's own pin marks New Delhi, so it needs none.
  */
-export type MapView = { x: number; y: number; scale: number; pin?: { left: number; top: number } };
+export type MapView = { focus: { x: number; y: number }; pin: boolean };
 
 export type Campus = {
   /** Tab id. */
@@ -49,7 +47,7 @@ export const campuses: Campus[] = [
       "https://www.google.com/maps/search/?api=1&query=Vajiram+and+Ravi+1-B%2F7+Pusa+Road+Old+Rajinder+Nagar+New+Delhi+110060",
     mapLabel: "Old Rajinder Nagar, New Delhi",
     // As drawn.
-    map: { x: 0, y: 0, scale: 1 },
+    map: { focus: { x: 0.79, y: 0.5 }, pin: false },
   },
   {
     id: "chennai",
@@ -64,14 +62,13 @@ export const campuses: Campus[] = [
     mapLabel: "Egmore, Chennai",
     // TODO: the design has one (placeholder) street map; replace this pan across it with a real Chennai map.
     // Panned so the drawing's own pin (New Delhi) leaves the frame; `pin` marks Chennai instead.
-    map: { x: 190, y: 0, scale: 1.3, pin: { left: 617, top: 280 } },
+    map: { focus: { x: 0.3, y: 0.56 }, pin: true },
   },
 ];
 
 export const locationsIntro = {
-  eyebrow: "VISIT US",
-  title: { lead: "Our ", em: "locations" } satisfies SplitHeading,
-  text: "Meet a counsellor, see the classrooms and pick up the brochure — in New Delhi and Chennai.",
+  title: { lead: "Find us in ", em: "New Delhi and Chennai." } satisfies SplitHeading,
+  text: "Meet with an academic counsellor, explore our classrooms and learn more about our programmes in person.",
   tabsLabel: "Campus",
   /** The card's heading. */
   label: "Location & Timing",

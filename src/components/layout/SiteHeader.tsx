@@ -221,7 +221,7 @@ export default function SiteHeader() {
                 onClick={() => setSheetOpen(true)}
                 icon={
                   <span ref={phoneRef} className="block">
-                    <Icon name="phone" className="size-3.5 text-ink" />
+                    <Icon name="phone" className="size-4 brightness-0 invert" />
                   </span>
                 }
               >

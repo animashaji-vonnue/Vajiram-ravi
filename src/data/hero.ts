@@ -9,20 +9,17 @@ export type HeadlineRun = { text: string; em?: boolean };
 
 export const hero = {
   /**
-   * "You have the ambition. Now build the preparation to match it.", in the three lines it is set in (each
-   * line rises in on its own), with "the preparation to match it" as the emphasis. Each line ends in a space
-   * so the heading reads as one sentence; the space is not drawn at the end of a line.
+   * "Your Civil Services ambition deserves a strong foundation. Build it with Vajiram & Ravi.", in the three
+   * lines it is set in (each rises in on its own), the last as the emphasis.
    */
   headline: [
-    [{ text: "You have the ambition. " }],
-    [{ text: "Now build " }, { text: "the preparation", em: true }, { text: " " }],
-    [{ text: "to match it", em: true }, { text: "." }],
-  ] satisfies HeadlineRun[][],
-  lead: "Prepare for the Civil Services Examination with experienced educators, structured programmes and focused academic guidance at every stage.",
+    [{ text: "Your Civil Services ambition " }],
+    [{ text: "deserves a strong foundation. " }],
+    [{ text: "Build it with Vajiram & Ravi.", em: true }],
+  ] as HeadlineRun[][],
+  lead: "Established in 1976, Vajiram & Ravi brings 50 years of experience in Civil Services preparation, offering expert guidance, structured programmes, comprehensive resources and flexible learning formats to support aspirants at every stage of their UPSC journey.",
   primary: { label: "Explore Programmes", href: "#programmes" },
   secondary: { label: "Get Expert Guidance", href: "#counselling" },
-  /** The line under the panel, before the results. */
-  statement: "Results that speak. Guidance that leads.",
 };
 
 /** A topper in the panel's slideshow. */
@@ -42,23 +39,19 @@ export const heroSlides: HeroSlide[] = [
 ];
 
 export type Achievement = {
-  /** The figure; its number rolls in (ui/CountUp). */
+  /** The figure in the laurel; its number rolls in (ui/CountUp). */
   figure: string;
-  /** What it counts. */
-  label: string;
-  /** The line under it. */
+  /** What it counts, beside the laurel. */
   text: string;
 };
 
 /** The results strip's accessible name. */
 export const achievementsLabel = "Vajiram & Ravi at a glance";
 
-/**
- * The strip under the panel, left to right, as the client asked (14 Nov 2026, after the `kevin` branch's
- * hero): the years since 1976, the top ten of CSE 2025, and 36 of its top 50.
- */
+/** The strip under the panel, left to right: the four points of Figma "stats bar" (2425:51305), as written there. */
 export const achievements: Achievement[] = [
-  { figure: "50+", label: "Years of legacy", text: "Established in 1976" },
-  { figure: "10 of 10", label: "Top ten ranks", text: "CSE 2025" },
-  { figure: "36", label: "Of the top 50", text: "Ranks in CSE 2025" },
+  { figure: "50+", text: "Years of experience since 1976" },
+  { figure: "59", text: "Questions reflected in Prelims" },
+  { figure: "10/10", text: "Top rankers from V&R courses" },
+  { figure: "36/50", text: "CSE 2025 rankers from V&R" },
 ];

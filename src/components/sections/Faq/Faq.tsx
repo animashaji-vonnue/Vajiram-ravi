@@ -1,4 +1,3 @@
-import { EyebrowCentred } from "@/components/ui/Ornament";
 import { faqEntries, faqIntro } from "@/data/faq-chat";
 import FaqList from "./FaqList";
 import FaqSeal from "./FaqSeal";
@@ -25,12 +24,13 @@ const schema = {
 export default function Faq() {
   return (
     <section id="faq" aria-labelledby="faq-h" className="relative bg-paper">
-      <div className="relative mx-auto w-canvas px-20 pt-[104px] pb-[112px]">
+      <div className="relative mx-auto w-canvas px-20 pt-[104px] pb-12">
 
         <div className="relative mx-auto flex w-[900px] flex-col items-center">
-          <EyebrowCentred labelClassName="text-orange uppercase">{faqIntro.eyebrow}</EyebrowCentred>
-          <h2 id="faq-h" data-split className="mt-5 w-[720px] text-center font-heading text-[56px]/[1.08] tracking-[-0.02em] text-ink">
-            {faqIntro.title}{" "}
+          <h2 id="faq-h" data-split className="w-[720px] text-center font-heading text-[56px]/[1.08] tracking-[-0.02em] text-ink">
+            {faqIntro.title}
+            {/* The answer takes the second line. */}
+            <br />
             <em data-reveal-em className="text-orange italic">
               {faqIntro.accent}
             </em>

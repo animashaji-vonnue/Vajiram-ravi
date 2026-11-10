@@ -1,6 +1,4 @@
 import IndianLink from "@/components/ui/IndianLink";
-import NoteCard from "@/components/ui/NoteCard";
-import { EyebrowLeft } from "@/components/ui/Ornament";
 import { educators, facultyIntro } from "@/data/faculty";
 import EducatorRing from "./EducatorRing";
 
@@ -14,14 +12,13 @@ import EducatorRing from "./EducatorRing";
  * does what the note invites.
  */
 export default function Faculty() {
-  const { eyebrow, heading, lead, note, cta } = facultyIntro;
+  const { heading, lead, cta } = facultyIntro;
   return (
     <section id="educators" aria-labelledby="educators-h" className="relative isolate overflow-clip bg-white py-24">
       <EducatorRing
         educators={educators}
         heading={
-          <div className="flex w-[720px] flex-col items-start gap-5">
-            <EyebrowLeft>{eyebrow}</EyebrowLeft>
+          <div className="mx-auto flex w-[820px] flex-col items-center gap-5 text-center">
             <h2 id="educators-h" data-split className="font-heading text-[56px]/[1.08] font-normal tracking-[-0.02em] text-ink">
               {heading.lead}{" "}
               <em data-reveal-em className="text-orange italic">
@@ -34,14 +31,11 @@ export default function Faculty() {
           </div>
         }
         note={
-          <NoteCard data-reveal="sub">
-            <p className="text-[16px]/[1.5] font-medium text-clay">{note}</p>
-            {cta.href !== null && (
-              <IndianLink tone="light" size="sm" href={cta.href} className="mt-2 self-start">
-                {cta.label}
-              </IndianLink>
-            )}
-          </NoteCard>
+          cta.href !== null ? (
+            <IndianLink tone="light" size="sm" href={cta.href}>
+              {cta.label}
+            </IndianLink>
+          ) : null
         }
       />
     </section>

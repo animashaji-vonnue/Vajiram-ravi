@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties } from "react";
-import { closingSkyline, haloRings } from "@/data/closing-cta";
+import { haloRings } from "@/data/closing-cta";
 import { canvasTop, getCanvasZoom } from "@/lib/canvas";
 import { prefersReducedMotion } from "@/lib/motion";
 import { whenVisible } from "@/lib/reveal";
@@ -15,7 +15,7 @@ const RISE_MS = 900;
 const RING_MS = 600;
 const RING_STAGGER_MS = 120;
 
-/** The halo square (1500px, centred on the canvas, its top 280px down) and the rings' shared centre in it. */
+/** The halo square (1500px, centred on the sun) and the rings' shared centre in it. */
 const HALO = 1500;
 const HALO_CENTRE = 750;
 
@@ -37,8 +37,8 @@ const RIPPLE_STAGGER_MS = 240;
 const RIPPLE_START_MS = 1400;
 
 /**
- * The sun behind the closing call to action: the white halo rings, the skyline silhouette (mahogany at
- * 16%) and the sun disc rising from the band's foot. Decoration only.
+ * The sun behind the closing call to action: the white halo rings, centred on the sun, and the sun disc
+ * rising from the band's foot. Decoration only.
  *
  * Motion spec, once, when the band is 20% in view (with the section reveal, whose heading and buttons are
  * delayed to follow): the disc rises 80px into place (900ms, --ease-out) while the rings scale from 0.9 to
@@ -99,7 +99,8 @@ export default function SunRise() {
 
   return (
     <div ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-0">
-      <div className="absolute top-[280px] left-[-30px] overflow-hidden" style={{ width: HALO, height: HALO }}>
+      {/* The rings and their wave share the sun's centre, so they read as its halo. */}
+      <div className="absolute overflow-hidden" style={{ left: SUN_X - HALO_CENTRE, top: SUN_Y - HALO_CENTRE, width: HALO, height: HALO }}>
         {haloRings.map((ring, i) => (
           <img
             key={ring.src}
@@ -136,7 +137,7 @@ export default function SunRise() {
         ))}
       </div>
 
-      {/* Behind the skyline: the rays and the glow, centred on the sun, rising with it. */}
+      {/* The rays and the glow, centred on the sun, rising with it. */}
       <div ref={backRef} className="absolute inset-0">
         <div
           className="absolute animate-spin motion-reduce:animate-none"
@@ -164,20 +165,6 @@ export default function SunRise() {
             background: "radial-gradient(circle closest-side, rgb(255 236 170 / 0.55), rgb(255 205 115 / 0.24) 62%, transparent)",
           }}
         />
-      </div>
-
-      <div className="absolute top-[464.05px] left-0 h-[258.75px] w-[1440px] opacity-16">
-        {closingSkyline.map((monument) => (
-          <img
-            key={monument.name}
-            src={monument.src}
-            alt=""
-            width={monument.width}
-            height={monument.height}
-            className="absolute max-w-none"
-            style={{ left: monument.x, top: monument.y, width: monument.width, height: monument.height }}
-          />
-        ))}
       </div>
 
       <img

@@ -37,7 +37,7 @@ export default function SiteFooter() {
   return (
     <footer className="relative bg-paper">
       <div className="relative mx-auto flex w-canvas flex-col items-center gap-12 px-20 pt-22 pb-8">
-        <div data-reveal-group className={cx("relative flex w-[1280px] items-start justify-between", TEXT)}>
+        <div data-stagger className={cx("relative flex w-[1280px] items-start justify-between", TEXT)}>
           <div className="flex w-[420px] shrink-0 flex-col items-start gap-5">
             <a href="#top" aria-label="Vajiram & Ravi, back to top" className="block">
               <Photo src="/images/logo.webp" alt="" sizes="176px" className="relative h-10 w-44 bg-paper" />

@@ -6,10 +6,9 @@ import { links, type Href } from "@/data/links";
  * free resources.
  */
 export const resourcesIntro = {
-  eyebrow: "LEARN. PRACTISE. STAY UPDATED.",
-  /** The H2, the paper's masthead; the emphasis is its italic second beat. */
-  heading: { before: "Make", emphasis: "every day", after: "of preparation count." },
-  lead: "Access useful study materials, current affairs analysis and practice resources to support your UPSC preparation.",
+  /** The H2, the paper's masthead. */
+  heading: { before: "Strengthen your UPSC preparation with", emphasis: "free learning resources.", after: "" },
+  lead: "Explore free study materials, current affairs analysis and practice resources to strengthen your understanding, revise key topics and stay updated.",
 };
 
 /** A headline on the front page: the article's title and its page on vajiramandravi.com. */

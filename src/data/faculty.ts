@@ -2,13 +2,11 @@ import { links, type Href } from "@/data/links";
 
 /** "Meet our educators" (IA 7; Figma "06 · Meet Our Educators", 2377:4795). Copy: the client's homepage content, §07. */
 export const facultyIntro = {
-  eyebrow: "LEARN FROM EXPERIENCED EDUCATORS",
   /** The H2; the emphasis is its italic second beat. */
   heading: { lead: "Learn from those who understand", emphasis: "the demands of the examination." },
   /** Under the heading. */
   lead: "Build your understanding with experienced educators and subject specialists who bring academic knowledge and examination-focused teaching into the classroom.",
   /** On the note card at the right of the heading. */
-  note: "Discover the educators behind your learning and explore their subject expertise.",
   /** Shown on the note card once the faculty page exists (links.faculty is null today). */
   cta: { label: "Meet Our Faculty", href: links.faculty },
 };

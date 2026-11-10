@@ -43,6 +43,8 @@ const STEP = 220;
 const COPIES = 2;
 /** The wheel's radius, in canvas px: its centre is this far below the centre card's centre. */
 const RADIUS = 2300;
+/** The arrows stand on the rim this far round from the centre, just inside the fading edge cards. */
+const ARROW_ARC = 610;
 /** Cards are fully opaque up to this far from the centre (screen px), and gone by FADE_END. */
 const FADE_START = 500;
 const FADE_END = 800;
@@ -387,16 +389,9 @@ export default function EducatorRing({ educators, heading, note }: EducatorRingP
 
   return (
     <div role="region" aria-roledescription="carousel" aria-label="Our educators" onKeyDown={onKeyDown} className="flex w-full flex-col">
-      <div className="mx-auto flex w-canvas items-stretch justify-between gap-10 px-20">
+      <div className="mx-auto flex w-canvas flex-col items-center gap-5 px-20">
         {heading}
-        {/* The note card at the top, the arrows at the foot, just over the ring they turn. */}
-        <div className="flex w-[520px] shrink-0 flex-col items-end justify-between gap-[18px]">
-          {note}
-          <div data-reveal="fade" className="flex items-center gap-2.5">
-            <CarouselArrow direction="prev" label="Previous educator" onClick={() => controls.current?.by(-1)} />
-            <CarouselArrow direction="next" label="Next educator" tone="solid" onClick={() => controls.current?.by(1)} />
-          </div>
-        </div>
+        {note}
       </div>
 
       <CursorLabel regionRef={stageRef} fallback="Drag" />
@@ -415,6 +410,27 @@ export default function EducatorRing({ educators, heading, note }: EducatorRingP
           hasDetails ? "h-[340px]" : "h-[420px]",
         )}
       >
+        {/* The arrows, on the rim at either edge of the ring, turned with the curve there. */}
+        {([-1, 1] as const).map((side) => {
+          const theta = (side * ARROW_ARC) / RADIUS;
+          return (
+            <div
+              key={side}
+              data-reveal="fade"
+              className="absolute top-[148px] left-1/2 z-[200] -ml-6"
+              style={{ transform: `translate(${(RADIUS * Math.sin(theta)).toFixed(1)}px, ${(RADIUS * (1 - Math.cos(theta))).toFixed(1)}px) rotate(${((theta * 180) / Math.PI).toFixed(2)}deg)` }}
+            >
+              <CarouselArrow
+                direction={side < 0 ? "prev" : "next"}
+                label={side < 0 ? "Previous educator" : "Next educator"}
+                size={48}
+                tone={side < 0 ? "light" : "solid"}
+                onClick={() => controls.current?.by(side)}
+                className="shadow-rest"
+              />
+            </div>
+          );
+        })}
         {Array.from({ length: slots }, (_, slot) => {
           const educator = educators[slot % count];
           const rest = pose(arcOf(slot, 0, loop), false);

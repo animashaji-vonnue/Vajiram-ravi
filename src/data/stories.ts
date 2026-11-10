@@ -2,10 +2,9 @@ import { links } from "@/data/links";
 
 /** "Student stories & experiences" (IA 8; Figma "09 · Student Stories", 2392:5350). Copy: the client's homepage content, §08. */
 export const storiesIntro = {
-  eyebrow: "EXPERIENCES THAT SPEAK",
   /** The H2; the emphasis is its italic second beat. */
-  heading: { lead: "Every preparation journey", emphasis: "has a story." },
-  lead: "Every aspirant's journey is different. Hear from students who have experienced Vajiram & Ravi's teaching, academic resources and guidance, and learn what their preparation journey looked like.",
+  heading: { lead: "Their Journeys,", emphasis: "Their Words" },
+  lead: "Every aspirant has a different experience. Hear directly from our students about their preparation journey and how Vajiram & Ravi supported them along the way.",
   /** Shown under the lead once the stories page exists (links.studentStories is null today). */
   cta: { label: "Watch Student Stories", href: links.studentStories },
 };

@@ -1,4 +1,3 @@
-import { EyebrowLeft } from "@/components/ui/Ornament";
 import { counsellingCopy, learningModes } from "@/data/admissions";
 import { programmeChoices } from "@/data/programmes";
 import { contact } from "@/data/site";
@@ -32,10 +31,7 @@ export default function Counselling() {
 
       <div className="relative mx-auto flex w-canvas items-center justify-between px-20 py-24">
         <div className="relative flex w-[500px] shrink-0 flex-col items-start">
-          <EyebrowLeft tone="dark" labelClassName="text-white">
-            {counsellingCopy.eyebrow}
-          </EyebrowLeft>
-          <h2 id="counselling-h" data-split className="mt-4 font-heading text-[56px]/[1.08] tracking-[-0.02em] text-white">
+          <h2 id="counselling-h" data-split className="font-heading text-[56px]/[1.08] tracking-[-0.02em] text-white">
             {title.before}{" "}
             <em data-reveal-em className="text-saffron italic">
               {title.em}

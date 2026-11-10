@@ -134,13 +134,7 @@ export default function Postcards({ stories, heading }: PostcardsProps) {
       onBlur={() => setPaused(false)}
       className="flex w-full flex-col gap-10"
     >
-      <div className="flex w-full items-end justify-between">
-        {heading}
-        <div data-reveal="fade" className="flex items-center gap-2.5">
-          <CarouselArrow direction="prev" label="Previous story" onClick={() => show(active - 1)} />
-          <CarouselArrow direction="next" label="Next story" tone="solid" onClick={() => show(active + 1)} />
-        </div>
-      </div>
+      <div className="flex w-full justify-center">{heading}</div>
 
       {/* The ring: every postcard is centred on the stage and moved to its place in 3D. */}
       <div
@@ -150,6 +144,23 @@ export default function Postcards({ stories, heading }: PostcardsProps) {
         onPointerCancel={() => (swipe.current = null)}
         className="relative h-[440px] w-full touch-pan-y [perspective:1400px]"
       >
+        {/* The arrows at either edge of the ring. */}
+        {([-1, 1] as const).map((side) => (
+          <div
+            key={side}
+            data-reveal="fade"
+            className={cx("absolute top-1/2 z-30 -translate-y-1/2", side < 0 ? "-left-6" : "-right-6")}
+          >
+            <CarouselArrow
+              direction={side < 0 ? "prev" : "next"}
+              label={side < 0 ? "Previous story" : "Next story"}
+              size={52}
+              tone={side < 0 ? "light" : "solid"}
+              onClick={() => show(active + side)}
+              className="shadow-rest"
+            />
+          </div>
+        ))}
         {stories.map((story, i) => {
           const offset = offsetOf(i);
           const front = offset === 0;
@@ -188,7 +199,7 @@ type PostcardProps = {
 };
 
 /**
- * One postcard (Figma "postcard · …", 590 × 370): aged paper, "Post card" printed at the top left, the
+ * One postcard (Figma "postcard · …", 590 × 370): aged paper, the
  * student's words in Mukta italic with their signature on the left of the dividing rule; on the right
  * the postmark with the exam and its year, the student's portrait as the stamp, then the "address": the
  * name, the rank and year, the programme, and the address lines.
@@ -212,9 +223,6 @@ function Postcard({ story, front }: PostcardProps) {
         decoding="async"
         className="pointer-events-none absolute inset-0 size-full max-w-none object-cover opacity-35"
       />
-      <p aria-hidden="true" className="absolute top-[18px] left-6 font-heading text-[18px]/[normal] font-medium tracking-[0.18em] text-[#5a160f] uppercase">
-        Post card
-      </p>
       <span aria-hidden="true" className="absolute top-14 left-[342px] h-[290px] w-px bg-[#5a160f]/35" />
 
       <div className="absolute top-16 left-6 flex w-[294px] flex-col items-start gap-[18px]">

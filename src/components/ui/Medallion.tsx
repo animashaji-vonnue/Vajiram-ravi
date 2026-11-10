@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { cx } from "@/lib/cx";
 
 /*
- * The arrow medallion: the page-wide signal for "this is clickable", a plain disc with the arrow in it.
+ * The arrow medallion: the page-wide signal for "this is clickable", now the arrow alone in the colour of
+ * its label (the client took out the circle behind it). The tones are kept for the callers.
  * While any `group/medal` ancestor is hovered the arrow nudges 2px forward. Not with reduced motion. Decoration only: hidden from assistive technology.
  */
 
@@ -16,6 +17,8 @@ const ARROW = "M9.23077 15H19.6154M15.5769 19.0385L19.6154 15L15.5769 10.9615";
 /** The colourways: disc and arrow. */
 const TONES = {
   cream: { disc: "#FFF8EC", mark: "#CC5500" },
+  /** The arrow alone, cream, without a disc. */
+  bare: { disc: "transparent", mark: "#FFF8EC" },
   saffron: { disc: "#F4C430", mark: "#2A1A12" },
   ink: { disc: "#2A1A12", mark: "#F4C430" },
   burnt: { disc: "#CC5500", mark: "#FFF8EC" },
@@ -35,15 +38,14 @@ type MedallionProps = {
 };
 
 export default function Medallion({ tone, size = 30, pressNudge = false, children, className }: MedallionProps) {
-  const colours = TONES[tone];
+  void TONES[tone];
   return (
     <span aria-hidden="true" className={cx("relative inline-block shrink-0", className)} style={{ width: size, height: size }}>
       <svg viewBox="0 0 30 30" width={size} height={size} className="absolute inset-0 overflow-visible" fill="none">
-        <circle cx={15} cy={15} r={15} fill={colours.disc} />
         {!children && (
           <path
             d={ARROW}
-            stroke={colours.mark}
+            stroke="currentColor"
             strokeWidth={1.6}
             strokeLinecap="round"
             strokeLinejoin="round"

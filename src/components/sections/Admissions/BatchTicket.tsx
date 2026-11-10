@@ -86,22 +86,26 @@ export default function BatchTicket({ batch, tone }: BatchTicketProps) {
             className="pointer-events-none absolute top-0 left-[104px] max-w-none"
           />
         )}
-        <p aria-hidden="true" className={cx("absolute top-[22px] left-5 text-[13px]/[16px] font-bold tracking-[1.82px] uppercase", look.month)}>
-          {month}
-        </p>
-        <p aria-hidden="true" className={cx("absolute top-9 left-5 font-heading text-[64px]/[64px]", look.day)}>
-          {String(day)
-            .split("")
-            .map((digit, i) => (
-              <span key={i} data-flip-digit className="inline-block">
-                {digit}
-              </span>
-            ))}
-        </p>
+        {/* The date (Figma 2396:8066): the day large, and beside it the month over the year. */}
+        <div aria-hidden="true" className="absolute top-[15px] left-5 flex items-center gap-2.5">
+          <p className={cx("h-[46px] font-heading text-[64px]/[46px]", look.day)}>
+            {String(day)
+              .split("")
+              .map((digit, i) => (
+                <span key={i} data-flip-digit className="inline-block">
+                  {digit}
+                </span>
+              ))}
+          </p>
+          <div className="flex flex-col gap-[5px] font-bold">
+            <p className={cx("text-[20px]/[16px] tracking-[2.8px]", look.day)}>{month.charAt(0).toUpperCase() + month.slice(1).toLowerCase()}</p>
+            <p className={cx("text-[13px]/[16px] tracking-[1.82px]", look.day)}>{year}</p>
+          </div>
+        </div>
         <p className="sr-only">
           Starts <time dateTime={batch.startDate}>{`${day} ${month} ${year}`}</time>
         </p>
-        <p className={cx("absolute top-6 right-[31px] text-[11px]/[14px] font-bold tracking-[0.66px]", look.target)}>
+        <p className={cx("absolute top-[81px] left-5 text-[11px]/[14px] font-bold tracking-[0.66px]", look.target)}>
           Target: UPSC CSE {batch.targetYear}
         </p>
       </div>

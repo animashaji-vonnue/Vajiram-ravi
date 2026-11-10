@@ -1,5 +1,4 @@
 import Cta from "@/components/ui/Cta";
-import { EyebrowCentred } from "@/components/ui/Ornament";
 import { closingCta } from "@/data/closing-cta";
 import SunRise from "./SunRise";
 
@@ -17,19 +16,16 @@ export default function ClosingCta() {
       <div className="relative mx-auto h-full w-canvas">
         <SunRise />
 
-        <div className="relative mx-auto flex w-[1040px] flex-col items-center gap-[22px] pt-24">
-          {/* The design's rules are white here; the ornament's orange rules are turned white to match. */}
-          <EyebrowCentred labelClassName="text-white" className="[&_img]:brightness-0 [&_img]:invert">
-            {closingCta.proof}
-          </EyebrowCentred>
+        <div className="relative mx-auto flex w-[1240px] flex-col items-center gap-[22px] pt-24">
           <h2
             id="closing-h"
             data-split
-            className="w-[1040px] text-center font-heading text-[68px]/[1.06] tracking-[-0.02em] text-white"
+            className="w-[1240px] text-center font-heading text-[68px]/[1.06] tracking-[-0.02em] whitespace-nowrap text-white"
           >
             {closingCta.title.lead}
-            {/* The emphasis takes the second line. */}
+            {/* "with" and the emphasis take the second line. */}
             <br />
+            {closingCta.bridge}
             <em data-reveal-em className="text-[#fff1c2]">
               {closingCta.title.em}
             </em>

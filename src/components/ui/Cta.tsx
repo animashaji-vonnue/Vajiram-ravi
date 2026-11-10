@@ -10,7 +10,7 @@ import { cx } from "@/lib/cx";
  *   ink             ink with cream text and a saffron medallion (on orange bands)
  *   primary-dark    saffron with ink text and an ink medallion (on dark bands)
  *   secondary       white with an ink border and text and a burnt medallion
- *   secondary-dark  a cream outline with cream text and a saffron medallion (on dark bands)
+ *   secondary-dark  a cream outline with cream text and the arrow alone, no disc (on dark bands)
  * Motion spec: on hover the fill darkens 8% (secondary: the border turns burnt) while the medallion's
  * arrow nudges forward (ui/Medallion); pressing scales it to 0.98 for 80ms; focus shows the saffron
  * ring. A button given a set width keeps its label at the left and the medallion at the right end.
@@ -24,7 +24,7 @@ const VARIANT = {
   ink: { root: "bg-ink text-cream hover:bg-[#271811]", medallion: "saffron" },
   "primary-dark": { root: "bg-saffron text-ink hover:bg-[#e0b42c]", medallion: "ink" },
   secondary: { root: "border border-ink/22 bg-white text-ink hover:border-burnt", medallion: "burnt" },
-  "secondary-dark": { root: "border border-cream/55 text-cream hover:border-burnt", medallion: "saffron" },
+  "secondary-dark": { root: "border border-cream/55 text-cream hover:border-saffron", medallion: "bare" },
 } as const satisfies Record<string, { root: string; medallion: MedallionTone }>;
 
 export type CtaVariant = keyof typeof VARIANT;

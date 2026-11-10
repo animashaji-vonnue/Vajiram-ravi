@@ -11,8 +11,7 @@ import { links, type Href } from "@/data/links";
 export type HeadingParts = { before: string; em: string; after: string };
 
 export const programmesIntro = {
-  eyebrow: "EXPLORE UPSC PROGRAMMES",
-  title: { before: "One goal.", em: "Different paths to get there.", after: "" } satisfies HeadingParts,
+  title: { before: "Find the right", em: "UPSC programme", after: "for your preparation." } satisfies HeadingParts,
   lead: "Whether you're building your foundation, strengthening your preparation or getting ready for the next stage, find a programme that fits your needs.",
 };
 
@@ -25,18 +24,17 @@ export type ProgrammeLink = { label: string; href: Href };
 export const featuredProgramme = {
   tag: "Featured programme",
   name: "General Studies Prelims & Mains Programme",
-  line: "Prepare for the core subjects of the examination.",
+  line: "Build a strong foundation in General Studies for both stages of the examination.",
   benefits: [
-    "The General Studies syllabus for both Prelims and Mains, in one programme",
-    "Classes with experienced faculty, in the classroom or LIVE-Online",
-    "Study material and current affairs to learn and revise from",
-    "Regular tests and answer writing, with feedback",
+    "Integrated preparation covering the General Studies syllabus for both Prelims and Mains in one programme.",
+    "Experienced faculty delivering classes in the classroom or through LIVE-Online sessions.",
+    "18 Yellow Books covering the General Studies syllabus, alongside the monthly current affairs magazine, The Recitals.",
+    "Regular assessments through Prelims tests and Mains tests, with evaluation and feedback.",
   ],
   details: [
     { term: "Who it's for", value: "Aspirants preparing General Studies for Prelims and Mains" },
-    { term: "Learning options", value: "Classroom, Delhi · LIVE-Online" },
-    // TODO: placeholder (kevin's copy): the programme's duration, from the academic team.
-    { term: "Duration", value: "[Duration to be confirmed]" },
+    { term: "Learning options", value: "Classroom, New Delhi & Chennai · LIVE-Online" },
+    { term: "Duration", value: "11 months" },
   ],
   primary: { label: "Explore the programme", href: links.gsCourse } satisfies ProgrammeLink,
   secondary: { label: "See upcoming batches", href: "#batches" } satisfies ProgrammeLink,
@@ -53,18 +51,26 @@ export const featuredProgramme = {
  * A programme group on the course shelf: its name, how many courses it holds, the courses its line names
  * (one page each in the open book), the line, its page, and its cover's colour (from the site's palette).
  */
+/** The geometric motifs of the covers (Programmes/CoverArt). */
+export type CoverArtKind = "bars" | "circles" | "grid" | "arches" | "arcs" | "lines" | "target" | "quarters";
+
 export type Programme = {
   name: string;
   count: number;
   courses: string[];
   line: string;
   href: Href;
-  cover: { colour: string; type: "light" | "dark" };
+  /**
+   * Its cover, as the `kevin` branch's wall draws it (sampled from the client's screenshot): the paper, the
+   * spine's colour, the ink of its title and figure, its geometric art (accent and soft tones, CoverArt),
+   * and the vivid colour the cover floods with on hover.
+   */
+  cover: { paper: string; spine: string; ink: string; accent: string; soft: string; art: CoverArtKind; vivid: string };
 };
 
-/** The shelf's heading, as kevin's wall has it. */
+/** The shelf's heading (the emphasis in orange) and its lead, as kevin's wall has it. */
 export const shelfIntro = {
-  title: "More UPSC programmes",
+  title: { lead: "More ", em: "UPSC programmes" },
   intro: "Every programme we run, on one wall. Pick a course to take a closer look.",
 };
 
@@ -79,7 +85,7 @@ export const programmes: Programme[] = [
     courses: ["1-year GS Foundation Course", "2-year GS Foundation Course"],
     line: "1-year and 2-year General Studies programmes that take you from the basics to Prelims and Mains.",
     href: links.gsCourse,
-    cover: { colour: "#e57512", type: "light" },
+    cover: { paper: "#e0cdbf", spine: "#816258", ink: "#4a352d", accent: "#6f4d42", soft: "#b19a8b", art: "bars", vivid: "#a4502c" },
   },
   {
     name: "Optional Subject Programme",
@@ -87,7 +93,7 @@ export const programmes: Programme[] = [
     courses: ["Anthropology", "Sociology"],
     line: "Coaching in 13 optional subjects, from Anthropology to Sociology, in Classroom and LIVE-Online.",
     href: links.optionalSubject,
-    cover: { colour: "#2b1206", type: "light" },
+    cover: { paper: "#bbd6c2", spine: "#2c7563", ink: "#1f4a3e", accent: "#12624d", soft: "#7eb397", art: "circles", vivid: "#0d9b6a" },
   },
   {
     name: "CSAT Course",
@@ -95,7 +101,7 @@ export const programmes: Programme[] = [
     courses: ["CSAT Course"],
     line: "Prepare for Prelims Paper II and clear the 33% qualifying mark with confidence.",
     href: links.csatCourses,
-    cover: { colour: "#f4c430", type: "dark" },
+    cover: { paper: "#c1c7d6", spine: "#3550a8", ink: "#233a7a", accent: "#26448f", soft: "#8698c6", art: "grid", vivid: "#1f4fe6" },
   },
   {
     name: "Interview Guidance Programme",
@@ -103,7 +109,7 @@ export const programmes: Programme[] = [
     courses: ["UPSC CSE Interview Guidance", "IFoS Interview Guidance"],
     line: "Guidance for the UPSC CSE and IFoS interviews once you have cleared Mains.",
     href: links.interviewGuidance,
-    cover: { colour: "#5a160f", type: "light" },
+    cover: { paper: "#f0c2c6", spine: "#c4466e", ink: "#7d2a45", accent: "#a42d59", soft: "#dd889b", art: "arches", vivid: "#f0197a" },
   },
   {
     name: "Mentorship Programme",
@@ -111,7 +117,7 @@ export const programmes: Programme[] = [
     courses: ["StepUp Mentorship"],
     line: "StepUp mentorship pairs regular tests with a personal mentor, from Prelims to Mains.",
     href: links.mentorshipPrograms,
-    cover: { colour: "#cc5500", type: "light" },
+    cover: { paper: "#fecfac", spine: "#d75f27", ink: "#8a3d18", accent: "#be4415", soft: "#f2a17a", art: "arcs", vivid: "#f2610d" },
   },
   {
     name: "Mains Test Series",
@@ -119,7 +125,7 @@ export const programmes: Programme[] = [
     courses: ["Sure Shot Test Series", "Mains CAMP", "Essay Tests"],
     line: "Sure Shot test series, Mains CAMP and Essay tests to sharpen your answer writing.",
     href: links.mainsTestSeriesAll,
-    cover: { colour: "#fff8ec", type: "dark" },
+    cover: { paper: "#d8c6e4", spine: "#5b2a86", ink: "#3e1f5e", accent: "#4f2677", soft: "#a88ecb", art: "lines", vivid: "#6b22d6" },
   },
   {
     name: "Prelims Test Series",
@@ -127,7 +133,7 @@ export const programmes: Programme[] = [
     courses: ["PowerUp Test Series", "Prelims CAMP", "Current Affairs Tests"],
     line: "PowerUp test series, Prelims CAMP and current affairs tests to get Prelims-ready.",
     href: links.prelimsTestSeries,
-    cover: { colour: "#ffd98a", type: "dark" },
+    cover: { paper: "#f6c3b8", spine: "#b2343a", ink: "#7a1f24", accent: "#911f25", soft: "#d97879", art: "target", vivid: "#e8231e" },
   },
   {
     name: "Optional Test Series",
@@ -135,13 +141,18 @@ export const programmes: Programme[] = [
     courses: ["Year-long Optional Test Series", "Optional Mains Test Series"],
     line: "Year-long and Mains test series to practise answer writing in your optional subject.",
     href: links.optionalTestSeries,
-    cover: { colour: "#3b2416", type: "light" },
+    cover: { paper: "#c7bcb0", spine: "#2b2322", ink: "#2b2322", accent: "#241e1d", soft: "#92877c", art: "quarters", vivid: "#2f2a27" },
   },
 ];
 
-/** The closing line under the shelf, and its button to the counselling form (the client's copy). */
+/**
+ * The client's closing line ("Not sure which programme is right for you? Speak with our academic
+ * counsellors."), set as a card on the wall under the shelves: the question as its heading, the rest under
+ * it, and its button to the counselling form.
+ */
 export const programmesClosing = {
-  text: "Not sure which programme is right for you? Speak with our academic counsellors.",
+  question: "Not sure which programme is right for you?",
+  text: "Speak with our academic counsellors.",
   cta: { label: "Get Expert Guidance", href: "#counselling" } satisfies ProgrammeLink,
 };
 

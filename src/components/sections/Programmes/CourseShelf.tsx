@@ -6,20 +6,23 @@ import IndianLink from "@/components/ui/IndianLink";
 import type { Programme } from "@/data/programmes";
 import { cx } from "@/lib/cx";
 import { prefersReducedMotion } from "@/lib/motion";
+import CoverArt from "./CoverArt";
 import { whenVisible } from "@/lib/reveal";
 
 /**
- * The shelf's measurements, in canvas px: covers of COVER square, four to a shelf across the 1280 column
- * (85px apart), on two shelves; a plank under each; and the open book, its pages PAGE square with the spine
- * at the middle of the stage, so the spread is centred.
+ * The wall's measurements in canvas px, as the `kevin` branch's wall (7df11c6): books of COVER square, four
+ * to a shelf with GAP between them, on two shelves overhanging them by SHELF_OVERHANG, on a 1180 × 620
+ * stage; and the open book, its pages PAGE square with the spine at the middle of the stage.
  */
-const STAGE = { width: 1280, height: 620 };
-const COVER = 256;
+const STAGE = { width: 1180, height: 620 };
+const COVER = 190;
 const PER_SHELF = 4;
-const GAP = (STAGE.width - PER_SHELF * COVER) / (PER_SHELF - 1);
-const SHELF_TOPS = [6, 344];
-const PLANK = 12;
-const PAGE = 400;
+const GAP = 40;
+const SHELF_OVERHANG = 56;
+const SHELF_TOPS = [70, 340];
+const ROW = PER_SHELF * COVER + (PER_SHELF - 1) * GAP;
+const ROW_LEFT = (STAGE.width - ROW) / 2;
+const PAGE = 380;
 const SPINE = { x: STAGE.width / 2, y: STAGE.height / 2 };
 
 /** A book coming forward (and going back), and its cover swinging open (and shut). */
@@ -46,7 +49,7 @@ const flip = (ms: number) => `transform ${ms}ms cubic-bezier(0.65, 0, 0.35, 1), 
 
 /** Where a cover stands on its shelf: its top left corner. */
 function spot(i: number) {
-  return { x: (i % PER_SHELF) * (COVER + GAP), y: SHELF_TOPS[Math.floor(i / PER_SHELF)] };
+  return { x: ROW_LEFT + (i % PER_SHELF) * (COVER + GAP), y: SHELF_TOPS[Math.floor(i / PER_SHELF)] };
 }
 
 /** The pages of a book: the programme, one page for each course its line names, then the way to them all. */
@@ -167,7 +170,7 @@ export default function CourseShelf({ programmes }: { programmes: Programme[] })
       top: y,
       width: COVER,
       height: COVER,
-      transform: hovered === i && !away ? "translateY(-12px)" : "none",
+      transform: hovered === i && !away ? "translateY(-14px) scale(1.05)" : "none",
       filter: away ? "blur(14px)" : "none",
       opacity: away ? 0.25 : 1,
     };
@@ -188,10 +191,11 @@ export default function CourseShelf({ programmes }: { programmes: Programme[] })
           data-plank
           aria-hidden="true"
           className={cx(
-            "pointer-events-none absolute -inset-x-6 rounded-[2px] bg-linear-to-b from-[#fffaf0] from-20% to-[#ecd9bb] shadow-[0_16px_22px_-12px_rgb(77_31_8/0.4)] [transition:filter_700ms_var(--ease-out),opacity_700ms_var(--ease-out)]",
+            // A white ledge with its front edge, casting a soft shadow on the wall (kevin's shelf).
+            "pointer-events-none absolute h-4 rounded-[2px] border-b-[3px] border-[#e3d3bd] bg-linear-to-b from-white to-[#f7efe3] shadow-[0_26px_34px_-14px_rgb(77_31_8/0.45)] [transition:filter_700ms_var(--ease-out),opacity_700ms_var(--ease-out)]",
             away && "opacity-25 blur-[14px]",
           )}
-          style={{ top: top + COVER, height: PLANK }}
+          style={{ top: top + COVER, left: ROW_LEFT - SHELF_OVERHANG, width: ROW + 2 * SHELF_OVERHANG }}
         />
       ))}
 
@@ -253,7 +257,7 @@ function Book({ programme, out, open, away, style, onPick, onClose, onHover }: B
   return (
     <div
       inert={away}
-      className="absolute shadow-[0_14px_24px_-14px_rgb(77_31_8/0.55)] [transition:left_650ms_var(--ease-out),top_650ms_var(--ease-out),width_650ms_var(--ease-out),height_650ms_var(--ease-out),transform_var(--dur-base)_var(--ease-out),filter_700ms_var(--ease-out),opacity_700ms_var(--ease-out)]"
+      className="group/book absolute shadow-[0_14px_24px_-14px_rgb(77_31_8/0.55)] [transition:left_650ms_var(--ease-out),top_650ms_var(--ease-out),width_650ms_var(--ease-out),height_650ms_var(--ease-out),transform_var(--dur-base)_var(--ease-out),filter_700ms_var(--ease-out),opacity_700ms_var(--ease-out)]"
       style={style}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
@@ -344,7 +348,7 @@ function Book({ programme, out, open, away, style, onPick, onClose, onHover }: B
           <span
             aria-hidden="true"
             className="absolute inset-0 flex flex-col justify-between p-8 text-left text-cream [backface-visibility:hidden] [transform:rotateY(180deg)]"
-            style={{ backgroundColor: programme.cover.colour, backgroundImage: "linear-gradient(270deg, rgb(0 0 0/0.28), transparent 14%, rgb(0 0 0/0.08))" }}
+            style={{ backgroundColor: programme.cover.spine, backgroundImage: "linear-gradient(270deg, rgb(0 0 0/0.28), transparent 14%, rgb(0 0 0/0.08))" }}
           >
             <span className="font-mono text-[11px]/[14px] tracking-[0.18em] uppercase opacity-85">Vajiram &amp; Ravi</span>
             <span className="font-heading text-[22px]/[1.15] opacity-90">Since 1976</span>
@@ -390,24 +394,69 @@ function Book({ programme, out, open, away, style, onPick, onClose, onHover }: B
 }
 
 /**
- * The front of a cover: the programme's colour with a sheen and a fine light edge down the spine,
- * "Vajiram & Ravi" at the top, the name and how many courses it holds at the foot. A little larger on the
- * book brought forward.
+ * The front of a cover, as the `kevin` branch's wall draws it: pastel paper with a fine grain and a coloured
+ * spine down the left, the title at the top, the course count large at the foot with "COURSES" under it,
+ * the programme's geometric art (CoverArt) running off the right and bottom edges, and a round white button
+ * with an arrow at the bottom right.
+ *
+ * Hover (kevin's): the cover floods with its vivid colour, its art turns to light tints of it, the type
+ * turns white, a band of light sweeps across, and the arrow button grows into an "Open book" pill. A
+ * little larger on the book brought forward.
  */
 function CoverFront({ programme, large }: { programme: Programme; large: boolean }) {
-  const light = programme.cover.type === "light";
+  const { paper, spine, ink, accent, soft, art, vivid } = programme.cover;
+  const FADE = "[transition:opacity_450ms_var(--ease-out)]";
   return (
-    <span
-      className={cx("relative flex size-full flex-col justify-between overflow-clip rounded-[3px] text-left", large ? "p-8" : "p-4", light ? "text-cream" : "text-ink")}
-      style={{ backgroundColor: programme.cover.colour, backgroundImage: "linear-gradient(135deg, rgb(255 255 255/0.2), transparent 55%, rgb(0 0 0/0.14))" }}
-    >
-      <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-white/25" />
-      <span className={cx("flex items-start justify-between font-mono tracking-[0.16em] uppercase", large ? "text-[12px]/[16px]" : "text-[9.5px]/[12px]", light ? "text-cream/80" : "text-[#a8431a]")}>
-        <span>Vajiram &amp; Ravi</span>
+    <span className="relative block size-full overflow-clip rounded-[3px] text-left" style={{ backgroundColor: paper, ["--ink" as string]: ink }}>
+      {/* At rest: the pastel paper and its art. */}
+      <span aria-hidden="true" className={cx("absolute inset-0", FADE, "group-hover/book:opacity-0")}>
+        <CoverArt kind={art} accent={accent} soft={soft} />
       </span>
-      <span>
-        <span className={cx("block font-heading", large ? "text-[36px]/[1.08]" : "text-[21px]/[1.12]")}>{programme.name}</span>
-        <span className={cx("mt-1.5 block", large ? "text-[14px]/[19px]" : "text-[11px]/[14px]", light ? "text-cream/75" : "text-ink/65")}>{programme.count} courses</span>
+      {/* On hover: the vivid flood, its art in light tints. */}
+      <span aria-hidden="true" className={cx("absolute inset-0 opacity-0 group-hover/book:opacity-100", FADE)} style={{ backgroundColor: vivid }}>
+        <span className="absolute inset-0 bg-[linear-gradient(135deg,rgb(255_255_255/0.22),transparent_45%,rgb(0_0_0/0.18))]" />
+        <CoverArt kind={art} accent="#ffffff" soft="rgb(255 255 255 / 0.32)" />
+      </span>
+      {/* The shine: a band of light that sweeps across the cover on hover. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 -left-full z-10 w-[70%] -skew-x-12 bg-[linear-gradient(90deg,transparent,rgb(255_255_255/0.45),transparent)] opacity-0 group-hover/book:opacity-100 group-hover/book:[transition:translate_900ms_var(--ease-out),opacity_200ms] group-hover/book:translate-x-[300%] motion-reduce:hidden"
+      />
+      {/* The light from the top left and the grain. */}
+      <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgb(255_255_255/0.32),transparent_50%,rgb(0_0_0/0.04))]" />
+      <span aria-hidden="true" className="cover-grain pointer-events-none absolute inset-0 opacity-[0.1]!" />
+      <span aria-hidden="true" className={cx("absolute inset-y-0 left-0 brightness-110 group-hover/book:brightness-75", large ? "w-2" : "w-[5px]")} style={{ backgroundColor: spine }} />
+      <span
+        className={cx(
+          "absolute block font-heading text-(--ink) [transition:color_400ms_var(--ease-out)] group-hover/book:text-white",
+          large ? "top-8 right-8 left-10 text-[32px]/[1.1]" : "top-4 right-4 left-6 text-[17px]/[1.15]",
+        )}
+      >
+        {programme.name}
+      </span>
+      <span className={cx("absolute flex flex-col text-(--ink) [transition:color_400ms_var(--ease-out)] group-hover/book:text-white", large ? "bottom-8 left-10" : "bottom-4 left-6")}>
+        <span className={cx("font-heading font-light tracking-[-0.02em]", large ? "text-[64px]/[1]" : "text-[38px]/[1]")}>{String(programme.count).padStart(2, "0")}</span>
+        <span className={cx("mt-1 font-mono tracking-[0.18em] uppercase opacity-75", large ? "text-[11px]" : "text-[8px]")}>Courses</span>
+      </span>
+      {/* The arrow button; on hover it grows into the "Open book" pill. */}
+      <span
+        aria-hidden="true"
+        className={cx(
+          "absolute flex items-center justify-center rounded-full bg-white/90 text-ink shadow-[0_4px_12px_rgb(0_0_0/0.16)] [transition:padding_450ms_var(--ease-out),background-color_300ms_var(--ease-out)] group-hover/book:bg-white",
+          large ? "right-8 bottom-8 h-11 min-w-11 group-hover/book:px-4" : "right-3.5 bottom-3.5 h-[30px] min-w-[30px] group-hover/book:px-3",
+        )}
+      >
+        <span
+          className={cx(
+            "max-w-0 overflow-clip font-semibold whitespace-nowrap opacity-0 [transition:max-width_450ms_var(--ease-out),opacity_300ms_var(--ease-out),margin_450ms_var(--ease-out)] group-hover/book:mr-1.5 group-hover/book:max-w-24 group-hover/book:opacity-100",
+            large ? "text-[14px]" : "text-[11.5px]",
+          )}
+        >
+          Open book
+        </span>
+        <svg viewBox="0 0 16 16" width={large ? 16 : 12} height={large ? 16 : 12} fill="none" className="shrink-0">
+          <path d="M5 11 11 5M6 5h5v5" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </span>
     </span>
   );

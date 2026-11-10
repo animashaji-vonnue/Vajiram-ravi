@@ -26,7 +26,7 @@ const clamp = (value: number, min: number, max: number) => Math.min(max, Math.ma
 /**
  * The journey band as one pinned screen. The section is a screen tall plus a run of STAGE_SCROLL for each
  * stage; inside it the screen (position: sticky, a full viewport high) holds the heading, the stage rail (StageRail) and the chosen stage's panel, and stays put while the
- * page scrolls through the run: Prelims, then Mains, then Personality Test. When the run is over the screen
+ * page scrolls through the run: Prelims, then Mains, then Interview. When the run is over the screen
  * scrolls away with the section and the page goes on. On a screen too short for it all, the content is
  * scaled down to fit, so nothing is ever cut off while it is pinned.
  *
@@ -178,7 +178,7 @@ export default function JourneyStages({ heading }: { heading: ReactNode }) {
               {/* The card: white paper with the hairline rule and a gold inner border 10px in. */}
               <div className="relative rounded-2xl border border-[#eadbc4] bg-white px-10 pt-9 pb-7 shadow-rest">
                 <span aria-hidden="true" className="pointer-events-none absolute inset-2.5 rounded-[10px] border border-[#c9973a]/35" />
-                <p className="relative font-mono text-[12px]/[16px] tracking-[0.08em] text-burnt uppercase">{journeyIntro.supportLabel}</p>
+                <h3 className="relative font-heading text-[26px]/[1.2] font-medium tracking-[-0.01em] text-ink">{journeyIntro.supportLabel}</h3>
                 <div className="relative mt-4 grid">
                   {journeyStages.map((stage) => {
                     const shown = stage.id === active;
@@ -190,7 +190,7 @@ export default function JourneyStages({ heading }: { heading: ReactNode }) {
                             const line = rise(shown, 3 + i);
                             return (
                               <li key={item.text} style={line.style} className={cx("flex items-start gap-3.5 py-3.5", line.className)}>
-                                <span aria-hidden="true" className="mt-[10px] size-1.5 shrink-0 rounded-full bg-burnt" />
+                                <img src="/images/ornaments/butta.svg" alt="" aria-hidden="true" width={14} height={14} className="mt-[5px] size-3.5 shrink-0" />
                                 <p className="text-[16px]/[1.55] text-ink">
                                   {item.label && <strong className="font-semibold">{item.label} </strong>}
                                   <SupportText item={item} />

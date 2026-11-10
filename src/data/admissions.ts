@@ -84,9 +84,8 @@ export type BatchFilter = (typeof batchFilters)[number];
 
 /** Upcoming Batches & Admissions (IA 5; Figma "04 · Upcoming Batches", 2377:4662), in the client's copy of 10 Nov 2026. */
 export const batchesCopy = {
-  eyebrow: "UPCOMING BATCHES",
-  title: { before: "Your", em: "next step", after: "starts here." } satisfies HeadingParts,
-  lead: "Find an upcoming batch and get the details you need to plan your preparation.",
+  title: { before: "Explore", em: "upcoming batches", after: "for your UPSC preparation." } satisfies HeadingParts,
+  lead: "Check upcoming start dates, learning options and programme details to plan your preparation with confidence.",
   viewAll: "View All Upcoming Batches",
   empty: "No batches for this selection",
   emptyLink: "get notified",
@@ -115,11 +114,9 @@ export const learningModes: BatchMode[] = ["Classroom", "LIVE-Online"];
 
 /** Counselling & Academic Guidance (IA 6; Figma "05 · Personalised Counselling", 2377:4839) and its postcard form. */
 export const counsellingCopy = {
-  eyebrow: "NEED HELP GETTING STARTED?",
-  title: { before: "Find", em: "clarity", after: "on your next step." } satisfies HeadingParts,
+  title: { before: "Let's talk about", em: "your UPSC preparation.", after: "" } satisfies HeadingParts,
   text: [
-    "Choosing a programme is an important part of your preparation. Whether you’re starting from the beginning, planning your next attempt or looking for focused support, our academic counsellors can help you understand the available options.",
-    "Speak with our team to find a programme that aligns with your preparation needs.",
+    "Have questions about programmes, upcoming batches or learning options? Our academic counsellors can help you understand the available choices and guide you towards the right preparation path.",
   ],
   cta: "Get Expert Guidance",
   postcardTitle: "Book your free session today!",

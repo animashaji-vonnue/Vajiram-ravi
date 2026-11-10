@@ -52,7 +52,7 @@ export default function FlagshipCard() {
   return (
     <section
       aria-labelledby="flagship-programme-h"
-      data-reveal
+      data-zoom
       className="relative grid w-full grid-cols-[520px_1fr] overflow-clip rounded-[28px] text-white shadow-[0_24px_48px_-20px_rgb(77_31_8/0.45)]"
       style={{ backgroundImage: GROUND, backgroundColor: "#c9561a" }}
     >
@@ -110,11 +110,7 @@ export default function FlagshipCard() {
         <ul className="mt-8 flex w-full flex-col gap-3.5">
           {programme.benefits.map((benefit) => (
             <li key={benefit} className="flex items-start gap-3.5 text-[17px]/[25px] text-white">
-              <span aria-hidden="true" className="flex size-[25px] shrink-0 items-center justify-center rounded-full bg-white text-burnt">
-                <svg viewBox="0 0 12 12" width={12} height={12} fill="none">
-                  <path d="M2.5 6.2 5 8.5l4.5-5" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
+              <img src="/images/ornaments/butta-cream.svg" alt="" aria-hidden="true" width={16} height={16} className="mt-[5px] size-4 shrink-0" />
               {keepHyphens(benefit)}
             </li>
           ))}

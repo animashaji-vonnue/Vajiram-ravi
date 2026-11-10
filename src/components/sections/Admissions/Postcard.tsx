@@ -149,7 +149,7 @@ type PostcardProps = {
  *   - Focus draws a burnt line along the foot of the field (FocusLine), with the border and the ring.
  *   - Posting: the card lifts and tips back down as if dropped in the box, and the postmark hits as it lands
  *     (scale 1.4 to 1) with its own ink ring.
- *   - Hovering the stamp with a fine pointer spins it a full turn in 3D.
+ *   - Hovering the card with a fine pointer spins its stamp a full turn in 3D.
  */
 export default function Postcard({ programmes, modes, className }: PostcardProps) {
   const uid = useId();
@@ -403,6 +403,7 @@ export default function Postcard({ programmes, modes, className }: PostcardProps
   return (
     <div
       ref={cardRef}
+      onPointerEnter={spinStamp}
       className={cx(
         // Square to the page; the title sits level with the stamp.
         "relative w-[700px] shrink-0 rounded-2xl bg-[#ffefd5] px-9 pt-[52px] pb-10 shadow-[0_24px_24px_rgb(43_18_5/0.3)]",
@@ -437,7 +438,7 @@ export default function Postcard({ programmes, modes, className }: PostcardProps
         className="pointer-events-none absolute top-[14.8px] left-[559.5px] size-32 rounded-full border-2 border-mahogany/35 opacity-0 mix-blend-multiply"
       />
       {/* Hovering the stamp spins it a full turn in 3D; its box takes the hover (it is not focusable). */}
-      <div aria-hidden="true" onPointerEnter={spinStamp} className="absolute top-[26.8px] left-[579.52px] h-[104px] w-[88px] -rotate-4">
+      <div aria-hidden="true" className="absolute top-[26.8px] left-[579.52px] h-[104px] w-[88px] -rotate-4">
         <div ref={stampSpinRef} className="pointer-events-none absolute inset-0">
           <div ref={stampRef} className="absolute inset-0">
             <img src="/images/talk-to-us/stamp-edge.svg" alt="" width={104} height={120} className="absolute -top-[5px] -left-2 max-w-none" />

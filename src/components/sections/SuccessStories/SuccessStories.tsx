@@ -1,5 +1,4 @@
 import IndianLink from "@/components/ui/IndianLink";
-import { EyebrowLeft } from "@/components/ui/Ornament";
 import { stories, storiesIntro } from "@/data/stories";
 import Postcards from "./Postcards";
 
@@ -10,15 +9,14 @@ import Postcards from "./Postcards";
  * under the lead once that page exists (links.studentStories is null today), as on the educators' note.
  */
 export default function SuccessStories() {
-  const { eyebrow, heading, lead, cta } = storiesIntro;
+  const { heading, lead, cta } = storiesIntro;
   return (
     <section id="stories" aria-labelledby="stories-h" className="relative bg-paper">
       <div className="mx-auto w-canvas px-20 py-24">
         <Postcards
           stories={stories}
           heading={
-            <div className="flex flex-col items-start gap-5">
-              <EyebrowLeft>{eyebrow}</EyebrowLeft>
+            <div className="mx-auto flex flex-col items-center gap-5 text-center">
               <h2 id="stories-h" data-split className="w-[760px] font-heading text-[56px]/[1.08] font-normal tracking-[-0.02em] text-ink">
                 {heading.lead}{" "}
                 <em data-reveal-em className="text-orange italic">

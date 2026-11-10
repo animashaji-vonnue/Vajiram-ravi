@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Cta from "@/components/ui/Cta";
 import { achievements, achievementsLabel, hero, heroSlides, type HeroSlide } from "@/data/hero";
 import { links } from "@/data/links";
-import { toppers, toppersYear } from "@/data/toppers";
 import { cx } from "@/lib/cx";
 import { prefersReducedMotion } from "@/lib/motion";
 import { AT, ENTER, LINE, RISE, at } from "./enter";
@@ -17,7 +16,6 @@ const FADE_MS = 1000;
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /** The rest of the year's top ten, after the three in the slideshow: small portraits under the panel. */
-const others = toppers.filter((topper) => topper.rank > heroSlides.length && topper.rank <= 10);
 
 /** What is left of the intro curtain (layout/Preloader's `--intro`, in ms from the first paint), or 0. */
 function introLeft() {
@@ -63,10 +61,10 @@ function Ticker({ slide }: { slide: HeroSlide }) {
  *     (6.5s each, 1s hand-over). The topper's rank is marked beside them (the rank large in the serif, their name, the exam,
  *     a fine line drawn out to a dot); a dark wash from the left and a halftone grain keep the type legible.
  *   - Over it, on the left: the pill whose line glides past with the topper's name and rank, the client's
- *     headline, the lead on a frosted card and the two buttons. A button to pause the slideshow appears
+ *     headline, the lead and the two buttons. A button to pause the slideshow appears
  *     when reached with the keyboard.
- *   - Under the panel, on the orange: the statement, the institute's three figures (50+ years, 10 of 10, 36 of the top 50; they roll in)
- *     and the rest of the year's top ten as small portraits, linking to the selections page.
+ *   - Under the panel, on the orange: the four points of Figma's stats bar (2425:51305), each figure in a
+ *     cream laurel with its line beside it, centred (the figures roll in).
  *
  * Load (once, after the intro curtain; see ./enter): the pill, the heading line by line, the lead card,
  * the buttons and the results rise in; the slideshow starts its clock when the curtain has lifted. Reduced
@@ -109,8 +107,8 @@ export default function Hero() {
           aria-roledescription="carousel"
           aria-label={`UPSC CSE ${slide.year} toppers`}
           className={cx(
-            // The header (119) and the strip under the panel (133) stay on the first screen with it.
-            "relative h-[clamp(500px,calc(100svh/var(--canvas-zoom,1)-119px-16px-133px),820px)] overflow-clip rounded-[28px] bg-mahogany",
+            // The header (119) and the strip under the panel (126) stay on the first screen with it.
+            "relative h-[clamp(500px,calc(100svh/var(--canvas-zoom,1)-119px-16px-126px),820px)] overflow-clip rounded-[28px] bg-mahogany",
             ENTER,
           )}
           style={at(AT.art)}
@@ -131,7 +129,7 @@ export default function Hero() {
                   height={822}
                   fetchPriority={i === 0 ? "high" : undefined}
                   decoding="async"
-                  className="absolute inset-0 size-full max-w-none object-cover object-[80%_center]"
+                  className="absolute inset-0 size-full max-w-none object-cover object-[80%_18%]"
                   style={{
                     scale: shown && ready && !still ? "1.07" : "1",
                     transition: shown ? `scale ${SLIDE_MS + FADE_MS}ms linear` : `scale 0s linear ${FADE_MS}ms`,
@@ -152,7 +150,7 @@ export default function Hero() {
           <div
             key={`mark-${current}-${cycle}`}
             aria-hidden="true"
-            className="hero-mark pointer-events-none absolute top-[11%] left-[47%] flex items-start gap-3"
+            className="hero-mark pointer-events-none absolute top-[11%] left-[53%] flex items-start gap-3"
           >
             <div>
               <p className="font-mono text-[11px]/[14px] tracking-[0.2em] text-white/80 uppercase">All India Rank</p>
@@ -190,7 +188,7 @@ export default function Hero() {
               ))}
             </h1>
             <p
-              className={cx("mt-6 w-[460px] rounded-[18px] bg-black/25 px-5 py-4 text-[16px]/[1.55] ring-1 ring-white/20 backdrop-blur-md", RISE)}
+              className={cx("mt-6 w-[500px] text-[17px]/[1.6] text-white/92", RISE)}
               style={at(AT.lead)}
             >
               {hero.lead}
@@ -225,42 +223,20 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Under the panel: the statement, the three results and the rest of the top ten. */}
-      <div className="mx-auto grid w-canvas grid-cols-[230px_repeat(3,minmax(0,1fr))_auto] items-center gap-10 px-12 py-6">
-        <p className={cx("font-heading text-[24px]/[1.15] italic", RISE)} style={at(AT.achievements[0] - 80)}>
-          {hero.statement}
-        </p>
-        <ul aria-label={achievementsLabel} className="contents">
-          {achievements.map((item, i) => (
-            <li key={item.label} data-enter className={cx("flex flex-col border-l border-white/30 pl-6", RISE)} style={at(AT.achievements[i])}>
-              <span className="font-heading text-[40px]/[1] whitespace-nowrap">
+      {/* Under the panel: the four points, each figure in its laurel, centred (Figma "stats bar", 2425:51305). */}
+      <ul aria-label={achievementsLabel} className="mx-auto flex w-canvas items-center justify-center gap-16 px-12 py-5">
+        {achievements.map((item, i) => (
+          <li key={item.text} data-enter className={cx("flex items-center gap-4", RISE)} style={at(AT.achievements[Math.min(i, AT.achievements.length - 1)] + (i > 2 ? 80 : 0))}>
+            <span className="relative flex h-[86px] w-[108px] shrink-0 items-center justify-center">
+              <img src="/images/hero/laurel-cream.svg" alt="" aria-hidden="true" width={108} height={86} className="absolute inset-0 size-full" />
+              <span className="relative font-heading text-[28px]/[1] font-medium whitespace-nowrap">
                 <HeroFigure value={item.figure} />
               </span>
-              <span className="mt-1.5 text-[15px]/[20px] font-semibold whitespace-nowrap">{item.label}</span>
-              <span className="text-[14px]/[19px] whitespace-nowrap text-white/85">{item.text}</span>
-            </li>
-          ))}
-        </ul>
-        <a
-          href={links.toppers}
-          className={cx("group/others flex items-center gap-4 border-l border-white/30 pl-6", RISE)}
-          style={at(AT.achievements[2] + 80)}
-        >
-          <span className="flex">
-            {others.map((topper, i) => (
-              <span key={topper.rank} className={cx("relative size-10 overflow-clip rounded-full bg-[#8a2812] ring-2 ring-[#b23b16]", i > 0 && "-ml-3")}>
-                <img src={topper.image} alt="" width={40} height={40} loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover object-top" />
-              </span>
-            ))}
-          </span>
-          <span className="text-[14px]/[19px]">
-            <span className="block font-semibold">And {others.length} more in the top ten</span>
-            <span className="text-white/80 [transition:color_var(--dur-fast)_var(--ease-out)] group-hover/others:text-white">
-              UPSC CSE {toppersYear} results
             </span>
-          </span>
-        </a>
-      </div>
+            <span className="w-[150px] text-[17px]/[1.35]">{item.text}</span>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

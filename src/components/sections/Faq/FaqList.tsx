@@ -8,7 +8,7 @@ import FaqAccordion from "./FaqAccordion";
 export default function FaqList({ entries }: { entries: FaqEntry[] }) {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <div className="flex flex-col">
+    <div data-stagger className="flex flex-col">
       <FaqAccordion entries={entries} open={open} onToggle={(index) => setOpen((current) => (current === index ? null : index))} />
     </div>
   );

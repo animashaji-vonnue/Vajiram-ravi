@@ -1,4 +1,3 @@
-import { EyebrowLeft } from "@/components/ui/Ornament";
 import { journeyIntro } from "@/data/journey";
 import JourneyStages from "./JourneyStages";
 
@@ -6,7 +5,7 @@ import JourneyStages from "./JourneyStages";
  * "UPSC preparation journey & academic support" (the client's IA 2; no Figma frame, so it is drawn in the
  * page's own language): a cream band holding the
  * left-aligned heading with its lead in a right-hand column, then the three stages of the examination as a
- * path, Prelims → Mains → Personality Test: a rail of numbered medallions strung on a thread, over the
+ * path, Prelims → Mains → Interview: a rail of numbered medallions strung on a thread, over the
  * chosen stage's panel.
  *
  * The whole band is one screen that stays put (JourneyStages pins it) while the page scrolls through the
@@ -25,7 +24,6 @@ export default function Journey() {
           // The heading in three even lines at 820 wide; the lead beside it, standing on its last line.
           <div className="flex items-end justify-between">
             <div className="flex w-[820px] flex-col items-start gap-4">
-              <EyebrowLeft>{journeyIntro.eyebrow}</EyebrowLeft>
               <h2 id="journey-h" data-reveal="heading" className="font-heading text-[56px]/[1.08] font-normal tracking-[-1.12px] text-ink">
                 {heading.lead}{" "}
                 <em data-reveal-em className="text-orange italic">
