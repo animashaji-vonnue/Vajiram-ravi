@@ -237,4 +237,7 @@
   .ember::before {
     animation: none;
   }
+  .cover-art * {
+    transition: none !important;
+  }
 }

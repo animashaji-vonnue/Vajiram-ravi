@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowLeft, ArrowRight, Check, OpenBook } from "iconoir-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, OpenBook } from "iconoir-react";
 import { programmes } from "@/data/content";
 import { Button } from "@/components/ui/Button";
+import CoverArt from "@/components/ui/CoverArt";
 import SectionIntro, { Eyebrow } from "@/components/ui/SectionIntro";
 import { prefersReducedMotion } from "@/lib/motion";
 import { cx } from "@/lib/cx";
@@ -117,20 +118,74 @@ function spot(i: number) {
   return { x: left + (i % PER_SHELF) * (SLEEVE + GAP), y: SHELF_TOPS[Math.floor(i / PER_SHELF)] };
 }
 
-/** A sleeve: a plain cover in the programme's colour with its name and how many courses it holds. */
-function Sleeve({ course }: { course: Course }) {
+/**
+ * A sleeve, after the customer cards on gitbook.com, made up as a book jacket: paper with a fine grain, the
+ * programme's colour down the spine with a crease where the cover hinges, the name in the serif at the top, and an
+ * abstract composition of shapes for the programme, large and cropped by the edges. Along the foot, how many courses
+ * it holds and a round arrow. While the cover is `live`, it fills with the programme's colour, the type turns white,
+ * the shapes move into place and the arrow opens out into "Open book" (the count gives way to it).
+ */
+function Sleeve({ course, live }: { course: Course; live: boolean }) {
   return (
     <span
-      className="flex size-full flex-col justify-between p-4 text-left text-white"
-      style={{
-        backgroundColor: course.colour,
-        backgroundImage: "linear-gradient(135deg, rgb(255 255 255/0.18), transparent 55%, rgb(0 0 0/0.18))",
-      }}
+      className={cx(
+        "relative flex size-full flex-col overflow-clip pt-[18px] pr-5 pb-4 pl-[26px] text-left transition-[background-color,color] duration-500",
+        live ? "text-white" : "text-ink-900",
+      )}
+      style={{ backgroundColor: live ? course.colour : "#f7f0e3" }}
     >
-      <span className="text-[9px]/[12px] font-bold tracking-[0.18em] uppercase opacity-80">Vajiram &amp; Ravi</span>
-      <span>
-        <span className="block font-serif text-[22px]/[1.1]">{course.name}</span>
-        <span className="mt-1.5 block text-[11px]/[14px] opacity-80">{course.count} courses</span>
+      <CoverArt kind={course.art} colour={course.colour} live={live} />
+
+      {/* The spine, its crease, and the paper's grain and sheen over everything. */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-y-0 left-0 w-2.5 transition-colors duration-500"
+        style={{ backgroundColor: live ? "rgb(0 0 0 / 0.2)" : course.colour }}
+      />
+      <span
+        aria-hidden="true"
+        className="absolute inset-y-0 left-[13px] w-[3px] bg-[linear-gradient(90deg,rgb(0_0_0/0.1),rgb(255_255_255/0.35),transparent)]"
+      />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-(image:--grain) bg-size-[240px] opacity-[0.16] mix-blend-multiply"
+      />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgb(255_255_255/0.22),transparent_40%,rgb(0_0_0/0.06))]"
+      />
+
+      <span className="relative block max-w-[150px] font-serif text-[21px]/[1.02] tracking-[-0.01em]">
+        {course.name}
+      </span>
+
+      <span className="relative mt-auto flex items-center justify-between">
+        <span
+          className={cx(
+            "font-mono text-[10px]/[14px] tracking-[0.08em] whitespace-nowrap uppercase transition-[color,opacity] duration-300",
+            live && "opacity-0",
+          )}
+          style={{ color: live ? "rgb(255 255 255 / 0.85)" : course.colour }}
+        >
+          {String(course.count).padStart(2, "0")} courses
+        </span>
+        <span
+          aria-hidden="true"
+          className={cx(
+            "flex h-7 items-center rounded-full px-[7px] text-[12px] font-semibold whitespace-nowrap shadow-[0_4px_12px_-6px_rgb(40_25_15/0.5)] transition-[background-color,color] duration-500",
+            live ? "bg-white text-ink-900" : "bg-white/80 text-ink-900",
+          )}
+        >
+          <span
+            className={cx(
+              "overflow-hidden transition-[max-width,padding] duration-500 ease-out-soft",
+              live ? "max-w-[80px] pr-1.5 pl-1" : "max-w-0",
+            )}
+          >
+            Open book
+          </span>
+          <ArrowUpRight width={14} height={14} strokeWidth={2} />
+        </span>
       </span>
     </span>
   );
@@ -154,6 +209,7 @@ function Book({
   item,
   out,
   open,
+  live,
   style,
   onPick,
   onClose,
@@ -162,6 +218,8 @@ function Book({
   item: Course;
   out: boolean;
   open: boolean;
+  /** Whether the pointer or focus is on it on the shelf, which sets its cover's sketch going. */
+  live: boolean;
   style: CSSProperties;
   onPick: () => void;
   onClose: () => void;
@@ -200,6 +258,8 @@ function Book({
       style={{ transitionDuration: `${MOVE_MS}ms`, ...style }}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
+      onFocus={() => onHover(true)}
+      onBlur={() => onHover(false)}
     >
       {/* The instruction, over the open spread. */}
       {out && (
@@ -287,7 +347,7 @@ function Book({
         style={{ transform: open ? "rotateY(-180deg)" : "none", zIndex: open ? 55 : 100, transition: flip(OPEN_MS) }}
       >
         <span className="absolute inset-0 [backface-visibility:hidden]">
-          <Sleeve course={item} />
+          <Sleeve course={item} live={live} />
         </span>
         <span
           aria-hidden="true"
@@ -553,6 +613,7 @@ function Wall() {
             item={item}
             out={picked === i}
             open={picked === i && open}
+            live={hovered === i && picked === null}
             style={place(i)}
             onPick={() => pick(i)}
             onClose={close}

@@ -1,3 +1,5 @@
+import type { ArtKind } from "@/components/ui/CoverArt";
+
 /**
  * The homepage's content, in the order of the information architecture: 1 outcome-led hero, 2 the UPSC preparation
  * journey and the institute's support, 3 about the institute, 4 programmes, 5 batches and admissions, 6 counselling,
@@ -200,6 +202,7 @@ export const programmes = {
         courses: ["1-year GS Foundation Course", "2-year GS Foundation Course"],
         line: "1-year and 2-year General Studies programmes that take you from the basics to Prelims and Mains.",
         colour: "#805c4e",
+        art: "foundation" as ArtKind,
       },
       {
         name: "Optional Subject Programme",
@@ -207,6 +210,7 @@ export const programmes = {
         courses: ["Anthropology", "Sociology"],
         line: "Coaching in 13 optional subjects, from Anthropology to Sociology, in Classroom and LIVE-Online.",
         colour: "#09735c",
+        art: "optional" as ArtKind,
       },
       {
         name: "CSAT Course",
@@ -214,6 +218,7 @@ export const programmes = {
         courses: ["CSAT Course"],
         line: "Prepare for Prelims Paper II and clear the 33% qualifying mark with confidence.",
         colour: "#274fa6",
+        art: "csat" as ArtKind,
       },
       {
         name: "Interview Guidance Programme",
@@ -221,6 +226,7 @@ export const programmes = {
         courses: ["UPSC CSE Interview Guidance", "IFoS Interview Guidance"],
         line: "Guidance for the UPSC CSE and IFoS interviews once you have cleared Mains.",
         colour: "#b83a68",
+        art: "interview" as ArtKind,
       },
       {
         name: "Mentorship Programme",
@@ -228,6 +234,7 @@ export const programmes = {
         courses: ["StepUp Mentorship"],
         line: "StepUp mentorship pairs regular tests with a personal mentor, from Prelims to Mains.",
         colour: "#d1570e",
+        art: "mentor" as ArtKind,
       },
       {
         name: "Mains Test Series",
@@ -235,6 +242,7 @@ export const programmes = {
         courses: ["Sure Shot Test Series", "Mains CAMP", "Essay Tests"],
         line: "Sure Shot test series, Mains CAMP and Essay tests to sharpen your answer writing.",
         colour: "#5b2a86",
+        art: "mains" as ArtKind,
       },
       {
         name: "Prelims Test Series",
@@ -242,6 +250,7 @@ export const programmes = {
         courses: ["PowerUp Test Series", "Prelims CAMP", "Current Affairs Tests"],
         line: "PowerUp test series, Prelims CAMP and current affairs tests to get Prelims-ready.",
         colour: "#a32a2a",
+        art: "prelims" as ArtKind,
       },
       {
         name: "Optional Test Series",
@@ -249,6 +258,7 @@ export const programmes = {
         courses: ["Year-long Optional Test Series", "Optional Mains Test Series"],
         line: "Year-long and Mains test series to practise answer writing in your optional subject.",
         colour: "#2b2322",
+        art: "optionalTest" as ArtKind,
       },
     ].map((course) => ({ ...course, nextBatch: "[Date to be confirmed]", href: "#" })),
   },
