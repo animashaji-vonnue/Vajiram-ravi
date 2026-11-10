@@ -22,8 +22,10 @@ The site is a static export. `npm run build` writes plain HTML, CSS, JS and imag
 
 - **Netlify from GitHub:** connect the repo and deploy. `netlify.toml` sets the build command, the `out` publish folder and Node 22, and it overrides the settings in the Netlify UI.
 - **Netlify drag-and-drop:** run `npm run build`, then drag the `out` folder onto the Netlify deploys page. Dragging the project folder or `.next` gives a 404, because neither has an `index.html` at the top.
+- **Vercel from GitHub:** `vercel.json` tells Vercel to run `npm run build` and serve the static `out` folder, whatever the project's dashboard settings say. Every push to a branch gets its own deployment; the project's production address follows its production branch.
 
 `netlify.toml` also turns off Netlify's Next.js adapter with `NETLIFY_NEXT_PLUGIN_SKIP`. The adapter is for server-rendered sites and would reject `out` as the publish folder.
+
 ## Layout of the code
 
 ```
