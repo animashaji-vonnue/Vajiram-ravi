@@ -10,16 +10,16 @@ import CoverArt from "./CoverArt";
 import { whenVisible } from "@/lib/reveal";
 
 /**
- * The wall's measurements in canvas px, as the `kevin` branch's wall (7df11c6): books of COVER square, four
- * to a shelf with GAP between them, on two shelves overhanging them by SHELF_OVERHANG, on a 1180 × 620
- * stage; and the open book, its pages PAGE square with the spine at the middle of the stage.
+ * The wall's measurements in canvas px, on the photograph of the two wooden shelves (Figma 2546:4503, shown
+ * at 1.25×, see Programmes): books of COVER square, four to a shelf with GAP between them, standing on the
+ * shelves at SHELF_TOPS on a 1180 × 620 stage; and the open book, its pages PAGE square with the spine at
+ * the middle of the stage.
  */
 const STAGE = { width: 1180, height: 620 };
-const COVER = 190;
+const COVER = 200;
 const PER_SHELF = 4;
 const GAP = 40;
-const SHELF_OVERHANG = 56;
-const SHELF_TOPS = [70, 340];
+const SHELF_TOPS = [70, 350];
 const ROW = PER_SHELF * COVER + (PER_SHELF - 1) * GAP;
 const ROW_LEFT = (STAGE.width - ROW) / 2;
 const PAGE = 380;
@@ -30,12 +30,10 @@ const MOVE_MS = 650;
 const OPEN_MS = 750;
 const TURN_MS = 700;
 
-/** The entrance: the shelves draw out from their middles, then the covers are set on them one by one. */
-const PLANK_MS = 700;
+/** The entrance: the covers are set on the shelves one by one, the upper shelf first. */
 const SET_MS = 650;
 const SET_STAGGER_MS = 70;
 const SHELF_GAP_MS = 220;
-const EASE_OUT = "cubic-bezier(0.22, 1, 0.36, 1)";
 /** A soft spring for a cover landing on its shelf: a hair past its place, then settled. */
 const SETTLE = "cubic-bezier(0.34, 1.4, 0.64, 1)";
 
@@ -72,7 +70,7 @@ function Arrow({ back = false, className }: { back?: boolean; className?: string
 /**
  * The course shelf (after the `kevin` branch's "More UPSC programmes" wall, itself after Shopify Editions'
  * record shelf and library.jjangik.kr's books): kevin's eight programme groups as plain square covers on two
- * cream wall shelves, four to a shelf.
+ * wooden shelves of the wall's photograph, four to a shelf.
  *
  *   - A cover is the programme's own colour with a sheen, "Vajiram & Ravi" at the top and its name and
  *     how many courses it holds at the foot. Hover (or focus): it lifts off its shelf.
@@ -83,8 +81,7 @@ function Arrow({ back = false, className }: { back?: boolean; className?: string
  *     forward; on the left-hand page, or ←, back.
  *   - Closing shuts the cover first, then puts the book back: the open cover, Escape or a click on the wall
  *     all close it. Choosing another book puts this one back first.
- *   - Entrance, once, when the shelves come into view: the shelves draw out from their middles, then the
- *     covers are set on them one by one, each dropping in from a slight tilt and settling. Reduced motion,
+ *   - Entrance, once, when the shelves come into view: the covers are set on them one by one, each dropping in from a slight tilt and settling. Reduced motion,
  *     or already on screen: all simply there, and the book opens without the swing.
  */
 export default function CourseShelf({ programmes }: { programmes: Programme[] }) {
@@ -138,9 +135,6 @@ export default function CourseShelf({ programmes }: { programmes: Programme[] })
     if (box.top < window.innerHeight * 0.85 && box.bottom > 0) return;
 
     const animations: Animation[] = [];
-    root.querySelectorAll<HTMLElement>("[data-plank]").forEach((plank, s) => {
-      animations.push(plank.animate([{ transform: "scaleX(0)" }, { transform: "none" }], { duration: PLANK_MS, delay: s * SHELF_GAP_MS, easing: EASE_OUT, fill: "backwards" }));
-    });
     root.querySelectorAll<HTMLElement>("[data-cover]").forEach((cover, i) => {
       const shelf = Math.floor(i / PER_SHELF);
       animations.push(
@@ -149,7 +143,7 @@ export default function CourseShelf({ programmes }: { programmes: Programme[] })
             { transform: "translateY(-56px) rotate(-5deg)", opacity: 0 },
             { transform: "none", opacity: 1 },
           ],
-          { duration: SET_MS, delay: shelf * SHELF_GAP_MS + PLANK_MS * 0.45 + (i % PER_SHELF) * SET_STAGGER_MS, easing: SETTLE, fill: "backwards" },
+          { duration: SET_MS, delay: shelf * SHELF_GAP_MS + (i % PER_SHELF) * SET_STAGGER_MS, easing: SETTLE, fill: "backwards" },
         ),
       );
     });
@@ -184,21 +178,6 @@ export default function CourseShelf({ programmes }: { programmes: Programme[] })
       style={{ width: STAGE.width, height: STAGE.height }}
       onClick={(event) => event.target === event.currentTarget && close()}
     >
-      {/* The shelves: cream planks with a front edge and a soft shadow on the wall. */}
-      {SHELF_TOPS.map((top) => (
-        <span
-          key={top}
-          data-plank
-          aria-hidden="true"
-          className={cx(
-            // A white ledge with its front edge, casting a soft shadow on the wall (kevin's shelf).
-            "pointer-events-none absolute h-4 rounded-[2px] border-b-[3px] border-[#e3d3bd] bg-linear-to-b from-white to-[#f7efe3] shadow-[0_26px_34px_-14px_rgb(77_31_8/0.45)] [transition:filter_700ms_var(--ease-out),opacity_700ms_var(--ease-out)]",
-            away && "opacity-25 blur-[14px]",
-          )}
-          style={{ top: top + COVER, left: ROW_LEFT - SHELF_OVERHANG, width: ROW + 2 * SHELF_OVERHANG }}
-        />
-      ))}
-
       {programmes.map((programme, i) => (
         <Book
           key={programme.name}

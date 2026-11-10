@@ -68,10 +68,9 @@ export type Programme = {
   cover: { paper: string; spine: string; ink: string; accent: string; soft: string; art: CoverArtKind; vivid: string };
 };
 
-/** The shelf's heading (the emphasis in orange) and its lead, as kevin's wall has it. */
+/** The shelf's heading, in two lines (the emphasis in orange). */
 export const shelfIntro = {
-  title: { lead: "More ", em: "UPSC programmes" },
-  intro: "Every programme we run, on one wall. Pick a course to take a closer look.",
+  title: { before: "All our ", em: "UPSC programmes", after: ", side by side.", line2: "Choose one to take a closer look." },
 };
 
 /**

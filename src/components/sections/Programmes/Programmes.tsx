@@ -71,42 +71,48 @@ export default function Programmes() {
         </div>
 
         {/*
-          "More UPSC programmes": the heading and its lead, then every programme group on the shelf
-          (CourseShelf), in the `kevin` branch's design (7df11c6), in front of a library: a soft photograph of
-          full bookshelves running the full width of the screen, washed in the page's paper so the covers and
-          the type stay clear, and feathered into the white above (globals.css, .shelf-wall).
+          The courses wall (Figma 2546:4503): a photograph of a cream papered wall with two wooden shelves, old
+          books, succulents and an inkwell at their ends, running the full width of the screen; the heading
+          over the wall at the top, and kevin's eight programme covers standing on the shelves (CourseShelf).
+          The photograph is shown at a fixed 1.25× (1980 × 840) and centred, so the covers, 200px square, land
+          exactly on its planks at any screen width; the covers it was drawn with are painted out of it.
         */}
-        <div className="relative mt-20 w-full pt-24 pb-20">
+        <div className="relative mt-20 h-[840px] w-full">
           <div aria-hidden="true" className="shelf-wall pointer-events-none absolute inset-y-0 left-1/2 w-[max(calc(100vw/var(--canvas-zoom,1)),1440px)] -translate-x-1/2 overflow-clip">
-            <div data-par className="absolute -inset-y-[8%] inset-x-0">
-              <img src="/images/programmes/library-shelves.webp" alt="" width={1168} height={880} loading="lazy" decoding="async" className="size-full max-w-none object-cover" />
-            </div>
+            <img
+              src="/images/programmes/shelf-wall.webp"
+              alt=""
+              width={1584}
+              height={672}
+              loading="lazy"
+              decoding="async"
+              className="absolute top-0 left-[calc(50%-987.5px)] h-[840px] w-[1980px] max-w-none"
+            />
           </div>
-          <div className="relative w-full">
-            <div className="relative mx-auto flex w-[820px] flex-col items-center gap-4 text-center">
-              <h3 data-split className="font-heading text-[48px]/[1.1] tracking-[-0.02em] text-ink">
-                {shelfIntro.title.lead}
-                <em data-reveal-em className="text-orange italic">
-                  {shelfIntro.title.em}
-                </em>
-              </h3>
-              <p data-words className="w-[600px] text-[18px]/[1.6] text-clay">
-                {shelfIntro.intro}
-              </p>
-            </div>
-            <div className="relative mt-8 w-full">
-              <CourseShelf programmes={programmes} />
-            </div>
+          <h3 data-split className="absolute inset-x-0 top-[50px] text-center font-heading text-[48px]/[1.15] tracking-[-0.02em] text-ink">
+            <span className="block whitespace-nowrap">
+              {shelfIntro.title.before}
+              <em data-reveal-em className="text-orange italic">
+                {shelfIntro.title.em}
+              </em>
+              {shelfIntro.title.after}
+            </span>
+            <span className="block whitespace-nowrap">{shelfIntro.title.line2}</span>
+          </h3>
+          <div className="absolute inset-x-0 top-[137.5px]">
+            <CourseShelf programmes={programmes} />
           </div>
+        </div>
 
+        <div className="relative w-full pt-16 pb-24">
           {/*
-            The client's closing line, as a card pinned to the wall under the shelves: a counsellor's headset in
+            The client's closing line, as a card under the wall: a counsellor's headset in
             a burnt disc, the question and the line, then the phone number and the button to the counselling form.
           */}
           <aside
             data-reveal
             aria-labelledby="programmes-help-h"
-            className="relative mx-auto mt-16 flex w-[1040px] items-center gap-7 rounded-[20px] border border-[#eadbc4] bg-white/85 py-7 pr-8 pl-7 shadow-rest backdrop-blur-sm"
+            className="relative mx-auto flex w-[1040px] items-center gap-7 rounded-[20px] border border-[#eadbc4] bg-white/85 py-7 pr-8 pl-7 shadow-rest backdrop-blur-sm"
           >
             <span aria-hidden="true" className="flex size-16 shrink-0 items-center justify-center rounded-full bg-burnt text-white">
               <svg viewBox="0 0 24 24" width={30} height={30} fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
