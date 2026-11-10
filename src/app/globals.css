@@ -332,28 +332,6 @@
 }
 
 /*
- * The courses wall (Programmes): the photograph of the papered wall and its two wooden shelves, at a fixed
- * size and centred. On a screen wider than the photograph its sides fade into the wall's own deep tone; a
- * soft shade along the top and the foot sets the wall into the page.
- */
-.shelf-wall {
-  background-color: #7f654c;
-}
-.shelf-wall img {
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 180px, #000 calc(100% - 180px), transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 180px, #000 calc(100% - 180px), transparent);
-}
-.shelf-wall::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  box-shadow:
-    inset 0 10px 18px -12px rgb(43 18 5 / 0.35),
-    inset 0 -10px 18px -12px rgb(43 18 5 / 0.35);
-}
-
-/*
  * TextMotion (ui/TextMotion): a split heading's words, each a mask its letters rise out of. The mask reaches
  * a little above and below the line so no accent or descender is cut while the letters move.
  */
@@ -369,6 +347,195 @@
 }
 .tm-wd {
   transition: opacity 120ms linear;
+}
+
+/*
+ * The ambient loops (TextMotion). Slow and small, each holding the element at rest in its first frame, and
+ * running only while their section is on screen: TextMotion sets `--lp: running` on a section in view
+ * (and `paused` when it leaves), so before the script runs, and off screen, they hold still.
+ *   .lp-sway     the hero's laurels sway a degree and a half either way about their foot (9s).
+ *   .lp-breathe  the chosen journey medallion's saffron halo swells and settles (3.6s).
+ *   .lp-glow     a warm light breathes at the head of the About centre card (7s).
+ *   .lp-wobble   a rubber stamp gives a short wobble, as if pressed again, then rests (6.5s).
+ *   .lp-glint    a band of gold light passes across a book's cover now and then (11s).
+ *   .tm-glint    the emphasis letters of a heading catch a soft light one after another (10s; the step
+ *                between letters is --gs, their place --gi), a filter only.
+ */
+.lp-sway {
+  transform-origin: 50% 88%;
+  animation: lp-sway 9s var(--ease-in-out) infinite;
+  animation-play-state: var(--lp, paused);
+}
+@keyframes lp-sway {
+  0%,
+  100% {
+    transform: none;
+  }
+  25% {
+    transform: rotate(-1.5deg);
+  }
+  75% {
+    transform: rotate(1.5deg);
+  }
+}
+.lp-breathe {
+  animation: lp-breathe 3.6s var(--ease-in-out) infinite;
+  animation-play-state: var(--lp, paused);
+}
+@keyframes lp-breathe {
+  0%,
+  100% {
+    transform: none;
+  }
+  50% {
+    transform: scale(1.18);
+  }
+}
+.lp-glow {
+  animation: lp-glow 7s var(--ease-in-out) infinite;
+  animation-play-state: var(--lp, paused);
+}
+@keyframes lp-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+.lp-wobble {
+  animation: lp-wobble 6.5s var(--ease-out) infinite;
+  animation-play-state: var(--lp, paused);
+}
+@keyframes lp-wobble {
+  0%,
+  78%,
+  92%,
+  100% {
+    transform: none;
+  }
+  80% {
+    transform: rotate(-5deg) scale(1.05);
+  }
+  83% {
+    transform: rotate(3.5deg) scale(0.98);
+  }
+  86% {
+    transform: rotate(-2deg);
+  }
+  89% {
+    transform: rotate(1deg);
+  }
+}
+.lp-glint {
+  opacity: 0;
+  animation: lp-glint 11s var(--ease-in-out) infinite;
+  animation-play-state: var(--lp, paused);
+}
+@keyframes lp-glint {
+  0%,
+  80% {
+    opacity: 0;
+    transform: translateX(0) skewX(-14deg);
+  }
+  82% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 1;
+    transform: translateX(360%) skewX(-14deg);
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: translateX(360%) skewX(-14deg);
+  }
+}
+.tm-glint {
+  animation: tm-glint 10s var(--ease-in-out) infinite;
+  animation-delay: calc(2200ms + var(--gi, 0) * var(--gs, 45ms));
+  animation-play-state: var(--lp, paused);
+}
+@keyframes tm-glint {
+  0%,
+  9%,
+  100% {
+    filter: brightness(1) drop-shadow(0 0 0 rgb(255 206 120 / 0));
+  }
+  4.5% {
+    filter: brightness(1.32) drop-shadow(0 0 0.12em rgb(255 206 120 / 0.8));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-sway,
+  .lp-breathe,
+  .lp-glow,
+  .lp-wobble,
+  .tm-glint {
+    animation: none !important;
+  }
+  .lp-glint {
+    display: none;
+  }
+}
+
+/*
+ * The scroll thread (TextMotion): a slim line across the top of the screen in the journey thread's dash-dot
+ * rhythm (a 10px dash, a gap, a dot, a gap), over the sticky header. A faint burnt track; over it the fill,
+ * orange to burnt across the page, clipped to the share of the page scrolled; a small saffron diamond
+ * edged in burnt, the eyebrows' lozenge, rides at its end in a soft saffron glow. It fades in once the page has moved, and is never drawn with reduced motion.
+ */
+.tm-thread {
+  --tm-dash-dot: repeating-linear-gradient(90deg, #000 0 10px, transparent 10px 16px, #000 16px 18.5px, transparent 18.5px 24px);
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 55;
+  height: 3px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms var(--ease-out);
+}
+.tm-thread[data-on] {
+  opacity: 1;
+}
+.tm-thread__track,
+.tm-thread__fill {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: var(--tm-dash-dot);
+  mask-image: var(--tm-dash-dot);
+}
+.tm-thread__track {
+  background: rgb(204 85 0 / 0.18);
+}
+.tm-thread__fill {
+  background: linear-gradient(90deg, var(--color-orange), var(--color-burnt));
+  clip-path: inset(0 100% 0 0);
+}
+.tm-thread__bead {
+  position: absolute;
+  inset: 0;
+}
+.tm-thread__bead::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -4px;
+  width: 7px;
+  height: 7px;
+  rotate: 45deg;
+  background: var(--color-saffron);
+  box-shadow:
+    0 0 0 1px var(--color-burnt),
+    0 0 10px rgb(244 196 48 / 0.8);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tm-thread {
+    display: none;
+  }
 }
 
 /* The fine grain on the course covers (Programmes/CourseShelf). */
@@ -392,4 +559,141 @@ p,
 li,
 blockquote {
   text-wrap: pretty;
+}
+
+/*
+ * The press ripple of the buttons and the carousel arrows (lib/pressRipple), after Material's ripple: a
+ * disc grows out from the point pressed and fades (.press-ripple), and a ring pulses out past the
+ * control's edge (.press-pulse). Both are spans added on press and removed when they end.
+ */
+.press-ripple {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: currentColor;
+  opacity: 0.28;
+  transform: translate(-50%, -50%) scale(0);
+  animation: press-ripple 520ms var(--ease-out) forwards;
+}
+@keyframes press-ripple {
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+.press-pulse {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  /* The control's own colour (ui/Cta sets its fill), else its text colour. */
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--press-ring, currentColor) 45%, transparent);
+  animation: press-pulse 600ms var(--ease-out) forwards;
+}
+@keyframes press-pulse {
+  to {
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--press-ring, currentColor) 0%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .press-ripple,
+  .press-pulse {
+    display: none;
+  }
+}
+
+/*
+ * The site's button (ui/Cta), in the page's own language:
+ *   - the thread: a fine dash-dot line stitched just inside the edge, the rhythm of the journey's garland
+ *     thread and the eyebrow rules (.cta-stitch, its colour --cta-stitch). On hover it brightens and
+ *     marches along the edge.
+ *   - the sunrise: on hover a disc rises out of the arrow and fills the button, bright at its core by the
+ *     arrow (--cta-core), warming out to a more vivid tone of the ground (--cta-sun), a band of halo light
+ *     at its rim (--cta-rim), as the closing banner's sun; the button glows in its colour (--cta-glow) and
+ *     lifts a pixel. Leaving, it sinks back.
+ *   - the arrow passes: it slides out ahead and comes back in from behind, once per hover.
+ * Reduced motion: no march and no pass; the fill changes at once (the global rule).
+ */
+.cta-sun {
+  position: absolute;
+  top: 50%;
+  right: var(--cta-sun-x, 26px);
+  width: 900px;
+  height: 900px;
+  margin: -450px -450px 0 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  /* A bright core at the arrow, warming out to the variant's vivid tone, the halo band at the rim. */
+  background: radial-gradient(closest-side, var(--cta-core) 0, var(--cta-sun) 30%, var(--cta-sun) 93%, var(--cta-rim) 95.5%, transparent 99%);
+  transform: scale(0);
+  transition: transform 300ms var(--ease-in);
+}
+.cta:hover .cta-sun,
+.cta:focus-visible .cta-sun {
+  transform: scale(1);
+  transition: transform 650ms var(--ease-out);
+}
+/* The button glows in its own colour and lifts a pixel while the sun is up. */
+.cta {
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow 500ms var(--ease-out),
+    translate 300ms var(--ease-out),
+    scale 80ms var(--ease-out);
+}
+.cta:hover,
+.cta:focus-visible {
+  translate: 0 -1px;
+  box-shadow: 0 10px 26px -10px var(--cta-glow, transparent);
+}
+.cta-stitch {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  /* An SVG left to size itself would take its default 300 x 150. */
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  overflow: visible;
+  pointer-events: none;
+  color: var(--cta-stitch);
+  opacity: 0.75;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.cta-stitch rect {
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+}
+.cta:hover .cta-stitch {
+  opacity: 1;
+}
+.cta:hover .cta-stitch rect {
+  animation: cta-march 1.4s linear infinite;
+}
+@keyframes cta-march {
+  to {
+    stroke-dashoffset: -22.5;
+  }
+}
+.cta:hover .cta-arrow svg {
+  animation: cta-arrow 560ms var(--ease-out);
+}
+@keyframes cta-arrow {
+  45% {
+    translate: 12px 0;
+    opacity: 0;
+  }
+  46% {
+    translate: -12px 0;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta:hover .cta-stitch rect,
+  .cta:hover .cta-arrow svg {
+    animation: none;
+  }
 }

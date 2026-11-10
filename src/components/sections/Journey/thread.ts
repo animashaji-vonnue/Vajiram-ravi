@@ -1,14 +1,17 @@
 /*
  * The course of the journey's thread on the stage rail, in the rail's own px (the 1280 content column).
  * The three stage medallions sit on one line at the middle of three equal columns. The thread comes in from
- * the column's left edge, hangs in a garland swag from each medallion to the next (a toran between posts),
- * and runs out to the right edge, where it ends in a diamond like the eyebrow rules. The joins sit under the
- * medallions, so the swags may meet the straight runs at an angle.
+ * beyond the left edge of the screen, hangs in a garland swag from each medallion to the next (a toran
+ * between posts), and runs on out past the right edge: BLEED px either side of the column, more than any
+ * screen shows, so it always runs off both edges. The joins sit under the medallions, so the swags may meet
+ * the straight runs at an angle.
  */
 
 /** The rail's width, and the medallions' centre line. */
 export const RAIL_W = 1280;
 export const RAIL_Y = 28;
+/** How far the thread runs on past the column at either end (clipped by the screen). */
+export const BLEED = 480;
 
 /** The medallions' centres: the middle of each third of the column. */
 export const MARKER_X = [RAIL_W / 6, RAIL_W / 2, (RAIL_W * 5) / 6];
@@ -48,13 +51,13 @@ const n = (value: number) => Number(value.toFixed(2));
 
 /** The thread: lead-in, two swags, lead-out. */
 export const THREAD_D =
-  `M0 ${RAIL_Y}H${n(MARKER_X[0])}` +
+  `M${-BLEED} ${RAIL_Y}H${n(MARKER_X[0])}` +
   SWAGS.map(([, c1, c2, end]) => `C${n(c1[0])} ${c1[1]} ${n(c2[0])} ${c2[1]} ${n(end[0])} ${end[1]}`).join("") +
-  `H${RAIL_W}`;
+  `H${RAIL_W + BLEED}`;
 
-const LEAD_IN = MARKER_X[0];
+const LEAD_IN = MARKER_X[0] + BLEED;
 const SWAG_LENGTHS = SWAGS.map((curve) => cubicLength(curve));
-const TOTAL = LEAD_IN + SWAG_LENGTHS[0] + SWAG_LENGTHS[1] + (RAIL_W - MARKER_X[2]);
+const TOTAL = LEAD_IN + SWAG_LENGTHS[0] + SWAG_LENGTHS[1] + (RAIL_W + BLEED - MARKER_X[2]);
 
 /**
  * Where each medallion sits along the thread, as a share of its length (0 to 1), for a path drawn with
@@ -62,3 +65,9 @@ const TOTAL = LEAD_IN + SWAG_LENGTHS[0] + SWAG_LENGTHS[1] + (RAIL_W - MARKER_X[2
  * server's markup and the browser's agree to the digit.
  */
 export const MARKER_AT = [LEAD_IN, LEAD_IN + SWAG_LENGTHS[0], LEAD_IN + SWAG_LENGTHS[0] + SWAG_LENGTHS[1]].map((at) => Number((at / TOTAL).toFixed(4)));
+
+/**
+ * The share of the thread at the point `x` (rail px) on its straight lead-out past the last medallion:
+ * where the fill must reach to touch the right edge of the screen.
+ */
+export const alongLeadOut = (x: number) => Math.min(1, (LEAD_IN + SWAG_LENGTHS[0] + SWAG_LENGTHS[1] + Math.max(0, x - MARKER_X[2])) / TOTAL);

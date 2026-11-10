@@ -14,16 +14,18 @@ const schema = {
 };
 
 /**
- * Frequently asked questions (IA 10; Figma "11 · FAQ", 2392:7383): a paper band with the centred eyebrow and heading with the V&R wax seal pressed beside
- * it, and the questions in a 788px column with roman numerals in the margin, one open at a time.
+ * Frequently asked questions (IA 10; Figma "11 · FAQ", 2392:7383): a cream band with the centred heading and the Vajiram & Ravi seal (the logo's mark in a
+ * lettered wax seal) pressed beside it, and the questions in a 788px column with roman numerals in the
+ * margin, one open at a time, the open one on a tinted panel.
  *
  * The band grows with its questions (the client's seven): nothing in it is drawn to a fixed height.
- * Motion: the heading rises with the section
- * reveal, the seal is pressed on after it (FaqSeal), and the questions follow one by one (data-reveal).
+ * Motion: the heading's letters rise in (ui/TextMotion, data-split), its orange answer catching a light
+ * now and then; the seal is pressed on after it (FaqSeal) and turns a little with the scroll (data-turn),
+ * and the questions follow one by one (data-stagger).
  */
 export default function Faq() {
   return (
-    <section id="faq" aria-labelledby="faq-h" className="relative bg-paper">
+    <section id="faq" aria-labelledby="faq-h" className="relative bg-cream">
       <div className="relative mx-auto w-canvas px-20 pt-[104px] pb-12">
 
         <div className="relative mx-auto flex w-[900px] flex-col items-center">
@@ -35,7 +37,10 @@ export default function Faq() {
               {faqIntro.accent}
             </em>
           </h2>
-          <FaqSeal className="absolute top-[18px] right-[6px]" />
+          {/* The seal turns a little with the scroll, as if the band were moving under it (ui/TextMotion, data-turn). */}
+          <span data-turn="24" className="absolute -top-2 -right-5">
+            <FaqSeal className="relative" />
+          </span>
 
           <div className="mt-12 border-b border-[rgb(94_23_16/0.25)]">
             <FaqList entries={faqEntries} />

@@ -26,7 +26,7 @@ export function lockScroll(locked: boolean) {
   else instance?.start();
 }
 
-/** The sticky header's height once the utility bar has slid away: the main header (80). */
+/** The sticky header's height: the main header (80). */
 export const HEADER_OFFSET = 80;
 
 /** Scrolls the page smoothly to `y`, a scroll position in screen px (window.scrollY's units). */

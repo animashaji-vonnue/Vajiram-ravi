@@ -11,12 +11,6 @@ export const contact = {
   email: "admissions@vajiramandravi.com",
 };
 
-/** The dark line above the header (Figma "Header / Utility bar", 2258:10448). */
-export const utilityBar = {
-  lead: "For registration or seat allotment, call",
-  link: { label: "Contact us", href: "#contact" },
-};
-
 /** The header's mega menus. The design draws no panels: each lists a subject's links in columns. */
 export type MenuId = "courses" | "study" | "exam";
 
@@ -34,27 +28,27 @@ export type Menu = {
 const COURSES: MenuColumn = {
   heading: "Courses",
   links: [
-    { label: "UPSC GS Course 2027", href: links.gsClassroom },
-    { label: "UPSC GS Online Course 2027", href: links.gsOnline },
-    { label: "UPSC 2 Year Course", href: links.twoYearCourse },
-    { label: "UPSC 2 Year Online Course", href: links.twoYearOnline },
-    { label: "UPSC Online Coaching", href: links.onlineCoaching },
-    { label: "UPSC CSAT Course", href: links.csat },
-    { label: "Current Affairs Course", href: links.currentAffairsCourse },
-    { label: "UPSC Study Material", href: links.studyMaterial },
+    { label: "UPSC GS course 2027", href: links.gsClassroom },
+    { label: "UPSC GS online course 2027", href: links.gsOnline },
+    { label: "UPSC 2-year course", href: links.twoYearCourse },
+    { label: "UPSC 2-year online course", href: links.twoYearOnline },
+    { label: "UPSC online coaching", href: links.onlineCoaching },
+    { label: "UPSC CSAT course", href: links.csat },
+    { label: "Current affairs course", href: links.currentAffairsCourse },
+    { label: "UPSC study material", href: links.studyMaterial },
   ],
 };
 
 const TEST_SERIES: MenuColumn = {
   heading: "Test series & mentorship",
   links: [
-    { label: "UPSC Prelims Test Series 2027", href: links.prelimsTestSeries },
-    { label: "UPSC Mains Test Series 2027", href: links.mainsTestSeries },
-    { label: "UPSC Mains Test Series Hindi Medium", href: links.mainsTestSeriesHindi },
-    { label: "UPSC Optional Test Series", href: links.optionalTestSeries },
-    { label: "UPSC Mentorship Program 2027", href: links.mentorship },
-    { label: "UPSC Mentorship Program Hindi Medium", href: links.mentorshipHindi },
-    { label: "UPSC Interview Guidance Program IGP", href: links.interviewGuidance },
+    { label: "UPSC Prelims test series 2027", href: links.prelimsTestSeries },
+    { label: "UPSC Mains test series 2027", href: links.mainsTestSeries },
+    { label: "UPSC Mains test series, Hindi medium", href: links.mainsTestSeriesHindi },
+    { label: "UPSC optional test series", href: links.optionalTestSeries },
+    { label: "UPSC mentorship programme 2027", href: links.mentorship },
+    { label: "UPSC mentorship programme, Hindi medium", href: links.mentorshipHindi },
+    { label: "UPSC interview guidance programme (IGP)", href: links.interviewGuidance },
   ],
 };
 
@@ -62,35 +56,35 @@ const UPSC_EXAM: MenuColumn = {
   heading: "UPSC exam",
   links: [
     { label: "UPSC 2027", href: links.upsc2027 },
-    { label: "UPSC Exam Pattern", href: links.examPattern },
-    { label: "UPSC Syllabus", href: links.syllabus },
-    { label: "UPSC CSAT Syllabus", href: links.csatSyllabus },
-    { label: "UPSC Optional Subjects List", href: links.optionalSubjectsList },
-    { label: "UPSC Selection Process", href: links.selectionProcess },
-    { label: "UPSC Interview", href: links.interview },
-    { label: "UPSC Age Limit", href: links.ageLimit },
-    { label: "IAS Salary", href: links.iasSalary },
+    { label: "UPSC exam pattern", href: links.examPattern },
+    { label: "UPSC syllabus", href: links.syllabus },
+    { label: "UPSC CSAT syllabus", href: links.csatSyllabus },
+    { label: "UPSC optional subjects list", href: links.optionalSubjectsList },
+    { label: "UPSC selection process", href: links.selectionProcess },
+    { label: "UPSC interview", href: links.interview },
+    { label: "UPSC age limit", href: links.ageLimit },
+    { label: "IAS salary", href: links.iasSalary },
   ],
 };
 
 const EXAM_UPDATES: MenuColumn = {
   heading: "Exam updates",
   links: [
-    { label: "UPSC Calendar 2027", href: links.calendar },
-    { label: "UPSC Admit Card", href: links.admitCard },
-    { label: "UPSC Prelims Answer Key", href: links.prelimsAnswerKey },
-    { label: "UPSC Cut Off", href: links.cutOff },
-    { label: "UPSC Final Result 2025", href: links.finalResult },
+    { label: "UPSC calendar 2027", href: links.calendar },
+    { label: "UPSC admit card", href: links.admitCard },
+    { label: "UPSC Prelims answer key", href: links.prelimsAnswerKey },
+    { label: "UPSC cut-off", href: links.cutOff },
+    { label: "UPSC final result 2025", href: links.finalResult },
   ],
 };
 
 const FREE_RESOURCES: MenuColumn = {
   heading: "Free resources",
   links: [
-    { label: "UPSC Current Affairs", href: "#resources" },
-    { label: "UPSC Previous Year Papers", href: links.previousYearPapers },
-    { label: "UPSC Books", href: links.upscBooks },
-    { label: "Model Answers for UPSC Mains 2026", href: links.modelAnswers },
+    { label: "UPSC current affairs", href: "#resources" },
+    { label: "UPSC previous year papers", href: links.previousYearPapers },
+    { label: "UPSC books", href: links.upscBooks },
+    { label: "Model answers for UPSC Mains 2026", href: links.modelAnswers },
   ],
 };
 
@@ -105,11 +99,11 @@ export const menus: Record<MenuId, Menu> = {
       {
         heading: "Magazines & practice",
         links: [
-          { label: "Monthly Current Affairs Magazine", href: links.monthlyMagazine },
+          { label: "Monthly current affairs magazine", href: links.monthlyMagazine },
           { label: "Yojana & Kurukshetra", href: links.yojanaKurukshetra },
-          { label: "UPSC Toppers’ Answer Sheets", href: links.toppersAnswerSheets },
-          { label: "Weekly Essay Practice", href: links.essayPractice },
-          { label: "Free UPSC Study Material & Notes", href: links.studyMaterial },
+          { label: "UPSC toppers’ answer sheets", href: links.toppersAnswerSheets },
+          { label: "Weekly essay practice", href: links.essayPractice },
+          { label: "Free UPSC study material & notes", href: links.studyMaterial },
         ],
       },
     ],
@@ -129,12 +123,12 @@ export const menus: Record<MenuId, Menu> = {
 export type NavItem = LinkItem & { menu?: MenuId };
 
 export const mainNav: NavItem[] = [
-  { label: "All Courses", href: "#programmes", menu: "courses" },
+  { label: "All courses", href: "#programmes", menu: "courses" },
   { label: "Toppers", href: links.toppers },
-  { label: "Study Materials", href: "#resources", menu: "study" },
-  { label: "Current Affairs", href: links.currentAffairs },
-  { label: "UPSC Exam", href: links.upscExam, menu: "exam" },
-  { label: "Upcoming Batches", href: "#batches" },
+  { label: "Study materials", href: "#resources", menu: "study" },
+  { label: "Current affairs", href: links.currentAffairs },
+  { label: "UPSC exam", href: links.upscExam, menu: "exam" },
+  { label: "Upcoming batches", href: "#batches" },
   { label: "FAQs", href: "#faq" },
   { label: "Contact us", href: "#contact" },
 ];

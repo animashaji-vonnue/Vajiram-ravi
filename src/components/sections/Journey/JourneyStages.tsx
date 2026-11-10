@@ -8,12 +8,18 @@ import { cx } from "@/lib/cx";
 import { prefersReducedMotion } from "@/lib/motion";
 import { scrollToY } from "@/lib/smoothScroll";
 import StageRail from "./StageRail";
-import { MARKER_AT } from "./thread";
+import { BLEED, MARKER_AT, RAIL_W, alongLeadOut } from "./thread";
 
 const ID = "journey";
 
 /** How far (canvas px) the page scrolls through each stage while the band is pinned. */
 const STAGE_SCROLL = 480;
+/**
+ * The last stage has no run of its own to scroll through: once it is reached its thread fills out to the
+ * screen's edge by itself (LAST_FILL_MS), and after this short tail the band lets go.
+ */
+const LAST_TAIL = 200;
+const LAST_FILL_MS = 900;
 /** Room kept free above and below the content inside the pinned screen. */
 const FRAME_PAD = 64;
 /** The leaving stage's fade (ui/CrossFade's exit: 70% of its 200ms, --ease-in); the new one arrives after it. */
@@ -25,21 +31,22 @@ const clamp = (value: number, min: number, max: number) => Math.min(max, Math.ma
 
 /**
  * The journey band as one pinned screen. The section is a screen tall plus a run of STAGE_SCROLL for each
- * stage; inside it the screen (position: sticky, a full viewport high) holds the heading, the stage rail (StageRail) and the chosen stage's panel, and stays put while the
+ * stage but the last, and a short tail (LAST_TAIL) for it; inside it the screen (position: sticky, a full viewport high) holds the heading, the stage rail (StageRail) and the chosen stage's panel, and stays put while the
  * page scrolls through the run: Prelims, then Mains, then Interview. When the run is over the screen
  * scrolls away with the section and the page goes on. On a screen too short for it all, the content is
  * scaled down to fit, so nothing is ever cut off while it is pinned.
  *
- * The filled thread on the rail follows the scroll the whole way, reaching the next medallion just as its
- * stage comes in, and running on to the thread's end through the last stage, so the visitor always sees how
- * far along the path they are. Choosing a stage on the rail (a click, or the arrow keys, Home and End)
+ * The filled thread on the rail follows the scroll, reaching the next medallion just as its stage comes in,
+ * so the visitor always sees how far along the path they are. When the last stage (Interview) comes in, its
+ * thread runs on out to the screen's edge by itself (900ms), and the band lets go a moment later: nobody
+ * has to scroll on just to see the line reach its end. Scrolling back draws it back. Choosing a stage on the rail (a click, or the arrow keys, Home and End)
  * glides the page to that stage's part of the run, so the scroll stays the one source of truth. With
  * reduced motion the jump is instant; the stages still follow the scroll, without the panel's rise.
  *
  * The panel has two columns, top-aligned: on the left the title line (the stage's name in orange italic),
- * its paragraph and its button; on the right the card "How Vajiram supports you", a list of plain lines
- * between hairlines, each after a small burnt dot (the Prelims numbers in burnt semibold, the Personality
- * Test's labels in bold). Every stage's content is in the panel, stacked in one grid cell per column with all
+ * its paragraph and its button; on the right the card "How Vajiram & Ravi supports you", a list of plain
+ * lines between hairlines, each after a small burnt dot, the key words set in bold (the Prelims numbers,
+ * the Personality Test's labels): weight marks them, not colour. Every stage's content is in the panel, stacked in one grid cell per column with all
  * but the chosen one hidden, so the panel is always as tall as the longest stage and nothing moves when the
  * stage changes. The old stage fades out over 140ms (--ease-in) while the new one's title, paragraph,
  * button and lines rise 8px and fade in after it, 40ms apart.
@@ -50,7 +57,7 @@ export default function JourneyStages({ heading }: { heading: ReactNode }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<SVGPathElement>(null);
   const count = journeyStages.length;
-  const run = STAGE_SCROLL * count;
+  const run = STAGE_SCROLL * (count - 1) + LAST_TAIL;
 
   /** Canvas px scrolled into the run (0 when the screen has just pinned), and the page's scrollY for any point of it. */
   const measure = () => {
@@ -61,6 +68,15 @@ export default function JourneyStages({ heading }: { heading: ReactNode }) {
     return { into, toScrollY: (canvasPx: number) => window.scrollY + (canvasPx - into) * zoom };
   };
 
+  /** The right edge of the screen, in the rail's px (the content may be scaled to fit). */
+  const screenRight = () => {
+    const svg = fillRef.current?.ownerSVGElement;
+    if (!svg) return RAIL_W;
+    const box = svg.getBoundingClientRect();
+    const unit = box.width / (RAIL_W + BLEED * 2);
+    return unit ? -BLEED + (window.innerWidth - box.left) / unit : RAIL_W;
+  };
+
   // The stage and the thread follow the scroll.
   useEffect(() => {
     let frame = 0;
@@ -69,17 +85,35 @@ export default function JourneyStages({ heading }: { heading: ReactNode }) {
       frame = 0;
       const at = measure();
       if (!at) return;
-      const progress = clamp(at.into / run, 0, 1);
-      const stage = Math.min(count - 1, Math.floor(progress * count));
+      const into = clamp(at.into, 0, run);
+      const stage = Math.min(count - 1, Math.floor(into / STAGE_SCROLL));
+      const last = stage === count - 1;
       if (stage !== shown) {
         shown = stage;
         setActive(journeyStages[stage].id);
       }
-      // The fill runs from this stage's medallion to the next one's (the thread's end after the last).
-      const local = clamp(progress * count - stage, 0, 1);
+      const fill = fillRef.current;
+      if (!fill) return;
+      if (last) {
+        // The last stage: the thread runs out to the right edge of the screen by itself.
+        fill.style.transition = prefersReducedMotion() ? "" : `stroke-dashoffset ${LAST_FILL_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+        fill.style.setProperty("stroke-dashoffset", String(1 - alongLeadOut(screenRight())));
+        fill.dataset.ran = "1";
+        return;
+      }
+      // Before it: the fill runs from this stage's medallion to the next one's with the scroll (coming back
+      // from the last stage, it first eases back over 400ms instead of snapping).
+      if (fill.dataset.ran) {
+        delete fill.dataset.ran;
+        fill.style.transition = "stroke-dashoffset 400ms cubic-bezier(0.22, 1, 0.36, 1)";
+        window.setTimeout(() => {
+          if (!fill.dataset.ran) fill.style.transition = "";
+        }, 400);
+      }
+      const local = clamp(into / STAGE_SCROLL - stage, 0, 1);
       const from = MARKER_AT[stage];
-      const to = MARKER_AT[stage + 1] ?? 1;
-      fillRef.current?.style.setProperty("stroke-dashoffset", String(1 - (from + (to - from) * local)));
+      const to = MARKER_AT[stage + 1];
+      fill.style.setProperty("stroke-dashoffset", String(1 - (from + (to - from) * local)));
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -109,12 +143,12 @@ export default function JourneyStages({ heading }: { heading: ReactNode }) {
     return () => window.removeEventListener("resize", fit);
   }, []);
 
-  /** Choosing a stage on the rail: glide to a quarter of the way into its part of the run. */
+  /** Choosing a stage on the rail: glide to a quarter of the way into its part of the run (the last: just into its tail). */
   const choose = (id: StageId) => {
     const i = journeyStages.findIndex((stage) => stage.id === id);
     const at = measure();
     if (i < 0 || !at) return;
-    const y = at.toScrollY((i + 0.25) * STAGE_SCROLL);
+    const y = at.toScrollY(i === count - 1 ? i * STAGE_SCROLL + 24 : (i + 0.25) * STAGE_SCROLL);
     if (prefersReducedMotion()) window.scrollTo(0, y);
     else scrollToY(y);
   };
@@ -129,9 +163,11 @@ export default function JourneyStages({ heading }: { heading: ReactNode }) {
           {/*
             The Ashoka lion capital over a dome with the flag (Figma 2488:5480), as a faint warm print behind
             the heading's right side: low opacity, toned to the paper and fading out towards its foot, so it
-            reads as part of the ground rather than a picture on it. Decoration.
+            reads as part of the ground rather than a picture on it. Decoration. It rises slowly behind the
+            heading while the page scrolls through the band (ui/TextMotion, data-drift).
           */}
           <img
+            data-drift="-70"
             src="/images/journey/ashoka-dome.webp"
             alt=""
             aria-hidden="true"
@@ -192,7 +228,7 @@ export default function JourneyStages({ heading }: { heading: ReactNode }) {
                               <li key={item.text} style={line.style} className={cx("flex items-start gap-3.5 py-3.5", line.className)}>
                                 <img src="/images/ornaments/butta.svg" alt="" aria-hidden="true" width={14} height={14} className="mt-[5px] size-3.5 shrink-0" />
                                 <p className="text-[16px]/[1.55] text-ink">
-                                  {item.label && <strong className="font-semibold">{item.label} </strong>}
+                                  {item.label && <strong className="font-bold">{item.label} </strong>}
                                   <SupportText item={item} />
                                 </p>
                               </li>
@@ -263,13 +299,13 @@ function splitFigures(text: string, figures: string[]): string[] {
   return parts;
 }
 
-/** A support line's text, with the numbers it names in burnt semibold (same size, so every line keeps its rhythm). */
+/** A support line's text, with the numbers it names in bold ink (weight, not colour; same size, so every line keeps its rhythm); they count up the first time they are seen (ui/TextMotion, data-count). */
 function SupportText({ item }: { item: SupportItem }) {
   const figures = item.figures ?? [];
   if (!figures.length) return item.text;
   return splitFigures(item.text, figures).map((part, i) =>
     figures.includes(part) ? (
-      <strong key={i} className="font-semibold text-burnt">
+      <strong key={i} data-count className="font-bold text-ink">
         {part}
       </strong>
     ) : (

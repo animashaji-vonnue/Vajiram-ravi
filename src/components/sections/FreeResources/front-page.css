@@ -1,0 +1,81 @@
+/*
+ * The front page's print details (FrontPage), kept beside it rather than in globals.css.
+ */
+
+/*
+ * Small caps for the dateline, the ears and the folio. The face has none of its own, so they are
+ * synthesised (the page turns synthesis off; it is allowed back here, for small caps only).
+ */
+.fp-smallcaps {
+  font-variant-caps: all-small-caps;
+  font-synthesis-small-caps: auto;
+  font-variant-numeric: oldstyle-nums;
+  letter-spacing: 0.09em;
+}
+
+/* The standfirst's drop cap: two lines deep, in the headline face, sitting on the second line's baseline. */
+.fp-dropcap::first-letter {
+  float: left;
+  margin: 0.08em 0.1em 0 0;
+  font-family: var(--fp-serif);
+  font-size: 3.1em;
+  font-weight: 700;
+  line-height: 0.8;
+  color: var(--color-ink);
+}
+
+/*
+ * A photograph printed as a halftone: in black on the newsprint, with a fine dot screen over it. Hovering
+ * its column's lead story (or focusing it) develops it into colour as the screen lifts.
+ */
+.fp-halftone {
+  position: relative;
+  overflow: clip;
+  background: #e9e1d3;
+}
+.fp-halftone img {
+  filter: grayscale(1) contrast(1.18) brightness(1.04) sepia(0.12);
+  transition:
+    filter var(--dur-slow) var(--ease-out),
+    scale 900ms var(--ease-out);
+}
+.fp-halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle at center, rgb(22 21 20 / 0.55) 0.75px, transparent 1.35px);
+  background-size: 3.5px 3.5px;
+  mix-blend-mode: multiply;
+  opacity: 0.75;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+.group\/story:is(:hover, :focus-within) .fp-halftone img {
+  filter: none;
+  scale: 1.03;
+}
+.group\/story:is(:hover, :focus-within) .fp-halftone::after {
+  opacity: 0;
+}
+
+/* The broadsheet's fold across the middle of the page: a faint shadow either side of a lighter crease. */
+.fp-fold {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(43 18 5 / 0.035) 42%,
+    rgb(255 255 255 / 0.55) 50%,
+    rgb(43 18 5 / 0.03) 58%,
+    transparent
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fp-halftone img,
+  .fp-halftone::after {
+    transition: none;
+  }
+  .group\/story:is(:hover, :focus-within) .fp-halftone img {
+    scale: none;
+  }
+}

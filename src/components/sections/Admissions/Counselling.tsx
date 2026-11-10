@@ -5,35 +5,45 @@ import GuidanceButton from "./GuidanceButton";
 import Postcard from "./Postcard";
 
 /**
- * The ground and pattern of the `anima/magazine-page` branch's "Need help choosing?" band: its deep orange,
- * a print of small four-petalled flowers in white at 8% on a 40px repeat, and a glow of brighter orange
- * from the top left corner.
+ * The band's lattice: a jaali of interlocking circles (each 48px circle passing through its neighbours'
+ * centres), drawn in white hairlines at 6%. It reads as fine stone tracery, not as dots.
  */
-const FLOWER_PRINT = `url("data:image/svg+xml,${encodeURIComponent(
-  "<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 34 34'><path d='M17 9.5C18.1 12.3 19.7 13.9 22.5 15 19.7 16.1 18.1 17.7 17 20.5 15.9 17.7 14.3 16.1 11.5 15 14.3 13.9 15.9 12.3 17 9.5Z' fill='rgba(255,255,255,0.08)'/><circle cx='0' cy='32' r='1.4' fill='rgba(255,255,255,0.08)'/><circle cx='34' cy='32' r='1.4' fill='rgba(255,255,255,0.08)'/></svg>",
+const JAALI = `url("data:image/svg+xml,${encodeURIComponent(
+  "<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'><g fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='0.8'><circle cx='0' cy='0' r='24'/><circle cx='48' cy='0' r='24'/><circle cx='0' cy='48' r='24'/><circle cx='48' cy='48' r='24'/><circle cx='24' cy='24' r='24'/></g></svg>",
 )}")`;
 
 /**
- * Counselling & Academic Guidance (IA 6; Figma "05 · Personalised Counselling", 2377:4839): the band on
- * the anima branch's ground and flower print (above). On the left the eyebrow, the heading, the two paragraphs, "Get Expert Guidance" (it puts
- * the focus in the form) and the phone line with the hours; on the right the postcard form (Postcard).
- * "Register now" on a batch ticket scrolls here with its programme filled in (requestEnquiry).
+ * Counselling & Academic Guidance (IA 6; Figma "05 · Personalised Counselling", 2377:4839): on the left
+ * the heading, the paragraph, "Get expert guidance" (it puts the focus in the form) and the phone line with
+ * the hours; on the right the postcard form (Postcard). "Register now" on a batch ticket scrolls here with
+ * its programme filled in (requestEnquiry).
  *
- * The paragraphs are white rather than the dark bands' cream at 80%: on this deep orange only white
- * reaches 4.5:1 for text this size.
+ * The ground is a deep burnt orange, darkest behind the heading and at the band's sides, with a brighter
+ * orange glow behind the postcard, under the jaali lattice (above). The heading, the paragraph and the
+ * phone line are all white: on this ground only white reaches 4.5:1 for text this size.
  */
 export default function Counselling() {
   const { title } = counsellingCopy;
   return (
-    <section id="counselling" data-curtain aria-labelledby="counselling-h" className="relative isolate overflow-clip bg-[#c94a0a]">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ backgroundImage: FLOWER_PRINT, backgroundSize: "40px 40px" }} />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_60%_at_0%_0%,rgba(255,138,43,0.55),transparent_70%)]" />
+    <section id="counselling" data-curtain aria-labelledby="counselling-h" className="relative isolate overflow-clip bg-[#7e2b06]">
+      {/* The darker sides: the band deepens towards its left and right edges. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#6a2405_0%,#94360a_30%,#a63e0b_55%,#94360a_82%,#6a2405_100%)]"
+      />
+
+      {/* The lighter glow behind the postcard, centred on it (the card's middle is 1010px across the canvas). */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-1/2 w-canvas -translate-x-1/2">
+        <div className="absolute top-1/2 left-[1010px] h-[1000px] w-[1200px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(closest-side,#ec6a14_0%,rgba(222,92,14,0.75)_40%,rgba(190,72,10,0.3)_72%,transparent_100%)]" />
+      </div>
+
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ backgroundImage: JAALI, backgroundSize: "48px 48px" }} />
 
       <div className="relative mx-auto flex w-canvas items-center justify-between px-20 py-24">
         <div className="relative flex w-[500px] shrink-0 flex-col items-start">
           <h2 id="counselling-h" data-split className="font-heading text-[56px]/[1.08] tracking-[-0.02em] text-white">
             {title.before}{" "}
-            <em data-reveal-em className="text-saffron italic">
+            <em data-reveal-em className="text-white italic">
               {title.em}
             </em>{" "}
             {title.after}

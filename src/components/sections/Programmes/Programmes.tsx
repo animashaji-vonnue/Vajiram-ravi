@@ -6,8 +6,10 @@ import CourseShelf from "./CourseShelf";
 
 /**
  * The newspaper collage (Figma "ned 2/3/4"): the three cuttings repeated across the whole upper band of the
- * section, edge to edge of the screen and from the band's top to the wall, under a paper veil that keeps
- * the heading and the card legible. Decoration only.
+ * section, edge to edge of the screen and from the band's top to below the card, toned to sepia and
+ * multiplied into the cream, under a cream veil that keeps the heading and the card legible and fades the
+ * collage out before the shelf. Decoration only. It drifts down slowly as the page scrolls past, so the
+ * card seems to float over it (ui/TextMotion, data-drift).
  */
 const CUTTINGS = ["/images/programmes/newsprint-left.webp", "/images/programmes/newsprint-centre.webp", "/images/programmes/newsprint-right.webp"];
 
@@ -15,6 +17,7 @@ function Newsprint() {
   return (
     <div
       aria-hidden="true"
+      data-drift="90"
       className="pointer-events-none absolute -top-24 -bottom-20 left-1/2 grid w-[max(calc(100vw/var(--canvas-zoom,1)),1440px)] -translate-x-1/2 grid-cols-4 grid-rows-2 overflow-clip"
     >
       {[0, 1, 2, 3, 4, 5, 6, 7].map((n) => (
@@ -26,70 +29,50 @@ function Newsprint() {
           height={1308}
           loading="lazy"
           decoding="async"
-          className="size-full max-w-none object-cover opacity-40 grayscale-[30%]"
+          className="size-full max-w-none object-cover opacity-30 mix-blend-multiply sepia-[0.45]"
           style={{ transform: n % 2 ? "scaleX(-1)" : undefined }}
         />
       ))}
-      {/* The paper veil: lighter behind the heading, thinner behind the card. */}
-      <span className="absolute inset-0 bg-[linear-gradient(180deg,rgb(255_255_255/0.86)_0%,rgb(255_255_255/0.7)_32%,rgb(255_255_255/0.5)_100%)]" />
+      {/* The cream veil: fuller behind the heading, thinner behind the card, closing in again at the foot. */}
+      <span className="absolute inset-0 bg-[linear-gradient(180deg,rgb(255_248_236/0.86)_0%,rgb(255_248_236/0.66)_32%,rgb(255_248_236/0.5)_70%,rgb(255_248_236/1)_100%)]" />
     </div>
   );
 }
 
 /**
- * Explore UPSC Programmes (IA 4; Figma "03 · Explore Our Programmes", 2377:4612): a white band with the
- * site's heading row (eyebrow, heading, lead), then the featured General Studies programme on the frosted
- * card over the newspaper collage (FlagshipCard), "More UPSC programmes" with every programme group as a
- * cover on the course shelf, eight on two shelves of four (CourseShelf), and under them on the wall a card
- * pointing to the counsellors. The copy is the `kevin` branch's (data/programmes). Padding 96 / 80;
- * 56px from the heading to the card and from the cards to the closing line.
+ * Explore UPSC Programmes (IA 4; Figma "03 · Explore Our Programmes", 2377:4612): a cream band, as the
+ * journey section's (feedback 25), with the section's heading, then the flagship General Studies
+ * programme on its orange card over the newspaper collage (FlagshipCard), then "All our UPSC programmes"
+ * with every programme group as a book on the wooden course shelf and its category filter (CourseShelf),
+ * and under them a card pointing to the counsellors. The copy is the `kevin` branch's (data/programmes).
+ * Padding 96 / 96; 48px from the heading to the card, 96px from the card to the shelf.
  */
 export default function Programmes() {
   const { title } = programmesIntro;
   return (
-    <section id="programmes" aria-labelledby="programmes-h" className="relative overflow-clip bg-white">
+    <section id="programmes" aria-labelledby="programmes-h" className="relative overflow-clip bg-cream">
       <div className="relative mx-auto flex w-canvas flex-col items-start px-20 pt-24">
-        {/* The upper band: the heading and the featured programme, on the newspaper collage. */}
+        {/* The upper band: the heading and the flagship programme, on the newspaper collage. */}
         <div className="relative w-full">
-        <Newsprint />
-        <div className="relative mx-auto flex w-[820px] flex-col items-center gap-4 text-center">
-          <h2 id="programmes-h" data-split className="font-heading text-[56px]/[1.08] tracking-[-0.02em] text-ink">
-            {title.before}{" "}
-            <em data-reveal-em className="text-orange italic">
-              {title.em}
-            </em>{" "}
-            {title.after}
-          </h2>
-          <p data-words className="w-[640px] text-[17px]/[1.55] text-clay">
-            {programmesIntro.lead}
-          </p>
-        </div>
-
-        <div className="relative mt-14 w-full">
-          <FlagshipCard />
-        </div>
-        </div>
-
-        {/*
-          The courses wall (Figma 2546:4503): a photograph of a cream papered wall with two wooden shelves, old
-          books, succulents and an inkwell at their ends, running the full width of the screen; the heading
-          over the wall at the top, and kevin's eight programme covers standing on the shelves (CourseShelf).
-          The photograph is shown at a fixed 1.25× (1980 × 840) and centred, so the covers, 200px square, land
-          exactly on its planks at any screen width; the covers it was drawn with are painted out of it.
-        */}
-        <div className="relative mt-20 h-[840px] w-full">
-          <div aria-hidden="true" className="shelf-wall pointer-events-none absolute inset-y-0 left-1/2 w-[max(calc(100vw/var(--canvas-zoom,1)),1440px)] -translate-x-1/2 overflow-clip">
-            <img
-              src="/images/programmes/shelf-wall.webp"
-              alt=""
-              width={1584}
-              height={672}
-              loading="lazy"
-              decoding="async"
-              className="absolute top-0 left-[calc(50%-987.5px)] h-[840px] w-[1980px] max-w-none"
-            />
+          <Newsprint />
+          <div className="relative mx-auto flex w-[820px] flex-col items-center text-center">
+            <h2 id="programmes-h" data-split className="font-heading text-[56px]/[1.08] tracking-[-0.02em] text-ink">
+              {title.before}{" "}
+              <em data-reveal-em className="text-orange italic">
+                {title.em}
+              </em>{" "}
+              {title.after}
+            </h2>
           </div>
-          <h3 data-split className="absolute inset-x-0 top-[50px] text-center font-heading text-[48px]/[1.15] tracking-[-0.02em] text-ink">
+
+          <div className="relative mt-12 w-full">
+            <FlagshipCard />
+          </div>
+        </div>
+
+        {/* The course shelf: its heading, then the filter and the books on their planks (CourseShelf). */}
+        <div className="relative mt-24 w-full">
+          <h3 data-split className="text-center font-heading text-[48px]/[1.15] tracking-[-0.02em] text-ink">
             <span className="block whitespace-nowrap">
               {shelfIntro.title.before}
               <em data-reveal-em className="text-orange italic">
@@ -99,14 +82,14 @@ export default function Programmes() {
             </span>
             <span className="block whitespace-nowrap">{shelfIntro.title.line2}</span>
           </h3>
-          <div className="absolute inset-x-0 top-[137.5px]">
+          <div className="mt-8">
             <CourseShelf programmes={programmes} />
           </div>
         </div>
 
-        <div className="relative w-full pt-16 pb-24">
+        <div className="relative w-full pt-14 pb-24">
           {/*
-            The client's closing line, as a card under the wall: a counsellor's headset in
+            The client's closing line, as a card under the shelf: a counsellor's headset in
             a burnt disc, the question and the line, then the phone number and the button to the counselling form.
           */}
           <aside

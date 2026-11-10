@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { CarouselDots } from "@/components/ui/CarouselControls";
 import Cta from "@/components/ui/Cta";
 import { achievements, achievementsLabel, hero, heroSlides, type HeroSlide } from "@/data/hero";
 import { links } from "@/data/links";
@@ -32,13 +33,13 @@ function Ticker({ slide }: { slide: HeroSlide }) {
   return (
     <a
       href={links.toppers}
-      className="group/ticker inline-flex w-[470px] items-center gap-4 rounded-full bg-black/25 py-1.5 pr-4 pl-1.5 text-white ring-1 ring-white/25 backdrop-blur-md [transition:background-color_var(--dur-fast)_var(--ease-out)] hover:bg-black/35"
+      className="group/ticker inline-flex w-[490px] items-center gap-4 rounded-full bg-mahogany/80 py-1.5 pr-4 pl-1.5 text-white ring-1 ring-white/20 [transition:background-color_var(--dur-fast)_var(--ease-out)] hover:bg-mahogany"
     >
-      <span className="shrink-0 rounded-full bg-cream px-3 py-1 font-mono text-[11px]/[16px] tracking-[0.08em] text-burnt uppercase">
+      <span className="shrink-0 rounded-full bg-saffron px-3.5 py-1 text-[15px]/[20px] font-bold text-mahogany">
         CSE {slide.year} results
       </span>
       <span className="relative h-5 min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_24px,black_calc(100%-24px),transparent)]">
-        <span key={slide.name} className="hero-glide absolute top-0 left-0 flex text-[14px]/[20px] whitespace-nowrap">
+        <span key={slide.name} className="hero-glide absolute top-0 left-0 flex text-[15px]/[20px] font-medium whitespace-nowrap">
           <span className="pr-10">{line}</span>
           <span className="pr-10" aria-hidden="true">
             {line}
@@ -58,13 +59,16 @@ function Ticker({ slide }: { slide: HeroSlide }) {
  * CSE 2025 follow one another in their portraits.
  *
  *   - Each portrait pushes in slowly while it is shown and hands over to the next with a soft cross-fade
- *     (6.5s each, 1s hand-over). The topper's rank is marked beside them (the rank large in the serif, their name, the exam,
- *     a fine line drawn out to a dot); a dark wash from the left and a halftone grain keep the type legible.
- *   - Over it, on the left: the pill whose line glides past with the topper's name and rank, the client's
+ *     (6.5s each, 1s hand-over). The topper's rank is marked beside them, the page's loudest figure: the rank
+ *     large and bold in saffron (the headline stays white, so the two never compete), their name, the exam,
+ *     a fine line drawn out to a dot. A dark wash from the left keeps the type legible. Dots at the foot of
+ *     the panel show which topper is on and fill with the slide's time; choosing one jumps to that topper.
+ *   - Over it, on the left: the pill (a bold saffron "CSE 2025 results" tag) whose line glides past with the topper's name and rank, the client's
  *     headline, the lead and the two buttons. A button to pause the slideshow appears
  *     when reached with the keyboard.
  *   - Under the panel, on the orange: the four points of Figma's stats bar (2425:51305), each figure in a
- *     cream laurel with its line beside it, centred (the figures roll in).
+ *     cream laurel with its line beside it, centred (the figures roll in; the laurels sway gently, out of
+ *     step, while the hero is on screen).
  *
  * Load (once, after the intro curtain; see ./enter): the pill, the heading line by line, the lead card,
  * the buttons and the results rise in; the slideshow starts its clock when the curtain has lifted. Reduced
@@ -93,6 +97,25 @@ export default function Hero() {
     return () => window.clearTimeout(timer);
   }, [current, cycle, paused, ready, still]);
 
+  // The active dot fills with the current slide's time; it waits while paused and stays full when still.
+  const fillRef = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const fill = fillRef.current;
+    if (!fill) return;
+    if (still || !ready) {
+      fill.style.transform = still ? "scaleX(1)" : "scaleX(0)";
+      return;
+    }
+    const animation = fill.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], { duration: SLIDE_MS, easing: "linear", fill: "forwards" });
+    if (paused) animation.pause();
+    return () => animation.cancel();
+  }, [current, cycle, paused, ready, still]);
+
+  const choose = (i: number) => {
+    setCurrent(i);
+    setCycle((c) => c + 1);
+  };
+
   const togglePause = () => {
     if (paused) setCycle((c) => c + 1);
     setPaused((p) => !p);
@@ -107,8 +130,9 @@ export default function Hero() {
           aria-roledescription="carousel"
           aria-label={`UPSC CSE ${slide.year} toppers`}
           className={cx(
-            // The header (119) and the strip under the panel (126) stay on the first screen with it.
-            "relative h-[clamp(500px,calc(100svh/var(--canvas-zoom,1)-119px-16px-126px),820px)] overflow-clip rounded-[28px] bg-mahogany",
+            // The header (80) and the strip under the panel (150) stay on the first screen with it, with a
+            // little of the page under it showing too (40).
+            "relative h-[clamp(480px,calc(100svh/var(--canvas-zoom,1)-80px-16px-150px-40px),740px)] overflow-clip rounded-[28px] bg-mahogany",
             ENTER,
           )}
           style={at(AT.art)}
@@ -139,30 +163,28 @@ export default function Hero() {
             );
           })}
 
-          {/* A dark wash from the left for the type, and a fine halftone grain over everything. */}
+          {/* A dark wash from the left for the type, a light one along the foot for the dots, and one in the top right corner for the rank. */}
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-linear-to-r from-black/65 via-black/30 to-transparent" />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 opacity-35 mix-blend-overlay [background-image:radial-gradient(rgb(0_0_0/0.65)_1px,transparent_1.5px)] [background-size:6px_6px]"
-          />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-black/35 to-transparent" />
+          <div aria-hidden="true" className="pointer-events-none absolute top-0 right-0 h-1/2 w-[34%] bg-[radial-gradient(80%_80%_at_100%_0%,rgb(0_0_0/0.5),transparent)]" />
 
-          {/* The topper's rank marked beside them, drawn in with each slide. */}
+          {/* The topper's rank in the top right corner, clear of every portrait, its line pointing back to them; drawn in with each slide. */}
           <div
             key={`mark-${current}-${cycle}`}
             aria-hidden="true"
-            className="hero-mark pointer-events-none absolute top-[11%] left-[53%] flex items-start gap-3"
+            className="hero-mark pointer-events-none absolute top-[9%] right-[3.5%] flex flex-row-reverse items-start gap-3 text-right"
           >
             <div>
-              <p className="font-mono text-[11px]/[14px] tracking-[0.2em] text-white/80 uppercase">All India Rank</p>
-              <p className="mt-2 flex items-baseline gap-2 font-heading text-white">
-                <span className="text-[26px]/[1] text-saffron italic">AIR</span>
-                <span className="text-[96px]/[0.82] tracking-[-0.03em]">{pad(slide.rank)}</span>
+              <p className="text-[14px]/[18px] font-semibold text-white/90">All India Rank</p>
+              <p className="mt-1 flex items-baseline justify-end gap-2.5 font-heading text-saffron drop-shadow-[0_6px_18px_rgb(0_0_0/0.35)]">
+                <span className="text-[34px]/[1] font-semibold">AIR</span>
+                <span className="text-[132px]/[0.82] font-bold tracking-[-0.03em]">{pad(slide.rank)}</span>
               </p>
-              <p className="mt-4 text-[16px]/[21px] font-semibold">{slide.name}</p>
-              <p className="text-[13px]/[18px] text-white/80">UPSC CSE {slide.year}</p>
+              <p className="mt-4 text-[20px]/[26px] font-semibold">{slide.name}</p>
+              <p className="text-[15px]/[20px] text-white/85">UPSC CSE {slide.year}</p>
             </div>
-            <span className="mt-[62px] flex items-center">
-              <span className="hero-mark-line block h-px w-14 origin-left bg-white/70" />
+            <span className="mt-[84px] flex flex-row-reverse items-center">
+              <span className="hero-mark-line block h-px w-14 origin-right bg-white/70" />
               <span className="block size-2.5 rounded-full bg-white ring-4 ring-white/25" />
             </span>
           </div>
@@ -177,7 +199,7 @@ export default function Hero() {
                 <span key={i} className={cx("block whitespace-nowrap", LINE)} style={at(AT.lines[i])}>
                   {line.map((run) =>
                     run.em ? (
-                      <em key={run.text} className="text-saffron italic">
+                      <em key={run.text} className="font-semibold text-white not-italic">
                         {run.text}
                       </em>
                     ) : (
@@ -207,6 +229,20 @@ export default function Hero() {
             </div>
           </div>
 
+          {/* Which topper is on: a dot each, the current one filling with its time. */}
+          <div className={cx("absolute inset-x-0 bottom-7 z-20 flex justify-center", RISE)} style={at(AT.ctas[1])}>
+            <CarouselDots
+              count={heroSlides.length}
+              active={current}
+              onSelect={choose}
+              label="Choose a topper"
+              itemName="Topper"
+              tone="dark"
+              fillRef={fillRef}
+              className="rounded-full bg-black/25 px-3 py-2.5"
+            />
+          </div>
+
           {/* A way to stop the slideshow, kept out of sight until reached with the keyboard. */}
           {!still && (
             <button
@@ -224,11 +260,20 @@ export default function Hero() {
       </div>
 
       {/* Under the panel: the four points, each figure in its laurel, centred (Figma "stats bar", 2425:51305). */}
-      <ul aria-label={achievementsLabel} className="mx-auto flex w-canvas items-center justify-center gap-16 px-12 py-5">
+      <ul aria-label={achievementsLabel} className="mx-auto flex w-canvas items-center justify-center gap-16 px-12 pt-8 pb-9">
         {achievements.map((item, i) => (
           <li key={item.text} data-enter className={cx("flex items-center gap-4", RISE)} style={at(AT.achievements[Math.min(i, AT.achievements.length - 1)] + (i > 2 ? 80 : 0))}>
             <span className="relative flex h-[86px] w-[108px] shrink-0 items-center justify-center">
-              <img src="/images/hero/laurel-cream.svg" alt="" aria-hidden="true" width={108} height={86} className="absolute inset-0 size-full" />
+              {/* The laurel sways a little about its foot while the hero is on screen (globals.css, .lp-sway), each out of step. */}
+              <img
+                src="/images/hero/laurel-cream.svg"
+                alt=""
+                aria-hidden="true"
+                width={108}
+                height={86}
+                className="lp-sway absolute inset-0 size-full"
+                style={{ animationDelay: `${-i * 2.3}s` }}
+              />
               <span className="relative font-heading text-[28px]/[1] font-medium whitespace-nowrap">
                 <HeroFigure value={item.figure} />
               </span>

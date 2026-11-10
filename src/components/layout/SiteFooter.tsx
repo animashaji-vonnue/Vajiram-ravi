@@ -1,9 +1,8 @@
 import FooterWordmark from "@/components/sections/ClosingCta/FooterWordmark";
 import LinkOrText from "@/components/ui/LinkOrText";
-import { Flourish } from "@/components/ui/Ornament";
 import Photo from "@/components/ui/Photo";
 import { campuses } from "@/data/contact";
-import { footerColumns, footerContactHeading, footerCopyright, footerLegal, footerTagline, footerWordmark } from "@/data/footer";
+import { footerColumns, footerContactHeading, footerCopyright, footerLegal, footerTagline, footerWordmark, footerWordmarkPhotos } from "@/data/footer";
 import { contact } from "@/data/site";
 import { cx } from "@/lib/cx";
 
@@ -27,20 +26,20 @@ function FooterLink({ href, children }: { href: string | null; children: string 
 }
 
 /**
- * The paper footer after the closing call to action (IA 12; Figma "14 · Footer", 2392:7437): the brand
+ * The cream footer after the closing call to action (IA 12; Figma "14 · Footer", 2392:7437): the brand
  * block (logo, the one-line promise and the contact details: both campuses, the phone with its hours, the
- * email) beside the client's three link columns (Explore, Resources, Support), the flourish, the giant orange
- * wordmark (whose letters arrive one by one, FooterWordmark) and the legal bar. "Contact Us" in the
+ * email) beside the client's three link columns (Explore, Resources, Support), the giant wordmark, bold and
+ * filled with photographs of the institute (FooterWordmark), and the legal bar. "Contact us" in the
  * Support column jumps to the contact block (#contact).
  */
 export default function SiteFooter() {
   return (
-    <footer className="relative bg-paper">
+    <footer className="relative bg-cream">
       <div className="relative mx-auto flex w-canvas flex-col items-center gap-12 px-20 pt-22 pb-8">
         <div data-stagger className={cx("relative flex w-[1280px] items-start justify-between", TEXT)}>
           <div className="flex w-[420px] shrink-0 flex-col items-start gap-5">
             <a href="#top" aria-label="Vajiram & Ravi, back to top" className="block">
-              <Photo src="/images/logo.webp" alt="" sizes="176px" className="relative h-10 w-44 bg-paper" />
+              <Photo src="/images/logo.webp" alt="" sizes="176px" className="relative h-10 w-44 bg-cream" />
             </a>
             <p className="w-[380px] font-heading text-[20px]/[1.35] text-ink">{footerTagline}</p>
             <address id="contact" className="flex scroll-mt-32 flex-col items-start gap-3 text-[13.5px]/[1.5] not-italic">
@@ -75,9 +74,7 @@ export default function SiteFooter() {
           ))}
         </div>
 
-        <Flourish className="h-[46px]! w-50!" />
-
-        <FooterWordmark text={footerWordmark} />
+        <FooterWordmark text={footerWordmark} photos={footerWordmarkPhotos} />
 
         {/* Never pre-hidden by a reveal: at the very foot of the page it might never reach the reveal line. */}
         <div className={cx("flex w-[1280px] items-start justify-between border-t border-[#1a1714]/12 pt-5 text-[13px]/[normal] whitespace-nowrap", TEXT)}>

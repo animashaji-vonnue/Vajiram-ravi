@@ -16,9 +16,12 @@ import { whenVisible } from "@/lib/reveal";
  *   - Every 4.5s the next postcard comes round to the front (600ms, --ease-out). It pauses while the
  *     pointer or the keyboard focus is on the ring; clicking a postcard at the side, the round arrows in
  *     the heading row, the arrow keys and a swipe bring another forward. The move is announced.
+ *   - The round arrows at either edge of the ring are the page's carousel arrows, as they are.
  *   - Entrance, once, when the ring comes into view: the postcards fan out from behind the front one to
  *     their places, nearest first (600ms each, 90ms apart).
  *   - Hover on the front postcard lifts it with the hover shadow.
+ *   - With the scroll (ui/TextMotion): the ring drifts up a little faster than the page, so the postcards
+ *     seem to float nearer than the heading (data-drift), and the postmarks' rings turn (data-turn).
  *   - Reduced motion: no turning on its own and no fan; the postcards change places at once.
  */
 
@@ -142,6 +145,7 @@ export default function Postcards({ stories, heading }: PostcardsProps) {
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
         onPointerCancel={() => (swipe.current = null)}
+        data-drift="-56"
         className="relative h-[440px] w-full touch-pan-y [perspective:1400px]"
       >
         {/* The arrows at either edge of the ring. */}
@@ -151,14 +155,7 @@ export default function Postcards({ stories, heading }: PostcardsProps) {
             data-reveal="fade"
             className={cx("absolute top-1/2 z-30 -translate-y-1/2", side < 0 ? "-left-6" : "-right-6")}
           >
-            <CarouselArrow
-              direction={side < 0 ? "prev" : "next"}
-              label={side < 0 ? "Previous story" : "Next story"}
-              size={52}
-              tone={side < 0 ? "light" : "solid"}
-              onClick={() => show(active + side)}
-              className="shadow-rest"
-            />
+            <CarouselArrow direction={side < 0 ? "prev" : "next"} label={side < 0 ? "Previous story" : "Next story"} onClick={() => show(active + side)} />
           </div>
         ))}
         {stories.map((story, i) => {
@@ -201,7 +198,7 @@ type PostcardProps = {
 /**
  * One postcard (Figma "postcard · …", 590 × 370): aged paper, the
  * student's words in Mukta italic with their signature on the left of the dividing rule; on the right
- * the postmark with the exam and its year, the student's portrait as the stamp, then the "address": the
+ * the postmark with "AIR" over the student's rank (or the exam and its year), the student's portrait as the stamp, then the "address": the
  * name, the rank and year, the programme, and the address lines.
  */
 function Postcard({ story, front }: PostcardProps) {
@@ -235,7 +232,7 @@ function Postcard({ story, front }: PostcardProps) {
         </p>
       </div>
 
-      <Postmark exam={story.exam} year={story.year} />
+      <Postmark story={story} />
 
       {/* The stamp: the portrait on a white stamp, its edges perforated in the card's own colour. */}
       <div aria-hidden="true" className="absolute top-5 left-[470px] h-[116px] w-24 overflow-clip bg-white">
@@ -251,7 +248,7 @@ function Postcard({ story, front }: PostcardProps) {
 
       <figcaption className="absolute top-[160px] left-[366px] flex w-[200px] flex-col items-start">
         <h3 className="font-heading text-[24px]/[1.2] font-normal text-[#5a160f]">{story.name}</h3>
-        <p className="mt-2 font-mono text-[11px]/[1.4] tracking-[0.08em] text-burnt uppercase">{standing}</p>
+        <p className="mt-2 font-mono text-[11px]/[1.4] tracking-[0.01em] text-burnt">{standing}</p>
         <p className="mt-1 text-[13px]/[1.5] text-clay">{story.programme}</p>
         <span aria-hidden="true" className="mt-4 flex w-full flex-col gap-[29px]">
           {[0, 1, 2].map((line) => (
@@ -266,15 +263,27 @@ function Postcard({ story, front }: PostcardProps) {
 /** The wavy cancellation lines' tops, canvas px, as drawn. */
 const WAVES = [12.4, 21.4, 30.4, 39.4];
 
-/** The postmark (110 × 60): a burnt ring with the exam and its year in it, and four wavy lines beside it. Decoration: the caption says the same. */
-function Postmark({ exam, year }: { exam: string; year: number }) {
+/**
+ * The postmark (110 × 60): a burnt ring with "AIR" over the student's All India Rank in it, or, for a
+ * student with no rank yet, the exam over its year; and four wavy lines beside it. Decoration: the caption
+ * says the same.
+ */
+function Postmark({ story }: { story: Story }) {
+  const { rank, exam, year } = story;
   return (
     <div aria-hidden="true" className="absolute top-14 left-[360px] h-[60px] w-[110px]">
-      <img src="/images/stories/postmark-ring.svg" alt="" width={53.5} height={53.5} className="absolute top-[3.25px] left-[3.25px] h-[53.5px] w-[53.5px] max-w-none" />
-      <span className="absolute top-1 left-1 flex size-[52px] flex-col items-center justify-center font-mono text-[8px]/[10px] text-burnt">
-        <span>{exam}</span>
-        <span>{year}</span>
-      </span>
+      <img data-turn="60" src="/images/stories/postmark-ring.svg" alt="" width={53.5} height={53.5} className="absolute top-[3.25px] left-[3.25px] h-[53.5px] w-[53.5px] max-w-none" />
+      {rank !== undefined ? (
+        <span className="absolute top-1 left-1 flex size-[52px] flex-col items-center justify-center text-burnt">
+          <span className="pl-[0.08em] font-mono text-[8px]/[10px] tracking-[0.08em]">AIR</span>
+          <span className="font-heading text-[20px]/[20px] font-semibold">{rank}</span>
+        </span>
+      ) : (
+        <span className="absolute top-1 left-1 flex size-[52px] flex-col items-center justify-center font-mono text-[8px]/[10px] text-burnt">
+          <span>{exam}</span>
+          <span>{year}</span>
+        </span>
+      )}
       {WAVES.map((top) => (
         <img
           key={top}

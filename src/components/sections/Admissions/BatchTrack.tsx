@@ -384,7 +384,7 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
             {count} {count === 1 ? "batch" : "batches"}
           </p>
           <CarouselArrow direction="prev" label="Previous batches" onClick={() => step(-1)} hidden={atStart} />
-          <CarouselArrow direction="next" label="Next batches" onClick={() => step(1)} hidden={atEnd} tone="solid" />
+          <CarouselArrow direction="next" label="Next batches" onClick={() => step(1)} hidden={atEnd} />
         </div>
       </div>
 

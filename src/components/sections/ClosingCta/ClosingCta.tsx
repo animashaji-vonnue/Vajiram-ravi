@@ -2,13 +2,18 @@ import Cta from "@/components/ui/Cta";
 import { closingCta } from "@/data/closing-cta";
 import SunRise from "./SunRise";
 
-/** The heading, text and buttons follow the sun: they start 300ms into its rise. */
+/** The buttons follow the heading and text into view, 300ms behind them. */
 const FOLLOW_MS = "300";
 
 /**
- * The closing call to action above the footer, 720 tall: an orange-to-red band with the halo rings, the
- * skyline and the sun disc rising from its foot (SunRise), and the call to action centred above them.
- * The band clips the disc.
+ * The closing call to action above the footer, 720 tall: an orange-to-red band with the halo rings
+ * and the sun disc rising from its foot (SunRise), and the call to action centred above them.
+ * The primary button is the saffron one the counselling band uses on its orange (feedback item 42), beside
+ * the white secondary. The band clips the disc.
+ *
+ * The band plays (SunRise, sunrisePlay.ts): the scroll raises the sun, the sun follows a mouse over it, the
+ * heading's letters lift towards the pointer, and a press or tap anywhere but the buttons sends a halo
+ * ripple out from the point.
  */
 export default function ClosingCta() {
   return (
@@ -35,7 +40,7 @@ export default function ClosingCta() {
           </p>
 
           <div data-reveal data-reveal-delay={FOLLOW_MS} className="flex items-start gap-3">
-            <Cta variant="ink" size="lg" href={closingCta.primary.href}>
+            <Cta variant="primary-dark" size="lg" href={closingCta.primary.href}>
               {closingCta.primary.label}
             </Cta>
             <Cta variant="secondary" size="lg" href={closingCta.secondary.href}>

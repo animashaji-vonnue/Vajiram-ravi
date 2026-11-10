@@ -11,14 +11,18 @@ import { dateParts } from "./dates";
 /** The month tab that shows every month. Other month tabs are keyed by month, e.g. "2026-11". */
 const ALL_MONTHS = "all";
 
-/** Each batch's place among all batches in date order: it picks the ticket's head colour, so a ticket keeps it. */
-const TONE_INDEX = new Map(upcomingBatches("").map((batch, i) => [batch.id, i]));
+/** The batches the track can show: the featured one is on its own ticket above (FeaturedBatch). */
+const trackBatches = (today: string) => upcomingBatches(today).filter((batch) => !batch.featured);
+
+/** Each batch's place among the track's batches in date order: it picks the ticket's head colour, so a ticket keeps it. */
+const TONE_INDEX = new Map(trackBatches("").map((batch, i) => [batch.id, i]));
 const toneOf = (id: string) => TONE_INDEX.get(id) ?? 0;
 
 /**
  * The batches under the heading: the mode tabs (All / Classroom / LIVE-Online) and the month tabs, the
- * arrows and the ticket track, then "View All Upcoming Batches". The two tab lists combine: the month tabs list each
- * month that has upcoming batches, and their counts follow the chosen mode.
+ * arrows and the ticket track, then "View all upcoming batches". The two tab lists combine: the month tabs list each
+ * month that has upcoming batches, and their counts follow the chosen mode. The featured batch is left out:
+ * the wide ticket above already shows it.
  * Batches that have started are hidden. "Today" is read on the client, so the server render lists them all.
  */
 export default function AdmissionsBoard() {
@@ -29,7 +33,7 @@ export default function AdmissionsBoard() {
   useEffect(() => setToday(todayIso()), []);
 
   // Before today is known every batch counts as upcoming.
-  const upcoming = useMemo(() => upcomingBatches(today ?? ""), [today]);
+  const upcoming = useMemo(() => trackBatches(today ?? ""), [today]);
   const inMode = upcoming.filter((batch) => mode === "All" || batch.modes.includes(mode));
 
   const monthNames = new Map<string, string>();

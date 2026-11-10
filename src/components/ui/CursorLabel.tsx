@@ -230,7 +230,7 @@ export default function CursorLabel({ regionRef, fallback = null }: CursorLabelP
           <span
             key={i}
             ref={slot}
-            className="absolute inset-0 flex items-center justify-center font-sans text-[12px]/[14px] font-bold tracking-[0.72px] whitespace-nowrap uppercase opacity-0"
+            className="absolute inset-0 flex items-center justify-center font-sans text-[12px]/[14px] font-bold tracking-[0.01em] whitespace-nowrap opacity-0"
           />
         ))}
       </span>

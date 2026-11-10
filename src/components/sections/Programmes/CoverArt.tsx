@@ -1,107 +1,101 @@
-import type { CoverArtKind } from "@/data/programmes";
+import type { ReactNode } from "react";
+import type { CoverEmblem } from "@/data/programmes";
 
 /*
- * The covers' geometric art, recreated from the `kevin` branch's course wall (the client's screenshot of
- * 14 Nov 2026; the art itself is not on GitHub yet). Drawn on a 100 × 100 box over the cover, clipped by it,
- * mostly off its right and bottom edges. Each motif moves in its own way while the book is hovered
- * (`group/book`), and settles back on leaving. Reduced motion: it stays still.
+ * The emblem stamped in gold foil in the middle of a book's cover (CourseShelf, CoverFront), after the
+ * reference shelf's covers (vajiram-ravi.vercel.app): a line drawing for the programme inside a thin foil
+ * ring, on a 48 × 48 box. The ring's dotted rule turns slowly all the time; while the book is hovered
+ * (`group/book`) the emblem grows a little and glows, and its drawing draws itself again stroke by stroke
+ * in the brighter foil (shelf.css, .emblem). Reduced motion: it stays still.
  */
 
-/** A shape that moves on hover: its own box as the origin, a smooth 700ms. */
-const MOVE = "[transform-box:fill-box] origin-center [transition:translate_700ms_var(--ease-out),scale_700ms_var(--ease-out),rotate_700ms_var(--ease-out),opacity_700ms_var(--ease-out)] motion-reduce:transition-none";
+const DRAWINGS: Record<CoverEmblem, ReactNode> = {
+  // An open book: the General Studies foundation.
+  books: (
+    <>
+      <path d="M24 17c-2.6-1.8-6-2.4-10-2.2v16c4-.2 7.4.4 10 2.2 2.6-1.8 6-2.4 10-2.2v-16c-4-.2-7.4.4-10 2.2Z" />
+      <path d="M24 17v16M17 20.5h3.5M17 24h3.5M27.5 20.5H31M27.5 24H31" />
+    </>
+  ),
+  // An abacus: aptitude.
+  abacus: (
+    <>
+      <rect x={15} y={15} width={18} height={18} rx={2} />
+      <path d="M15 21h18M15 27h18" />
+      <circle cx={20} cy={21} r={1.6} />
+      <circle cx={26} cy={21} r={1.6} />
+      <circle cx={23} cy={27} r={1.6} />
+      <circle cx={29} cy={27} r={1.6} />
+    </>
+  ),
+  // A quill: the optional subjects.
+  quill: (
+    <>
+      <path d="M33 15c-7 1-12 6-14 14l-1.5 4.5" />
+      <path d="M33 15c-1 6-4.5 10.5-11 12.5" />
+      <path d="M21 30.5h8" />
+    </>
+  ),
+  // Stacked papers: a test series in your optional.
+  layers: (
+    <>
+      <path d="m24 15 9 4.5-9 4.5-9-4.5 9-4.5Z" />
+      <path d="m15 24 9 4.5 9-4.5M15 28.5 24 33l9-4.5" />
+    </>
+  ),
+  // A target: Prelims.
+  target: (
+    <>
+      <circle cx={24} cy={24} r={9} />
+      <circle cx={24} cy={24} r={5} />
+      <circle cx={24} cy={24} r={1.4} />
+      <path d="m24 24 8-8M29 16h3v3" />
+    </>
+  ),
+  // A pen over lines: Mains answer writing.
+  pen: (
+    <>
+      <path d="M15 31h9M15 27h6M15 23h5" />
+      <path d="m27 29.5 6.5-6.5a1.8 1.8 0 0 0-2.5-2.5L24.5 27 24 30Z" />
+    </>
+  ),
+  // A compass: a mentor's direction.
+  compass: (
+    <>
+      <circle cx={24} cy={24} r={9} />
+      <path d="m27.8 20.2-2.3 5.3-5.3 2.3 2.3-5.3 5.3-2.3Z" />
+    </>
+  ),
+  // A microphone: the interview.
+  mic: (
+    <>
+      <rect x={20.5} y={14} width={7} height={12} rx={3.5} />
+      <path d="M17 23.5a7 7 0 0 0 14 0M24 30.5V34M20.5 34h7" />
+    </>
+  ),
+};
 
-export default function CoverArt({ kind, accent, soft }: { kind: CoverArtKind; accent: string; soft: string }) {
+export default function CoverArt({ emblem, size }: { emblem: CoverEmblem; size: number }) {
   return (
-    <svg aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" className="pointer-events-none absolute inset-0 size-full overflow-hidden">
-      {kind === "bars" && (
-        <>
-          <rect x={52} y={45} width={60} height={13} rx={6.5} fill={accent} className={`${MOVE} group-hover/book:-translate-x-[14px]`} />
-          <rect x={22} y={62} width={90} height={16} rx={8} fill={soft} opacity={0.75} className={`${MOVE} group-hover/book:translate-x-[8px]`} />
-          <rect x={30} y={82} width={80} height={14} rx={7} fill={soft} opacity={0.45} className={`${MOVE} group-hover/book:-translate-x-[10px]`} />
-        </>
-      )}
-      {kind === "circles" && (
-        <>
-          <circle cx={98} cy={84} r={44} fill={soft} opacity={0.55} className={`${MOVE} group-hover/book:scale-[1.12]`} />
-          <circle cx={20} cy={104} r={36} fill={soft} opacity={0.45} className={`${MOVE} group-hover/book:-translate-y-[6px]`} />
-          <circle cx={62} cy={68} r={16} fill={accent} className={`${MOVE} group-hover/book:-translate-x-[10px] group-hover/book:-translate-y-[8px]`} />
-        </>
-      )}
-      {kind === "grid" && (
-        <g>
-          {[0, 1, 2].map((row) =>
-            [0, 1, 2].map((col) => {
-              const centre = row === 1 && col === 1;
-              return (
-                <rect
-                  key={`${row}-${col}`}
-                  x={48 + col * 20}
-                  y={46 + row * 20}
-                  width={15}
-                  height={15}
-                  rx={2.5}
-                  fill={centre ? accent : soft}
-                  opacity={centre ? 1 : 0.6}
-                  className={`${MOVE} group-hover/book:rotate-45 ${centre ? "group-hover/book:scale-[1.05]" : "group-hover/book:scale-[0.82]"}`}
-                  style={{ transitionDelay: `${(row + col) * 40}ms` }}
-                />
-              );
-            }),
-          )}
-        </g>
-      )}
-      {kind === "arches" && (
-        <>
-          <path d="M8 104 V82 A22 22 0 0 1 30 60 H30 V104 Z" fill={soft} opacity={0.6} className={`${MOVE} group-hover/book:translate-x-[8px]`} />
-          <path d="M108 104 V82 A22 22 0 0 0 86 60 H86 V104 Z" fill={soft} opacity={0.8} className={`${MOVE} group-hover/book:-translate-x-[8px]`} />
-          <circle cx={58} cy={76} r={4} fill={accent} className={`${MOVE} group-hover/book:scale-[1.6]`} />
-        </>
-      )}
-      {kind === "arcs" && (
-        <>
-          <circle cx={22} cy={104} r={48} fill={soft} opacity={0.35} className={`${MOVE} group-hover/book:scale-[1.1]`} />
-          <circle cx={22} cy={104} r={32} fill={soft} opacity={0.5} className={`${MOVE} group-hover/book:scale-[1.18]`} />
-          <circle cx={66} cy={62} r={9} fill={accent} className={`${MOVE} group-hover/book:translate-x-[6px] group-hover/book:-translate-y-[10px]`} />
-        </>
-      )}
-      {kind === "lines" && (
-        <>
-          <rect x={30} y={44} width={34} height={8} rx={2.5} fill={accent} className={`${MOVE} group-hover/book:scale-x-[1.4] origin-left`} />
-          {[
-            { y: 57, w: 22 },
-            { y: 70, w: 44 },
-            { y: 83, w: 20 },
-          ].map((line, i) => (
-            <rect
-              key={line.y}
-              x={30}
-              y={line.y}
-              width={line.w}
-              height={8}
-              rx={2.5}
-              fill={soft}
-              opacity={0.75}
-              className={`${MOVE} origin-left group-hover/book:scale-x-[1.35]`}
-              style={{ transitionDelay: `${(i + 1) * 60}ms` }}
-            />
-          ))}
-        </>
-      )}
-      {kind === "target" && (
-        <>
-          <circle cx={58} cy={76} r={34} fill={soft} opacity={0.35} className={`${MOVE} group-hover/book:scale-[1.08]`} />
-          <circle cx={58} cy={76} r={23} fill={soft} opacity={0.5} className={`${MOVE} group-hover/book:scale-[1.12]`} style={{ transitionDelay: "60ms" }} />
-          <circle cx={58} cy={76} r={13} fill={soft} opacity={0.7} className={`${MOVE} group-hover/book:scale-[1.16]`} style={{ transitionDelay: "120ms" }} />
-          <circle cx={58} cy={76} r={6} fill={accent} className={`${MOVE} group-hover/book:scale-[1.3]`} />
-        </>
-      )}
-      {kind === "quarters" && (
-        <>
-          <path d="M30 104 V92 A26 26 0 0 1 56 66 V104 Z" fill={soft} opacity={0.6} className={`${MOVE} group-hover/book:-translate-y-[6px]`} />
-          <path d="M80 104 V90 A24 24 0 0 1 104 66 V104 Z" fill={soft} opacity={0.75} className={`${MOVE} group-hover/book:-translate-y-[10px]`} />
-          <circle cx={76} cy={46} r={3.5} fill={accent} className={`${MOVE} group-hover/book:-translate-x-[12px] group-hover/book:translate-y-[6px]`} />
-        </>
-      )}
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 48 48"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.3}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="emblem overflow-visible text-[#f6c77a] [transition:color_500ms_var(--ease-out),scale_600ms_var(--ease-out),filter_600ms_var(--ease-out)] group-hover/book:scale-[1.08] group-hover/book:text-[#ffe3b0] group-hover/book:drop-shadow-[0_0_6px_rgb(255_210_130/0.55)]"
+    >
+      {/* The foil ring, a double rule: the dotted rule turns slowly all the time, the inner one stays. */}
+      <g className="emblem-ring">
+        <circle cx={24} cy={24} r={21.5} strokeWidth={0.9} strokeDasharray="1.2 2.4" />
+      </g>
+      <circle cx={24} cy={24} r={18.5} strokeWidth={0.9} />
+      {/* The drawing, which draws itself again in the foil while the book is hovered (shelf.css). */}
+      <g className="emblem-draw">{DRAWINGS[emblem]}</g>
     </svg>
   );
 }

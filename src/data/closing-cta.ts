@@ -1,4 +1,4 @@
-/** The closing call to action: the sun rising over the skyline above the footer (Figma 2258:10076). */
+/** The closing call to action: the sun rising behind it, above the footer (Figma 2258:10076). */
 
 import type { SplitHeading } from "@/data/contact";
 
@@ -7,8 +7,8 @@ export const closingCta = {
   title: { lead: "Ready to begin your UPSC preparation", em: "Vajiram & Ravi?" } satisfies SplitHeading,
   bridge: "with ",
   text: "Take a confident step towards your Civil Services goal with the right preparation, academic support and guidance at every stage.",
-  primary: { label: "Explore Programmes", href: "#programmes" },
-  secondary: { label: "Speak to an Academic Counsellor", href: "#counselling" },
+  primary: { label: "Explore programmes", href: "#programmes" },
+  secondary: { label: "Speak to an academic counsellor", href: "#counselling" },
 };
 
 

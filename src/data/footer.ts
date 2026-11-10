@@ -1,4 +1,4 @@
-/** Site footer (Figma 2392:7437; IA 12): the brand and contact block, three link columns, the line-art skyline, the giant wordmark and the legal bar. */
+/** Site footer (Figma 2392:7437; IA 12): the brand and contact block, three link columns, the giant photo-filled wordmark and the legal bar. All labels in sentence case (feedback item 9). */
 
 import { links, type Href } from "./links";
 
@@ -13,32 +13,32 @@ export const footerColumns: { heading: string; links: FooterLink[] }[] = [
   {
     heading: "Explore",
     links: [
-      { label: "About Us", href: links.aboutUs },
+      { label: "About us", href: links.aboutUs },
       { label: "General Studies", href: links.gsCourse },
-      { label: "Optional Subjects", href: links.optionalSubject },
-      { label: "Test Series", href: links.testSeries },
+      { label: "Optional subjects", href: links.optionalSubject },
+      { label: "Test series", href: links.testSeries },
       { label: "Mentorship", href: links.mentorship },
-      { label: "Interview Guidance", href: links.interviewGuidance },
+      { label: "Interview guidance", href: links.interviewGuidance },
     ],
   },
   {
     heading: "Resources",
     links: [
       { label: "The Recitals", href: links.theRecitals },
-      { label: "Current Affairs", href: links.dailyCurrentAffairs },
-      { label: "Study Materials", href: links.studyMaterial },
-      { label: "Prelims Pointers", href: links.prelimsPointers },
-      { label: "Mains Articles", href: links.mainsArticles },
+      { label: "Current affairs", href: links.dailyCurrentAffairs },
+      { label: "Study materials", href: links.studyMaterial },
+      { label: "Prelims pointers", href: links.prelimsPointers },
+      { label: "Mains articles", href: links.mainsArticles },
     ],
   },
   {
     heading: "Support",
     links: [
       // The footer's own contact block (#contact) holds the addresses, phone and email.
-      { label: "Contact Us", href: "#contact" },
+      { label: "Contact us", href: "#contact" },
       { label: "Counselling", href: "#counselling" },
       { label: "FAQs", href: "#faq" },
-      { label: "Upcoming Batches", href: "#batches" },
+      { label: "Upcoming batches", href: "#batches" },
     ],
   },
 ];
@@ -49,10 +49,22 @@ export const footerContactHeading = "Contact";
 
 export const footerWordmark = "Vajiram & Ravi";
 
+/**
+ * The photographs seen through the wordmark's letters, in turn (feedback item 43); the first is the ground.
+ * TODO: dummy institute photos from the other sections; swap in the client's own (or a short campus video
+ * poster) when they arrive.
+ */
+export const footerWordmarkPhotos = [
+  "/images/locations/campus-exterior.webp",
+  "/images/programmes/featured-classroom.webp",
+  "/images/programmes/featured-library.webp",
+  "/images/programmes/featured-mentoring.webp",
+];
+
 export const footerCopyright = "© 2026 Vajiram & Ravi. All rights reserved";
 
 export const footerLegal: FooterLink[] = [
-  { label: "Terms and Conditions", href: links.termsAndConditions },
-  { label: "Privacy Policy", href: links.privacyPolicy },
-  { label: "Grievance Redressal", href: links.grievanceRedressal },
+  { label: "Terms and conditions", href: links.termsAndConditions },
+  { label: "Privacy policy", href: links.privacyPolicy },
+  { label: "Grievance redressal", href: links.grievanceRedressal },
 ];

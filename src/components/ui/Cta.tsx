@@ -1,7 +1,10 @@
+"use client";
+
 import type { ReactNode } from "react";
 import Medallion, { type MedallionTone } from "@/components/ui/Medallion";
 import type { Href } from "@/data/links";
 import { cx } from "@/lib/cx";
+import { pressRipple } from "@/lib/pressRipple";
 
 /*
  * The site's button (after Figma "CTA / Indian", 2262:5786): an 8px-rounded button in Source Sans 3
@@ -11,28 +14,57 @@ import { cx } from "@/lib/cx";
  *   primary-dark    saffron with ink text and an ink medallion (on dark bands)
  *   secondary       white with an ink border and text and a burnt medallion
  *   secondary-dark  a cream outline with cream text and the arrow alone, no disc (on dark bands)
- * Motion spec: on hover the fill darkens 8% (secondary: the border turns burnt) while the medallion's
- * arrow nudges forward (ui/Medallion); pressing scales it to 0.98 for 80ms; focus shows the saffron
- * ring. A button given a set width keeps its label at the left and the medallion at the right end.
+ * Its character, in the page's own language (globals.css, .cta): a fine dash-dot thread stitched just
+ * inside the edge, the rhythm of the journey's garland thread and the eyebrow rules. On hover the sun
+ * rises: a disc grows out of the arrow and fills the button, bright at its core and warming to a more
+ * vivid tone of the ground, a band of halo light at its rim, as the closing banner's sun, while the button
+ * glows in its colour and lifts a pixel (secondary: the border turns burnt); the thread brightens
+ * and marches along the edge, and the arrow slides out ahead and comes back in from behind. Pressing
+ * scales it to 0.98 for 80ms and sets off the press ripple shared with the carousel arrows
+ * (lib/pressRipple); focus shows the saffron ring (and raises the sun, so the keyboard sees the hover).
+ * A button given a set width keeps its label at the left and the medallion at the right end.
  * Disabled dims to 40% and ignores hover; loading keeps the label and swaps the medallion for a spinner
  * (and back) with the icon-swap transition below.
  * `icon` puts an icon in the medallion in place of the arrow (the header's phone).
  */
 
+/**
+ * Each variant's ground, and its sunrise: --cta-core the bright light at the arrow, --cta-sun the more
+ * vivid tone the hover warms it to, --cta-rim the halo at the sun's edge, --cta-glow the glow under it,
+ * --cta-stitch the thread's colour, --press-ring the press pulse (its ground).
+ */
 const VARIANT = {
-  primary: { root: "bg-burnt text-white hover:bg-[#b84b00]", medallion: "cream" },
-  ink: { root: "bg-ink text-cream hover:bg-[#271811]", medallion: "saffron" },
-  "primary-dark": { root: "bg-saffron text-ink hover:bg-[#e0b42c]", medallion: "ink" },
-  secondary: { root: "border border-ink/22 bg-white text-ink hover:border-burnt", medallion: "burnt" },
-  "secondary-dark": { root: "border border-cream/55 text-cream hover:border-saffron", medallion: "bare" },
+  primary: {
+    root: "bg-burnt text-white [--cta-core:#ff9a3c] [--cta-sun:#d85a00] [--cta-glow:rgb(236_88_0/0.65)] [--cta-rim:rgb(244_196_48/0.75)] [--cta-stitch:rgb(255_248_236/0.45)] [--press-ring:#cc5500]",
+    medallion: "cream",
+  },
+  ink: {
+    root: "bg-ink text-cream [--cta-core:#7a4a26] [--cta-sun:#3b2418] [--cta-glow:rgb(42_26_18/0.55)] [--cta-rim:rgb(244_196_48/0.6)] [--cta-stitch:rgb(244_196_48/0.45)] [--press-ring:#2a1a12]",
+    medallion: "saffron",
+  },
+  "primary-dark": {
+    root: "bg-saffron text-ink [--cta-core:#fff3c4] [--cta-sun:#ffd34f] [--cta-glow:rgb(244_196_48/0.7)] [--cta-rim:rgb(255_248_236/0.95)] [--cta-stitch:rgb(42_26_18/0.35)] [--press-ring:#f4c430]",
+    medallion: "ink",
+  },
+  secondary: {
+    root: "border border-ink/22 bg-white text-ink hover:border-burnt [--cta-core:#ffe2bd] [--cta-sun:#fff6ea] [--cta-glow:rgb(204_85_0/0.28)] [--cta-rim:rgb(204_85_0/0.35)] [--cta-stitch:rgb(204_85_0/0.4)] [--press-ring:#cc5500]",
+    medallion: "burnt",
+  },
+  "secondary-dark": {
+    root: "border border-cream/55 text-cream hover:border-saffron [--cta-core:rgb(255_248_236/0.28)] [--cta-sun:rgb(255_248_236/0.12)] [--cta-glow:rgb(244_196_48/0.3)] [--cta-rim:rgb(244_196_48/0.55)] [--cta-stitch:rgb(255_248_236/0.4)] [--press-ring:#f4c430]",
+    medallion: "bare",
+  },
 } as const satisfies Record<string, { root: string; medallion: MedallionTone }>;
 
 export type CtaVariant = keyof typeof VARIANT;
 
-/** lg: 52px tall, 16px label, 30px medallion. md: 44px tall, 15px label, 26px medallion. */
+/**
+ * lg: 52px tall, 16px label, 30px medallion. md: 44px tall, 15px label, 26px medallion. The sun rises
+ * from the medallion's centre (--cta-sun-x from the right edge).
+ */
 const SIZE = {
-  lg: { root: "h-[52px] pl-6 pr-[11px] text-[16px]/[22px]", medallion: 30 },
-  md: { root: "h-11 pl-5 pr-[9px] text-[15px]/[21px]", medallion: 26 },
+  lg: { root: "h-[52px] pl-6 pr-[11px] text-[16px]/[22px] [--cta-sun-x:26px]", medallion: 30 },
+  md: { root: "h-11 pl-5 pr-[9px] text-[15px]/[21px] [--cta-sun-x:22px]", medallion: 26 },
 } as const;
 
 /**
@@ -46,7 +78,7 @@ const SWAP =
 const SWAPPED_OUT = "invisible scale-25 opacity-0 blur-[4px]";
 
 const BASE =
-  "group/medal relative inline-flex shrink-0 cursor-pointer items-center justify-between gap-3.5 rounded-lg font-sans font-semibold whitespace-nowrap [transition:background-color_var(--dur-fast)_var(--ease-out),border-color_var(--dur-fast)_var(--ease-out),scale_80ms_var(--ease-out)] active:scale-[.98]";
+  "cta group/medal relative isolate inline-flex shrink-0 cursor-pointer items-center justify-between gap-3.5 rounded-lg font-sans font-semibold whitespace-nowrap active:scale-[.98]";
 
 type CtaProps = {
   children: ReactNode;
@@ -91,10 +123,17 @@ export default function Cta({
   const classes = cx(BASE, look.root, dims.root, (disabled || loading) && "pointer-events-none", disabled && "opacity-40", className);
   const content = (
     <>
+      {/* The sun (and the press ripple), clipped to the button; the thread just inside its edge. */}
+      <span data-ripple aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-[inherit]">
+        <span className="cta-sun" />
+      </span>
+      <svg aria-hidden="true" className="cta-stitch -z-10" fill="none">
+        <rect x={0.5} y={0.5} rx={5} stroke="currentColor" strokeWidth={1} strokeLinecap="round" strokeDasharray="10 6 0.5 6" />
+      </svg>
       <span>{children}</span>
       {/* The medallion and the spinner share its 30/26px box and swap in place (see SWAP). */}
       <span className="relative flex shrink-0" style={{ width: dims.medallion, height: dims.medallion }} aria-hidden="true">
-        <Medallion tone={look.medallion} size={dims.medallion} className={cx(SWAP, loading && SWAPPED_OUT)}>
+        <Medallion tone={look.medallion} size={dims.medallion} className={cx("cta-arrow", SWAP, loading && SWAPPED_OUT)}>
           {icon}
         </Medallion>
         <span className={cx("absolute inset-0 flex items-center justify-center", SWAP, !loading && SWAPPED_OUT)}>
@@ -116,6 +155,7 @@ export default function Cta({
         target={target}
         rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)}
         onClick={disabled ? (event) => event.preventDefault() : onClick}
+        onPointerDown={disabled ? undefined : pressRipple}
         aria-label={ariaLabel}
         aria-disabled={disabled || undefined}
         className={classes}
@@ -128,6 +168,7 @@ export default function Cta({
     <button
       type={disabled ? "button" : type}
       onClick={disabled || loading ? undefined : onClick}
+      onPointerDown={disabled || loading ? undefined : pressRipple}
       aria-label={ariaLabel}
       aria-haspopup={hasPopup}
       aria-disabled={disabled || undefined}

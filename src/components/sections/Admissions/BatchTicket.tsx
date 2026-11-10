@@ -7,16 +7,17 @@ import { cx } from "@/lib/cx";
 import { prefersReducedMotion } from "@/lib/motion";
 import { dateParts } from "./dates";
 import { requestEnquiry } from "./enquiry";
+import TicketArt from "./TicketArt";
 
 /**
- * The ticket heads of the design, in turn (Figma "ticket head"): burnt orange with the lotus mark,
- * marigold, terracotta with mahogany text, and mahogany. A batch keeps its colour whatever the filters show.
+ * The ticket heads of the design, in turn (Figma "ticket head"): burnt orange, marigold, terracotta with
+ * mahogany text, and mahogany. A batch keeps its colour whatever the filters show.
  */
 const TONES = [
-  { head: "bg-[#ec5800]", month: "text-saffron", day: "text-white", target: "text-white/90", lotus: true },
-  { head: "bg-[#ff9f02]", month: "text-saffron", day: "text-white", target: "text-white/90", lotus: false },
-  { head: "bg-[#e2725b]", month: "text-mahogany", day: "text-mahogany", target: "text-mahogany", lotus: false },
-  { head: "bg-mahogany", month: "text-saffron", day: "text-white", target: "text-white/90", lotus: false },
+  { head: "bg-[#ec5800]", month: "text-saffron", day: "text-white", target: "text-white/90" },
+  { head: "bg-[#ff9f02]", month: "text-saffron", day: "text-white", target: "text-white/90" },
+  { head: "bg-[#e2725b]", month: "text-mahogany", day: "text-mahogany", target: "text-mahogany" },
+  { head: "bg-mahogany", month: "text-saffron", day: "text-white", target: "text-white/90" },
 ] as const;
 
 /** The perforation as drawn: 6.09px dashes and gaps (22 of each over 268px), starting on half a dash. */
@@ -35,8 +36,8 @@ type BatchTicketProps = {
 };
 
 /**
- * One railway ticket (Figma "ticket – …", 308 × 360): the coloured head with the start date and the target
- * year, the programme, its modes and, where admissions have confirmed it, "Admissions open"; the perforation
+ * One railway ticket (Figma "ticket – …", 308 × 360): the coloured head with the start date, the target
+ * year and the batch's own faint line drawing (TicketArt; the lotus mark where a batch has none), the programme, its modes and, where admissions have confirmed it, "Admissions open"; the perforation
  * between the notches, then "Register now", which opens the counselling postcard with this programme. A
  * batch with limited seats carries the round rubber stamp.
  *
@@ -44,7 +45,9 @@ type BatchTicketProps = {
  * it were being torn, and turns the medallions (the ticket is their `group/medal`). Its shadow is a soft
  * contact shadow: a warm, blurred patch a little narrower than the ticket and set below it, so it reads as
  * lifted off the page and stays within the room the track leaves around it. The departure-board flip of the date and the stamp coming down are played by the
- * track when it is first seen (`data-flip-digit`, `data-stamp`).
+ * track when it is first seen (`data-flip-digit`, `data-stamp`). After that, while the band is on screen,
+ * the stamp gives a short wobble every few seconds, as if pressed again (globals.css, .lp-wobble), each
+ * ticket's at its own time.
  */
 export default function BatchTicket({ batch, tone }: BatchTicketProps) {
   const look = TONES[tone % TONES.length];
@@ -76,7 +79,9 @@ export default function BatchTicket({ batch, tone }: BatchTicketProps) {
       <img src="/images/admissions/ticket-body.svg" alt="" aria-hidden="true" width={308} height={360} className="absolute top-0 left-0" />
 
       <div className={cx("absolute inset-x-0 top-0 h-[108px] overflow-clip rounded-t-[18px] whitespace-nowrap", look.head)}>
-        {look.lotus && (
+        {batch.art ? (
+          <TicketArt name={batch.art} />
+        ) : (
           <img
             src="/images/admissions/ticket-lotus.svg"
             alt=""
@@ -98,14 +103,14 @@ export default function BatchTicket({ batch, tone }: BatchTicketProps) {
               ))}
           </p>
           <div className="flex flex-col gap-[5px] font-bold">
-            <p className={cx("text-[20px]/[16px] tracking-[2.8px]", look.day)}>{month.charAt(0).toUpperCase() + month.slice(1).toLowerCase()}</p>
-            <p className={cx("text-[13px]/[16px] tracking-[1.82px]", look.day)}>{year}</p>
+            <p className={cx("text-[20px]/[16px] tracking-[0.02em]", look.day)}>{month.charAt(0).toUpperCase() + month.slice(1).toLowerCase()}</p>
+            <p className={cx("text-[13px]/[16px] tracking-[0.04em]", look.day)}>{year}</p>
           </div>
         </div>
         <p className="sr-only">
           Starts <time dateTime={batch.startDate}>{`${day} ${month} ${year}`}</time>
         </p>
-        <p className={cx("absolute top-[81px] left-5 text-[11px]/[14px] font-bold tracking-[0.66px]", look.target)}>
+        <p className={cx("absolute top-[81px] left-5 text-[11px]/[14px] font-bold tracking-[0.02em]", look.target)}>
           Target: UPSC CSE {batch.targetYear}
         </p>
       </div>
@@ -114,7 +119,7 @@ export default function BatchTicket({ batch, tone }: BatchTicketProps) {
         <h3 className="text-[18px]/[24px] font-bold text-mahogany">{batch.programme}</h3>
         {modes && <p className="text-[13px]/[18px] font-medium text-clay">{modes}</p>}
         {batch.admissionOpen && (
-          <p className="flex items-center gap-1.5 text-[11px]/[14px] font-bold tracking-[0.08em] text-[#a8431a] uppercase">
+          <p className="flex items-center gap-1.5 text-[11px]/[14px] font-bold tracking-[0.01em] text-[#a8431a]">
             <span aria-hidden="true" className="size-1.5 rotate-45 bg-current" />
             Admissions open
           </p>
@@ -147,13 +152,17 @@ export default function BatchTicket({ batch, tone }: BatchTicketProps) {
         <>
           <p className="sr-only">Limited seats</p>
           {/* The rubber stamp (Figma "rubber stamp – Limited seats"): 96px, turned 14°, at 85%. */}
-          <div aria-hidden="true" className="pointer-events-none absolute top-[182.19px] left-[184.97px] size-24 rotate-14 opacity-85">
+          <div
+            aria-hidden="true"
+            className="lp-wobble pointer-events-none absolute top-[182.19px] left-[184.97px] size-24 rotate-14 opacity-85"
+            style={{ animationDelay: `${-((tone * 1.7) % 6.5)}s` }}
+          >
             <div data-stamp className="absolute inset-0">
               <img src="/images/admissions/stamp-limited-ring.svg" alt="" width={94} height={94} className="absolute top-px left-px max-w-none" />
-              <p className="absolute inset-x-0 top-[34px] pl-[1.2px] text-center text-[12px]/[14px] font-bold tracking-[1.2px] whitespace-nowrap text-[#e34234]">
+              <p className="absolute inset-x-0 top-[34px] pl-[0.08em] text-center text-[12px]/[14px] font-bold tracking-[0.08em] whitespace-nowrap text-[#e34234]">
                 LIMITED
               </p>
-              <p className="absolute inset-x-0 top-[50px] pl-[1.2px] text-center text-[12px]/[14px] font-bold tracking-[1.2px] whitespace-nowrap text-[#e34234]">
+              <p className="absolute inset-x-0 top-[50px] pl-[0.08em] text-center text-[12px]/[14px] font-bold tracking-[0.08em] whitespace-nowrap text-[#e34234]">
                 SEATS
               </p>
             </div>

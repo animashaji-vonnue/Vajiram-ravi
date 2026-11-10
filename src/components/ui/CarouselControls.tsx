@@ -3,11 +3,15 @@
 import type { RefObject } from "react";
 import Icon from "@/components/ui/Icon";
 import { cx } from "@/lib/cx";
+import { pressRipple } from "@/lib/pressRipple";
 
 /*
- * Carousel arrows and dots (motion spec, "Carousel arrows + dots").
- *   - Arrow: hover fills it ink and turns the icon cream (--dur-fast); pressing scales it to 0.96. An
- *     arrow with nothing further to go hides (opacity 0, out of the tab order) but keeps its place.
+ * Carousel arrows and dots (motion spec, "Carousel arrows + dots"), the same on every carousel of the page.
+ *   - Arrow: a quiet outline at rest (a hairline ring, the icon in ink); only hover fills it ink and turns
+ *     the icon cream (--dur-fast). Pressing scales it to 0.96 and sets off the press ripple: a disc grows
+ *     out from the point pressed and a ring pulses past the edge (lib/pressRipple, the same as
+ *     the buttons). An arrow with nothing further to go hides (opacity 0, out of the tab order) but keeps
+ *     its place.
  *   - Dots: the active dot stretches from 8px to 24px wide over --dur-base. An autoplaying carousel can
  *     show its progress inside the active dot through `fillRef`.
  */
@@ -21,8 +25,11 @@ type CarouselArrowProps = {
   hidden?: boolean;
   /** Nothing further this way, but stay in view, dimmed (for a carousel whose arrows always show). */
   disabled?: boolean;
-  /** "light": white with a hairline; "solid": filled ink, as the design's "next" arrows. */
-  tone?: "light" | "solid";
+  /**
+   * "light" (the default) on paper; "dark" on a dark band, the ring and icon in cream. "solid" is the old
+   * filled look, now the same as "light": every arrow is an outline until hovered.
+   */
+  tone?: "light" | "dark" | "solid";
   /** "circle" or the toppers' rounded "square". */
   shape?: "circle" | "square";
   /** Box size in px (40 or 44 in the design). */
@@ -35,22 +42,25 @@ export function CarouselArrow({ direction, onClick, label, hidden = false, disab
     <button
       type="button"
       onClick={onClick}
+      onPointerDown={disabled || hidden ? undefined : pressRipple}
       disabled={disabled}
       aria-label={label}
       aria-hidden={hidden || undefined}
       tabIndex={hidden ? -1 : undefined}
       style={{ width: size, height: size }}
       className={cx(
-        "flex shrink-0 cursor-pointer items-center justify-center [transition:background-color_var(--dur-fast)_var(--ease-out),color_var(--dur-fast)_var(--ease-out),border-color_var(--dur-fast)_var(--ease-out),opacity_var(--dur-fast)_var(--ease-out),scale_80ms_var(--ease-out)] hover:bg-ink hover:text-cream active:scale-[.96]",
+        "relative isolate flex shrink-0 cursor-pointer items-center justify-center overflow-visible border bg-transparent [transition:background-color_var(--dur-fast)_var(--ease-out),color_var(--dur-fast)_var(--ease-out),border-color_var(--dur-fast)_var(--ease-out),opacity_var(--dur-fast)_var(--ease-out),scale_80ms_var(--ease-out)] active:scale-[.96]",
         shape === "circle" ? "rounded-full" : "rounded-lg",
-        tone === "light" ? "border border-ink/15 bg-white text-ink hover:border-ink" : "bg-ink text-cream",
+        tone !== "dark" ? "border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-cream" : "border-cream/45 text-cream hover:border-cream hover:bg-cream hover:text-ink",
         hidden && "pointer-events-none opacity-0",
-        disabled && "cursor-default opacity-35 hover:bg-white hover:text-ink",
-        disabled && tone === "light" && "hover:border-ink/15",
+        disabled && "cursor-default opacity-35 hover:bg-transparent",
+        disabled && (tone !== "dark" ? "hover:border-ink/25 hover:text-ink" : "hover:border-cream/45 hover:text-cream"),
         className,
       )}
     >
-      <Icon name={direction === "prev" ? "arrow-l" : "arrow-r"} />
+      {/* The ripple is clipped to the button; the pulse ring sits outside it. */}
+      <span data-ripple aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]" />
+      <Icon name={direction === "prev" ? "arrow-l" : "arrow-r"} className="relative" />
     </button>
   );
 }
@@ -95,7 +105,7 @@ export function CarouselDots({ count, active, onSelect, label, itemName, tone = 
                   ? fillRef
                     ? "bg-cream/30"
                     : "bg-saffron"
-                  : "bg-cream/35 hover:bg-cream/60",
+                  : "bg-cream/65 hover:bg-cream/90",
             )}
           >
             {isActive && fillRef && (

@@ -1,6 +1,6 @@
 /**
- * "Our locations" (Figma 2533:5566, "Location · concept B"): the map beside the "Location & Timing" card.
- * The campuses' addresses also fill the footer's contact block.
+ * "Our locations" (Contact/Locations): each campus's details and street map beside a gallery of the
+ * institute. The campuses' addresses also fill the footer's contact block.
  */
 
 import { contact } from "@/data/site";
@@ -66,12 +66,27 @@ export const campuses: Campus[] = [
   },
 ];
 
+/** A photograph in the campus gallery: its file and size, and its caption (the main one names the campus). */
+export type GalleryPhoto = { src: string; width: number; height: number; caption: string };
+
+/**
+ * The campus gallery beside the details and map (feedback item 41): the building, then three views inside.
+ * TODO: dummy photographs from the site's other sections, as the client allowed; replace them with each
+ * campus's own (the building's front, a classroom in session, the library and a counselling or mentoring
+ * room, for New Delhi and for Chennai) and give each campus its own set.
+ */
+export const campusGallery: GalleryPhoto[] = [
+  { src: "/images/locations/campus-exterior.webp", width: 1024, height: 1024, caption: "The campus" },
+  { src: "/images/programmes/featured-classroom.webp", width: 1024, height: 461, caption: "Classrooms" },
+  { src: "/images/programmes/featured-library.webp", width: 1264, height: 848, caption: "Library" },
+];
+
 export const locationsIntro = {
   title: { lead: "Find us in ", em: "New Delhi and Chennai." } satisfies SplitHeading,
   text: "Meet with an academic counsellor, explore our classrooms and learn more about our programmes in person.",
   tabsLabel: "Campus",
   /** The card's heading. */
-  label: "Location & Timing",
+  label: "Location & timing",
   landmarkPrefix: "Landmark: ",
   mapsCta: "View on maps",
 };

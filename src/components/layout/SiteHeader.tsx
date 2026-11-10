@@ -5,7 +5,6 @@ import { ANCHOR_JUMP_EVENT } from "@/components/layout/anchorJump";
 import LetsTalkSheet from "@/components/layout/LetsTalkSheet";
 import MainNav from "@/components/layout/MainNav";
 import SearchDialog from "@/components/layout/SearchDialog";
-import UtilityBar from "@/components/layout/UtilityBar";
 import Cta from "@/components/ui/Cta";
 import Icon from "@/components/ui/Icon";
 import { mainNav } from "@/data/site";
@@ -23,17 +22,17 @@ const BAND = { rootMargin: "-45% 0px -50% 0px" };
 const RANG_KEY = "vr-header-phone-rang";
 
 /**
- * The header at the top of the page flow, 119px tall (Figma 2258:10448 and "00 Header", 2258:10384): the
- * 39px mahogany utility bar and the 80px white main header (logo, the links and "Let's talk", the site's
- * orange CTA with the phone in its medallion). The hero starts under it; the announcement strip runs
- * between the hero and the preparation journey (layout/AnnouncementBar, placed by app/page).
+ * The header at the top of the page flow: the 80px white main header (Figma "00 Header", 2258:10384) with
+ * the logo, the links and "Let's talk", the site's orange CTA with the phone in its medallion. (The
+ * mahogany contact strip that sat above it has been removed at the client's request.) The hero starts
+ * under it; the announcement strip runs between the hero and the preparation journey
+ * (layout/AnnouncementBar, placed by app/page).
  *
  * Motion: it is sticky, and it gets out of the way while reading. At the top of the page it is whole.
  * Scrolling down past 80px slides it up out of view (data-hidden, --dur-base, --ease-in-out); scrolling back
- * up by 12px brings the main header back (80px, lib/smoothScroll's HEADER_OFFSET), with the
- * utility bar tucked above it (data-tucked, translateY(-39px)) and a shadow (--shadow-rest) under it;
- * back at the top the utility bar returns. It stays in view while it holds the keyboard focus or a menu is
- * open. One rAF-throttled scroll listener drives this, writing data attributes so React does not
+ * up by 12px brings it back (80px, lib/smoothScroll's HEADER_OFFSET) with a shadow (--shadow-rest) under
+ * it. It stays in view while it holds the keyboard focus or a menu is open. One rAF-throttled scroll
+ * listener drives this, writing data attributes so React does not
  * re-render. While the page glides to a section (an in-page link or a search result) it stays hidden.
  *
  * "Let's talk" opens the contact sheet, and ⌘K / Ctrl+K anywhere opens the search box (the design has no
@@ -96,15 +95,13 @@ export default function SiteHeader() {
       if (jumping) endJumpSoon(200);
       last = y;
       header.toggleAttribute("data-hidden", hidden);
-      // Shown again mid-page: the main header and the strip only, the utility bar tucked above them.
-      header.toggleAttribute("data-tucked", !hidden && y > HIDE_AFTER);
       header.toggleAttribute("data-raised", y > HIDE_AFTER);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
 
-    // A glide to a section starts: keep the bar tucked until the page has settled.
+    // A glide to a section starts: keep the header hidden until the page has settled.
     const startJump = () => {
       jumping = true;
       endJumpSoon(400);
@@ -150,11 +147,7 @@ export default function SiteHeader() {
     return () => observer.disconnect();
   }, []);
 
-  // Focus reaching the header (Tab from the top) brings it back into view, the utility bar too.
-  const revealUtility = () => {
-    headerRef.current?.removeAttribute("data-hidden");
-    headerRef.current?.removeAttribute("data-tucked");
-  };
+  // Focus reaching the header (Tab from the top) brings it back into view.
   const revealHeader = () => headerRef.current?.removeAttribute("data-hidden");
 
   // The logo goes back to the very top, past the sticky header's offset.
@@ -192,17 +185,13 @@ export default function SiteHeader() {
       <header
         ref={headerRef}
         onFocus={revealHeader}
-        className="group/header sticky top-0 z-50 [transition:translate_var(--dur-base)_var(--ease-in-out)] data-tucked:-translate-y-[39px] data-hidden:-translate-y-full"
+        className="group/header sticky top-0 z-50 [transition:translate_var(--dur-base)_var(--ease-in-out)] data-hidden:-translate-y-full"
       >
         {/* --shadow-rest under the main header and strip once the page has scrolled (fades; never animates the shadow itself). */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-[39px] bottom-0 -z-10 opacity-0 shadow-rest [transition:opacity_var(--dur-base)_var(--ease-out)] group-data-raised/header:opacity-100"
+          className="pointer-events-none absolute inset-x-0 top-0 bottom-0 -z-10 opacity-0 shadow-rest [transition:opacity_var(--dur-base)_var(--ease-out)] group-data-raised/header:opacity-100"
         />
-
-        <div onFocus={revealUtility}>
-          <UtilityBar />
-        </div>
 
         <div className="relative z-20 h-20 border-b border-[#e8e4df] bg-white">
           <div className="mx-auto flex h-full w-canvas items-center justify-between px-10 pt-3.5 pb-[13px]">

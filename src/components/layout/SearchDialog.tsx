@@ -90,7 +90,7 @@ export default function SearchDialog({ open, onClose }: SearchDialogProps) {
   const go = (item: SearchItem | undefined) => {
     if (!item) return;
     onClose();
-    // The header keeps its utility bar tucked for the glide, so the section lands under the 120px.
+    // The header stays hidden for the glide, so the section lands under the 80px header.
     window.dispatchEvent(new Event(ANCHOR_JUMP_EVENT));
     // After the dialog has let go of focus, so the page scrolls from where it is.
     requestAnimationFrame(() => {
@@ -167,7 +167,7 @@ export default function SearchDialog({ open, onClose }: SearchDialogProps) {
         >
           {groups.map(([group, items]) => (
             <li key={group} role="presentation">
-              <p className="px-4 pt-3 pb-1.5 font-mono text-[11px]/[1.4] tracking-[0.04em] text-clay/80 uppercase">
+              <p className="px-4 pt-3 pb-1.5 font-mono text-[11px]/[1.4] tracking-[0.01em] text-clay/80">
                 {query.trim() ? group : group === "Sections" ? "Jump to" : "Popular programmes"}
               </p>
               <ul role="presentation">
@@ -210,7 +210,7 @@ export default function SearchDialog({ open, onClose }: SearchDialogProps) {
           )}
         </ul>
 
-        <div className="flex items-center gap-4 border-t border-[#e8e4df] px-6 py-3 font-mono text-[11px] tracking-[0.04em] text-clay/80 uppercase">
+        <div className="flex items-center gap-4 border-t border-[#e8e4df] px-6 py-3 font-mono text-[11px] tracking-[0.01em] text-clay/80">
           <span>↑ ↓ to move</span>
           <span>↵ to open</span>
           <span>Esc to close</span>

@@ -1,0 +1,129 @@
+/*
+ * The course shelf (Programmes/CourseShelf), drawn in CSS: wooden planks on the cream wall of the band, and
+ * the books' cloth covers. The wood is a warm walnut, its grain an SVG noise stretched along the plank.
+ */
+
+/* The grain: fractal noise stretched along the plank, kept to its dark streaks. */
+.shelf-plank {
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='80'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0035 0.42' numOctaves='3' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 0.22 0 0 0 0 0.11 0 0 0 0 0.04 2 0 0 0 -0.66'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  position: absolute;
+  height: 34px;
+  pointer-events: none;
+  transition:
+    opacity 500ms var(--ease-out),
+    translate 500ms var(--ease-out),
+    filter 700ms var(--ease-out);
+}
+
+/* The plank's top, seen a little from above: darker at the back, where it meets the wall. */
+.shelf-plank__top {
+  position: absolute;
+  inset: 0 6px auto;
+  height: 12px;
+  background-image:
+    var(--grain),
+    linear-gradient(180deg, #6e4222 0%, #a8733f 30%, #c99560 100%);
+  background-size: 640px 80px, auto;
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 100%, 0 100%);
+}
+
+/* Its front edge, with the grain, a light catch along the top and the shadow it casts on the wall. */
+.shelf-plank__front {
+  position: absolute;
+  inset: 12px 0 0;
+  border-radius: 0 0 3px 3px;
+  background-image:
+    var(--grain),
+    linear-gradient(180deg, #a56d3d 0%, #8b5530 50%, #6c3f21 100%);
+  background-size: 640px 80px, auto;
+  box-shadow:
+    inset 0 1px 0 rgb(255 226 184 / 0.55),
+    inset 0 -2px 0 rgb(43 18 6 / 0.25),
+    0 26px 30px -18px rgb(60 28 8 / 0.5),
+    0 6px 10px -6px rgb(60 28 8 / 0.45);
+}
+
+/* The two brackets that hold it to the wall. */
+.shelf-plank::before,
+.shelf-plank::after {
+  content: "";
+  position: absolute;
+  top: 34px;
+  width: 16px;
+  height: 26px;
+  background: linear-gradient(90deg, #5a341b, #7a4a28 50%, #5a341b);
+  clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
+  box-shadow: 0 8px 10px -6px rgb(60 28 8 / 0.4);
+}
+.shelf-plank::before {
+  left: 9%;
+}
+.shelf-plank::after {
+  right: 9%;
+  transform: scaleX(-1);
+}
+
+/* A book's cloth: a fine diagonal weave over the board's colour. */
+.book-cloth {
+  background-image:
+    repeating-linear-gradient(45deg, rgb(255 255 255 / 0.03) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(-45deg, rgb(0 0 0 / 0.035) 0 2px, transparent 2px 5px);
+}
+
+/* The page block that shows past the board on the right: fine lines of paper. */
+.book-pages {
+  background-image: repeating-linear-gradient(90deg, #e6d4b6 0 1px, #fbf3e4 1px 3px);
+}
+
+/* The filter's indicator slides between the chips. Reduced motion: it jumps. */
+.shelf-filter__ind {
+  transition:
+    translate 450ms cubic-bezier(0.7, 0, 0.2, 1),
+    width 450ms cubic-bezier(0.7, 0, 0.2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .shelf-filter__ind,
+  .shelf-plank {
+    transition: none;
+  }
+}
+
+/*
+ * The cover's gold emblem (CoverArt): the dotted rule of its foil ring turns slowly all the time (60s a
+ * turn); while the book is hovered its drawing draws itself again, each stroke from its start (a dash as
+ * long as any stroke on the 48px box, its offset run down to nothing). Reduced motion: still.
+ */
+.emblem-ring {
+  transform-box: view-box;
+  transform-origin: center;
+  animation: emblem-turn 60s linear infinite;
+}
+@keyframes emblem-turn {
+  to {
+    rotate: 360deg;
+  }
+}
+.emblem-draw > * {
+  stroke-dasharray: 90;
+  stroke-dashoffset: 0;
+}
+.group\/book:hover .emblem-draw > * {
+  animation: emblem-draw 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.group\/book:hover .emblem-draw > *:nth-child(2) {
+  animation-delay: 120ms;
+}
+.group\/book:hover .emblem-draw > *:nth-child(n + 3) {
+  animation-delay: 220ms;
+}
+@keyframes emblem-draw {
+  from {
+    stroke-dashoffset: 90;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .emblem-ring,
+  .group\/book:hover .emblem-draw > * {
+    animation: none;
+  }
+}

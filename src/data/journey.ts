@@ -8,7 +8,7 @@ import { links, type Href } from "@/data/links";
 
 export type StageId = "prelims" | "mains" | "interview";
 
-/** One line of "How Vajiram supports you". */
+/** One line of "How Vajiram & Ravi supports you". */
 export type SupportItem = {
   /** The bold run-in label, with its colon (the Interview's lines). */
   label?: string;
@@ -36,9 +36,8 @@ export const journeyIntro = {
     lead: "Guidance at every stage of",
     emphasis: "your UPSC journey.",
   },
-  lead: "From Prelims to Mains and the Personality Test, Vajiram & Ravi brings together structured teaching, focused study materials, regular assessments and expert guidance to support your preparation throughout the journey.",
   /** The heading of each stage's support list. */
-  supportLabel: "How Vajiram supports you",
+  supportLabel: "How Vajiram & Ravi supports you",
   /** The stage rail's accessible name. */
   tabsLabel: "Preparation stages",
 };
@@ -56,7 +55,7 @@ export const journeyStages: JourneyStage[] = [
       { text: "18 Yellow Books covering the General Studies syllabus.", figures: ["18"] },
       { text: "30 Prelims tests covering General Studies and Current Affairs.", figures: ["30"] },
     ],
-    cta: { label: "Explore Prelims Preparation", href: links.gsCourse },
+    cta: { label: "Explore Prelims preparation", href: links.gsCourse },
   },
   {
     id: "mains",
@@ -72,7 +71,7 @@ export const journeyStages: JourneyStage[] = [
       { text: "Model answers and explanatory sessions." },
       { text: "One-to-one mentorship and post-test guidance." },
     ],
-    cta: { label: "Explore Mains Preparation", href: links.mainsTestSeries },
+    cta: { label: "Explore Mains preparation", href: links.mainsTestSeries },
   },
   {
     id: "interview",
@@ -82,11 +81,11 @@ export const journeyStages: JourneyStage[] = [
     description:
       "Communicate your knowledge, experiences and perspectives with clarity through focused guidance, mock interviews and expert feedback. Build the confidence to present yourself effectively before the interview board.",
     support: [
-      { label: "DAF Guidance:", text: "Assistance with Detailed Application Form (DAF-II) preparation." },
-      { label: "Mock Interviews:", text: "Practice sessions with expert interview panels." },
-      { label: "Personalised Feedback:", text: "Individual guidance to improve interview readiness." },
-      { label: "Current Affairs Sessions:", text: "Focused discussions on important national and international issues." },
+      { label: "DAF guidance:", text: "Assistance with Detailed Application Form (DAF-II) preparation." },
+      { label: "Mock interviews:", text: "Practice sessions with expert interview panels." },
+      { label: "Personalised feedback:", text: "Individual guidance to improve interview readiness." },
+      { label: "Current affairs sessions:", text: "Focused discussions on important national and international issues." },
     ],
-    cta: { label: "Explore Interview Guidance", href: links.interviewGuidance },
+    cta: { label: "Explore interview guidance", href: links.interviewGuidance },
   },
 ];

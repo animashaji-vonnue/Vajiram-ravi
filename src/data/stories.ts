@@ -2,21 +2,24 @@ import { links } from "@/data/links";
 
 /** "Student stories & experiences" (IA 8; Figma "09 · Student Stories", 2392:5350). Copy: the client's homepage content, §08. */
 export const storiesIntro = {
-  /** The H2; the emphasis is its italic second beat. */
-  heading: { lead: "Their Journeys,", emphasis: "Their Words" },
-  lead: "Every aspirant has a different experience. Hear directly from our students about their preparation journey and how Vajiram & Ravi supported them along the way.",
+  /** The H2; the emphasis, in colour, is its closing beat: who the stories are from. */
+  heading: { lead: "Their journeys, their words, from our", emphasis: "toppers and alumni." },
+  lead: "Every aspirant has a different experience. Hear directly from our toppers, alumni and students about their preparation journey and how Vajiram & Ravi supported them along the way.",
   /** Shown under the lead once the stories page exists (links.studentStories is null today). */
-  cta: { label: "Watch Student Stories", href: links.studentStories },
+  cta: { label: "Watch student stories", href: links.studentStories },
 };
 
 /** A student's own words, on a postcard: the content asks each story for the name, year, rank and programme. */
 export type Story = {
   name: string;
-  /** All India Rank, where there is one: a student still preparing has none, and the card then leaves it out. */
+  /**
+   * All India Rank, where there is one: the postmark then reads "AIR" over it. A student still preparing has
+   * none, and the card then leaves it out (the postmark shows the exam and its year instead).
+   */
   rank?: number;
-  /** The examination, "CSE", on the postmark and in the line under the name. */
+  /** The examination, "CSE", in the line under the name (and on the postmark when there is no rank). */
   exam: string;
-  /** The examination year, under the exam on the postmark. */
+  /** The examination year, in the line under the name (and under the exam on a postmark without a rank). */
   year: number;
   /** The Vajiram & Ravi programmes the student took. */
   programme: string;

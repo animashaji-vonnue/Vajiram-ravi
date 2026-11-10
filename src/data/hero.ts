@@ -4,7 +4,7 @@
  * the panel's slides are the top three of UPSC CSE 2025.
  */
 
-/** A run of the heading; `em` runs are set in italic saffron. */
+/** A run of the heading; `em` runs are set in white semibold (the rank keeps the saffron). */
 export type HeadlineRun = { text: string; em?: boolean };
 
 export const hero = {
@@ -18,8 +18,8 @@ export const hero = {
     [{ text: "Build it with Vajiram & Ravi.", em: true }],
   ] as HeadlineRun[][],
   lead: "Established in 1976, Vajiram & Ravi brings 50 years of experience in Civil Services preparation, offering expert guidance, structured programmes, comprehensive resources and flexible learning formats to support aspirants at every stage of their UPSC journey.",
-  primary: { label: "Explore Programmes", href: "#programmes" },
-  secondary: { label: "Get Expert Guidance", href: "#counselling" },
+  primary: { label: "Explore programmes", href: "#programmes" },
+  secondary: { label: "Get expert guidance", href: "#counselling" },
 };
 
 /** A topper in the panel's slideshow. */

@@ -7,7 +7,7 @@ import { cx } from "@/lib/cx";
 import { prefersReducedMotion } from "@/lib/motion";
 import { whenVisible } from "@/lib/reveal";
 import StageMedallion from "./StageMedallion";
-import { MARKER_AT, RAIL_W, THREAD_D } from "./thread";
+import { BLEED, MARKER_AT, RAIL_W, THREAD_D } from "./thread";
 
 /** The entrance: the thread draws across in this time, lighting each medallion as it reaches it. */
 const DRAW_MS = 1200;
@@ -41,10 +41,12 @@ type StageRailProps = {
  * The stage rail: the three stages as WAI-ARIA tabs (one tab stop; the arrow keys, Home and End move and
  * choose), each a numbered medallion over the stage's name, strung on a thread across the column.
  *
- * The thread (see thread.ts) is a burnt dash-and-dot line hanging in garland swags between the medallions;
+ * The thread (see thread.ts) is a burnt dash-and-dot line hanging in garland swags between the medallions,
+ * running in from past the left edge of the screen and out past the right one;
  * over it a saffron-to-burnt thread fills from the start to the chosen stage, running on or back over
  * --dur-slow when another is chosen. The medallions it has reached are lit orange, the ones ahead are paper,
  * and each changes as the fill passes it; the chosen one stands 12% larger in a saffron halo, its name in ink.
+ * While the band is on screen the halo breathes, swelling and settling every 3.6s (globals.css, .lp-breathe).
  *
  * Entrance, once, when the rail is in view: the thread draws itself from the left (1.2s, linear, so it
  * keeps pace), and each medallion lights up as the line reaches it, growing in with a saffron ring that
@@ -124,15 +126,16 @@ export default function StageRail({ stages, active, onSelect, label, idPrefix, f
       <svg
         aria-hidden="true"
         focusable="false"
-        width={RAIL_W}
+        width={RAIL_W + BLEED * 2}
         height={72}
-        viewBox={`0 0 ${RAIL_W} 72`}
+        viewBox={`${-BLEED} 0 ${RAIL_W + BLEED * 2} 72`}
         fill="none"
-        className="pointer-events-none absolute top-0 left-0 overflow-visible"
+        className="pointer-events-none absolute top-0 overflow-visible"
+        style={{ left: -BLEED }}
       >
         <defs>
           {/* The entrance's draw: a dash as long as the thread; an offset of 1 hides it, 0 shows it whole. */}
-          <mask id={`${idPrefix}-thread-draw`} maskUnits="userSpaceOnUse" x={-8} y={-8} width={RAIL_W + 16} height={88}>
+          <mask id={`${idPrefix}-thread-draw`} maskUnits="userSpaceOnUse" x={-BLEED - 8} y={-8} width={RAIL_W + BLEED * 2 + 16} height={88}>
             <path ref={drawRef} d={THREAD_D} pathLength={1} stroke="#fff" strokeWidth={14} strokeDasharray="1 1" strokeDashoffset={0} />
           </mask>
           <linearGradient id={`${idPrefix}-thread-fill`} gradientUnits="userSpaceOnUse" x1={0} y1={0} x2={RAIL_W} y2={0}>
@@ -141,10 +144,8 @@ export default function StageRail({ stages, active, onSelect, label, idPrefix, f
           </linearGradient>
         </defs>
         <g mask={`url(#${idPrefix}-thread-draw)`}>
-          {/* The thread in a dash-dot rhythm, a dot at its start and a diamond at its end, as the eyebrow rules. */}
+          {/* The thread in a dash-dot rhythm, as the eyebrow rules, running off both edges of the screen. */}
           <path d={THREAD_D} stroke="#CC5500" strokeOpacity={0.4} strokeWidth={1.5} strokeLinecap="round" strokeDasharray="10 6 0.5 6" />
-          <circle cx={4} cy={28} r={2.4} fill="#CC5500" fillOpacity={0.6} />
-          <path d={`M${RAIL_W - 12} 28L${RAIL_W - 6} 23L${RAIL_W} 28L${RAIL_W - 6} 33Z`} fill="#CC5500" fillOpacity={0.6} />
           {/* The filled thread: a dash of the path's whole length, offset to end at the chosen stage. */}
           <path
             ref={fillRef}
@@ -189,7 +190,7 @@ export default function StageRail({ stages, active, onSelect, label, idPrefix, f
                 >
                   <span
                     className={cx(
-                      "absolute -inset-3 rounded-full bg-saffron/25 [transition:opacity_var(--dur-base)_var(--ease-out),scale_var(--dur-base)_var(--ease-out)]",
+                      "lp-breathe absolute -inset-3 rounded-full bg-saffron/25 [transition:opacity_var(--dur-base)_var(--ease-out),scale_var(--dur-base)_var(--ease-out)]",
                       chosen ? "opacity-100" : "scale-75 opacity-0",
                     )}
                     style={{ transitionDelay: `${chosen ? delay : 0}ms` }}

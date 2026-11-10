@@ -17,7 +17,17 @@ export type Batch = {
   seatStatus?: "limited";
   /** Only when admissions have confirmed it: the ticket then reads "Admissions open". */
   admissionOpen?: boolean;
+  /**
+   * The batch the featured ticket above the track already shows (FeaturedBatch): the track leaves it out,
+   * so it is not shown twice. It stays in the list for the site search.
+   */
+  featured?: boolean;
+  /** The faint line drawing on the ticket's head, one for each batch's subject (BatchTicket's TicketArt). */
+  art?: TicketArtName;
 };
+
+/** The ticket heads' line drawings: a camp tent, a globe, a newspaper and an open book. */
+export type TicketArtName = "camp" | "globe" | "newspaper" | "book";
 
 const BOTH: BatchMode[] = ["Classroom", "LIVE-Online"];
 
@@ -32,6 +42,7 @@ export const batches: Batch[] = [
     modes: BOTH,
     targetYear: 2027,
     admissionOpen: true,
+    featured: true,
   },
   {
     id: "prelims-camp-3",
@@ -40,6 +51,7 @@ export const batches: Batch[] = [
     modes: BOTH,
     targetYear: 2027,
     seatStatus: "limited",
+    art: "camp",
   },
   {
     id: "smart-prelims-ca-2026",
@@ -48,6 +60,7 @@ export const batches: Batch[] = [
     modes: BOTH,
     targetYear: 2027,
     seatStatus: "limited",
+    art: "globe",
   },
   {
     // TODO: confirm with client — stale? It targets UPSC CSE 2026, which has passed. The design names no
@@ -58,6 +71,7 @@ export const batches: Batch[] = [
     modes: ["LIVE-Online"],
     targetYear: 2026,
     seatStatus: "limited",
+    art: "newspaper",
   },
   {
     id: "gs-comprehensive-11m",
@@ -65,6 +79,7 @@ export const batches: Batch[] = [
     startDate: "2027-01-29",
     modes: BOTH,
     targetYear: 2027,
+    art: "book",
   },
 ];
 
@@ -86,18 +101,18 @@ export type BatchFilter = (typeof batchFilters)[number];
 export const batchesCopy = {
   title: { before: "Explore", em: "upcoming batches", after: "for your UPSC preparation." } satisfies HeadingParts,
   lead: "Check upcoming start dates, learning options and programme details to plan your preparation with confidence.",
-  viewAll: "View All Upcoming Batches",
+  viewAll: "View all upcoming batches",
   empty: "No batches for this selection",
   emptyLink: "get notified",
 };
 
 /** The featured batch, on the wide ticket above the batch tabs. */
 export const featuredBatch = {
-  label: "Featured Batch",
+  label: "Featured batch",
   programme: "General Studies – Prelims & Mains",
-  status: "Admissions Open",
+  status: "Admissions open",
   targetYear: 2028,
-  kind: "UPSC CSE Preparation Programme",
+  kind: "UPSC CSE preparation programme",
   /** The batch's start, as the ticket shows it under "Batch starts". */
   // TODO: placeholder. The client's copy has "[Verified date]" here: replace this with the verified start
   // date (e.g. "12 July 2027") when admissions confirm it.
@@ -106,10 +121,10 @@ export const featuredBatch = {
   details: { start: "Batch starts", mode: "Mode", location: "Location" },
   mode: "Classroom / LIVE-Online",
   location: "New Delhi (for classroom)",
-  cta: { label: "View Programme Details", href: links.gsCourse as Href },
+  cta: { label: "View programme details", href: links.gsCourse as Href },
 };
 
-/** The choices of "Preferred Learning Mode" in the counselling form. */
+/** The choices of "Preferred learning mode" in the counselling form. */
 export const learningModes: BatchMode[] = ["Classroom", "LIVE-Online"];
 
 /** Counselling & Academic Guidance (IA 6; Figma "05 · Personalised Counselling", 2377:4839) and its postcard form. */
@@ -118,18 +133,19 @@ export const counsellingCopy = {
   text: [
     "Have questions about programmes, upcoming batches or learning options? Our academic counsellors can help you understand the available choices and guide you towards the right preparation path.",
   ],
-  cta: "Get Expert Guidance",
+  cta: "Get expert guidance",
   postcardTitle: "Book your free session today!",
   labels: {
-    name: "Full Name",
-    phone: "Mobile Number",
-    email: "Email Address",
-    programme: "Programme of Interest",
-    mode: "Preferred Learning Mode",
-    query: "Your Query",
+    name: "Full name",
+    phone: "Mobile number",
+    email: "Email address",
+    programme: "Programme of interest",
+    mode: "Preferred learning mode",
+    query: "Your query",
   },
-  /** After "Your Query", which is the one field that may stay empty. */
+  /** After "Your query", which is the one field that may stay empty. */
   optional: "(optional)",
+  /** The hints in an empty field once it has the focus and its label has risen to the border. */
   placeholders: {
     name: "Your full name",
     email: "you@email.com",
@@ -137,7 +153,7 @@ export const counsellingCopy = {
     mode: "Pick a mode",
     query: "What would you like to ask?",
   },
-  submit: "Request a Call Back",
+  submit: "Request a call back",
   thanks: "Thank you",
   thanksText: "Your postcard is on its way. A counsellor will call you soon.",
   again: "Book another session",

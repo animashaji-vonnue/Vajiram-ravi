@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Cta from "@/components/ui/Cta";
+import { requestEnquiry } from "@/components/sections/Admissions/enquiry";
+import { batches, featuredBatch, todayIso, upcomingBatches, type Batch } from "@/data/admissions";
 import { featuredProgramme } from "@/data/programmes";
-import { cx } from "@/lib/cx";
 import { prefersReducedMotion } from "@/lib/motion";
 
 /** How long each photograph stays before the next fades in, ms. */
@@ -24,16 +25,85 @@ const GROUND = [
 /** A hyphen that never breaks the line, so "LIVE-Online" always stays in one piece. */
 const keepHyphens = (text: string) => text.replace(/LIVE-Online/g, "LIVE‑Online");
 
+/** The flagship programme's batches in the batch CMS (data/admissions): the General Studies ones. */
+const isFlagshipBatch = (batch: Batch) => batch.id.startsWith("gs-");
+
+const DAY_MS = 86_400_000;
+const dateOf = (iso: string) => new Date(`${iso}T00:00:00`);
+const longDate = (iso: string) => dateOf(iso).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+
 /**
- * The featured programme, General Studies Prelims & Mains (the `kevin` branch's featured card, on the hero's
- * orange gradient): on the left its photographs, fading from one to the next under the "Featured programme"
- * tag, with a button to pause them; on the right its name, its line, the four things it covers, who it is
- * for, how it can be taken and its duration, and the two buttons, all on one left edge.
+ * The pill's line, from the batch CMS only: whether admissions are open, when the next batch of the
+ * programme starts and, once today is known (in the browser), how many days are left until then, and
+ * "Limited seats" only when admissions have flagged the batch so. With no upcoming batch in the CMS, the
+ * featured batch's start as the batch ticket shows it.
+ */
+function admissionsLine(today: string | null): string {
+  const batch = (today ? upcomingBatches(today) : [...batches].sort((a, b) => a.startDate.localeCompare(b.startDate))).find(isFlagshipBatch);
+  if (!batch) return `Next batch starts ${featuredBatch.start}`;
+  const parts: string[] = [];
+  if (batch.admissionOpen) parts.push("Admissions open");
+  parts.push(`Next batch starts ${longDate(batch.startDate)}`);
+  if (today) {
+    const days = Math.round((dateOf(batch.startDate).getTime() - dateOf(today).getTime()) / DAY_MS);
+    parts.push(days === 0 ? "Classes begin today" : days === 1 ? "Only 1 day to go" : `Only ${days} days to go`);
+  }
+  if (batch.seatStatus === "limited") parts.push("Limited seats");
+  return parts.join(" · ");
+}
+
+/**
+ * The tag over the photographs, after the hero's pill (Hero, Ticker): "Flagship programme", then a window
+ * through which the admissions line glides past (globals.css, .hero-glide), faded at both ends, and an
+ * arrow. It links to the upcoming batches. Reduced motion: the line stands still.
+ */
+function AdmissionsTicker({ tag }: { tag: string }) {
+  const [today, setToday] = useState<string | null>(null);
+  useEffect(() => setToday(todayIso()), []);
+  const line = admissionsLine(today);
+  return (
+    <a
+      href="#batches"
+      className="group/ticker absolute top-6 left-6 flex w-[490px] items-center gap-3.5 rounded-full bg-mahogany/80 py-1.5 pr-4 pl-1.5 text-white ring-1 ring-white/20 [transition:background-color_var(--dur-fast)_var(--ease-out)] hover:bg-mahogany focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-saffron"
+    >
+      <span className="flex shrink-0 items-center gap-2 rounded-full bg-saffron px-3.5 py-1 text-[15px]/[20px] font-bold text-mahogany">
+        <span aria-hidden="true" className="relative flex size-1.5">
+          <span className="absolute inset-0 animate-pulse-ring rounded-full bg-mahogany motion-reduce:hidden" />
+          <span className="relative size-1.5 rounded-full bg-mahogany" />
+        </span>
+        {tag}
+      </span>
+      <span className="relative h-5 min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_20px,black_calc(100%-20px),transparent)]">
+        <span key={line} className="hero-glide absolute top-0 left-0 flex text-[15px]/[20px] font-medium whitespace-nowrap">
+          <span className="pr-10">{line}</span>
+          <span className="pr-10" aria-hidden="true">
+            {line}
+          </span>
+        </span>
+      </span>
+      <svg aria-hidden="true" viewBox="0 0 16 16" width={16} height={16} fill="none" className="shrink-0 [transition:translate_var(--dur-fast)_var(--ease-out)] group-hover/ticker:translate-x-0.5">
+        <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </a>
+  );
+}
+
+/**
+ * The flagship programme, General Studies Prelims & Mains (the `kevin` branch's featured card, on the hero's
+ * orange gradient): on the left its classroom photographs, fading from one to the next under the
+ * "Flagship programme" pill with the admissions line gliding through it (AdmissionsTicker), with a button
+ * to pause them; on the right its name, its line, the three things it covers, how it can be taken and its
+ * duration, and the two buttons, all on one left edge.
  *
  * Accessibility: white type on the shaded gradient (AA throughout); the buttons are the white and the
  * cream-outline buttons of the dark bands, each with the saffron focus ring; the photographs are
  * decoration, and their slideshow can be paused (WCAG 2.2.2). Reduced motion: the first photograph stays.
  * The card is its own (nested) section, labelled by its name, so its reveal waits for the card itself.
+ *
+ * Motion (ui/TextMotion): the card rises and grows into place (data-zoom); its name rises letter by letter
+ * (data-split) and its three points follow one by one (data-stagger); the detail labels settle out of
+ * shuffling glyphs (data-scramble) and the duration counts up (data-count); the photographs drift inside
+ * their frame (data-par) and the lotus turns slowly with the scroll (data-turn).
  */
 export default function FlagshipCard() {
   const programme = featuredProgramme;
@@ -62,31 +132,32 @@ export default function FlagshipCard() {
         aria-hidden="true"
         width={520}
         height={520}
+        data-turn="36"
         className="pointer-events-none absolute top-[-250px] left-[1020px] size-[520px] max-w-none opacity-40 mix-blend-screen"
       />
 
-      {/* The photographs (decoration), fading one into the next, with the tag and the pause button. */}
-      <div className="relative min-h-[620px] overflow-clip bg-[#8a2812]">
+      {/* The photographs (decoration), fading one into the next, with the pill and the pause button. */}
+      <div className="relative min-h-[500px] overflow-clip bg-[#8a2812]">
         {/* The photographs drift against the scroll inside their frame (TextMotion, data-par). */}
         <div data-par className="absolute inset-x-0 -inset-y-[7%]">
-        {programme.photos.map((p, i) => (
-          <img
-            key={p.src}
-            src={p.src}
-            alt=""
-            aria-hidden="true"
-            width={p.width}
-            height={p.height}
-            loading="lazy"
-            decoding="async"
-            className="absolute inset-0 size-full max-w-none object-cover [transition:opacity_1200ms_var(--ease-out),scale_1200ms_var(--ease-out)]"
-            style={{ opacity: i === photo ? 1 : 0, scale: i === photo ? "1" : "1.06", objectPosition: "position" in p ? p.position : undefined }}
-          />
-        ))}
+          {programme.photos.map((p, i) => (
+            <img
+              key={`${p.src}-${i}`}
+              src={p.src}
+              alt=""
+              aria-hidden="true"
+              width={p.width}
+              height={p.height}
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 size-full max-w-none object-cover [transition:opacity_1200ms_var(--ease-out),scale_1200ms_var(--ease-out)]"
+              style={{ opacity: i === photo ? 1 : 0, scale: i === photo ? "1" : "1.06", objectPosition: p.position }}
+            />
+          ))}
         </div>
-        <span className="absolute top-6 left-6 rounded-full bg-white px-4 py-2 font-mono text-[12px]/[16px] tracking-[0.08em] text-[#a8431a] uppercase shadow-rest">
-          {programme.tag}
-        </span>
+        {/* A shade along the top, so the pill reads on any photograph. */}
+        <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgb(43_18_6/0.45),transparent)]" />
+        <AdmissionsTicker tag={programme.tag} />
         {!still && (
           <button
             type="button"
@@ -101,33 +172,37 @@ export default function FlagshipCard() {
         )}
       </div>
 
-      <div className="relative flex flex-col items-start p-14">
-        <h3 id="flagship-programme-h" className="font-heading text-[48px]/[1.06] tracking-[-0.02em] text-balance text-white">
+      <div className="relative flex flex-col items-start px-14 py-12">
+        <h3 id="flagship-programme-h" data-split className="font-heading text-[44px]/[1.06] tracking-[-0.02em] text-balance text-white">
           {programme.name}
         </h3>
-        <p className="mt-3 font-heading text-[22px]/[1.3] text-[#ffe3b3]">{programme.line}</p>
+        <p className="mt-3 font-heading text-[21px]/[1.3] text-[#ffe3b3]">{programme.line}</p>
 
-        <ul className="mt-8 flex w-full flex-col gap-3.5">
+        <ul data-stagger className="mt-7 flex w-full flex-col gap-2.5">
           {programme.benefits.map((benefit) => (
-            <li key={benefit} className="flex items-start gap-3.5 text-[17px]/[25px] text-white">
+            <li key={benefit} className="flex items-start gap-3 text-[17px]/[25px] text-white">
               <img src="/images/ornaments/butta-cream.svg" alt="" aria-hidden="true" width={16} height={16} className="mt-[5px] size-4 shrink-0" />
               {keepHyphens(benefit)}
             </li>
           ))}
         </ul>
 
-        <dl className="mt-9 grid w-full grid-cols-[1.3fr_1fr_1fr] gap-8 border-t border-white/35 pt-7">
+        <dl className="mt-7 flex w-full gap-12 border-t border-white/35 pt-6">
           {programme.details.map((detail) => (
-            <div key={detail.term} className="flex flex-col gap-2">
-              <dt className="font-mono text-[12px]/[16px] tracking-[0.08em] text-cream uppercase">{detail.term}</dt>
-              <dd className={cx("text-[16px]/[24px] text-white", detail.value.startsWith("[") && "italic")}>{keepHyphens(detail.value)}</dd>
+            <div key={detail.term} className="flex flex-col gap-1.5">
+              <dt data-scramble className="font-mono text-[12px]/[16px] tracking-[0.01em] text-cream">{detail.term}</dt>
+              <dd data-count className="text-[16px]/[24px] text-white">{keepHyphens(detail.value)}</dd>
             </div>
           ))}
         </dl>
 
-        {/* The buttons, on the content's left edge: white for the programme, a cream outline for the batches. */}
-        <div className="mt-auto flex items-center gap-3 pt-10">
-          <Cta variant="secondary" size="lg" href={programme.primary.href}>
+        {/*
+          The buttons, on the content's left edge: white to enrol (it opens the counselling postcard with the
+          programme chosen; TODO: the programme's enrolment page once there is one), a cream outline to the
+          programme's page.
+        */}
+        <div className="mt-auto flex items-center gap-3 pt-9">
+          <Cta variant="secondary" size="lg" onClick={() => requestEnquiry(programme.name)}>
             {programme.primary.label}
           </Cta>
           <Cta variant="secondary-dark" size="lg" href={programme.secondary.href}>

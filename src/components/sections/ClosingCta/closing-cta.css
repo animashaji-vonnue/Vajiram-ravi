@@ -1,0 +1,44 @@
+/*
+ * The closing banner's play (SunRise, sunrisePlay.ts). sunrisePlay sets data-playing on the art while the
+ * band is on screen: only then do the CSS loops (the rings' wave, the breathing glow) run and the moving
+ * layers get their own compositor layers.
+ */
+.sunrise:not([data-playing]) .sunrise-loop {
+  animation-play-state: paused;
+}
+.sunrise[data-playing] .sunrise-layer {
+  will-change: transform, opacity;
+}
+
+/* The press ripple: a halo ring out from the point pressed, a fainter echo inside it, a glint at the point. */
+.sun-ripple,
+.sun-glint {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0;
+}
+.sun-ripple {
+  border: 1.5px solid rgb(255 246 232 / 0.85);
+  box-shadow: 0 0 24px rgb(255 236 170 / 0.25);
+}
+.sun-ripple-echo {
+  border-width: 1px;
+  border-color: rgb(255 241 194 / 0.6);
+  box-shadow: none;
+}
+.sun-glint {
+  background: radial-gradient(circle closest-side, rgb(255 248 228 / 0.7), rgb(255 222 140 / 0.25) 60%, transparent);
+}
+
+/* Once the heading's letters have risen out of their masks, a lifted letter keeps its top. */
+#closing-h[data-sun-free] .tm-mask {
+  overflow: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sun-ripple,
+  .sun-glint {
+    display: none;
+  }
+}

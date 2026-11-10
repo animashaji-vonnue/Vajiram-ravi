@@ -1,13 +1,16 @@
 /**
- * "About Vajiram & Ravi" (the client's homepage content of 10 Nov 2026, section 03): the heading, then the
- * six cards about the institution in the arc of Figma "arc carousel" (2397:6766).
+ * "About Vajiram & Ravi" (the client's homepage content of 10 Nov 2026, section 03): the heading, the lead,
+ * then the six cards about the institution in the About coverflow.
  */
 
 export const aboutIntro = {
-  /** The heading in two sentences' lines; the second line is set in the emphasis colour. */
+  /**
+   * The heading, one sentence (client feedback 16: the three sentences it was made "A" a capital twice),
+   * in the client's words. The emphasis, its last beat, is set in the emphasis colour.
+   */
   heading: {
-    lead: "Five decades of experience. A dedicated academic team.",
-    emphasis: "A legacy in Civil Services preparation.",
+    lead: "Five decades of experience, a dedicated academic team and",
+    emphasis: "a legacy in Civil Services preparation.",
   },
   lead: "Since 1976, Vajiram & Ravi has built a strong academic foundation in Civil Services preparation, bringing together experienced subject specialists, dedicated educators and structured programmes to guide generations of aspirants.",
 };
@@ -16,8 +19,8 @@ export const aboutIntro = {
 export type InstitutionIcon = "trophy" | "faculty" | "mentor" | "books" | "location" | "modes";
 
 /**
- * A card of the arc: its number (for order), icon, title and sentence, and its paper (the light gradient it
- * rests on, from Figma 2397:6766), whose deeper colour also tints the band while the card is at the front.
+ * A card of the coverflow: its number (for order), icon, title and sentence, and its paper (the light
+ * gradient it rests on while it is to the side, from Figma 2397:6766).
  */
 export type InstitutionCard = { number: string; icon: InstitutionIcon; title: string; text: string; paper: [string, string] };
 

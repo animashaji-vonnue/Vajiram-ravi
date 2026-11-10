@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import { canvasTop, getCanvasZoom } from "@/lib/canvas";
 import { prefersReducedMotion } from "@/lib/motion";
 import { whenVisible } from "@/lib/reveal";
@@ -31,10 +31,10 @@ const PRESS: Record<string, { frames: Keyframe[]; duration: number }> = {
   ink: { frames: [{ opacity: 0, filter: "blur(3px)", transform: "translateY(6px)" }, { opacity: 1, filter: "blur(0px)", transform: "none" }], duration: 600 },
 };
 
-type PrintInProps = { className?: string; children: ReactNode };
+type PrintInProps = { className?: string; style?: CSSProperties; children: ReactNode };
 
 /** The newspaper sheet: a plain div around the server-drawn page, running its entrance. */
-export default function PrintIn({ className, children }: PrintInProps) {
+export default function PrintIn({ className, style, children }: PrintInProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function PrintIn({ className, children }: PrintInProps) {
   }, []);
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={className} style={style}>
       {children}
     </div>
   );

@@ -2,24 +2,23 @@ import { links, type Href } from "@/data/links";
 
 /** "Meet our educators" (IA 7; Figma "06 · Meet Our Educators", 2377:4795). Copy: the client's homepage content, §07. */
 export const facultyIntro = {
-  /** The H2; the emphasis is its italic second beat. */
+  /** The H2; the emphasis is its second beat, set in orange (Mukta has no italics). */
   heading: { lead: "Learn from those who understand", emphasis: "the demands of the examination." },
   /** Under the heading. */
   lead: "Build your understanding with experienced educators and subject specialists who bring academic knowledge and examination-focused teaching into the classroom.",
-  /** On the note card at the right of the heading. */
-  /** Shown on the note card once the faculty page exists (links.faculty is null today). */
-  cta: { label: "Meet Our Faculty", href: links.faculty },
+  /** Shown under the heading once the faculty page exists (links.faculty is null today). */
+  cta: { label: "Meet our faculty", href: links.faculty },
 };
 
 export type Educator = {
   name: string;
   /** The subject or area of expertise, under the name. */
   focus: string;
-  /** A colour portrait, 400 × 600 (the card is 200 × 300); the ring shows it in black and white off centre. */
+  /** A colour portrait, 400 × 600; the coverflow shows it in black and white off centre. */
   photo: string;
   /** The educator's profile page; null while it does not exist (the card then is not a link). */
   profile: Href;
-  /** Academic qualifications, as the institute words them. Shown under the ring for the centred educator (with the two below), only when given. */
+  /** Academic qualifications, as the institute words them. Shown under the coverflow for the centred educator (with the two below), only when given. */
   qualifications?: string;
   /** Relevant teaching experience, as the institute words it. Shown only when given. */
   experience?: string;

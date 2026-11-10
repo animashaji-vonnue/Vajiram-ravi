@@ -4,16 +4,16 @@ import AdmissionsBoard from "./AdmissionsBoard";
 import FeaturedBatch from "./FeaturedBatch";
 
 /**
- * Upcoming Batches & Admissions (IA 5; Figma "04 · Upcoming Batches", 2377:4662): a white band.
+ * Upcoming Batches & Admissions (IA 5; Figma "04 · Upcoming Batches", 2377:4662): a cream band.
  * The heading row with the lead on the note card at its right, the featured batch on its wide ticket
  * (FeaturedBatch), then the mode and month tabs with the round arrows, the railway-ticket track of the other
- * batches, and "View All Upcoming Batches" (AdmissionsBoard). The postcard form that a ticket's "Register
+ * batches, and "View all upcoming batches" (AdmissionsBoard). The postcard form that a ticket's "Register
  * now" opens is the next section (Counselling).
  */
 export default function Admissions() {
   const { title } = batchesCopy;
   return (
-    <section id="batches" aria-labelledby="batches-h" className="relative bg-white">
+    <section id="batches" aria-labelledby="batches-h" className="relative bg-cream">
       <div className="relative mx-auto flex w-canvas flex-col items-start gap-12 px-20 pt-24 pb-16">
 
         <div className="relative flex w-full items-end justify-between">
@@ -34,7 +34,7 @@ export default function Admissions() {
           <div className="relative w-[372px] shrink-0 self-stretch">
             <div data-reveal="sub" className="absolute right-0 bottom-0">
               <NoteCard>
-                <p className="text-[17px]/[1.55] text-clay">{batchesCopy.lead}</p>
+                <p data-words className="text-[17px]/[1.55] text-clay">{batchesCopy.lead}</p>
               </NoteCard>
             </div>
           </div>
