@@ -1,8 +1,11 @@
 # Keeps this copy's team branches identical to the shared repository, so the Netlify
 # sites built from them update whenever Anima, Kevin or Solomon push there.
-# Runs every few minutes (GitHub may delay scheduled runs) and can be run by hand
-# from the Actions tab. Only these three branches are touched; main is left alone so
-# this file is never overwritten.
+#
+# GitHub only starts timed jobs on a copied repository about once an hour, so each run
+# stays alive for nearly six hours and checks the shared repository every minute. A new
+# run waits its turn and takes over when the current one ends, so there is no gap.
+# It can also be started by hand from the Actions tab. Only these three branches are
+# touched; main is left alone so this file is never overwritten.
 name: Sync team branches
 
 on:
@@ -20,8 +23,9 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 355
     steps:
-      - name: Copy anima/magazine-page, kevin and soloboy from the shared repository
+      - name: Copy anima/magazine-page, kevin and soloboy every minute
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -30,7 +34,16 @@ jobs:
           cd mirror
           git remote add upstream https://github.com/solomonmathai-coder/Vajiram-ravi.git
           git remote add origin "https://x-access-token:${TOKEN}@github.com/${REPO}.git"
-          for b in anima/magazine-page kevin soloboy; do
-            git fetch -q upstream "+refs/heads/$b:refs/remotes/upstream/$b"
-            git push -f origin "refs/remotes/upstream/$b:refs/heads/$b"
+          end=$(( $(date +%s) + 345 * 60 ))
+          while [ "$(date +%s)" -lt "$end" ]; do
+            for b in anima/magazine-page kevin soloboy; do
+              up=$(git ls-remote upstream "refs/heads/$b" | cut -f1)
+              mine=$(git ls-remote origin "refs/heads/$b" | cut -f1)
+              if [ -n "$up" ] && [ "$up" != "$mine" ]; then
+                git fetch -q upstream "+refs/heads/$b:refs/remotes/upstream/$b"
+                git push -f origin "refs/remotes/upstream/$b:refs/heads/$b"
+                echo "$(date -u +%H:%M) updated $b to ${up:0:7}"
+              fi
+            done
+            sleep 60
           done
