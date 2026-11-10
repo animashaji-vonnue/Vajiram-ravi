@@ -1,10 +1,12 @@
 /*
- * Vajiram & Ravi homepage styles.
- * Everything is styled with Tailwind utilities in the components. This file only holds the design
- * tokens, a few base rules, keyframes, and the scroll-reveal classes that ScrollReveal toggles at runtime.
+ * Vajiram & Ravi homepage, version 5: a new design from scratch.
+ * Styled with Tailwind utilities in the components; this file holds the design tokens, a few base rules and the
+ * keyframes. The page is drawn on a 1440px canvas that is zoomed down to fit narrower screens (see CanvasFit).
  *
- * Layout concept: a 1440px desktop canvas rebuilt 1:1 from the Figma frame "home page" (1188:61619);
- * full-bleed section bands with a fixed 1440px inner canvas, scaled to fit narrower screens (see CanvasFit).
+ * The look takes its prestige from sbs.ox.ac.uk and maven.com (an editorial serif, hairline rules), its confidence
+ * from mastersunion.org (big type, a serif italic beside a plain sans, full-bleed imagery) and its plain-spoken
+ * results from allen.in. Its darker grounds are manifesto.blandina.org's orange gradient (see `.ember`), with that
+ * site's warm dark brown for text, and the institute's own saffron for buttons and active states.
  */
 @import "tailwindcss";
 
@@ -12,370 +14,216 @@
 @source not "../../Vajiram & Ravi Homepage.html";
 
 @theme {
-  /* Only the design's own palette: no stray default colours. */
   --color-*: initial;
   --color-white: #fff;
+  --color-black: #000;
+  --color-transparent: transparent;
 
-  --color-neutral-50: #fafafa;
-  --color-neutral-100: #f5f5f5;
-  --color-neutral-200: #e6e6e6;
-  --color-neutral-300: #d3d3d3;
-  --color-neutral-400: #a3a3a3;
-  --color-neutral-500: #737373;
-  --color-neutral-600: #535353;
-  --color-neutral-700: #404040;
-  --color-neutral-800: #272727;
-  --color-neutral-900: #1a1a1a;
-  --color-neutral-950: #0b0b0b;
-  --color-ink: #1c1917;
-  /* Card borders and dividers. */
-  --color-line: #e4e4e4;
-  /* Header rule and FAQ rules. */
-  --color-line-warm: #e8e4df;
-  /* Carousel dots, arrow and map-button outlines. */
-  --color-control: #ccc;
-  /* Empty media placeholder. */
-  --color-media: #ede8e2;
-
-  --color-brand-50: #fef8ec;
-  --color-brand-100: #fceac9;
-  --color-brand-200: #f9d38e;
-  --color-brand-300: #f6b653;
-  --color-brand-500: #e57512;
-  --color-brand-600: #d1570e;
-  --color-brand-700: #ae3b0f;
-  --color-brand-800: #8d2e13;
-  --color-brand-900: #742713;
-  --color-brand-950: #431105;
-
-  --color-brown-700: #805c4e;
-  --color-brown-800: #694c43;
-  --color-brown-900: #563f38;
-  --color-brown-950: #2d201d;
-
-  --color-sun-100: #fef4c7;
-  --color-sun-200: #fde57c;
-
-  /* Testimonial card tints, their edge lines, and the testimonial eyebrow (badge and label). */
-  --color-green-300: #73e2bd;
-  /* The section divider's rules (design 3697:533). */
-  --color-green-400: #3acda1;
-  --color-green-600: #0b906f;
-  --color-green-700: #378373;
-  --color-green-800: #096652;
-  --color-yellow-300: #fcd54d;
-  --color-yellow-600: #d97a06;
-  --color-brand-400: #f39c2c;
-
-  /* The toppers eyebrow: a maroon badge with a saffron label. */
-  --color-red-800: #922228;
-  --color-saffron-400: #fda421;
+  /* Ink: manifesto.blandina.org's warm dark brown, for text, photo shading and the few dark marks. */
+  --color-ink-950: #120b05;
+  --color-ink-900: #1a1109;
+  --color-ink-800: #2b1d12;
+  --color-ink-700: #44301f;
+  --color-ink-600: #634b37;
 
   /*
-   * "Mango Tango", the warm palette from the brief: cream for the hero's background, with amber, mango,
-   * saffron and lemon for accents.
+   * Ember: manifesto.blandina.org's orange, which takes the place of a dark ground (see `.ember`). Flame and ember
+   * are its two bright oranges, rust the deep end of its gradient, and glow a pale gold for accents set on it.
    */
-  --color-cream: #fff8e8;
-  /* The stats band (#FFBD89, from the brief). */
-  --color-peach: #ffbd89;
-  --color-amber: #c84800;
-  --color-mango: #f07010;
-  --color-saffron: #f8a020;
-  --color-lemon: #f8d040;
-  /* The hero badge's orange, from the reference badge the brief pointed to. */
-  --color-vermilion: #fe551b;
-  /* The call-to-action buttons (design 3764:42634). */
-  --color-tangerine: #ff7517;
-  /* The torn kraft paper under the stats: its brown face and the pale rim a tear leaves. */
-  --color-kraft: #dcb57a;
-  --color-kraft-rim: #f2e8d2;
-  /* The notepad pages the toppers are shown on. */
-  --color-notepad: #e3dac9;
-  /* The clipboard "Why choose" is shown on: its brown hardboard and the warm white sheet on it. */
-  --color-hardboard: #b88b5f;
-  --color-paper: #f8f6f2;
+  --color-flame: #ff5700;
+  --color-ember: #fa712a;
+  --color-rust: #8a2812;
+  --color-glow: #ffd3a1;
 
-  /* The nav's active link (design 3663:42638). */
-  --color-blue-900: #254583;
-  /* The success stories band. */
-  --color-indigo-800: #2c3e8c;
+  /* Paper: the warm ivory of the lighter sections. */
+  --color-paper: #f7f2ea;
+  --color-paper-deep: #efe6d8;
 
-  /* Topper cards (design 3614:4855): gold and rose borders round an ivory body, and a wine name plate. */
-  --color-gold-200: #f5c97a;
-  --color-gold-600: #c9a000;
-  --color-rose-500: #e8427a;
-  --color-wine-800: #7b1a2c;
-  --color-ivory: #faf6e8;
+  /* Text and hairlines on paper and white. */
+  --color-text: #1d150c;
+  --color-muted: #675d53;
+  --color-faint: #978b80;
+  --color-line: #e3dccf;
 
-  /* Warm light greys for card surfaces and their borders. */
-  --color-sand-50: #fafaf9;
-  --color-sand-100: #f5f5f4;
-  --color-sand-200: #e8e4e3;
-  --color-sand-300: #d8d1cf;
-  --color-sand-800: #2b2322;
+  /* Saffron, the institute's colour: buttons, active states and a few accents, never large fields. */
+  --color-saffron-50: #fff4ec;
+  --color-saffron-100: #fde3d1;
+  --color-saffron-300: #f9a873;
+  --color-saffron-500: #f26419;
+  --color-saffron-600: #d9520c;
+  --color-saffron-700: #b2410a;
 
-  /*
-   * "Featured programmes" (design 3591:2114): the marigold band, and each course card's colourway: a light
-   * body (50), its tag (100), the button's inset line (300), the edge and button (700 or 800) and the tag's
-   * label (800 or 900). The design's greens here are deeper than the testimonial greens, so they're "jade".
-   */
-  --color-marigold: #f9c83b;
-  --color-parchment: #fffcf3;
-  --color-yellow-50: #fffbeb;
-  --color-jade-50: #edfcf6;
-  --color-jade-100: #d3f8e7;
-  --color-jade-700: #09735c;
-  --color-jade-800: #0a5b4a;
-  --color-blue-50: #f0f7fe;
-  --color-blue-100: #ddedfc;
-  --color-blue-300: #a2d1f7;
-  --color-blue-800: #274fa6;
-  --color-pink-50: #fdeff4;
-  --color-pink-100: #f9d6e3;
-  --color-pink-300: #f4b8cc;
-  --color-pink-700: #b83a68;
-  --color-pink-800: #8e2a50;
-  --color-purple-50: #f7f1fc;
-  --color-purple-100: #e6d6f5;
-  --color-purple-300: #cdb3ea;
-  --color-purple-700: #5b2a86;
-  --color-purple-800: #44206b;
-  --color-red-50: #fef3f1;
-  --color-red-100: #fad6d1;
-  --color-red-300: #f2b5af;
-  --color-red-700: #a32a2a;
-  --color-red-900: #7a1f1f;
+  /* A muted gold for fine rules and small marks of distinction. */
+  --color-gold: #c6a15b;
 
-  /* The practice banner (design 3722:42634): a matchbox-label blue, and the navy of its rule and headline. */
-  --color-blue-500: #4792ea;
-  --color-blue-950: #1b2b50;
+  /* Status colours for admissions. */
+  --color-open: #0f7a55;
+  --color-open-soft: #e3f3ec;
+  --color-upcoming: #9a5b07;
+  --color-upcoming-soft: #fbf0dc;
 
-  /* Figtree for headings and UI, Geist for body copy, Geist Mono for counters. The *-face variables come from next/font in layout.tsx. */
-  --font-display: var(--font-figtree-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --font-sans: var(--font-geist-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --font-mono: var(--font-geist-mono-face), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  /* Fraunces, standing in for Reckless, for the hero heading. */
-  --font-serif: var(--font-fraunces-face), ui-serif, Georgia, "Times New Roman", serif;
-
-  /*
-   * The headline scale, after wabcoffeeco.com: a serif (Fraunces here, standing in for their New Kansas) at
-   * regular weight, very large and set tight, with an italic for a headline's accent words; small, widely
-   * spaced capitals for the labels above them. Use with font-serif and font-normal.
-   */
-  --text-display: 115px;
-  --text-display--line-height: 0.94;
-  --text-display--letter-spacing: -0.028em;
-  --text-h2: 80px;
-  --text-h2--line-height: 0.94;
-  --text-h2--letter-spacing: -0.028em;
-  --text-h3: 37px;
-  --text-h3--line-height: 1.02;
-  --text-h3--letter-spacing: -0.028em;
-  --text-h4: 24px;
-  --text-h4--line-height: 1.15;
-  --text-h4--letter-spacing: -0.028em;
-  --text-label: 11px;
-  --text-label--line-height: 16px;
-  --text-label--letter-spacing: 0.16em;
-  /* Noto Serif, for the toppers heading. */
-  --font-noto-serif: var(--font-noto-serif-face), ui-serif, Georgia, "Times New Roman", serif;
+  --font-serif: var(--font-instrument-serif-face), "Times New Roman", serif;
+  --font-sans: var(--font-instrument-sans-face), ui-sans-serif, system-ui, sans-serif;
 
   --container-canvas: 1440px;
-  /* How far the header, hero and stats spread on screens wider than the canvas; the same as the canvas below it. */
-  --container-wide: 1760px;
 
-  --ease-smooth: cubic-bezier(0.22, 0.61, 0.36, 1);
-  /* Match plain CSS: transitions without an explicit easing use `ease`. */
-  --default-transition-timing-function: ease;
-
-  --animate-swap: swap 0.5s var(--ease-smooth);
-
-  @keyframes swap {
-    0% {
-      opacity: 0.25;
-      transform: translateY(8px);
-    }
-    100% {
-      opacity: 1;
-      transform: none;
-    }
-  }
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/*
- * The opening sequence (Hero), after brand.dropbox.com: a white cover with guide lines sliding in from
- * the edges while the emblem draws itself in the middle of the window (its line drawing animates inside
- * emblem-lines.svg), then glides to its place in the hero as the page fades up around it. Pure CSS, so it plays before any script loads. With reduced motion the base rule below
- * cuts every animation to its end state, and the cover isn't shown at all.
- * Used through arbitrary animation values, so these live outside @theme.
- */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-}
-@keyframes cover-out {
-  from {
-    opacity: 1;
-    visibility: visible;
-  }
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-@keyframes guide-x {
-  from {
-    scale: 0 1;
-  }
-}
-@keyframes guide-y {
-  from {
-    scale: 1 0;
-  }
-}
-@keyframes intro-rise {
-  from {
-    opacity: 0;
-    translate: 0 16px;
-  }
-}
-/* The emblem starts where Hero puts it (--settle-x/--settle-y: the middle of the window) and glides to its place. */
-@keyframes emblem-settle {
-  from {
-    translate: var(--settle-x) var(--settle-y);
-    scale: 1.12;
-  }
-}
-/* One full turn, for the rings of cards around the emblem (OrbitCards). */
-@keyframes orbit {
-  to {
-    rotate: 360deg;
-  }
-}
-/*
- * A cover drifting up and sideways and back, with a slight sway in its tilt. Each cover sets its own
- * --tilt (its resting angle), --sway (extra degrees at the top of the drift) and --lift (how far it rises).
- * With reduced motion the animation is cut to nothing and the cover rests at --tilt.
- */
-@keyframes float-cover {
-  0%,
-  100% {
-    translate: 0 0;
-    rotate: var(--tilt);
-  }
-  50% {
-    translate: var(--drift, 0px) var(--lift);
-    rotate: calc(var(--tilt) + var(--sway));
-  }
-}
-/* The hero's photos: each one starts a little zoomed in and to the left, and settles while it's up. */
-@keyframes hero-drift {
-  from {
-    scale: 1.12;
-    translate: -2% 0;
-  }
-}
-/* Keeps the emblem above the cover while it draws and moves, then drops it back under the sticky header. */
-@keyframes lift {
-  from {
-    z-index: 60;
-  }
-  to {
-    z-index: 1;
-  }
+:root {
+  --image-logo: url(/images/logo.webp);
+  /* A fine film grain, as over manifesto.blandina.org's orange, drawn in code. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 @layer base {
-  :root {
-    --image-logo: url(/images/logo.webp);
-  }
   html {
-    scroll-padding-top: 96px;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    html {
-      scroll-behavior: smooth;
-    }
-  }
-  body {
     background: var(--color-white);
-    color: var(--color-neutral-900);
-    font-family: var(--font-sans);
-    font-size: 16px;
-    line-height: 1.45;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: clip;
-    font-synthesis: none;
+    text-rendering: optimizeLegibility;
   }
-  button {
-    cursor: pointer;
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-text);
+    font-feature-settings: "ss01";
   }
-  svg {
-    flex-shrink: 0;
+  ::selection {
+    background: var(--color-saffron-100);
+    color: var(--color-ink-900);
   }
   :focus-visible {
-    outline: 2px solid var(--color-brand-700);
+    outline: 2px solid var(--color-saffron-500);
     outline-offset: 3px;
-    border-radius: 999px;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-delay: 0ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      transition-delay: 0ms !important;
-    }
   }
 }
 
 /*
- * Scroll reveal. ScrollReveal adds these classes to [data-reveal] blocks and [data-reveal-group] children.
- * They are deliberately unlayered so they win over the elements' own transition utilities while revealing.
+ * The orange ground, after manifesto.blandina.org: a gradient from orange into deep rust, lit by a bloom of that
+ * site's bright orange and a soft gold glow that drift slowly, under a fine film grain. It stands where a dark ground
+ * would; its stops stay deep enough for white text to read (about 4:1 at the lightest, more lower down).
  */
-.rv-pre {
-  opacity: 0;
-  transform: translateY(18px);
+@layer components {
+  .ember {
+    position: relative;
+    isolation: isolate;
+    /* Clipped rather than hidden, so that focusing something inside can never scroll the drifting glow into view. */
+    overflow: clip;
+    background-color: #c84317;
+    background-image: linear-gradient(180deg, #d84b17 0%, #c84317 40%, #a9351a 78%, var(--color-rust) 100%);
+  }
+  .ember::before,
+  .ember::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .ember::before {
+    inset: -10%;
+    background:
+      radial-gradient(40% 45% at 86% 34%, rgb(255 87 0 / 0.42), transparent 72%),
+      radial-gradient(34% 30% at 68% 64%, rgb(253 180 83 / 0.26), transparent 72%),
+      radial-gradient(44% 38% at 6% 2%, rgb(250 113 42 / 0.4), transparent 72%);
+    animation: ember-drift 24s ease-in-out infinite alternate;
+  }
+  .ember::after {
+    background-image: var(--grain);
+    background-size: 240px 240px;
+    mix-blend-mode: overlay;
+    opacity: 0.16;
+  }
+
+  /* The same orange in small, for the pills and buttons that would otherwise be dark. */
+  .ember-pill {
+    background-color: #c84317;
+    background-image: linear-gradient(135deg, #f0601e, #c23f15 60%, #a5321a);
+  }
 }
-.rv-in {
-  transition:
-    opacity 0.8s var(--ease-smooth),
-    transform 0.8s var(--ease-smooth);
-  transition-delay: var(--d, 0ms);
+@keyframes ember-drift {
+  to {
+    transform: translate3d(-4%, 3%, 0) scale(1.06);
+  }
 }
+
+/*
+ * Blocks marked `fade-up` rise softly into place as they enter the window, driven by the scroll itself where the
+ * browser supports scroll-driven animations; elsewhere they simply show.
+ */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    translate: 0 28px;
+  }
+}
+@supports (animation-timeline: view()) {
+  .fade-up {
+    animation: fade-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 55%;
+  }
+}
+
+/* A row of items that glides past for ever: two copies side by side, moved left by one copy's width. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  animation: marquee var(--marquee-duration, 50s) linear infinite;
+}
+
+/* A slow drift up and down, for the achievers' portraits in the hero. */
+@keyframes drift {
+  50% {
+    translate: 0 -8px;
+  }
+}
+.drift {
+  animation: drift var(--drift-duration, 7s) ease-in-out infinite;
+  animation-delay: var(--drift-delay, 0s);
+}
+
+/* A panel's content coming in when it changes: a short rise and fade. */
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+}
+.stage-in {
+  animation: stage-in 0.6s var(--ease-out-soft) both;
+}
+
+/* The hero: the topper's rank marked beside them, drawn in with each slide. */
+@keyframes hero-mark {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+@keyframes draw-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+.hero-mark {
+  animation: hero-mark 0.8s var(--ease-out-soft) 0.35s both;
+}
+.hero-mark-line {
+  animation: draw-x 0.9s var(--ease-out-soft) 0.55s both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .rv-pre {
-    opacity: 1;
-    transform: none;
+  .stage-in,
+  .fade-up,
+  .marquee,
+  .drift,
+  .hero-mark,
+  .hero-mark-line,
+  .ember::before {
+    animation: none;
   }
-}
-
-/*
- * Heading rise-in, after wabcoffeeco.com. SplitHeading wraps each word in a mask and each letter in its own box;
- * while the page has `split-ready` (set in the head before the first paint, unless motion is reduced) the letters
- * wait below their masks, and ScrollReveal adds `split-in` to the heading to bring them up, one after another. The
- * mask reaches below the line so descenders aren't cut off.
- */
-.split-word {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  white-space: nowrap;
-  padding: 0.05em 0.05em 0.22em;
-  margin: -0.05em -0.05em -0.22em;
-}
-.split-char {
-  display: inline-block;
-}
-.split-ready [data-split] .split-char {
-  transform: translateY(125%);
-}
-.split-ready [data-split].split-in .split-char {
-  transform: none;
-  transition: transform 1s cubic-bezier(0.215, 0.61, 0.355, 1);
-  transition-delay: calc(var(--i, 0) * 11ms);
 }
