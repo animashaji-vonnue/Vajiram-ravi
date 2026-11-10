@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 /**
  * Abstract covers for the programme books, after the customer cards on gitbook.com: large plain shapes (circles, half
  * circles, quarter circles and pills) cropped by the cover's edges, standing for each programme. At rest they are in
- * two tints of the programme's colour, with one shape in the full colour; while the cover is live (the pointer or
+ * two tints of the programme's colour (on a cover tinted with it), with one shape in the full colour; while the cover is live (the pointer or
  * focus is on it) the cover fills with the colour, the shapes turn to light and dark tints over it and move into
  * place: the blocks line up, the rings spread, the lines write out and so on.
  */
@@ -130,7 +130,7 @@ export default function CoverArt({ kind, colour, live }: { kind: ArtKind; colour
                 : TINT
             : accent
               ? colour
-              : `${colour}${deep ? "40" : "22"}`,
+              : `${colour}${deep ? "5c" : "33"}`,
           transformBox: "fill-box",
           transformOrigin: origin ?? "50% 50%",
           transition: `translate ${EASE}, scale ${EASE}, rotate ${EASE}, fill 400ms ease`,

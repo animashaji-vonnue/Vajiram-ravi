@@ -118,21 +118,28 @@ function spot(i: number) {
   return { x: left + (i % PER_SHELF) * (SLEEVE + GAP), y: SHELF_TOPS[Math.floor(i / PER_SHELF)] };
 }
 
+/** A colour brightened up: a little lighter and much more vivid (CSS relative colour syntax). */
+const bright = (colour: string) => `oklch(from ${colour} calc(l + 0.08) calc(c * 1.6) h)`;
+
 /**
- * A sleeve, after the customer cards on gitbook.com, made up as a book jacket: paper with a fine grain, the
- * programme's colour down the spine with a crease where the cover hinges, the name in the serif at the top, and an
+ * A sleeve, after the customer cards on gitbook.com, made up as a book jacket: paper tinted with the programme's
+ * colour, with a fine grain, the full colour down the spine with a crease where the cover hinges, the name in the serif at the top, and an
  * abstract composition of shapes for the programme, large and cropped by the edges. Along the foot, how many courses
- * it holds and a round arrow. While the cover is `live`, it fills with the programme's colour, the type turns white,
- * the shapes move into place and the arrow opens out into "Open book" (the count gives way to it).
+ * it holds (the number large, labelled small) and a round arrow. While the cover is `live`, it fills with the programme's colour brightened up, the type turns white,
+ * the shapes move into place and the arrow opens out into "Open book".
  */
 function Sleeve({ course, live }: { course: Course; live: boolean }) {
   return (
     <span
       className={cx(
         "relative flex size-full flex-col overflow-clip pt-[18px] pr-5 pb-4 pl-[26px] text-left transition-[background-color,color] duration-500",
-        live ? "text-white" : "text-ink-900",
       )}
-      style={{ backgroundColor: live ? course.colour : "#f7f0e3" }}
+      // At rest, a soft tint of the programme's colour on the paper, with the type in a deep shade of it; live, the
+      // colour brightened up: lighter and more vivid.
+      style={{
+        backgroundColor: live ? bright(course.colour) : `color-mix(in srgb, ${course.colour} 24%, #f7f0e3)`,
+        color: live ? "#fff" : `color-mix(in srgb, ${course.colour} 45%, #1a1109)`,
+      }}
     >
       <CoverArt kind={course.art} colour={course.colour} live={live} />
 
@@ -159,15 +166,18 @@ function Sleeve({ course, live }: { course: Course; live: boolean }) {
         {course.name}
       </span>
 
-      <span className="relative mt-auto flex items-center justify-between">
+      <span className="relative mt-auto flex items-end justify-between">
+        {/* How many courses: the number large in the serif, labelled small under it. */}
         <span
-          className={cx(
-            "font-mono text-[10px]/[14px] tracking-[0.08em] whitespace-nowrap uppercase transition-[color,opacity] duration-300",
-            live && "opacity-0",
-          )}
-          style={{ color: live ? "rgb(255 255 255 / 0.85)" : course.colour }}
+          className="flex flex-col transition-colors duration-500"
+          style={{ color: live ? "#fff" : `color-mix(in srgb, ${course.colour} 80%, #1a1109)` }}
         >
-          {String(course.count).padStart(2, "0")} courses
+          <span className="font-serif text-[36px]/[0.8] tracking-[-0.02em]">
+            {String(course.count).padStart(2, "0")}
+          </span>
+          <span className="mt-1.5 font-mono text-[9px]/[12px] tracking-[0.14em] uppercase opacity-80">
+            {course.count === 1 ? "Course" : "Courses"}
+          </span>
         </span>
         <span
           aria-hidden="true"
