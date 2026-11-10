@@ -65,7 +65,7 @@ export function Ticker() {
 /**
  * Site header. Sticky; slides away while reading down the page and returns the moment you
  * scroll up, with a 6px threshold so trackpad jitter does not make it flicker. Always shown
- * near the top. Below 1024px the links fold into a menu.
+ * near the top. Below 1280px the links fold into a menu.
  */
 export function Header() {
   const [hidden, setHidden] = useState(false);
@@ -108,13 +108,13 @@ export function Header() {
           <img src="/images/logo.webp" alt="" width={750} height={180} className="h-10 w-auto" />
         </a>
 
-        <nav aria-label="Main" className="ml-auto hidden lg:block">
+        <nav aria-label="Main" className="ml-auto hidden xl:block">
           <ul className="flex items-center gap-1">
             {nav.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="relative rounded-full px-3.5 py-2 font-v-body text-[15.5px] font-semibold text-v-ink-700 transition-colors duration-200 hover:bg-v-cream hover:text-v-ink"
+                  className="relative rounded-full px-3.5 py-2 font-v-body text-[15.5px] font-semibold whitespace-nowrap text-v-ink-700 transition-colors duration-200 hover:bg-v-cream hover:text-v-ink"
                 >
                   {link.label}
                 </a>
@@ -125,14 +125,14 @@ export function Header() {
 
         <a
           href="#guidance"
-          className="ml-auto hidden h-11 items-center rounded-full bg-v-orange-500 px-5 font-v-body text-[15.5px] font-semibold text-v-ink transition-[background-color,transform] duration-200 hover:bg-v-orange-400 active:scale-[0.97] sm:inline-flex lg:ml-2"
+          className="ml-auto hidden h-11 items-center rounded-full bg-v-orange-500 px-5 font-v-body text-[15.5px] font-semibold text-v-ink transition-[background-color,transform] duration-200 hover:bg-v-orange-400 active:scale-[0.97] whitespace-nowrap sm:inline-flex xl:ml-2"
         >
           Get Expert Guidance
         </a>
 
         <button
           type="button"
-          className="ml-auto grid size-11 place-items-center rounded-full border-2 border-v-ink text-v-ink sm:ml-0 lg:hidden"
+          className="ml-auto grid size-11 place-items-center rounded-full border-2 border-v-ink text-v-ink sm:ml-0 xl:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -152,7 +152,7 @@ export function Header() {
         id="mobile-menu"
         aria-label="Main"
         hidden={!open}
-        className="border-t border-v-line bg-v-paper px-5 pt-3 pb-6 sm:px-8 lg:hidden"
+        className="border-t border-v-line bg-v-paper px-5 pt-3 pb-6 sm:px-8 xl:hidden"
       >
         <ul className="flex flex-col">
           {nav.map((link) => (

@@ -12,8 +12,11 @@ export const CANVAS_WIDTH = 1440;
  * 1440 canvas, so its hero is sized in `svh`. Under a zoomed root those units still measure
  * the real viewport and are then scaled down with everything else, which left the hero at
  * 70% of the window with the next section showing beneath it.
+ *
+ * The homepage ("/", also served at /new-home) is fluid too. The previous fixed-canvas
+ * homepage now lives at /old-home and keeps the zoom.
  */
-const UNZOOMED = /^\/(kit|recitals|new-home)(\/|$)/;
+const UNZOOMED = /^\/($|(kit|recitals|new-home)(\/|$))/;
 
 /** Re-fits the canvas to the current viewport and returns the zoom factor applied. */
 export function fitCanvas(): number {
@@ -27,7 +30,7 @@ export function fitCanvas(): number {
 }
 
 /** Inline <head> version of fitCanvas, so the very first paint is already scaled. */
-export const fitCanvasScript = `(function(){var p=location.pathname;if(/^\\/(kit|recitals|new-home)(\\/|$)/.test(p))return;var r=document.documentElement,w=r.clientWidth||innerWidth,z=Math.min(1,w/${CANVAS_WIDTH});if(z<1)r.style.zoom=String(z)})();`;
+export const fitCanvasScript = `(function(){var p=location.pathname;if(/^\\/($|(kit|recitals|new-home)(\\/|$))/.test(p))return;var r=document.documentElement,w=r.clientWidth||innerWidth,z=Math.min(1,w/${CANVAS_WIDTH});if(z<1)r.style.zoom=String(z)})();`;
 
 /** Current canvas zoom. Pointer deltas are divided by it so drags track the pointer exactly. */
 export function getCanvasZoom(): number {
