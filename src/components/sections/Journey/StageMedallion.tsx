@@ -8,7 +8,7 @@ const SHIFT = "[transition:fill_var(--dur-base)_var(--ease-out),stroke_var(--dur
 
 /**
  * A stage's numbered medallion on the rail: the design's scalloped medallion with its stitched ring (28
- * stitches on a 22px circle, as drawn) and the number in Newsreader. Lit (a stage reached or chosen), it is
+ * stitches on a 22px circle, as drawn) and the number in Mukta. Lit (a stage reached or chosen), it is
  * the design's orange with a cream stitch and a white number; ahead of the chosen stage it is white paper
  * outlined in burnt with a burnt number. The colours cross over --dur-base; `delay` holds them back until
  * the rail's thread has reached the medallion. On hover the scallop turns 10° (fine pointers), the number
@@ -38,7 +38,7 @@ export default function StageMedallion({ number, lit, delay = 0 }: { number: str
           style={timing}
         />
       </svg>
-      <span className={cx("absolute inset-0 flex items-center justify-center font-serif text-[24px]/[27px]", SHIFT, lit ? "text-white" : "text-burnt")} style={timing}>
+      <span className={cx("absolute inset-0 flex items-center justify-center font-heading text-[24px]/[27px]", SHIFT, lit ? "text-white" : "text-burnt")} style={timing}>
         {number}
       </span>
     </span>

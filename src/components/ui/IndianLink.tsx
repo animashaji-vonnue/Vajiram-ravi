@@ -4,10 +4,10 @@ import type { Href } from "@/data/links";
 import { cx } from "@/lib/cx";
 
 /*
- * The "Indian link" (motion spec): text with the scalloped arrow medallion after it, used for "Register
+ * The "Indian link" (motion spec): text with the round arrow medallion after it, used for "Register
  * now", "View on maps", "Read the analysis", "See how the preparation works" and card links. On hover an
  * underline draws left to right under the text (an already-underlined link thickens its line from 1px to
- * 2px instead), the medallion turns 30° and its arrow slides 3px; pressing nudges the arrow 5px.
+ * 2px instead), the medallion's arrow nudges 2px; pressing nudges it 5px.
  */
 
 const TONE = {
@@ -26,7 +26,7 @@ type IndianLinkProps = {
   target?: string;
   /** Underlined at rest, as drawn (the hover then thickens the line). Otherwise the line draws on hover. */
   underlined?: boolean;
-  /** "md": 15px Hanken Grotesk Bold with the 26px medallion, as on most links. "sm": 13px with a 24px medallion, for links inside small cards. */
+  /** "md": 15px Source Sans 3 Bold with the 26px medallion, as on most links. "sm": 13px with a 24px medallion, for links inside small cards. */
   size?: "md" | "sm";
   /** Medallion size in px, when it differs from the size's own. */
   medallion?: number;

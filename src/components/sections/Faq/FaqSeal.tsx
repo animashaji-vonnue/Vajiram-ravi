@@ -60,7 +60,7 @@ export default function FaqSeal({ className }: { className?: string }) {
       <div ref={faceRef} className="pointer-events-none absolute inset-0">
         <img src="/images/faq/wax-seal.svg" alt="" width={108} height={106.76} className="absolute top-[-3.38px] left-[-8px] h-[106.76px] w-[108px] max-w-none" />
         <img src="/images/faq/seal-ring.svg" alt="" width={65} height={65} className="absolute top-[13.5px] left-[13.5px] size-[65px] max-w-none" />
-        <span className="absolute inset-x-0 top-[33px] text-center font-serif text-[24px]/[26px] whitespace-nowrap text-[#ffe5b4]">V&amp;R</span>
+        <span className="absolute inset-x-0 top-[33px] text-center font-heading text-[24px]/[26px] whitespace-nowrap text-[#ffe5b4]">V&amp;R</span>
         <span className="absolute inset-x-0 top-[60px] text-center font-mono text-[9px]/[10px] whitespace-nowrap text-[#ffe5b4]/85">1976</span>
       </div>
     </div>

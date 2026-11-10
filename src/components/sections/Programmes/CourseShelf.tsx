@@ -2,21 +2,22 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Cta from "@/components/ui/Cta";
+import IndianLink from "@/components/ui/IndianLink";
 import type { Programme } from "@/data/programmes";
 import { cx } from "@/lib/cx";
 import { prefersReducedMotion } from "@/lib/motion";
 import { whenVisible } from "@/lib/reveal";
 
 /**
- * The shelf's measurements, in canvas px: covers of COVER square, five to a shelf across the 1280 column
- * (50px apart), on two shelves; a plank under each; and the open book, its pages PAGE square with the spine
+ * The shelf's measurements, in canvas px: covers of COVER square, four to a shelf across the 1280 column
+ * (85px apart), on two shelves; a plank under each; and the open book, its pages PAGE square with the spine
  * at the middle of the stage, so the spread is centred.
  */
-const STAGE = { width: 1280, height: 540 };
-const COVER = 216;
-const PER_SHELF = 5;
+const STAGE = { width: 1280, height: 620 };
+const COVER = 256;
+const PER_SHELF = 4;
 const GAP = (STAGE.width - PER_SHELF * COVER) / (PER_SHELF - 1);
-const SHELF_TOPS = [6, 304];
+const SHELF_TOPS = [6, 344];
 const PLANK = 12;
 const PAGE = 400;
 const SPINE = { x: STAGE.width / 2, y: STAGE.height / 2 };
@@ -48,9 +49,14 @@ function spot(i: number) {
   return { x: (i % PER_SHELF) * (COVER + GAP), y: SHELF_TOPS[Math.floor(i / PER_SHELF)] };
 }
 
-/** The pages of a book: the programme, then the way to its courses. */
-type Leaf = "overview" | "courses";
-const LEAVES: Leaf[] = ["overview", "courses"];
+/** The pages of a book: the programme, one page for each course its line names, then the way to them all. */
+type Leaf = { kind: "overview" } | { kind: "course"; name: string; index: number } | { kind: "all" };
+const leavesOf = (programme: Programme): Leaf[] => [
+  { kind: "overview" },
+  ...programme.courses.map((name, index) => ({ kind: "course" as const, name, index })),
+  { kind: "all" },
+];
+const pad = (n: number) => String(n).padStart(2, "0");
 
 function Arrow({ back = false, className }: { back?: boolean; className?: string }) {
   return (
@@ -62,14 +68,14 @@ function Arrow({ back = false, className }: { back?: boolean; className?: string
 
 /**
  * The course shelf (after the `kevin` branch's "More UPSC programmes" wall, itself after Shopify Editions'
- * record shelf and library.jjangik.kr's books): the ten programme families as plain square covers on two
- * cream wall shelves, five to a shelf.
+ * record shelf and library.jjangik.kr's books): kevin's eight programme groups as plain square covers on two
+ * cream wall shelves, four to a shelf.
  *
- *   - A cover is the programme's own colour with a sheen, "Vajiram & Ravi" and its number at the top and
- *     its title and modes at the foot. Hover (or focus): it lifts off its shelf.
+ *   - A cover is the programme's own colour with a sheen, "Vajiram & Ravi" at the top and its name and
+ *     how many courses it holds at the foot. Hover (or focus): it lifts off its shelf.
  *   - Choosing one brings it forward to the middle of the shelves, larger, while the rest blur back; then its
- *     cover swings open on the spine, and its pages can be turned: the programme (what it is, how it is
- *     taught) and the way to its courses on vajiramandravi.com. Above the open book a line says to turn the
+ *     cover swings open on the spine, and its pages can be turned, as in kevin's book: the programme (how
+ *     many courses, its line), a page for each course its line names, and last the way to all of them. Above the open book a line says to turn the
  *     pages; under it, previous and next and the page number. A click on the right-hand page, or →, turns
  *     forward; on the left-hand page, or ←, back.
  *   - Closing shuts the cover first, then puts the book back: the open cover, Escape or a click on the wall
@@ -191,7 +197,7 @@ export default function CourseShelf({ programmes }: { programmes: Programme[] })
 
       {programmes.map((programme, i) => (
         <Book
-          key={programme.number}
+          key={programme.name}
           programme={programme}
           out={picked === i}
           open={picked === i && open}
@@ -227,7 +233,8 @@ type BookProps = {
 function Book({ programme, out, open, away, style, onPick, onClose, onHover }: BookProps) {
   // How many pages have been turned; the last page is never turned.
   const [turned, setTurned] = useState(0);
-  const last = LEAVES.length - 1;
+  const leaves = leavesOf(programme);
+  const last = leaves.length - 1;
   const turn = (by: number) => setTurned((t) => Math.min(last, Math.max(0, t + by)));
 
   useEffect(() => {
@@ -276,12 +283,12 @@ function Book({ programme, out, open, away, style, onPick, onClose, onHover }: B
 
         {/* The pages. */}
         {out &&
-          LEAVES.map((leaf, i) => {
+          leaves.map((leaf, i) => {
             const isTurned = i < turned;
             const current = open && i === turned;
             return (
               <div
-                key={leaf}
+                key={i}
                 className="absolute inset-0 origin-left [transform-style:preserve-3d]"
                 style={{ transform: isTurned ? "rotateY(-180deg)" : "none", zIndex: isTurned ? 60 + i : 50 - i, transition: flip(TURN_MS) }}
               >
@@ -315,7 +322,7 @@ function Book({ programme, out, open, away, style, onPick, onClose, onHover }: B
                   )}
                 >
                   <img src="/images/ornaments/butta.svg" alt="" width={20} height={20} className="size-5 opacity-60" />
-                  <span className="px-10 text-center font-serif text-[18px]/[1.3] italic">{programme.title}</span>
+                  <span className="px-10 text-center font-heading text-[18px]/[1.3] italic">{programme.name}</span>
                   <span className="absolute bottom-6 font-mono text-[11px] tracking-[0.06em]">{i * 2 + 2}</span>
                 </div>
               </div>
@@ -325,7 +332,7 @@ function Book({ programme, out, open, away, style, onPick, onClose, onHover }: B
         {/* The cover, hinged on the spine: the front on the shelf, its inside once it swings open. */}
         <button
           type="button"
-          aria-label={out ? `Close ${programme.title}` : `Open ${programme.title}`}
+          aria-label={out ? `Close ${programme.name}` : `Open ${programme.name}`}
           aria-expanded={open}
           onClick={() => (out ? onClose() : onPick())}
           className="absolute inset-0 origin-left cursor-pointer rounded-[3px] [transform-style:preserve-3d] focus-visible:outline-offset-4"
@@ -340,7 +347,7 @@ function Book({ programme, out, open, away, style, onPick, onClose, onHover }: B
             style={{ backgroundColor: programme.cover.colour, backgroundImage: "linear-gradient(270deg, rgb(0 0 0/0.28), transparent 14%, rgb(0 0 0/0.08))" }}
           >
             <span className="font-mono text-[11px]/[14px] tracking-[0.18em] uppercase opacity-85">Vajiram &amp; Ravi</span>
-            <span className="font-serif text-[22px]/[1.15] opacity-90">Since 1976</span>
+            <span className="font-heading text-[22px]/[1.15] opacity-90">Since 1976</span>
           </span>
         </button>
 
@@ -364,7 +371,7 @@ function Book({ programme, out, open, away, style, onPick, onClose, onHover }: B
               Previous page
             </button>
             <p aria-live="polite" className="font-mono text-[12px] tracking-[0.06em] text-clay uppercase">
-              Page {turned + 1} of {LEAVES.length}
+              Page {turned + 1} of {leaves.length}
             </p>
             <button
               type="button"
@@ -384,8 +391,8 @@ function Book({ programme, out, open, away, style, onPick, onClose, onHover }: B
 
 /**
  * The front of a cover: the programme's colour with a sheen and a fine light edge down the spine,
- * "Vajiram & Ravi" and the number at the top, the title and how it is taught at the foot. A little larger
- * on the book brought forward.
+ * "Vajiram & Ravi" at the top, the name and how many courses it holds at the foot. A little larger on the
+ * book brought forward.
  */
 function CoverFront({ programme, large }: { programme: Programme; large: boolean }) {
   const light = programme.cover.type === "light";
@@ -397,59 +404,59 @@ function CoverFront({ programme, large }: { programme: Programme; large: boolean
       <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-white/25" />
       <span className={cx("flex items-start justify-between font-mono tracking-[0.16em] uppercase", large ? "text-[12px]/[16px]" : "text-[9.5px]/[12px]", light ? "text-cream/80" : "text-[#a8431a]")}>
         <span>Vajiram &amp; Ravi</span>
-        <span className="tracking-[0.08em]">{programme.number}</span>
       </span>
       <span>
-        <span className={cx("block font-serif", large ? "text-[36px]/[1.08]" : "text-[21px]/[1.12]")}>{programme.title}</span>
-        <span className={cx("mt-1.5 block", large ? "text-[14px]/[19px]" : "text-[11px]/[14px]", light ? "text-cream/75" : "text-ink/65")}>{programme.modes}</span>
+        <span className={cx("block font-heading", large ? "text-[36px]/[1.08]" : "text-[21px]/[1.12]")}>{programme.name}</span>
+        <span className={cx("mt-1.5 block", large ? "text-[14px]/[19px]" : "text-[11px]/[14px]", light ? "text-cream/75" : "text-ink/65")}>{programme.count} courses</span>
       </span>
     </span>
   );
 }
 
-/** What is printed on a right-hand page: the programme, or the way to its courses. */
+/** What is printed on a right-hand page: the programme, one of its courses, or the way to all of them (kevin's pages). */
 function Page({ leaf, programme, onTurn, onRestart }: { leaf: Leaf; programme: Programme; onTurn: () => void; onRestart: () => void }) {
-  if (leaf === "overview") {
+  const href = programme.href;
+  if (leaf.kind === "overview") {
     return (
       <>
-        <p className="font-mono text-[12px]/[16px] tracking-[0.08em] text-burnt uppercase">Programme {programme.number}</p>
-        <h3 className="mt-3 font-serif text-[32px]/[1.08] font-normal tracking-[-0.015em] text-ink">{programme.title}</h3>
-        <p className="mt-3 text-[15px]/[1.55] text-clay">{programme.text}</p>
-        <p className="mt-4 text-[12px]/[16px] text-clay">
-          How it is taught
-          <span className="block text-[15px]/[21px] font-semibold text-ink">{programme.modes}</span>
-        </p>
-        <button
-          type="button"
-          onClick={onTurn}
-          className="group/turn mt-auto flex h-11 w-fit cursor-pointer items-center gap-2.5 rounded-full bg-burnt px-5 text-[15px] font-semibold text-cream [transition:background-color_var(--dur-fast)_var(--ease-out)] hover:bg-[#b84d00]"
-        >
-          Turn the page
-          <Arrow className="[transition:translate_var(--dur-fast)_var(--ease-out)] group-hover/turn:translate-x-1" />
-        </button>
+        <p className="font-mono text-[12px]/[16px] tracking-[0.08em] text-burnt uppercase">{programme.count} courses</p>
+        <h3 className="mt-3 font-heading text-[32px]/[1.08] font-normal tracking-[-0.015em] text-ink">{programme.name}</h3>
+        <p className="mt-3 text-[15px]/[1.55] text-clay">{programme.line}</p>
+        <div className="mt-auto">
+          <Cta variant="primary" size="md" onClick={onTurn}>
+            Turn the page to see the courses
+          </Cta>
+        </div>
       </>
     );
   }
-  const href = programme.cta.href;
+  if (leaf.kind === "course") {
+    return (
+      <>
+        <p className="font-mono text-[12px]/[16px] tracking-[0.08em] text-burnt uppercase">
+          Course {pad(leaf.index + 1)} of {pad(programme.count)}
+        </p>
+        <h3 className="mt-3 font-heading text-[34px]/[1.08] font-normal tracking-[-0.015em] text-ink">{leaf.name}</h3>
+        <p className="mt-1 text-[14px]/[20px] text-clay">{programme.name}</p>
+        {href !== null && (
+          <div className="mt-auto">
+            <IndianLink tone="light" href={href} ariaLabel={`View this course: ${leaf.name}`}>
+              View this course
+            </IndianLink>
+          </div>
+        )}
+      </>
+    );
+  }
   return (
     <>
-      <p className="font-mono text-[12px]/[16px] tracking-[0.08em] text-burnt uppercase">The courses</p>
-      <h3 className="mt-3 font-serif text-[32px]/[1.08] font-normal tracking-[-0.015em] text-ink">Every course in {programme.title}</h3>
-      <p className="mt-3 text-[15px]/[1.55] text-clay">
-        {href !== null
-          ? "See each course with its dates, learning modes and fees on vajiramandravi.com."
-          : "Speak with our academic counsellors to find the course that suits your preparation."}
-      </p>
+      <p className="font-mono text-[12px]/[16px] tracking-[0.08em] text-burnt uppercase">The full list</p>
+      <h3 className="mt-3 font-heading text-[32px]/[1.08] font-normal tracking-[-0.015em] text-ink">All {programme.count} courses</h3>
+      <p className="mt-3 text-[15px]/[1.55] text-clay">See every course in the {programme.name}, with its dates, learning modes and fees.</p>
       <div className="mt-auto flex flex-col items-start gap-3">
-        {href !== null ? (
-          <Cta variant="primary" size="md" href={href} ariaLabel={`${programme.cta.label}: ${programme.title}`}>
-            {programme.cta.label}
-          </Cta>
-        ) : (
-          <Cta variant="primary" size="md" href="#counselling">
-            Get Expert Guidance
-          </Cta>
-        )}
+        <Cta variant="primary" size="md" href={href} ariaLabel={`View all ${programme.count} courses: ${programme.name}`}>
+          View all {programme.count} courses
+        </Cta>
         <button
           type="button"
           onClick={onRestart}

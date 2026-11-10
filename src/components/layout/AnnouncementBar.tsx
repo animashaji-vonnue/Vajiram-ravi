@@ -41,8 +41,9 @@ function Item({ item, index, clone, onFocus }: { item: Announcement; index: numb
 }
 
 /**
- * The announcement strip under the main header (Figma "Header / Announcement strip", 2258:10386): a 40px
- * burnt band of white 16px Hanken Medium items, each after its saffron iconoir icon, 56px apart.
+ * The announcement strip between the hero and the preparation journey (Figma "Header / Announcement
+ * strip", 2258:10386, moved out of the header at the client's request): a 40px
+ * burnt band of white 16px Source Sans 3 Medium items, each after its saffron iconoir icon, 56px apart.
  *
  * Motion spec: a continuous right-to-left marquee, one full loop every --dur-ambient (40s). The items are
  * rendered once and then CLONES more times, and the track slides by exactly one set's width (measured once

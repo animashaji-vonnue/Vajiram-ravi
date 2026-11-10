@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import BlockPrintBand from "@/components/ui/BlockPrintBand";
 import Cta from "@/components/ui/Cta";
 import { journeyIntro, journeyStages, type StageId, type SupportItem } from "@/data/journey";
 import { getCanvasZoom } from "@/lib/canvas";
@@ -15,7 +14,7 @@ const ID = "journey";
 
 /** How far (canvas px) the page scrolls through each stage while the band is pinned. */
 const STAGE_SCROLL = 480;
-/** Room kept free above and below the content inside the pinned screen (the block-print bands sit in it). */
+/** Room kept free above and below the content inside the pinned screen. */
 const FRAME_PAD = 64;
 /** The leaving stage's fade (ui/CrossFade's exit: 70% of its 200ms, --ease-in); the new one arrives after it. */
 const EXIT_MS = 140;
@@ -26,8 +25,7 @@ const clamp = (value: number, min: number, max: number) => Math.min(max, Math.ma
 
 /**
  * The journey band as one pinned screen. The section is a screen tall plus a run of STAGE_SCROLL for each
- * stage; inside it the screen (position: sticky, a full viewport high, the block-print bands at its top and
- * foot) holds the heading, the stage rail (StageRail) and the chosen stage's panel, and stays put while the
+ * stage; inside it the screen (position: sticky, a full viewport high) holds the heading, the stage rail (StageRail) and the chosen stage's panel, and stays put while the
  * page scrolls through the run: Prelims, then Mains, then Personality Test. When the run is over the screen
  * scrolls away with the section and the page goes on. On a screen too short for it all, the content is
  * scaled down to fit, so nothing is ever cut off while it is pinned.
@@ -126,10 +124,23 @@ export default function JourneyStages({ heading }: { heading: ReactNode }) {
     <div ref={trackRef} className="relative" style={{ height: `calc(100svh / var(--canvas-zoom, 1) + ${run}px)` }}>
       {/* The pinned screen. Its reveals play as it arrives, not when a fifth of the tall run is in view. */}
       <div data-reveal-section className="sticky top-0 flex h-[calc(100svh/var(--canvas-zoom,1))] items-center overflow-clip">
-        <BlockPrintBand colour="#f4c430" opacity={0.5} className="top-6" />
-        <BlockPrintBand colour="#f4c430" opacity={0.5} className="bottom-6" />
 
-        <div ref={contentRef} className="relative mx-auto flex w-canvas origin-center flex-col gap-12 px-20">
+        <div ref={contentRef} className="relative isolate mx-auto flex w-canvas origin-center flex-col gap-12 px-20">
+          {/*
+            The Ashoka lion capital over a dome with the flag (Figma 2488:5480), as a faint warm print behind
+            the heading's right side: low opacity, toned to the paper and fading out towards its foot, so it
+            reads as part of the ground rather than a picture on it. Decoration.
+          */}
+          <img
+            src="/images/journey/ashoka-dome.webp"
+            alt=""
+            aria-hidden="true"
+            width={1024}
+            height={947}
+            loading="lazy"
+            decoding="async"
+            className="pointer-events-none absolute -top-16 right-6 -z-10 w-[500px] max-w-none opacity-[0.16] sepia-[.55] [mask-image:linear-gradient(to_bottom,black_45%,transparent_92%)]"
+          />
           {heading}
 
           <div className="flex flex-col gap-10">
@@ -148,7 +159,7 @@ export default function JourneyStages({ heading }: { heading: ReactNode }) {
                   const [title, text, button] = [0, 1, 2].map((step) => rise(shown, step));
                   return (
                     <Layer key={stage.id} shown={shown}>
-                      <h3 style={title.style} className={cx("font-serif text-[36px]/[1.12] font-normal tracking-[-0.36px] text-ink", title.className)}>
+                      <h3 style={title.style} className={cx("font-heading text-[36px]/[1.12] font-normal tracking-[-0.36px] text-ink", title.className)}>
                         <span className="text-orange italic">{stage.name}</span> – {stage.title}
                       </h3>
                       <p style={text.style} className={cx("mt-4 text-[17px]/[1.55] text-clay", text.className)}>

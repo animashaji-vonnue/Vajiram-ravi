@@ -1,6 +1,6 @@
 import Cta from "@/components/ui/Cta";
 import { EyebrowLeft } from "@/components/ui/Ornament";
-import { programmes, programmesClosing, programmesIntro } from "@/data/programmes";
+import { programmes, programmesClosing, programmesIntro, shelfIntro } from "@/data/programmes";
 import FlagshipCard from "./FlagshipCard";
 import CourseShelf from "./CourseShelf";
 
@@ -40,10 +40,10 @@ function Newsprint() {
 
 /**
  * Explore UPSC Programmes (IA 4; Figma "03 · Explore Our Programmes", 2377:4612): a white band with the
- * site's heading row (eyebrow, heading, lead), then the flagship General Studies programme on the frosted
- * card over the newspaper collage (FlagshipCard), every other programme family of the institute as a cover
- * on the course shelf, ten on two shelves of five (CourseShelf), and the line pointing to the counsellors
- * with its button. Padding 96 / 80;
+ * site's heading row (eyebrow, heading, lead), then the featured General Studies programme on the frosted
+ * card over the newspaper collage (FlagshipCard), "More UPSC programmes" with every programme group as a
+ * cover on the course shelf, eight on two shelves of four (CourseShelf), and the line pointing to the
+ * counsellors with its button. The copy is the `kevin` branch's (data/programmes). Padding 96 / 80;
  * 56px from the heading to the card and from the cards to the closing line.
  */
 export default function Programmes() {
@@ -53,14 +53,13 @@ export default function Programmes() {
       <div className="relative mx-auto flex w-canvas flex-col items-start px-20 py-24">
         <div className="relative flex w-[820px] flex-col items-start gap-4">
           <EyebrowLeft>{programmesIntro.eyebrow}</EyebrowLeft>
-          <h2 id="programmes-h" data-reveal="heading" className="font-serif text-[56px]/[1.08] tracking-[-0.02em] text-ink">
+          <h2 id="programmes-h" data-split className="font-heading text-[56px]/[1.08] tracking-[-0.02em] text-ink">
             {title.before}{" "}
             <em data-reveal-em className="text-orange italic">
               {title.em}
-            </em>{" "}
-            {title.after}
+            </em>
           </h2>
-          <p data-reveal="sub" className="w-[640px] text-[17px]/[1.55] text-clay">
+          <p data-words className="w-[640px] text-[17px]/[1.55] text-clay">
             {programmesIntro.lead}
           </p>
         </div>
@@ -70,9 +69,21 @@ export default function Programmes() {
           <FlagshipCard />
         </div>
 
-        {/* The course shelf: every other programme family as a cover, five to a shelf (CourseShelf). */}
-        <div className="relative mt-20 w-full">
-          <CourseShelf programmes={programmes} />
+        {/*
+          "More UPSC programmes": kevin's wall heading, then every programme group on the shelf (CourseShelf),
+          all on a plastered wall that runs the full width of the screen (globals.css, .shelf-wall).
+        */}
+        <div className="relative mt-20 w-full pt-16 pb-16">
+          <div aria-hidden="true" className="shelf-wall pointer-events-none absolute inset-y-0 left-1/2 w-[max(calc(100vw/var(--canvas-zoom,1)),1440px)] -translate-x-1/2" />
+          <div className="relative flex w-full flex-col items-center gap-3 text-center">
+            <h3 data-split className="font-heading text-[36px]/[1.15] tracking-[-0.015em] text-ink">{shelfIntro.title}</h3>
+            <p data-words className="w-[520px] text-[17px]/[1.55] text-clay">
+              {shelfIntro.intro}
+            </p>
+          </div>
+          <div className="relative mt-12 w-full">
+            <CourseShelf programmes={programmes} />
+          </div>
         </div>
 
         <div data-reveal className="relative mt-14 flex w-full items-center justify-center gap-5">

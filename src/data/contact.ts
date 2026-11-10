@@ -1,5 +1,5 @@
 /**
- * "Our locations" (Figma 2258:10026): the campus card with its city tabs, the metro note and the street map.
+ * "Our locations" (Figma 1901:47945): the "Location & Timing" card with its city tabs over the street map.
  * The campuses' addresses also fill the footer's contact block.
  */
 
@@ -9,11 +9,12 @@ import { contact } from "@/data/site";
 export type SplitHeading = { lead: string; em: string };
 
 /**
- * Where the street map sits for a campus: a pan (px on the 1440 canvas) and a zoom applied to the one map
- * image, as a CSS transform about the map's centre. The image is 1471 × 624 in the 720 × 624 frame, so a
- * pan of up to 735 × scale − 360 sideways and 312 × (scale − 1) up or down keeps it covering the frame.
+ * Where the street map sits for a campus: a pan (px) and a zoom applied to the one map image, which covers
+ * the 1280 × 476 frame (1280 × 543 at rest), about the frame's centre; at a zoom of s it can pan up to
+ * 640 × (s − 1) sideways and 271 × s − 238 up or down. The drawing's own pin marks New Delhi;
+ * `pin` places another (its tip, px on the frame before the pan) for a campus the drawing does not mark.
  */
-export type MapView = { x: number; y: number; scale: number };
+export type MapView = { x: number; y: number; scale: number; pin?: { left: number; top: number } };
 
 export type Campus = {
   /** Tab id. */
@@ -28,7 +29,7 @@ export type Campus = {
   phone: string;
   phoneHref: string;
   mapsUrl: string;
-  /** The dark cartouche over the map. */
+  /** What the map shows, for the frame's accessible description. */
   mapLabel: string;
   map: MapView;
 };
@@ -62,7 +63,8 @@ export const campuses: Campus[] = [
       "https://www.google.com/maps/search/?api=1&query=Vajiram+and+Ravi+63+Police+Commissioner+Office+Road+Egmore+Chennai+600008",
     mapLabel: "Egmore, Chennai",
     // TODO: the design has one (placeholder) street map; replace this pan across it with a real Chennai map.
-    map: { x: 330, y: -40, scale: 1.2 },
+    // Panned so the drawing's own pin (New Delhi) leaves the frame; `pin` marks Chennai instead.
+    map: { x: 190, y: 0, scale: 1.3, pin: { left: 617, top: 280 } },
   },
 ];
 
@@ -71,7 +73,7 @@ export const locationsIntro = {
   title: { lead: "Our ", em: "locations" } satisfies SplitHeading,
   text: "Meet a counsellor, see the classrooms and pick up the brochure — in New Delhi and Chennai.",
   tabsLabel: "Campus",
-  /** The burnt label above the address (set in capitals). */
+  /** The card's heading. */
   label: "Location & Timing",
   landmarkPrefix: "Landmark: ",
   mapsCta: "View on maps",

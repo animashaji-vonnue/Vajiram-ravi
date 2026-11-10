@@ -39,9 +39,9 @@
   /* Nav text. */
   --color-charcoal: #1a1a1a;
 
-  /* Newsreader for headings (italic for emphasis), Hanken Grotesk for text and UI, Geist Mono for labels. */
-  --font-sans: var(--font-hanken-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --font-serif: var(--font-newsreader-face), ui-serif, Georgia, serif;
+  /* Mukta for headings (emphasis by colour), Source Sans 3 for text and UI, Geist Mono for labels. */
+  --font-sans: var(--font-text-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-heading: var(--font-heading-face), ui-sans-serif, system-ui, "Segoe UI", Arial, sans-serif;
   --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --container-canvas: 1440px;
@@ -97,8 +97,8 @@
 
 @layer base {
   html {
-    /* Clears the sticky header (main header and announcement strip) for in-page links. */
-    scroll-padding-top: 120px;
+    /* Clears the sticky header (the main header) for in-page links. */
+    scroll-padding-top: 80px;
   }
   @media (prefers-reduced-motion: no-preference) {
     html {
@@ -271,46 +271,20 @@
 }
 
 /*
- * The hero (Hero/Hero, after the `kevin` branch). hero-ember: its orange ground, a gradient from orange into
- * deep rust, lit by a bloom of bright orange and a soft gold glow that drift slowly, under a fine film
- * grain; white text reads on it (about 4:1 at the lightest). hero-glide: the pill's line, two copies side by
- * side moved left by one copy's width. hero-mark: the topper's rank rising in with each slide, its line
- * drawn out after it.
+ * The hero (Hero/Hero, after the `kevin` branch). hero-ember: its orange ground, the gradient of Figma
+ * "2 · Introducing Vajiram & Ravi" (2484:4261): light orange at the top left through the brand orange to
+ * deep rust at the bottom right (144deg), under a soft gold glow in the middle. hero-glide: the pill's line,
+ * two copies side by side moved left by one copy's width. hero-mark: the topper's rank rising in with each
+ * slide, its line drawn out after it.
  */
 .hero-ember {
   position: relative;
   isolation: isolate;
-  /* Clipped rather than hidden, so that focusing something inside can never scroll the glow into view. */
   overflow: clip;
-  background-color: #c84317;
-  background-image: linear-gradient(180deg, #d84b17 0%, #c84317 40%, #a9351a 78%, #8a2812 100%);
-}
-.hero-ember::before,
-.hero-ember::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-.hero-ember::before {
-  inset: -10%;
-  background:
-    radial-gradient(40% 45% at 86% 34%, rgb(255 87 0 / 0.42), transparent 72%),
-    radial-gradient(34% 30% at 68% 64%, rgb(253 180 83 / 0.26), transparent 72%),
-    radial-gradient(44% 38% at 6% 2%, rgb(250 113 42 / 0.4), transparent 72%);
-  animation: hero-ember-drift 24s ease-in-out infinite alternate;
-}
-.hero-ember::after {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 240px 240px;
-  mix-blend-mode: overlay;
-  opacity: 0.16;
-}
-@keyframes hero-ember-drift {
-  to {
-    transform: translate3d(-4%, 3%, 0) scale(1.06);
-  }
+  background-color: #ed781c;
+  background-image:
+    radial-gradient(50% 50% at 50% 50%, rgb(255 217 153 / 0.25), rgb(255 217 153 / 0)),
+    linear-gradient(143.9deg, #fab85c 7.69%, #ed781c 46.15%, #b8400f 84.62%);
 }
 .hero-glide {
   animation: hero-glide 14s linear infinite;
@@ -338,7 +312,6 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-ember::before,
   .hero-glide,
   .hero-mark,
   .hero-mark-line {
@@ -356,4 +329,49 @@
   .animate-\[nudge_1\.6s_ease-in-out_infinite\] {
     animation: none;
   }
+}
+
+/*
+ * The wall behind the course shelf (Programmes): warm limewash plaster. A light falling from above and
+ * soft mottled patches over the plaster's colour, a fine grain multiplied in, a crisp line where it meets
+ * the band above and a faint shadow along its foot.
+ */
+.shelf-wall {
+  background-color: #f1e2c9;
+  background-image:
+    radial-gradient(60% 55% at 50% 0%, rgb(255 246 228 / 0.85), transparent 70%),
+    radial-gradient(22% 30% at 12% 62%, rgb(226 200 160 / 0.35), transparent 70%),
+    radial-gradient(26% 34% at 86% 48%, rgb(230 206 168 / 0.3), transparent 70%),
+    radial-gradient(18% 24% at 64% 88%, rgb(222 196 156 / 0.28), transparent 70%),
+    linear-gradient(180deg, #f6ead6 0%, #efdfc3 70%, #e8d4b4 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(77 31 8 / 0.08),
+    inset 0 -18px 30px -18px rgb(77 31 8 / 0.18);
+}
+.shelf-wall::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  mix-blend-mode: multiply;
+  opacity: 0.12;
+}
+
+/*
+ * TextMotion (ui/TextMotion): a split heading's words, each a mask its letters rise out of. The mask reaches
+ * a little above and below the line so no accent or descender is cut while the letters move.
+ */
+.tm-mask {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+}
+.tm-ch {
+  display: inline-block;
+}
+.tm-wd {
+  transition: opacity 120ms linear;
 }

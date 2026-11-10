@@ -4,7 +4,7 @@ export type FaqEntry = { question: string; answer: string };
 export const faqIntro = {
   /** The centred eyebrow, shown in capitals. */
   eyebrow: "Have questions?",
-  /** The heading, its last words in Newsreader italic. */
+  /** The heading, its last words in Mukta italic. */
   title: "Things you may want to know",
   accent: "before you begin.",
 };

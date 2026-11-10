@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type MouseEvent, type PointerEvent } from "react";
-import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import { ANCHOR_JUMP_EVENT } from "@/components/layout/anchorJump";
 import LetsTalkSheet from "@/components/layout/LetsTalkSheet";
 import MainNav from "@/components/layout/MainNav";
@@ -24,14 +23,15 @@ const BAND = { rootMargin: "-45% 0px -50% 0px" };
 const RANG_KEY = "vr-header-phone-rang";
 
 /**
- * The header at the top of the page flow, 159px tall (Figma 2258:10448 and "00 Header", 2258:10384): the
- * 39px mahogany utility bar, the 80px white main header (logo, the links and "Let's talk", the site's ink
- * CTA with the phone in its medallion) and the 40px burnt announcement strip. The hero starts under it.
+ * The header at the top of the page flow, 119px tall (Figma 2258:10448 and "00 Header", 2258:10384): the
+ * 39px mahogany utility bar and the 80px white main header (logo, the links and "Let's talk", the site's
+ * orange CTA with the phone in its medallion). The hero starts under it; the announcement strip runs
+ * between the hero and the preparation journey (layout/AnnouncementBar, placed by app/page).
  *
  * Motion: it is sticky, and it gets out of the way while reading. At the top of the page it is whole.
  * Scrolling down past 80px slides it up out of view (data-hidden, --dur-base, --ease-in-out); scrolling back
- * up by 12px brings the main header and the strip back (120px, lib/smoothScroll's HEADER_OFFSET), with the
- * utility bar tucked above them (data-tucked, translateY(-39px)) and a shadow (--shadow-rest) under them;
+ * up by 12px brings the main header back (80px, lib/smoothScroll's HEADER_OFFSET), with the
+ * utility bar tucked above it (data-tucked, translateY(-39px)) and a shadow (--shadow-rest) under it;
  * back at the top the utility bar returns. It stays in view while it holds the keyboard focus or a menu is
  * open. One rAF-throttled scroll listener drives this, writing data attributes so React does not
  * re-render. While the page glides to a section (an in-page link or a search result) it stays hidden.
@@ -231,9 +231,6 @@ export default function SiteHeader() {
           </div>
         </div>
 
-        <div className="relative z-10">
-          <AnnouncementBar />
-        </div>
       </header>
       <LetsTalkSheet open={sheetOpen} onClose={closeSheet} />
       <SearchDialog open={searchOpen} onClose={closeSearch} />

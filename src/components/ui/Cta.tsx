@@ -4,22 +4,24 @@ import type { Href } from "@/data/links";
 import { cx } from "@/lib/cx";
 
 /*
- * The button of the final design (Figma "CTA / Indian", 2262:5786): an 8px-rounded button in Hanken
- * Grotesk SemiBold with the scalloped arrow medallion at its right. Four variants and two sizes, as drawn:
- *   primary         ink with cream text and a saffron medallion
+ * The site's button (after Figma "CTA / Indian", 2262:5786): an 8px-rounded button in Source Sans 3
+ * SemiBold with the round arrow medallion at its right. Five variants and two sizes:
+ *   primary         the brand orange (burnt) with white text and a cream medallion
+ *   ink             ink with cream text and a saffron medallion (on orange bands)
  *   primary-dark    saffron with ink text and an ink medallion (on dark bands)
  *   secondary       white with an ink border and text and a burnt medallion
  *   secondary-dark  a cream outline with cream text and a saffron medallion (on dark bands)
  * Motion spec: on hover the fill darkens 8% (secondary: the border turns burnt) while the medallion's
- * flower turns round and round (ui/Medallion); pressing scales it to 0.98 for 80ms; focus shows the saffron
+ * arrow nudges forward (ui/Medallion); pressing scales it to 0.98 for 80ms; focus shows the saffron
  * ring. A button given a set width keeps its label at the left and the medallion at the right end.
  * Disabled dims to 40% and ignores hover; loading keeps the label and swaps the medallion for a spinner
  * (and back) with the icon-swap transition below.
- * `icon` puts an icon in the medallion in place of the arrow (the header's phone): the flower still turns.
+ * `icon` puts an icon in the medallion in place of the arrow (the header's phone).
  */
 
 const VARIANT = {
-  primary: { root: "bg-ink text-cream hover:bg-[#271811]", medallion: "saffron" },
+  primary: { root: "bg-burnt text-white hover:bg-[#b84b00]", medallion: "cream" },
+  ink: { root: "bg-ink text-cream hover:bg-[#271811]", medallion: "saffron" },
   "primary-dark": { root: "bg-saffron text-ink hover:bg-[#e0b42c]", medallion: "ink" },
   secondary: { root: "border border-ink/22 bg-white text-ink hover:border-burnt", medallion: "burnt" },
   "secondary-dark": { root: "border border-cream/55 text-cream hover:border-burnt", medallion: "saffron" },

@@ -2,7 +2,7 @@ import { batches } from "@/data/admissions";
 import { campuses } from "@/data/contact";
 import { educators } from "@/data/faculty";
 import { faqEntries } from "@/data/faq-chat";
-import { flagshipProgramme, programmes } from "@/data/programmes";
+import { featuredProgramme, programmes } from "@/data/programmes";
 import { mainNav } from "@/data/site";
 import { freeResourceList } from "@/data/study-materials";
 import { toppers, toppersYear } from "@/data/toppers";
@@ -30,7 +30,7 @@ const sections: SearchItem[] = [
 /** Everything the search looks through, built from the page's own data. */
 export const searchIndex: SearchItem[] = [
   ...sections,
-  ...[flagshipProgramme, ...programmes].map((p) => ({ group: "Programmes" as const, title: p.title, href: "#programmes" })),
+  ...[featuredProgramme.name, ...programmes.map((p) => p.name)].map((title) => ({ group: "Programmes" as const, title, href: "#programmes" })),
   ...batches.map((b) => ({ group: "Upcoming batches" as const, title: b.programme, detail: `Starts ${formatDate(b.startDate)}`, href: "#batches" })),
   ...educators.map((e) => ({ group: "Faculty" as const, title: e.name, detail: e.focus, href: "#educators" })),
   ...freeResourceList.map((r) => ({ group: "Study materials" as const, title: r.title, href: "#resources" })),

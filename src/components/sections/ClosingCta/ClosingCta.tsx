@@ -13,7 +13,7 @@ const FOLLOW_MS = "300";
  */
 export default function ClosingCta() {
   return (
-    <section id="closing" aria-labelledby="closing-h" className="relative h-[720px] overflow-hidden bg-linear-to-b from-orange to-[#ae3b0f]">
+    <section id="closing" data-curtain aria-labelledby="closing-h" className="relative h-[720px] overflow-hidden bg-linear-to-b from-orange to-[#ae3b0f]">
       <div className="relative mx-auto h-full w-canvas">
         <SunRise />
 
@@ -24,9 +24,8 @@ export default function ClosingCta() {
           </EyebrowCentred>
           <h2
             id="closing-h"
-            data-reveal="heading"
-            data-reveal-delay={FOLLOW_MS}
-            className="w-[1040px] text-center font-serif text-[68px]/[1.06] tracking-[-0.02em] text-white"
+            data-split
+            className="w-[1040px] text-center font-heading text-[68px]/[1.06] tracking-[-0.02em] text-white"
           >
             {closingCta.title.lead}
             {/* The emphasis takes the second line. */}
@@ -35,12 +34,12 @@ export default function ClosingCta() {
               {closingCta.title.em}
             </em>
           </h2>
-          <p data-reveal="sub" data-reveal-delay={FOLLOW_MS} className="w-[560px] text-center text-[17px]/[1.55] text-white/90">
+          <p data-words className="w-[560px] text-center text-[17px]/[1.55] text-white/90">
             {closingCta.text}
           </p>
 
           <div data-reveal data-reveal-delay={FOLLOW_MS} className="flex items-start gap-3">
-            <Cta variant="primary" size="lg" href={closingCta.primary.href}>
+            <Cta variant="ink" size="lg" href={closingCta.primary.href}>
               {closingCta.primary.label}
             </Cta>
             <Cta variant="secondary" size="lg" href={closingCta.secondary.href}>

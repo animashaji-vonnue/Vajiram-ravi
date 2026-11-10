@@ -51,7 +51,7 @@ function splitLetters(word: HTMLElement, source: HTMLElement): { overlay: HTMLEl
 }
 
 /**
- * The giant "Vajiram & Ravi" in the footer: Newsreader 210px in orange, tracked to -10.5px. Motion spec:
+ * The giant "Vajiram & Ravi" in the footer: Mukta 210px in orange, tracked to -10.5px. Motion spec:
  * when it comes into view its letters arrive one by one (opacity and an 8px rise, 30ms apart), once, as
  * orange outlines that then fill solid, the fill sweeping left to right just behind them. The real text
  * stays in place, hidden, under the letters while they play, and is shown again afterwards (solid, no
@@ -123,7 +123,7 @@ export default function FooterWordmark({ text }: { text: string }) {
   }, []);
 
   return (
-    <p ref={wordRef} className="relative font-serif text-[210px]/[0.96] tracking-[-10.5px] whitespace-nowrap text-orange">
+    <p ref={wordRef} className="relative font-heading text-[210px]/[0.96] tracking-[-10.5px] whitespace-nowrap text-orange">
       <span className="sr-only">{text}</span>
       <span ref={sourceRef} aria-hidden="true">
         {text}

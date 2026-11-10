@@ -458,7 +458,7 @@ export default function EducatorRing({ educators, heading, note }: EducatorRingP
               data-shown={i === 0 ? "" : undefined}
               className="col-start-1 row-start-1 flex flex-col items-center gap-3 opacity-0 [transition:opacity_var(--dur-base)_var(--ease-out)] data-[shown]:opacity-100"
             >
-              {educator.introduction && <p className="font-serif text-[20px]/[1.45] text-ink italic">{educator.introduction}</p>}
+              {educator.introduction && <p className="font-heading text-[20px]/[1.45] text-ink italic">{educator.introduction}</p>}
               {(educator.qualifications || educator.experience) && (
                 <p className="font-mono text-[12px]/[1.4] tracking-[0.08em] text-burnt uppercase">
                   {[educator.qualifications, educator.experience].filter(Boolean).join(" · ")}
@@ -476,7 +476,7 @@ export default function EducatorRing({ educators, heading, note }: EducatorRingP
 
 /**
  * One educator (Figma "faculty · …", 200 × 300): the portrait filling a rounded card, a dark fade at its
- * foot, the name in Hanken Grotesk Bold and the subject in Geist Mono under it. Black and white unless it
+ * foot, the name in Source Sans 3 Bold and the subject in Geist Mono under it. Black and white unless it
  * is centred or hovered (the photo eases to colour over 600ms). With a profile page the card is a link;
  * without one it is a still article.
  */

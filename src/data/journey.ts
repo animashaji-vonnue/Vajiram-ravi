@@ -13,7 +13,7 @@ export type SupportItem = {
   /** The bold run-in label, with its colon (the Personality Test's lines). */
   label?: string;
   text: string;
-  /** Numbers in `text` set as Newsreader figures; the words stay exactly as written. */
+  /** Numbers in `text` set as Mukta figures; the words stay exactly as written. */
   figures?: string[];
 };
 

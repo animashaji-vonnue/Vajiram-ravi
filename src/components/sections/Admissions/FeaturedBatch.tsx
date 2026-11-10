@@ -22,7 +22,7 @@ const PAPER = "bg-[#ffefd5]";
 /**
  * The featured batch (content "Featured Batch") on a wide railway ticket, 1280 × 188, in the batch tickets'
  * language: the burnt orange head (308 wide, as a ticket) with the lotus mark and the target year in large
- * Newsreader (where the tickets have the date), the peach body with the programme and its details (start,
+ * Mukta (where the tickets have the date), the peach body with the programme and its details (start,
  * mode, location; a value may take two lines) under small labels, then the perforation between two notches
  * and the counterfoil, stamped "Admissions Open", with the button to the programme's page.
  *
@@ -100,7 +100,7 @@ export default function FeaturedBatch() {
             className="pointer-events-none absolute top-0 left-[104px] max-w-none"
           />
           <p className="relative text-[13px]/[16px] font-bold tracking-[1.82px] text-saffron uppercase">{batch.label}</p>
-          <p className="relative mt-1.5 font-serif text-[64px]/[64px] text-white">
+          <p className="relative mt-1.5 font-heading text-[64px]/[64px] text-white">
             <span className="sr-only">{batch.targetYear}</span>
             <span aria-hidden="true">
               {String(batch.targetYear)
@@ -117,7 +117,7 @@ export default function FeaturedBatch() {
 
         {/* The body: the programme and its details. */}
         <div className={`flex min-w-0 flex-1 flex-col justify-center px-10 ${PAPER}`}>
-          <h3 id="featured-batch-h" className="font-serif text-[32px]/[1.15] tracking-[-0.01em] text-mahogany">
+          <h3 id="featured-batch-h" className="font-heading text-[32px]/[1.15] tracking-[-0.01em] text-mahogany">
             {batch.programme}
           </h3>
           <dl className="mt-5 grid grid-cols-3 items-start gap-x-8">

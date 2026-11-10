@@ -1,4 +1,3 @@
-import FooterSkyline from "@/components/layout/FooterSkyline";
 import FooterWordmark from "@/components/sections/ClosingCta/FooterWordmark";
 import LinkOrText from "@/components/ui/LinkOrText";
 import { Flourish } from "@/components/ui/Ornament";
@@ -30,8 +29,7 @@ function FooterLink({ href, children }: { href: string | null; children: string 
 /**
  * The paper footer after the closing call to action (IA 12; Figma "14 · Footer", 2392:7437): the brand
  * block (logo, the one-line promise and the contact details: both campuses, the phone with its hours, the
- * email) beside the client's three link columns (Explore, Resources, Support), the line-art skyline of
- * Raisina Hill behind them (built like a construction, FooterSkyline), the flourish, the giant orange
+ * email) beside the client's three link columns (Explore, Resources, Support), the flourish, the giant orange
  * wordmark (whose letters arrive one by one, FooterWordmark) and the legal bar. "Contact Us" in the
  * Support column jumps to the contact block (#contact).
  */
@@ -39,17 +37,14 @@ export default function SiteFooter() {
   return (
     <footer className="relative bg-paper">
       <div className="relative mx-auto flex w-canvas flex-col items-center gap-12 px-20 pt-22 pb-8">
-        {/* The skyline in fine line art, behind the columns; it is built stroke by stroke as the footer comes into view. */}
-        <FooterSkyline className="pointer-events-none absolute top-[315.35px] left-20" />
-
         <div data-reveal-group className={cx("relative flex w-[1280px] items-start justify-between", TEXT)}>
           <div className="flex w-[420px] shrink-0 flex-col items-start gap-5">
             <a href="#top" aria-label="Vajiram & Ravi, back to top" className="block">
               <Photo src="/images/logo.webp" alt="" sizes="176px" className="relative h-10 w-44 bg-paper" />
             </a>
-            <p className="w-[380px] font-serif text-[20px]/[1.35] text-ink">{footerTagline}</p>
+            <p className="w-[380px] font-heading text-[20px]/[1.35] text-ink">{footerTagline}</p>
             <address id="contact" className="flex scroll-mt-32 flex-col items-start gap-3 text-[13.5px]/[1.5] not-italic">
-              <h2 className="font-serif text-[17px]/[normal] text-[#1a1714]">{footerContactHeading}</h2>
+              <h2 className="font-heading text-[17px]/[normal] text-[#1a1714]">{footerContactHeading}</h2>
               {campuses.map((campus) => (
                 <p key={campus.id} className="w-[360px]">
                   <span className="font-semibold text-ink">{campus.city}</span> · {campus.address}
@@ -68,7 +63,7 @@ export default function SiteFooter() {
           </div>
           {footerColumns.map((column) => (
             <div key={column.heading} className="flex w-[200px] shrink-0 flex-col items-start gap-3">
-              <h2 className="w-[200px] font-serif text-[17px]/[normal] text-[#1a1714]">{column.heading}</h2>
+              <h2 className="w-[200px] font-heading text-[17px]/[normal] text-[#1a1714]">{column.heading}</h2>
               <ul className="flex w-[200px] flex-col items-start gap-3 text-[13.5px]/[1.4]">
                 {column.links.map((link) => (
                   <li key={link.label}>

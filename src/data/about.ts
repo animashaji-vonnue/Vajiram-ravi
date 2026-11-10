@@ -8,7 +8,7 @@
 import { links } from "@/data/links";
 
 /** The line icons the cards' medallions carry (About/ArcCard). */
-export type AboutIcon = "diya" | "educators" | "book" | "careers" | "classroom" | "online";
+export type AboutIcon = "calendar" | "educators" | "specialists" | "chakra" | "campus" | "online";
 
 /**
  * A card of the arc, each led by the scalloped medallion with its icon: a fact, with its figure under the
@@ -33,25 +33,25 @@ export const aboutIntro = {
 
 /** In reading order: the institutional facts, then "Learning with Vajiram & Ravi". The first starts at the centre. */
 export const aboutCards: AboutCard[] = [
-  { kind: "fact", icon: "diya", figure: "1976", title: "Established", text: "Founded by Professor P. Velayutham." },
+  { kind: "fact", icon: "calendar", figure: "1976", title: "Established", text: "Founded by Professor P. Velayutham." },
   { kind: "fact", icon: "educators", figure: "~30", title: "GS Educators & Mentors", text: "Dedicated academic team for General Studies." },
-  { kind: "fact", icon: "book", figure: "2+", title: "Subject Specialists", text: "Minimum of two specialists for each subject, as stated by the institute." },
+  { kind: "fact", icon: "specialists", figure: "2+", title: "Subject Specialists", text: "Minimum of two specialists for each subject, as stated by the institute." },
   {
     kind: "fact",
-    icon: "careers",
+    icon: "chakra",
     figure: "Thousands",
     title: "Civil Services Careers",
     text: "Candidates supported by the institute have gone on to serve in various Central Services.",
   },
   {
     kind: "mode",
-    icon: "classroom",
+    icon: "campus",
     title: "Classroom Learning",
     text: "Prepare at the institute in Old Rajinder Nagar, New Delhi, through its classroom programmes.",
   },
   {
     kind: "mode",
-    icon: "classroom",
+    icon: "campus",
     title: "Chennai Campus",
     // TODO: written to match the New Delhi card; confirm with the client which programmes Chennai runs.
     text: "Prepare at the institute in Egmore, Chennai, through its classroom programmes.",

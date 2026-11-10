@@ -23,7 +23,7 @@ const FADE = "[transition:opacity_var(--dur-base)_var(--ease-out)]";
 /**
  * One card of the arc (Figma "card · 01 Proven track record (active)" and its light siblings): 280 × 388,
  * 16px corners, everything centred: the scalloped medallion with the card's icon (a fact's figure under it
- * in Newsreader), the title, the design's rule-and-diamond divider and the sentence.
+ * in Mukta), the title, the design's rule-and-diamond divider and the sentence.
  *
  * The card at the centre takes the design's active look: the dark maroon-to-rust paper, a saffron hairline,
  * the saffron medallion, a saffron figure and cream text, with the hover shadow. The others rest on their
@@ -51,9 +51,9 @@ export default function ArcCard({ card, index, active }: { card: AboutCard; inde
         <Medallion icon={card.icon} active={active} />
         <h3 className="flex flex-col items-center gap-1.5 font-normal">
           {card.kind === "fact" && (
-            <span className={cx("font-serif text-[40px]/[1] tracking-[-0.8px]", SHIFT, active ? "text-saffron" : "text-burnt")}>{card.figure}</span>
+            <span className={cx("font-heading text-[40px]/[1] tracking-[-0.8px]", SHIFT, active ? "text-saffron" : "text-burnt")}>{card.figure}</span>
           )}
-          <span className={cx("font-serif text-[24px]/[1.2]", SHIFT, active ? "text-white" : "text-mahogany")}>{card.title}</span>
+          <span className={cx("font-heading text-[24px]/[1.2]", SHIFT, active ? "text-white" : "text-mahogany")}>{card.title}</span>
         </h3>
       </div>
 
@@ -113,53 +113,55 @@ function Medallion({ icon, active }: { icon: AboutIcon; active: boolean }) {
 }
 
 /**
- * The cards' line icons in the medallion's colour, 22px: a diya for the founding, two figures for the
- * educators, an open book for the specialists, a briefcase for the careers, the institute's pillared front
- * for a classroom and a screen with a play mark for LIVE-Online.
+ * The cards' line icons in the medallion's colour, 22px, each saying what its card says: a calendar for
+ * the year of founding, a teacher at the board for the educators and mentors, a graduation cap for the
+ * subject specialists, the Ashoka Chakra for careers in the Civil Services, a map pin for a campus, and a
+ * laptop broadcasting live for LIVE-Online learning.
  */
 function CardIcon({ icon }: { icon: AboutIcon }) {
   return (
     <svg viewBox="0 0 24 24" width={22} height={22} fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-      {icon === "diya" && (
+      {icon === "calendar" && (
         <>
-          <path d="M12 3.5c1.9 2.1 2.6 3.7 2.6 5a2.6 2.6 0 0 1-5.2 0c0-1.3.7-2.9 2.6-5Z" />
-          <path d="M3.5 13.5h17c0 3.3-3.8 5.5-8.5 5.5s-8.5-2.2-8.5-5.5Z" />
-          <path d="M9 21h6" />
+          <rect x={3.5} y={5} width={17} height={15.5} rx={2} />
+          <path d="M3.5 9.5h17M8 3v4M16 3v4" />
+          <path d="m9 14.75 2 2 4-4" />
         </>
       )}
       {icon === "educators" && (
         <>
-          <circle cx={9} cy={8} r={3} />
-          <path d="M3.5 19.5c0-3.2 2.5-5.5 5.5-5.5s5.5 2.3 5.5 5.5" />
-          <circle cx={16.5} cy={9} r={2.4} />
-          <path d="M15.5 14.2c3 .2 5 2.3 5 5.3" />
+          <rect x={10} y={3.5} width={11} height={8.5} rx={1} />
+          <circle cx={5.5} cy={8} r={2.2} />
+          <path d="M2.5 20.5v-4.25a3 3 0 0 1 3-3h1.75l3.25-2.75" />
+          <path d="M15.5 12v4M13 20.5l2.5-4.5 2.5 4.5" />
         </>
       )}
-      {icon === "book" && (
+      {icon === "specialists" && (
         <>
-          <path d="M12 6.5c-1.8-1.4-4.6-2-8-1.8v12.6c3.4-.2 6.2.4 8 1.8 1.8-1.4 4.6-2 8-1.8V4.7c-3.4-.2-6.2.4-8 1.8Z" />
-          <path d="M12 6.5v12.6" />
+          <path d="M2 9.25 12 4.5l10 4.75-10 4.75Z" />
+          <path d="M6 11.25v4.5c0 1.4 2.7 2.75 6 2.75s6-1.35 6-2.75v-4.5" />
+          <path d="M22 9.25v5" />
         </>
       )}
-      {icon === "careers" && (
+      {icon === "chakra" && (
         <>
-          <rect x={3.5} y={7.5} width={17} height={12} rx={1.75} />
-          <path d="M9 7.5V5.75c0-.7.55-1.25 1.25-1.25h3.5c.7 0 1.25.55 1.25 1.25V7.5" />
-          <path d="M3.5 12.5h17M12 11.5v2" />
+          <circle cx={12} cy={12} r={8.5} />
+          <circle cx={12} cy={12} r={2.2} />
+          <path d="M14.20 12.00L20.00 12.00 M13.91 13.10L18.93 16.00 M13.10 13.91L16.00 18.93 M12.00 14.20L12.00 20.00 M10.90 13.91L8.00 18.93 M10.09 13.10L5.07 16.00 M9.80 12.00L4.00 12.00 M10.09 10.90L5.07 8.00 M10.90 10.09L8.00 5.07 M12.00 9.80L12.00 4.00 M13.10 10.09L16.00 5.07 M13.91 10.90L18.93 8.00" strokeWidth={1.1} />
         </>
       )}
-      {icon === "classroom" && (
+      {icon === "campus" && (
         <>
-          <path d="M3.5 9.25 12 4.5l8.5 4.75Z" />
-          <path d="M6.5 12v5M10.5 12v5M13.5 12v5M17.5 12v5" />
-          <path d="M4.5 17.5h15M3.5 20h17" />
+          <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" />
+          <circle cx={12} cy={9.5} r={2.5} />
         </>
       )}
       {icon === "online" && (
         <>
-          <rect x={3} y={4.5} width={18} height={12.5} rx={1.75} />
-          <path d="M9 20.25h6M12 17v3.25" />
-          <path d="M10.5 8.5v4.5l3.75-2.25Z" fill="currentColor" />
+          <rect x={4} y={5} width={16} height={11} rx={1.5} />
+          <path d="M2 19h20" />
+          <circle cx={12} cy={10.5} r={1.4} fill="currentColor" />
+          <path d="M9 8a3.75 3.75 0 0 0 0 5M15 8a3.75 3.75 0 0 1 0 5" />
         </>
       )}
     </svg>

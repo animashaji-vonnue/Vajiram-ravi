@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from "react";
-import { CarouselArrow, CarouselDots } from "@/components/ui/CarouselControls";
+import { CarouselArrow } from "@/components/ui/CarouselControls";
 import type { AboutCard } from "@/data/about";
 import { canvasTop, getCanvasZoom } from "@/lib/canvas";
 import { cx } from "@/lib/cx";
 import { mod, prefersReducedMotion } from "@/lib/motion";
 import { whenVisible } from "@/lib/reveal";
 import ArcCard from "./ArcCard";
-import { applyPose, cubicBezier, pose, SPRING_MS, spring, STEP_PX, wrapOffset } from "./arc";
+import { applyPose, arrowPlace, cubicBezier, pose, SPRING_MS, spring, STEP_PX, wrapOffset } from "./arc";
 
 /** A turn by the arrows, dots or keys: one place in 560ms (--ease-in-out), a little longer per extra place. */
 const TURN_MS = 560;
@@ -39,8 +39,9 @@ type ArcCarouselProps = {
 
 /**
  * The arc carousel (Figma "arc carousel" 2377:4531 and "carousel controls" 2377:4598): tall cards fanned
- * along a wide arc, the centre one upright and dark, two each side leaning out along the arc, under round
- * arrows and dots. The wheel turns endlessly; the card opposite the centre waits behind, unseen.
+ * along a wide arc, the centre one upright and dark, two each side leaning out along the arc, and a round
+ * arrow on each side standing on the arc under the cards, turned to its angle (arc.ts, arrowPlace). The
+ * wheel turns endlessly; the card opposite the centre waits behind, unseen.
  *
  * Entrance (the client's "spread rows", after animos.app): while the section is still below, the cards lie
  * in a neat pile at the centre, the centre card on top and the others squared up a few degrees askew under
@@ -49,7 +50,7 @@ type ArcCarouselProps = {
  * on screen at load, or with reduced motion, the cards are simply on the arc.
  *
  * Then it is a carousel:
- *   - The arrows and dots turn the wheel (the dots by the shorter way round): one place in 560ms with
+ *   - The arrows turn the wheel: one place in 560ms with
  *     --ease-in-out. The arrow keys do the same while focus is in the carousel; Home and End go to the
  *     first and last card.
  *   - Dragging with a mouse, or swiping, turns the wheel with the pointer (≈307px a card, along the arc);
@@ -261,7 +262,7 @@ export default function ArcCarousel({ cards, label, itemName }: ArcCarouselProps
   };
 
   return (
-    <div role="region" aria-roledescription="carousel" aria-label={label} onKeyDown={onKeyDown} className="flex w-full flex-col items-center gap-12">
+    <div role="region" aria-roledescription="carousel" aria-label={label} onKeyDown={onKeyDown} className="relative flex w-full flex-col items-center">
       {/*
         The arc, 1440 × 560 on the canvas: the centre card's top 32px down (room for its shadow and the side
         cards' lift), the outer cards running past the canvas edges, where the band clips them.
@@ -297,10 +298,22 @@ export default function ArcCarousel({ cards, label, itemName }: ArcCarouselProps
         })}
       </div>
 
-      <div data-reveal className="flex items-center gap-4">
-        <CarouselArrow direction="prev" label={`Previous ${itemName.toLowerCase()}`} size={48} onClick={() => turnBy(-1)} />
-        <CarouselDots count={count} active={active} onSelect={show} label={label} itemName={itemName} />
-        <CarouselArrow direction="next" label={`Next ${itemName.toLowerCase()}`} size={48} onClick={() => turnBy(1)} />
+      {/* The arrows, on the arc under the cards and leaning with it. */}
+      <div className="pointer-events-none absolute top-0 left-1/2 z-20 h-[560px] w-canvas -translate-x-1/2">
+        {([-1, 1] as const).map((side) => {
+          const place = arrowPlace(side);
+          return (
+            <div key={side} data-reveal className="pointer-events-auto absolute" style={{ left: place.left, top: place.top, rotate: place.rotate }}>
+              <CarouselArrow
+                direction={side < 0 ? "prev" : "next"}
+                label={`${side < 0 ? "Previous" : "Next"} ${itemName.toLowerCase()}`}
+                size={48}
+                onClick={() => turnBy(side)}
+                className="shadow-rest"
+              />
+            </div>
+          );
+        })}
       </div>
 
       <p aria-live="polite" className="sr-only">

@@ -39,13 +39,13 @@ export default function FaqAccordion({ entries, open, onToggle }: FaqAccordionPr
             <span
               aria-hidden="true"
               className={cx(
-                "absolute top-1 left-0 font-serif text-[20px]/[24px] whitespace-nowrap italic [transition:color_var(--dur-base)_var(--ease-in-out)]",
+                "absolute top-1 left-0 font-heading text-[20px]/[24px] whitespace-nowrap italic [transition:color_var(--dur-base)_var(--ease-in-out)]",
                 expanded ? "text-burnt" : "text-burnt/55",
               )}
             >
               {`${ROMAN[i] ?? i + 1}.`}
             </span>
-            <span className="w-[700px] font-serif text-[21px]/[normal] text-[#2a140c]">{entry.question}</span>
+            <span className="w-[700px] font-heading text-[21px]/[normal] text-[#2a140c]">{entry.question}</span>
             <Toggle expanded={expanded} />
           </button>
         </h3>

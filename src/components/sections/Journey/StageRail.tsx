@@ -200,7 +200,7 @@ export default function StageRail({ stages, active, onSelect, label, idPrefix, f
               <span
                 data-stage-name
                 className={cx(
-                  "font-serif text-[24px]/[1.2] whitespace-nowrap [transition:color_var(--dur-fast)_var(--ease-out)]",
+                  "font-heading text-[24px]/[1.2] whitespace-nowrap [transition:color_var(--dur-fast)_var(--ease-out)]",
                   chosen ? "text-ink" : "text-clay group-hover/stage:text-burnt",
                 )}
               >

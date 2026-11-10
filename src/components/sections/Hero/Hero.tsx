@@ -16,10 +16,6 @@ const FADE_MS = 1000;
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/** The edge of a torn piece of paper, for the coloured scrap that tears into a corner of each slide. */
-const TORN =
-  "polygon(0% 46%, 5% 38%, 9% 44%, 15% 30%, 21% 36%, 27% 22%, 33% 28%, 40% 14%, 47% 22%, 53% 8%, 60% 16%, 67% 4%, 74% 12%, 81% 0%, 88% 9%, 94% 2%, 100% 6%, 100% 100%, 0% 100%)";
-
 /** The rest of the year's top ten, after the three in the slideshow: small portraits under the panel. */
 const others = toppers.filter((topper) => topper.rank > heroSlides.length && topper.rank <= 10);
 
@@ -60,23 +56,21 @@ function Ticker({ slide }: { slide: HeroSlide }) {
 
 /**
  * The opening of the page, outcome first (the `kevin` branch's hero, in this site's type and colours): on
- * the orange ground, a large rounded panel inset a little from the edges, in which the top three of UPSC
+ * the orange gradient of Figma 2484:4261 (globals.css, .hero-ember), a large rounded panel inset a little from the edges, in which the top three of UPSC
  * CSE 2025 follow one another in their portraits.
  *
  *   - Each portrait pushes in slowly while it is shown and hands over to the next with a soft cross-fade
- *     (6.5s each, 1s hand-over). A coloured scrap of torn paper tears into a corner, top and bottom in
- *     turn; the topper's rank is marked beside them (the rank large in the serif, their name, the exam,
+ *     (6.5s each, 1s hand-over). The topper's rank is marked beside them (the rank large in the serif, their name, the exam,
  *     a fine line drawn out to a dot); a dark wash from the left and a halftone grain keep the type legible.
  *   - Over it, on the left: the pill whose line glides past with the topper's name and rank, the client's
  *     headline, the lead on a frosted card and the two buttons. A button to pause the slideshow appears
  *     when reached with the keyboard.
- *   - Under the panel, on the orange: the statement, the three results of UPSC 2025 (their figures roll in)
+ *   - Under the panel, on the orange: the statement, the institute's three figures (50+ years, 10 of 10, 36 of the top 50; they roll in)
  *     and the rest of the year's top ten as small portraits, linking to the selections page.
  *
  * Load (once, after the intro curtain; see ./enter): the pill, the heading line by line, the lead card,
- * the buttons and the results rise in; the slideshow starts its clock when the curtain has lifted. The
- * orange's glow drifts slowly. Reduced motion: everything is in place, the first topper stays, nothing
- * pushes in or drifts.
+ * the buttons and the results rise in; the slideshow starts its clock when the curtain has lifted. Reduced
+ * motion: everything is in place, the first topper stays, nothing pushes in.
  */
 export default function Hero() {
   const [current, setCurrent] = useState(0);
@@ -115,15 +109,14 @@ export default function Hero() {
           aria-roledescription="carousel"
           aria-label={`UPSC CSE ${slide.year} toppers`}
           className={cx(
-            // The header (159) and the strip under the panel (130) stay on the first screen with it.
-            "relative h-[clamp(500px,calc(100svh/var(--canvas-zoom,1)-159px-16px-130px),820px)] overflow-clip rounded-[28px] bg-mahogany",
+            // The header (119) and the strip under the panel (133) stay on the first screen with it.
+            "relative h-[clamp(500px,calc(100svh/var(--canvas-zoom,1)-119px-16px-133px),820px)] overflow-clip rounded-[28px] bg-mahogany",
             ENTER,
           )}
           style={at(AT.art)}
         >
           {heroSlides.map((s, i) => {
             const shown = i === current;
-            const top = i % 2 === 1;
             return (
               <div
                 key={s.name}
@@ -144,22 +137,6 @@ export default function Hero() {
                     transition: shown ? `scale ${SLIDE_MS + FADE_MS}ms linear` : `scale 0s linear ${FADE_MS}ms`,
                   }}
                 />
-                {/* The torn scrap, a lighter paper edge behind the coloured one, tearing into a corner. */}
-                <span
-                  aria-hidden="true"
-                  className={cx(
-                    "absolute right-[-4px] h-[130px] w-[320px] [transition:translate_900ms_var(--ease-out),rotate_900ms_var(--ease-out)]",
-                    top ? "top-[-4px] -scale-y-100" : "bottom-[-4px]",
-                  )}
-                  style={{
-                    translate: shown ? "0 0" : `60px ${top ? "-70px" : "70px"}`,
-                    rotate: shown ? "0deg" : "-6deg",
-                    transitionDelay: shown ? "250ms" : "0ms",
-                  }}
-                >
-                  <span className="absolute inset-0 bg-paper/80" style={{ clipPath: TORN, translate: "-6px -5px" }} />
-                  <span className="absolute inset-0" style={{ clipPath: TORN, background: s.accent }} />
-                </span>
               </div>
             );
           })}
@@ -179,7 +156,7 @@ export default function Hero() {
           >
             <div>
               <p className="font-mono text-[11px]/[14px] tracking-[0.2em] text-white/80 uppercase">All India Rank</p>
-              <p className="mt-2 flex items-baseline gap-2 font-serif text-white">
+              <p className="mt-2 flex items-baseline gap-2 font-heading text-white">
                 <span className="text-[26px]/[1] text-saffron italic">AIR</span>
                 <span className="text-[96px]/[0.82] tracking-[-0.03em]">{pad(slide.rank)}</span>
               </p>
@@ -197,7 +174,7 @@ export default function Hero() {
             <div className={RISE} style={at(AT.eyebrow)}>
               <Ticker slide={slide} />
             </div>
-            <h1 id="hero-h" className="mt-6 font-serif text-[56px]/[1.06] font-normal tracking-[-0.02em]">
+            <h1 id="hero-h" className="mt-6 font-heading text-[56px]/[1.06] font-normal tracking-[-0.02em]">
               {hero.headline.map((line, i) => (
                 <span key={i} className={cx("block whitespace-nowrap", LINE)} style={at(AT.lines[i])}>
                   {line.map((run) =>
@@ -220,7 +197,7 @@ export default function Hero() {
             </p>
             <div className="mt-7 flex items-start gap-3">
               <span className={cx("flex", RISE)} style={at(AT.ctas[0])}>
-                <Cta variant="primary-dark" size="lg" href={hero.primary.href}>
+                <Cta variant="primary" size="lg" href={hero.primary.href}>
                   {hero.primary.label}
                 </Cta>
               </span>
@@ -250,17 +227,17 @@ export default function Hero() {
 
       {/* Under the panel: the statement, the three results and the rest of the top ten. */}
       <div className="mx-auto grid w-canvas grid-cols-[230px_repeat(3,minmax(0,1fr))_auto] items-center gap-10 px-12 py-6">
-        <p className={cx("font-serif text-[24px]/[1.15] italic", RISE)} style={at(AT.achievements[0] - 80)}>
+        <p className={cx("font-heading text-[24px]/[1.15] italic", RISE)} style={at(AT.achievements[0] - 80)}>
           {hero.statement}
         </p>
         <ul aria-label={achievementsLabel} className="contents">
           {achievements.map((item, i) => (
-            <li key={item.name} data-enter className={cx("flex flex-col border-l border-white/30 pl-6", RISE)} style={at(AT.achievements[i])}>
-              <span className="font-serif text-[40px]/[1] whitespace-nowrap">
+            <li key={item.label} data-enter className={cx("flex flex-col border-l border-white/30 pl-6", RISE)} style={at(AT.achievements[i])}>
+              <span className="font-heading text-[40px]/[1] whitespace-nowrap">
                 <HeroFigure value={item.figure} />
               </span>
-              <span className="mt-1.5 text-[15px]/[20px] font-semibold whitespace-nowrap">{item.name}</span>
-              <span className="font-mono text-[11px]/[16px] tracking-[0.08em] text-white/80 uppercase">{item.exam}</span>
+              <span className="mt-1.5 text-[15px]/[20px] font-semibold whitespace-nowrap">{item.label}</span>
+              <span className="text-[14px]/[19px] whitespace-nowrap text-white/85">{item.text}</span>
             </li>
           ))}
         </ul>

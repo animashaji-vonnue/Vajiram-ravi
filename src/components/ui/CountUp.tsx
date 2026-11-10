@@ -20,7 +20,7 @@ const STAGGER_MS = 60;
 const PLUS_MS = 200;
 /**
  * Each column's window: the line box, with its top and bottom 0.2em faded so the passing digits roll in
- * and out softly. The digits themselves stand well inside it (Hanken Grotesk's line box runs from 1em above
+ * and out softly. The digits themselves stand well inside it (Source Sans 3's line box runs from 1em above
  * the baseline to 0.3em below; its figures from the baseline to about 0.7em above), so a resting digit is
  * never touched.
  */

@@ -93,7 +93,7 @@ export default function PageTransition() {
       </svg>
       <div data-curtain-mark className="flex flex-col items-center gap-4 opacity-0">
         <img src="/images/talk-to-us/stamp-emblem.webp" alt="" width={72} height={72} className="size-[72px]" />
-        <span className="font-serif text-[28px]/[1] text-cream">Vajiram &amp; Ravi</span>
+        <span className="font-heading text-[28px]/[1] text-cream">Vajiram &amp; Ravi</span>
       </div>
     </div>
   );

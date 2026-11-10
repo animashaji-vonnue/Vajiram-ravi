@@ -1,174 +1,149 @@
 import { links, type Href } from "@/data/links";
 
 /**
- * Explore UPSC Programmes (IA 4; Figma "03 · Explore Our Programmes", 2377:4612), in the client's copy of
- * 10 Nov 2026: the heading, the flagship General Studies programme on the frosted card with its figures,
- * every other programme family of vajiramandravi.com as illustrated cards, and a line pointing to the counsellors.
+ * Explore UPSC Programmes (IA 4), in the `kevin` branch's copy (its `programmes` content, as the client asked
+ * on 14 Nov 2026: "use this content only"): the heading, the featured General Studies programme, and every
+ * programme group on the course shelf. Nothing here is added beyond that copy; the links are the groups'
+ * pages on vajiramandravi.com, and what kevin marked as still to be confirmed is marked so here too.
  */
 
 /** A section heading: the words before the italic emphasis, the emphasis, and the words after it. */
 export type HeadingParts = { before: string; em: string; after: string };
 
 export const programmesIntro = {
-  eyebrow: "UPSC PROGRAMMES",
-  title: { before: "A programme for", em: "every part", after: "of your UPSC preparation." } satisfies HeadingParts,
-  lead: "Whether you’re building your foundation, strengthening a specific subject or preparing for the next examination stage, find the academic support that matches your preparation needs.",
+  eyebrow: "EXPLORE UPSC PROGRAMMES",
+  title: { before: "One goal.", em: "Different paths to get there.", after: "" } satisfies HeadingParts,
+  lead: "Whether you're building your foundation, strengthening your preparation or getting ready for the next stage, find a programme that fits your needs.",
 };
-
-/** A figure of the flagship programme: the number as shown (it rolls up, see ui/CountUp) and what it counts. */
-export type ProgrammeFigure = { value: string; label: string };
 
 export type ProgrammeLink = { label: string; href: Href };
 
-/** 01, the flagship: General Studies – Prelims & Mains. */
-export const flagshipProgramme = {
-  number: "01",
-  title: "General Studies – Prelims & Mains",
-  text: "Build your understanding of the complete General Studies syllabus, from foundational concepts to exam-focused application.",
-  figures: [
-    { value: "300+", label: "Class Lectures" },
-    { value: "900+", label: "Teaching Hours" },
-    { value: "18", label: "Yellow Books" },
-    { value: "30", label: "Prelims Tests" },
-    { value: "6 Months", label: "Additional Mains Support" },
-  ] satisfies ProgrammeFigure[],
-  cta: { label: "View General Studies Programme", href: links.gsCourse } satisfies ProgrammeLink,
+/**
+ * The featured programme. As in kevin's copy, its benefits describe what the programme covers and are to be
+ * confirmed by the academic team, and the duration is a placeholder.
+ */
+export const featuredProgramme = {
+  tag: "Featured programme",
+  name: "General Studies Prelims & Mains Programme",
+  line: "Prepare for the core subjects of the examination.",
+  benefits: [
+    "The General Studies syllabus for both Prelims and Mains, in one programme",
+    "Classes with experienced faculty, in the classroom or LIVE-Online",
+    "Study material and current affairs to learn and revise from",
+    "Regular tests and answer writing, with feedback",
+  ],
+  details: [
+    { term: "Who it's for", value: "Aspirants preparing General Studies for Prelims and Mains" },
+    { term: "Learning options", value: "Classroom, Delhi · LIVE-Online" },
+    // TODO: placeholder (kevin's copy): the programme's duration, from the academic team.
+    { term: "Duration", value: "[Duration to be confirmed]" },
+  ],
+  primary: { label: "Explore the programme", href: links.gsCourse } satisfies ProgrammeLink,
+  secondary: { label: "See upcoming batches", href: "#batches" } satisfies ProgrammeLink,
+  /** Its photographs, fading from one to the next; `position` is the part of a photo the frame keeps. */
+  photos: [
+    { src: "/images/programmes/featured-teacher.webp", width: 1200, height: 1807, position: "30% 22%" },
+    { src: "/images/programmes/featured-mentoring.webp", width: 760, height: 760 },
+    { src: "/images/programmes/featured-classroom.webp", width: 1024, height: 461 },
+    { src: "/images/programmes/featured-library.webp", width: 1264, height: 848 },
+  ],
 };
 
 /**
- * The courses under General Studies PCM, as vajiramandravi.com lists them on its GS page (checked 13 Nov
- * 2026): the Prelims & Mains programme in the classroom and LIVE-Online, for CSE 2028. `facts` are the
- * page's own figures for each. (The two-year Fledgling has its own card in the grid.)
+ * A programme group on the course shelf: its name, how many courses it holds, the courses its line names
+ * (one page each in the open book), the line, its page, and its cover's colour (from the site's palette).
  */
-export type GsCourse = { mode: "Classroom" | "LIVE-Online"; name: string; target: string; length: string; facts: string; href: Href };
-
-export const gsCoursesLabel = "Courses under General Studies";
-
-export const gsCourses: GsCourse[] = [
-  {
-    mode: "Classroom",
-    name: "GS Prelims & Mains Classroom Programme",
-    target: "CSE 2028",
-    length: "Over a year",
-    facts: "350+ sessions · 900+ teaching hours · classes 7 days a week",
-    href: links.gsClassroom,
-  },
-  {
-    mode: "LIVE-Online",
-    name: "GS Prelims & Mains LIVE-Online Programme",
-    target: "CSE 2028",
-    length: "Over a year",
-    facts: "350+ sessions · 900+ teaching hours · classes 7 days a week",
-    href: links.gsOnline,
-  },
-];
-
 export type Programme = {
-  number: string;
-  title: string;
-  text: string;
-  /** How it is taught, as the all-courses page lists it. */
-  modes: string;
-  cta: ProgrammeLink;
-  /** Its cover on the course shelf: the cover's colour, and whether the type on it is light or dark. */
+  name: string;
+  count: number;
+  courses: string[];
+  line: string;
+  href: Href;
   cover: { colour: string; type: "light" | "dark" };
 };
 
-const VIEW = "View courses";
+/** The shelf's heading, as kevin's wall has it. */
+export const shelfIntro = {
+  title: "More UPSC programmes",
+  intro: "Every programme we run, on one wall. Pick a course to take a closer look.",
+};
 
 /**
- * 02 to 11: every other programme family of vajiramandravi.com's all-courses page (checked 13 Nov 2026),
- * in the client's order, each linking to its family page there. Optional Subjects keeps the client's own
- * sentence; the others say what the family's page lists.
+ * Every programme group, as kevin's wall lists them. Counts and lines are from his design and to be
+ * confirmed (TODO); the rest of each group's courses are reached through its "View all" page.
  */
 export const programmes: Programme[] = [
   {
-    number: "02",
-    title: "GS PCM 2-Year Fledgling",
-    text: "General Studies over two years for CSE 2028, from the basics in the first year to full Prelims and Mains preparation in the second.",
-    modes: "Classroom · LIVE-Online",
-    cta: { label: VIEW, href: links.twoYearCourse },
+    name: "UPSC GS Foundation Course - PCM",
+    count: 4,
+    courses: ["1-year GS Foundation Course", "2-year GS Foundation Course"],
+    line: "1-year and 2-year General Studies programmes that take you from the basics to Prelims and Mains.",
+    href: links.gsCourse,
     cover: { colour: "#e57512", type: "light" },
   },
   {
-    number: "03",
-    title: "UPSC Mentorship Program",
-    text: "StepUp mentorship that plans, tracks and guides your preparation, in English and Hindi medium.",
-    modes: "Offline · Online",
-    cta: { label: VIEW, href: links.mentorshipPrograms },
+    name: "Optional Subject Programme",
+    count: 26,
+    courses: ["Anthropology", "Sociology"],
+    line: "Coaching in 13 optional subjects, from Anthropology to Sociology, in Classroom and LIVE-Online.",
+    href: links.optionalSubject,
     cover: { colour: "#2b1206", type: "light" },
   },
   {
-    number: "04",
-    title: "Module Courses",
-    text: "Focused modules for SMART Current Affairs, Economics, Ethics and Essay, and the Ranker's Programme.",
-    modes: "Classroom · LIVE-Online",
-    cta: { label: VIEW, href: links.moduleCourses },
+    name: "CSAT Course",
+    count: 2,
+    courses: ["CSAT Course"],
+    line: "Prepare for Prelims Paper II and clear the 33% qualifying mark with confidence.",
+    href: links.csatCourses,
     cover: { colour: "#f4c430", type: "dark" },
   },
   {
-    number: "05",
-    title: "Optional Subjects",
-    text: "Develop in-depth subject knowledge and prepare for the Optional Papers with focused teaching and examination-oriented practice.",
-    modes: "13 subjects · Classroom · LIVE-Online",
-    cta: { label: VIEW, href: links.optionalSubject },
-    cover: { colour: "#fff8ec", type: "dark" },
-  },
-  {
-    number: "06",
-    title: "CSAT",
-    text: "Build the aptitude, reasoning and comprehension that the CSAT paper of Prelims asks for.",
-    modes: "Classroom · LIVE-Online",
-    cta: { label: VIEW, href: links.csatCourses },
-    cover: { colour: "#cc5500", type: "light" },
-  },
-  {
-    number: "07",
-    title: "Mains Test Series",
-    text: "Sure Shot Mains, Mains CAMP, Essay and PYQ test series, with evaluation and feedback on every answer.",
-    modes: "Offline · Online",
-    cta: { label: VIEW, href: links.mainsTestSeriesAll },
-    cover: { colour: "#3b2416", type: "light" },
-  },
-  {
-    number: "08",
-    title: "Optional Subject Crash Course",
-    text: "Fast-paced revision with test practice for Sociology, History, PSIR, Mathematics and more.",
-    modes: "Offline · Online",
-    cta: { label: VIEW, href: links.crashCourses },
-    cover: { colour: "#ffd98a", type: "dark" },
-  },
-  {
-    number: "09",
-    title: "Prelims Test Series",
-    text: "PowerUp, Prelims Camp and Prelims Plus tests, practised under examination conditions.",
-    modes: "Offline · Online",
-    cta: { label: VIEW, href: links.prelimsTestSeries },
-    cover: { colour: "#fff1dc", type: "dark" },
-  },
-  {
-    number: "10",
-    title: "Interview Guidance Programme",
-    text: "Mock interviews, DAF guidance and feedback for the UPSC CSE and IFoS Personality Tests.",
-    modes: "Offline · Online",
-    cta: { label: VIEW, href: links.interviewGuidance },
+    name: "Interview Guidance Programme",
+    count: 2,
+    courses: ["UPSC CSE Interview Guidance", "IFoS Interview Guidance"],
+    line: "Guidance for the UPSC CSE and IFoS interviews once you have cleared Mains.",
+    href: links.interviewGuidance,
     cover: { colour: "#5a160f", type: "light" },
   },
   {
-    number: "11",
-    title: "IFoS Programmes",
-    text: "Forestry and Geology optionals, their test series and interview guidance for the Indian Forest Service.",
-    modes: "Classroom · LIVE-Online",
-    cta: { label: VIEW, href: links.ifos },
-    cover: { colour: "#a8431a", type: "light" },
+    name: "Mentorship Programme",
+    count: 6,
+    courses: ["StepUp Mentorship"],
+    line: "StepUp mentorship pairs regular tests with a personal mentor, from Prelims to Mains.",
+    href: links.mentorshipPrograms,
+    cover: { colour: "#cc5500", type: "light" },
+  },
+  {
+    name: "Mains Test Series",
+    count: 11,
+    courses: ["Sure Shot Test Series", "Mains CAMP", "Essay Tests"],
+    line: "Sure Shot test series, Mains CAMP and Essay tests to sharpen your answer writing.",
+    href: links.mainsTestSeriesAll,
+    cover: { colour: "#fff8ec", type: "dark" },
+  },
+  {
+    name: "Prelims Test Series",
+    count: 7,
+    courses: ["PowerUp Test Series", "Prelims CAMP", "Current Affairs Tests"],
+    line: "PowerUp test series, Prelims CAMP and current affairs tests to get Prelims-ready.",
+    href: links.prelimsTestSeries,
+    cover: { colour: "#ffd98a", type: "dark" },
+  },
+  {
+    name: "Optional Test Series",
+    count: 16,
+    courses: ["Year-long Optional Test Series", "Optional Mains Test Series"],
+    line: "Year-long and Mains test series to practise answer writing in your optional subject.",
+    href: links.optionalTestSeries,
+    cover: { colour: "#3b2416", type: "light" },
   },
 ];
 
-/** The closing line under the cards, and its button to the counselling form. */
+/** The closing line under the shelf, and its button to the counselling form (the client's copy). */
 export const programmesClosing = {
   text: "Not sure which programme is right for you? Speak with our academic counsellors.",
   cta: { label: "Get Expert Guidance", href: "#counselling" } satisfies ProgrammeLink,
 };
 
-/** The choices of "Programme of Interest" in the counselling form: the flagship and the ten families above. */
-export const programmeChoices: string[] = ["General Studies PCM", ...programmes.map((programme) => programme.title)];
+/** The choices of "Programme of Interest" in the counselling form: the featured programme and the groups. */
+export const programmeChoices: string[] = [featuredProgramme.name, ...programmes.map((programme) => programme.name)];

@@ -1,37 +1,50 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
 import { CarouselArrow } from "@/components/ui/CarouselControls";
 import Photo from "@/components/ui/Photo";
 import type { Story } from "@/data/stories";
-import { canvasTop, getCanvasZoom } from "@/lib/canvas";
+import { getCanvasZoom } from "@/lib/canvas";
 import { cx } from "@/lib/cx";
-import { prefersReducedMotion } from "@/lib/motion";
+import { mod, prefersReducedMotion } from "@/lib/motion";
 import { whenVisible } from "@/lib/reveal";
 
 /*
- * The students' words on postcards (Figma "postcards-row", 2394:4187), side by side on the table, each
- * turned 1.2° (alternately one way and the other).
- *   - Entrance, once, when the row comes into view: the postcards are dealt onto the table one by one
- *     (180ms apart). Each flies in from a dealer's hand above the middle of the row, turned 7–13° (a
- *     different angle every time), lands just past its angle and settles onto it (900ms).
- *   - Hover: the postcard is picked up, straightening and lifting 4px with the hover shadow (--dur-base).
- *   - The round arrows always stand in the heading row. With more stories than fit (two) the row is a
- *     carousel, a postcard at a time, by the arrows, the ← → keys and a swipe, and moves are announced
- *     ("Stories 2 to 3 of 5"); until then the arrows rest dimmed. A third story in data/stories.ts is all it
- *     takes.
- *   - Reduced motion: no dealing and no lift; the postcards simply lie on the table.
+ * The students' words on postcards, turned on a ring in 3D after the `kevin` branch's student stories
+ * (itself after the template carousel on wix.com): the front postcard flat, the next one out on each side
+ * turned away and set back, the pair beyond turned further and set further back.
+ *   - Every 4.5s the next postcard comes round to the front (600ms, --ease-out). It pauses while the
+ *     pointer or the keyboard focus is on the ring; clicking a postcard at the side, the round arrows in
+ *     the heading row, the arrow keys and a swipe bring another forward. The move is announced.
+ *   - Entrance, once, when the ring comes into view: the postcards fan out from behind the front one to
+ *     their places, nearest first (600ms each, 90ms apart).
+ *   - Hover on the front postcard lifts it with the hover shadow.
+ *   - Reduced motion: no turning on its own and no fan; the postcards change places at once.
  */
 
-/** A postcard (590) and the gap after it (32). */
-const STEP = 590 + 32;
-/** Postcards on the table at once across the 1280 content width. */
-const VISIBLE = 2;
+/** How long each postcard stays at the front, ms. */
+const ADVANCE_MS = 4500;
 const SWIPE_PX = 48;
-const DEAL_MS = 900;
-const DEAL_STAGGER_MS = 180;
-/** How high above the row the dealer's hand is, canvas px. */
-const DEAL_FROM_Y = -180;
+
+/** Where a postcard sits for its distance from the front: across, back, turned away and scaled. */
+const PLACES: Record<number, { x: number; z: number; turn: number; scale: number }> = {
+  0: { x: 0, z: 0, turn: 0, scale: 1 },
+  1: { x: 420, z: -160, turn: 62, scale: 0.92 },
+  2: { x: 600, z: -340, turn: 76, scale: 0.9 },
+};
+
+function place(offset: number, spread: boolean, fanning: boolean): CSSProperties {
+  const far = Math.abs(offset) > 2;
+  const spot = PLACES[spread ? Math.min(Math.abs(offset), 2) : 0];
+  const side = Math.sign(offset);
+  return {
+    transform: `translate(-50%, -50%) translate3d(${side * spot.x}px, 0, ${spot.z - (spread ? 0 : 60)}px) rotateY(${-side * spot.turn}deg) scale(${spot.scale})`,
+    zIndex: 10 - Math.abs(offset),
+    opacity: far || (!spread && offset !== 0) ? 0 : 1,
+    pointerEvents: far ? "none" : undefined,
+    transitionDelay: fanning ? `${Math.abs(offset) * 90}ms` : "0ms",
+  };
+}
 
 type PostcardsProps = {
   stories: Story[];
@@ -41,63 +54,61 @@ type PostcardsProps = {
 
 export default function Postcards({ stories, heading }: PostcardsProps) {
   const count = stories.length;
-  const paged = count > VISIBLE;
-  const last = Math.max(0, count - VISIBLE);
-  // The first postcard on the table, and whether the last move was by hand (and so announced).
-  const [index, setIndex] = useState(0);
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
   const [moved, setMoved] = useState(false);
-  const rowRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<Array<HTMLElement | null>>([]);
+  // Fanned out to their places (false: gathered behind the front one, before the ring is seen).
+  const [spread, setSpread] = useState(true);
+  const [still, setStill] = useState(false);
+  // The fan is under way: each postcard waits 90ms more the further out it goes.
+  const [fanning, setFanning] = useState(false);
+  const ringRef = useRef<HTMLDivElement>(null);
   const swipe = useRef<{ id: number; x: number; y: number } | null>(null);
 
-  // The deal: the postcards on the table wait in the dealer's hand until the row is seen.
   useEffect(() => {
-    const row = rowRef.current;
-    if (!row || prefersReducedMotion()) return;
-    // Already on screen: left as it is.
-    if (canvasTop(row) < (window.innerHeight / getCanvasZoom()) * 0.9) return;
-    const hand = row.offsetWidth / 2;
-    const deals = cardRefs.current.slice(0, VISIBLE).flatMap((card, i) => {
-      if (!card) return [];
-      // Layout px (canvas px), so neither the canvas zoom nor the card's own turn gets in the way.
-      const dx = hand - (card.offsetLeft + card.offsetWidth / 2);
-      const side = dx > 0 ? -1 : 1;
-      const spin = side * (7 + Math.random() * 6);
-      const settle = -side * (0.5 + Math.random() * 0.9);
-      const deal = card.animate(
-        [
-          { opacity: 0, transform: `translate(${dx.toFixed(1)}px, ${DEAL_FROM_Y}px) rotate(${spin.toFixed(2)}deg) scale(1.04)`, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
-          { opacity: 1, offset: 0.2 },
-          { opacity: 1, transform: `translate(0px, 3px) rotate(${settle.toFixed(2)}deg) scale(1)`, offset: 0.7, easing: "cubic-bezier(0.45, 0, 0.55, 1)" },
-          { opacity: 1, transform: "none" },
-        ],
-        { duration: DEAL_MS, delay: i * DEAL_STAGGER_MS, fill: "backwards" },
-      );
-      // Held at its start (in the hand, unseen) until the row comes into view.
-      deal.pause();
-      return [deal];
+    const reduced = prefersReducedMotion();
+    setStill(reduced);
+    const ring = ringRef.current;
+    if (!ring || reduced) return;
+    const box = ring.getBoundingClientRect();
+    if (box.top < window.innerHeight * 0.85 && box.bottom > 0) return;
+    setSpread(false);
+    let timer = 0;
+    const cancel = whenVisible(ring, 0.3, () => {
+      setFanning(true);
+      setSpread(true);
+      timer = window.setTimeout(() => setFanning(false), 900);
     });
-    const cancel = whenVisible(row, 0.3, () => deals.forEach((deal) => deal.play()));
     return () => {
       cancel();
-      deals.forEach((deal) => deal.cancel());
+      window.clearTimeout(timer);
     };
   }, []);
 
-  const goTo = (target: number) => {
-    const next = Math.min(last, Math.max(0, target));
-    if (next === index) return;
-    setIndex(next);
+  useEffect(() => {
+    if (paused || still || !spread || count < 2) return;
+    const timer = window.setTimeout(() => setActive((i) => (i + 1) % count), ADVANCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [active, paused, still, spread, count]);
+
+  const show = (i: number) => {
+    setActive(mod(i, count));
     setMoved(true);
+  };
+
+  // Each postcard's distance from the front, the shorter way round the ring.
+  const offsetOf = (i: number) => {
+    const d = mod(i - active, count);
+    return d > count / 2 ? d - count : d;
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
     event.preventDefault();
-    goTo(index + (event.key === "ArrowRight" ? 1 : -1));
+    show(active + (event.key === "ArrowRight" ? 1 : -1));
   };
 
-  // Swipe on touch: a mostly sideways flick moves one postcard; vertical moves stay page scrolls.
+  // Swipe on touch: a mostly sideways flick turns the ring one place; vertical moves stay page scrolls.
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType !== "mouse") swipe.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
   };
@@ -108,78 +119,87 @@ export default function Postcards({ stories, heading }: PostcardsProps) {
     const zoom = getCanvasZoom();
     const dx = (event.clientX - start.x) / zoom;
     const dy = (event.clientY - start.y) / zoom;
-    if (Math.abs(dx) >= SWIPE_PX && Math.abs(dx) > Math.abs(dy)) goTo(index + (dx < 0 ? 1 : -1));
+    if (Math.abs(dx) >= SWIPE_PX && Math.abs(dx) > Math.abs(dy)) show(active + (dx < 0 ? 1 : -1));
   };
 
-  const region = paged ? { role: "region", "aria-roledescription": "carousel", "aria-label": "Student stories", onKeyDown } : {};
-
   return (
-    <div {...region} className="flex w-full flex-col gap-14">
+    <div
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Student stories"
+      onKeyDown={onKeyDown}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      className="flex w-full flex-col gap-10"
+    >
       <div className="flex w-full items-end justify-between">
         {heading}
-        {/* The arrows always show; they wake up once there are more stories than the table holds. */}
         <div data-reveal="fade" className="flex items-center gap-2.5">
-          <CarouselArrow direction="prev" label="Previous story" disabled={!paged || index === 0} onClick={() => goTo(index - 1)} />
-          <CarouselArrow direction="next" label="Next story" tone="solid" disabled={!paged || index >= last} onClick={() => goTo(index + 1)} />
+          <CarouselArrow direction="prev" label="Previous story" onClick={() => show(active - 1)} />
+          <CarouselArrow direction="next" label="Next story" tone="solid" onClick={() => show(active + 1)} />
         </div>
       </div>
 
-      {/* The table. Room above and below for the turned corners and the lift; clipped sideways only when it pages. */}
+      {/* The ring: every postcard is centred on the stage and moved to its place in 3D. */}
       <div
-        ref={rowRef}
-        onPointerDown={paged ? onPointerDown : undefined}
-        onPointerUp={paged ? onPointerUp : undefined}
-        onPointerCancel={paged ? () => (swipe.current = null) : undefined}
-        className={cx("relative -my-4 py-4", paged ? "mx-auto w-[1212px] touch-pan-y overflow-x-clip [overflow-clip-margin:24px]" : "w-full")}
+        ref={ringRef}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => (swipe.current = null)}
+        className="relative h-[440px] w-full touch-pan-y [perspective:1400px]"
       >
-        <div
-          className={cx("flex w-max gap-8", paged ? "[transition:transform_var(--dur-slow)_var(--ease-in-out)]" : "mx-auto")}
-          style={paged ? { transform: `translateX(${-index * STEP}px)` } : undefined}
-        >
-          {stories.map((story, i) => (
-            <div key={story.name} {...(paged ? { role: "group", "aria-roledescription": "slide", "aria-label": `${i + 1} of ${count}` } : {})} className="shrink-0">
-              <Postcard
-                story={story}
-                tilt={i % 2 === 0 ? "rotate-[1.2deg]" : "-rotate-[1.2deg]"}
-                cardRef={(el) => {
-                  cardRefs.current[i] = el;
-                }}
-              />
+        {stories.map((story, i) => {
+          const offset = offsetOf(i);
+          const front = offset === 0;
+          return (
+            <div
+              key={story.name}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} of ${count}`}
+              aria-hidden={!front}
+              inert={!front}
+              onClick={front ? undefined : () => show(i)}
+              className={cx(
+                "absolute top-1/2 left-1/2 [transform-style:preserve-3d] [transition:transform_600ms_var(--ease-out),opacity_600ms_var(--ease-out)] motion-reduce:transition-none",
+                !front && "cursor-pointer",
+              )}
+              style={place(offset, spread, fanning)}
+            >
+              <Postcard story={story} front={front} />
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
 
-      {paged && (
-        <p className="sr-only" aria-live="polite" aria-atomic="true">
-          {moved ? `Stories ${index + 1} to ${index + VISIBLE} of ${count}` : ""}
-        </p>
-      )}
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {moved ? `Story ${active + 1} of ${count}: ${stories[active].name}` : ""}
+      </p>
     </div>
   );
 }
 
 type PostcardProps = {
   story: Story;
-  /** Its resting turn on the table, a rotate class. */
-  tilt: string;
-  cardRef: (el: HTMLElement | null) => void;
+  /** At the front of the ring: it lifts on hover. */
+  front: boolean;
 };
 
 /**
  * One postcard (Figma "postcard · …", 590 × 370): aged paper, "Post card" printed at the top left, the
- * student's words in Newsreader italic with their signature on the left of the dividing rule; on the right
+ * student's words in Mukta italic with their signature on the left of the dividing rule; on the right
  * the postmark with the exam and its year, the student's portrait as the stamp, then the "address": the
  * name, the rank and year, the programme, and the address lines.
  */
-function Postcard({ story, tilt, cardRef }: PostcardProps) {
+function Postcard({ story, front }: PostcardProps) {
   const standing = [story.rank !== undefined ? `AIR ${story.rank}` : null, `${story.exam} ${story.year}`].filter(Boolean).join(" · ");
   return (
     <figure
-      ref={cardRef}
       className={cx(
-        "relative h-[370px] w-[590px] overflow-clip rounded-[4px] bg-[#fff1dc] shadow-rest [transition:rotate_var(--dur-base)_var(--ease-out),translate_var(--dur-base)_var(--ease-out),box-shadow_var(--dur-base)_var(--ease-out)] hover:shadow-hover motion-safe:hover:-translate-y-1 motion-safe:hover:rotate-0",
-        tilt,
+        "relative h-[370px] w-[590px] overflow-clip rounded-[4px] bg-[#fff1dc] shadow-[0_30px_40px_-18px_rgb(43_18_5/0.35)] [transition:translate_var(--dur-base)_var(--ease-out),box-shadow_var(--dur-base)_var(--ease-out)]",
+        front && "hover:shadow-hover motion-safe:hover:-translate-y-1",
       )}
     >
       <img
@@ -192,17 +212,17 @@ function Postcard({ story, tilt, cardRef }: PostcardProps) {
         decoding="async"
         className="pointer-events-none absolute inset-0 size-full max-w-none object-cover opacity-35"
       />
-      <p aria-hidden="true" className="absolute top-[18px] left-6 font-serif text-[18px]/[normal] font-medium tracking-[0.18em] text-[#5a160f] uppercase">
+      <p aria-hidden="true" className="absolute top-[18px] left-6 font-heading text-[18px]/[normal] font-medium tracking-[0.18em] text-[#5a160f] uppercase">
         Post card
       </p>
       <span aria-hidden="true" className="absolute top-14 left-[342px] h-[290px] w-px bg-[#5a160f]/35" />
 
       <div className="absolute top-16 left-6 flex w-[294px] flex-col items-start gap-[18px]">
-        <blockquote className="font-serif text-[19px]/[1.45] text-[#2a140c] italic">
+        <blockquote className="font-heading text-[19px]/[1.45] text-[#2a140c] italic">
           <p>“{story.quote}”</p>
         </blockquote>
         {/* The signature repeats the name in the caption, so it is only seen. */}
-        <p aria-hidden="true" className="font-serif text-[17px]/[normal] text-burnt italic">
+        <p aria-hidden="true" className="font-heading text-[17px]/[normal] text-burnt italic">
           — {story.name}
         </p>
       </div>
@@ -222,7 +242,7 @@ function Postcard({ story, tilt, cardRef }: PostcardProps) {
       </div>
 
       <figcaption className="absolute top-[160px] left-[366px] flex w-[200px] flex-col items-start">
-        <h3 className="font-serif text-[24px]/[1.2] font-normal text-[#5a160f]">{story.name}</h3>
+        <h3 className="font-heading text-[24px]/[1.2] font-normal text-[#5a160f]">{story.name}</h3>
         <p className="mt-2 font-mono text-[11px]/[1.4] tracking-[0.08em] text-burnt uppercase">{standing}</p>
         <p className="mt-1 text-[13px]/[1.5] text-clay">{story.programme}</p>
         <span aria-hidden="true" className="mt-4 flex w-full flex-col gap-[29px]">

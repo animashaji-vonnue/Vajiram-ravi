@@ -9,24 +9,21 @@ import { cx } from "@/lib/cx";
 const OPEN_DELAY = 120;
 const CLOSE_DELAY = 200;
 
-const INDICATOR = "/images/ornaments/tab-indicator.svg";
-
-/** Figma "nav item": 14px × 8px padding round a 16px Hanken Medium label in charcoal. */
+/** Figma "nav item": 14px × 8px padding round a 16px Source Sans 3 Medium label in charcoal. */
 const ITEM =
-  "group/nav relative flex items-center rounded-full px-3.5 py-2 text-[16px]/[23px] font-medium whitespace-nowrap [transition:color_var(--dur-instant)_var(--ease-out)] hover:text-burnt";
+  "group/nav relative isolate flex items-center rounded-full px-3.5 py-2 text-[16px]/[23px] font-medium whitespace-nowrap [transition:color_var(--dur-instant)_var(--ease-out)] hover:text-burnt";
 
-/** The tabs' rule-diamond-rule indicator under a label: full when marked, faint on hover. */
+/**
+ * The mark of the link in use, matching the tabs: a soft burnt pill behind the label, full when marked,
+ * faint on hover.
+ */
 function Indicator({ on }: { on: boolean }) {
   return (
-    <img
-      src={INDICATOR}
-      alt=""
+    <span
       aria-hidden="true"
-      width={36}
-      height={8}
       className={cx(
-        "pointer-events-none absolute -bottom-1 left-1/2 h-2 w-9 -translate-x-1/2 [transition:opacity_var(--dur-fast)_var(--ease-out)]",
-        on ? "opacity-100" : "opacity-0 group-hover/nav:opacity-40",
+        "pointer-events-none absolute inset-0 -z-10 rounded-full bg-burnt/10 [transition:opacity_var(--dur-fast)_var(--ease-out)]",
+        on ? "opacity-100" : "opacity-0 group-hover/nav:opacity-50",
       )}
     />
   );
@@ -34,8 +31,8 @@ function Indicator({ on }: { on: boolean }) {
 
 /**
  * The main header's links (Figma "Header / Main", 2258:10385), 4px apart. Motion spec: hovering a label
- * turns it burnt and fades in the tabs' rule-diamond-rule indicator under it; the link of the section in
- * view (`current`, tracked by SiteHeader) keeps the indicator.
+ * turns it burnt and fades in a faint burnt pill behind it; the link of the section in view (`current`,
+ * tracked by SiteHeader) keeps the pill.
  *
  * All Courses, Study Materials and UPSC Exam are buttons that open mega menus: on hover after a 120ms
  * intent delay, or at once on click / Enter / Space (ArrowDown also moves into the panel). A menu closes

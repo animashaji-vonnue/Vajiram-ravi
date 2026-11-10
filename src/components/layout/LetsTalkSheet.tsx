@@ -27,7 +27,7 @@ const LEAVE = "[transition:opacity_calc(var(--dur-base)*0.7)_var(--ease-in),tran
 
 /**
  * The "Let's talk" sheet the header button opens: the ways to reach the admissions team, sliding in from
- * the right over a dimmed page. In the final palette: a paper panel, a Newsreader heading with its
+ * the right over a dimmed page. In the final palette: a paper panel, a Mukta heading with its
  * emphasis in burnt italic, and white linked cards (rest shadow, hover lift, the burnt medallion turning)
  * whose actions read like the page's Indian links. Focus moves into it on open, Tab stays inside it,
  * Escape, the backdrop and the close button dismiss it, focus returns to the button, and the page does
@@ -88,7 +88,7 @@ export default function LetsTalkSheet({ open, onClose }: LetsTalkSheetProps) {
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-2">
-            <h2 id="lets-talk-h" className="font-serif text-[40px]/[1.1] font-medium tracking-[-0.01em] text-ink">
+            <h2 id="lets-talk-h" className="font-heading text-[40px]/[1.1] font-medium tracking-[-0.01em] text-ink">
               Let&rsquo;s <em className="text-burnt italic">talk</em>
             </h2>
             <p className="text-[16px]/[1.5] text-clay">We&rsquo;re here to help you anytime, any way</p>
@@ -111,7 +111,7 @@ export default function LetsTalkSheet({ open, onClose }: LetsTalkSheetProps) {
                 onClick={option.href.startsWith("#") ? onClose : undefined}
                 className={cx("flex flex-col gap-1.5 rounded-xl border border-[#e8e4df] bg-white p-5", CARD_LINK)}
               >
-                <span className="font-serif text-[22px]/[1.25] font-medium text-ink">{option.title}</span>
+                <span className="font-heading text-[22px]/[1.25] font-medium text-ink">{option.title}</span>
                 <span className="text-[15px]/[1.5] text-clay">{option.text}</span>
                 <span className="mt-2 inline-flex items-center gap-2 text-[15px]/[22px] font-bold text-burnt">
                   {option.action}

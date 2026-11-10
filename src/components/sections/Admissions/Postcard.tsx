@@ -411,7 +411,7 @@ export default function Postcard({ programmes, modes, className }: PostcardProps
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-3 rounded-[10px] border border-burnt/60" />
 
-      <h3 id={`${uid}-title`} className="relative w-[440px] font-serif text-[30px]/[34px] font-normal text-mahogany">
+      <h3 id={`${uid}-title`} className="relative w-[440px] font-heading text-[30px]/[34px] font-normal text-mahogany">
         {copy.postcardTitle}
       </h3>
 
@@ -608,7 +608,7 @@ export default function Postcard({ programmes, modes, className }: PostcardProps
 
         {done && (
           <div ref={thanksRef} className="absolute inset-0 flex flex-col items-start justify-center gap-3">
-            <p ref={thanksTitleRef} tabIndex={-1} className="font-serif text-[30px]/[34px] text-mahogany outline-none">
+            <p ref={thanksTitleRef} tabIndex={-1} className="font-heading text-[30px]/[34px] text-mahogany outline-none">
               {copy.thanks}
               {firstName ? `, ${firstName}` : ""}.
             </p>

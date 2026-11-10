@@ -6,7 +6,7 @@ import { cx } from "@/lib/cx";
 
 /*
  * The panel a header menu opens (All Courses, Study Materials, UPSC Exam). The design draws no panels,
- * so this one is built in the final palette: a paper card with a hairline border, Newsreader column
+ * so this one is built in the final palette: a paper card with a hairline border, Mukta column
  * heads, ink links that turn burnt as an underline draws in under them, and an Indian link to the full
  * listing at its foot. It hangs 8px under the main header, its column text in line with its trigger's
  * label.
@@ -58,7 +58,7 @@ export default function MegaMenu({ id, menu, open }: MegaMenuProps) {
       <div className="flex gap-12">
         {menu.columns.map((column, i) => (
           <div key={column.heading} className="flex flex-col">
-            <p id={`${uid}-${i}`} className="font-serif text-[20px]/[26px] font-medium text-ink">
+            <p id={`${uid}-${i}`} className="font-heading text-[20px]/[26px] font-medium text-ink">
               {column.heading}
             </p>
             <ul aria-labelledby={`${uid}-${i}`} className="mt-4 flex flex-col gap-2.5">

@@ -1,7 +1,7 @@
 /**
  * The hero: the toppers' slideshow panel (after the `kevin` branch's hero) and the results strip under it.
- * The headline, lead, buttons and results are the client's (homepage content, "01. Hero section"), word
- * for word; the panel's slides are the top three of UPSC CSE 2025.
+ * The headline, lead and buttons are the client's (homepage content, "01. Hero section"), word for word;
+ * the panel's slides are the top three of UPSC CSE 2025.
  */
 
 /** A run of the heading; `em` runs are set in italic saffron. */
@@ -32,31 +32,33 @@ export type HeroSlide = {
   year: number;
   /** A wide portrait, the topper standing right of centre (1920 × 822). */
   photo: string;
-  /** The colour of the torn paper scrap that tears into a corner of the slide. */
-  accent: string;
 };
 
 /** The top three of UPSC CSE 2025, in rank order. */
 export const heroSlides: HeroSlide[] = [
-  { rank: 1, name: "Anuj Agnihotri", year: 2025, photo: "/images/hero/slide-anuj-agnihotri.webp", accent: "#e57512" },
-  { rank: 2, name: "Rajeshwari Suve M", year: 2025, photo: "/images/hero/slide-rajeshwari-suve-m.webp", accent: "#f4c430" },
-  { rank: 3, name: "Akansh Dhull", year: 2025, photo: "/images/hero/slide-akansh-dhull.webp", accent: "#cc5500" },
+  { rank: 1, name: "Anuj Agnihotri", year: 2025, photo: "/images/hero/slide-anuj-agnihotri.webp" },
+  { rank: 2, name: "Rajeshwari Suve M", year: 2025, photo: "/images/hero/slide-rajeshwari-suve-m.webp" },
+  { rank: 3, name: "Akansh Dhull", year: 2025, photo: "/images/hero/slide-akansh-dhull.webp" },
 ];
 
 export type Achievement = {
   /** The figure; its number rolls in (ui/CountUp). */
   figure: string;
-  /** Who or what it is. */
-  name: string;
-  exam: string;
+  /** What it counts. */
+  label: string;
+  /** The line under it. */
+  text: string;
 };
 
 /** The results strip's accessible name. */
-export const achievementsLabel = "UPSC 2025 results";
+export const achievementsLabel = "Vajiram & Ravi at a glance";
 
-/** The results under the panel, left to right. */
+/**
+ * The strip under the panel, left to right, as the client asked (14 Nov 2026, after the `kevin` branch's
+ * hero): the years since 1976, the top ten of CSE 2025, and 36 of its top 50.
+ */
 export const achievements: Achievement[] = [
-  { figure: "AIR 1", name: "Anuj Agnihotri", exam: "UPSC 2025" },
-  { figure: "AIR 2", name: "Rajeshwari Suve M", exam: "UPSC 2025" },
-  { figure: "36/50", name: "Top 50 associates", exam: "UPSC 2025" },
+  { figure: "50+", label: "Years of legacy", text: "Established in 1976" },
+  { figure: "10 of 10", label: "Top ten ranks", text: "CSE 2025" },
+  { figure: "36", label: "Of the top 50", text: "Ranks in CSE 2025" },
 ];

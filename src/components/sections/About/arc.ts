@@ -10,6 +10,26 @@ import { mod } from "@/lib/motion";
 /** The wheel's radius, px, and the angle between two cards. */
 export const RADIUS = 1600;
 export const STEP_DEG = 11;
+
+/**
+ * The arrows stand on the arc itself, half-way between the first and second side cards (1.5 places out)
+ * and 36px under their feet, each turned to the angle of the arc there, so they lean with the cards.
+ * The wheel's centre is 1826px below the stage's top (the centre card's centre, 226, plus the radius).
+ */
+export const ARROW_PLACES = 1.5;
+export const ARROW_RADIUS = 1360;
+export const WHEEL_CENTRE = { x: 720, y: 226 + RADIUS };
+
+/** Where an arrow's 48px button stands on the stage (its top left) and its turn, for a side (-1 left, 1 right). */
+export function arrowPlace(side: -1 | 1, size = 48) {
+  const deg = side * ARROW_PLACES * STEP_DEG;
+  const rad = (deg * Math.PI) / 180;
+  return {
+    left: Number((WHEEL_CENTRE.x + ARROW_RADIUS * Math.sin(rad) - size / 2).toFixed(2)),
+    top: Number((WHEEL_CENTRE.y - ARROW_RADIUS * Math.cos(rad) - size / 2).toFixed(2)),
+    rotate: `${deg}deg`,
+  };
+}
 /** Pointer travel that turns the wheel by one card: the arc between two neighbouring centres (≈307px). */
 export const STEP_PX = (RADIUS * STEP_DEG * Math.PI) / 180;
 /** The centre card is 280 × 388 and the side cards 264 × 372, as drawn: the same card, scaled. */

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Hanken_Grotesk, Newsreader } from "next/font/google";
+import { Geist_Mono, Mukta, Source_Sans_3 } from "next/font/google";
 import type { ReactNode } from "react";
 import PageTransition from "@/components/layout/PageTransition";
 import Preloader, { introScript } from "@/components/layout/Preloader";
@@ -14,19 +14,18 @@ import { startAtTopScript } from "@/lib/smoothScroll";
 import "./globals.css";
 
 /*
- * The type of the final design, and no other fonts: Newsreader for headings (Light to Medium, with
- * their italics for emphasis), Hanken Grotesk for text and UI (Regular to Bold), and Geist Mono for the
- * eyebrows and labels. The variables feed the --font-serif, --font-sans and --font-mono theme tokens.
+ * The site's type, and no other fonts: Mukta for headings (Light to Bold; it has no italics, so the
+ * emphasis in a heading is set apart by its colour alone), Source Sans 3 for text and UI (Regular to Bold, with italics), and Geist Mono for the
+ * eyebrows and labels. The variables feed the --font-heading, --font-sans and --font-mono theme tokens.
  */
-const hanken = Hanken_Grotesk({ weight: ["400", "500", "600", "700"], subsets: ["latin"], variable: "--font-hanken-face", display: "swap" });
-const newsreader = Newsreader({
-  // 300 is the Light italic of the success-story quotes.
-  weight: ["300", "400", "500"],
+const sourceSans = Source_Sans_3({
+  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-newsreader-face",
+  variable: "--font-text-face",
   display: "swap",
 });
+const mukta = Mukta({ weight: ["300", "400", "500", "600", "700"], subsets: ["latin"], variable: "--font-heading-face", display: "swap" });
 const geistMono = Geist_Mono({ weight: ["400", "500"], subsets: ["latin"], variable: "--font-mono-face", display: "swap" });
 
 export const metadata: Metadata = {
@@ -46,7 +45,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // The canvas-fit script sets an inline zoom on <html> before hydration.
     <html
       lang="en"
-      className={cx(hanken.variable, newsreader.variable, geistMono.variable)}
+      className={cx(sourceSans.variable, mukta.variable, geistMono.variable)}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

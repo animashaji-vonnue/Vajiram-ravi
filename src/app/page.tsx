@@ -1,3 +1,4 @@
+import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import About from "@/components/sections/About/About";
 import Admissions from "@/components/sections/Admissions/Admissions";
 import Counselling from "@/components/sections/Admissions/Counselling";
@@ -11,6 +12,7 @@ import Journey from "@/components/sections/Journey/Journey";
 import Programmes from "@/components/sections/Programmes/Programmes";
 import SuccessStories from "@/components/sections/SuccessStories/SuccessStories";
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import TextMotion from "@/components/ui/TextMotion";
 
 /**
  * The homepage, in the order of the client's information architecture (10 Nov 2026), laid out after the
@@ -26,13 +28,15 @@ import ScrollReveal from "@/components/ui/ScrollReveal";
  *   9. free study materials (#resources)
  *   10. FAQs (#faq), then the campuses (#locations)
  *   11. the final call to action (#closing)
- * The header (utility bar, main header and announcement ticker) and the footer (12) come from the root layout.
+ * The announcement ticker runs between the hero and the journey. The header (utility bar and main header)
+ * and the footer (12) come from the root layout.
  */
 export default function HomePage() {
   return (
     <main id="main">
       <span id="top" />
       <Hero />
+      <AnnouncementBar />
       <Journey />
       <About />
       <Programmes />
@@ -45,6 +49,7 @@ export default function HomePage() {
       <Locations />
       <ClosingCta />
       <ScrollReveal />
+      <TextMotion />
     </main>
   );
 }

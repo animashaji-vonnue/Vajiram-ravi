@@ -26,8 +26,9 @@ export type Story = {
   image: string;
 };
 
-// TODO: more stories (the content lists topper interviews, preparation journeys, programme-specific
-// experiences and video testimonials); with more than two the row becomes a carousel by itself.
+// The first two are the toppers' stories; the four after them are dummy stories (TODO: placeholder names,
+// words and photos, from the `kevin` branch's sample students, to be replaced with real students' approved
+// stories: topper interviews, preparation journeys, programme experiences).
 export const stories: Story[] = [
   {
     name: "Anuj Agnihotri",
@@ -48,5 +49,37 @@ export const stories: Story[] = [
     quote:
       "The test series showed me exactly where I was losing marks. By the last few papers I was finishing on time and still checking my answers.",
     image: "/images/toppers/rajeshwari-suve-m.webp",
+  },
+  {
+    name: "Aditi Rao",
+    exam: "CSE",
+    year: 2026,
+    programme: "GS Prelims cum Mains Classroom Programme",
+    quote: "Studying with a batch that took the syllabus as seriously as I did changed my pace. The weekly tests kept me honest about what I had really revised.",
+    image: "/images/stories/aditi-rao.webp",
+  },
+  {
+    name: "Karan Mehta",
+    exam: "CSE",
+    year: 2026,
+    programme: "Sure Shot Mains Test Series",
+    quote: "My answers used to run out of time and of structure. A few months of evaluated copies taught me to plan an answer before I wrote a word of it.",
+    image: "/images/stories/karan-mehta.webp",
+  },
+  {
+    name: "Rohit Verma",
+    exam: "CSE",
+    year: 2026,
+    programme: "StepUp Mentorship Programme",
+    quote: "Having a mentor look at my plan every fortnight meant I stopped collecting material and started finishing it.",
+    image: "/images/stories/rohit-verma.webp",
+  },
+  {
+    name: "Sneha Iyer",
+    exam: "CSE",
+    year: 2026,
+    programme: "Optional Subject Programme · Sociology",
+    quote: "The optional classes linked every thinker to the questions the paper actually asks. I finally knew what to leave out.",
+    image: "/images/stories/sneha-iyer.webp",
   },
 ];

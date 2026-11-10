@@ -89,7 +89,7 @@ export default function BatchTicket({ batch, tone }: BatchTicketProps) {
         <p aria-hidden="true" className={cx("absolute top-[22px] left-5 text-[13px]/[16px] font-bold tracking-[1.82px] uppercase", look.month)}>
           {month}
         </p>
-        <p aria-hidden="true" className={cx("absolute top-9 left-5 font-serif text-[64px]/[64px]", look.day)}>
+        <p aria-hidden="true" className={cx("absolute top-9 left-5 font-heading text-[64px]/[64px]", look.day)}>
           {String(day)
             .split("")
             .map((digit, i) => (

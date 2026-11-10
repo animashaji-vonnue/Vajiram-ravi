@@ -2,7 +2,7 @@ import { contact, utilityBar } from "@/data/site";
 
 /**
  * The 39px mahogany line at the very top (Figma "Header / Utility bar", 2258:10448): the admissions
- * number and hours in 14px Hanken Medium at 85% parchment, centred, with "Contact us" after them in 16px
+ * number and hours in 14px Source Sans 3 Medium at 85% parchment, centred, with "Contact us" after them in 16px
  * SemiBold saffron, underlined. The number is a tel: link whose underline draws in on hover, as on the
  * page's other text links; "Contact us" thickens its line instead. SiteHeader slides this bar away
  * once the page has scrolled.
