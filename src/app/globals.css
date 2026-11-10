@@ -1,5 +1,5 @@
 /*
- * Vajiram & Ravi homepage styles.
+ * Vajiram & Ravi site styles.
  * Everything is styled with Tailwind utilities in the components. This file only holds the design
  * tokens, a few base rules, keyframes, and the scroll-reveal classes that ScrollReveal toggles at runtime.
  *
@@ -307,7 +307,7 @@ body:has([data-recitals]) [data-chrome] {
  * 6:1); `orange-600` is the deeper orange that white text can sit on and still pass 4.5:1,
  * so it is the one used for filled buttons and the guidance band. Everything else is warm
  * paper and a warm near-black ink, so the orange always reads as the loudest thing.
- * Namespaced `v-` so it cannot collide with the old homepage or the Recitals tokens.
+ * Namespaced `v-` so it cannot collide with the shared site theme or the Recitals tokens.
  * ===================================================================================== */
 @theme {
   --color-v-paper: #fffaf3;
@@ -336,7 +336,7 @@ body:has([data-recitals]) [data-chrome] {
   --ease-v-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* The new homepage carries its own ticker, header and footer, so the old chrome is hidden. */
+/* The homepage carries its own ticker, header and footer, so the shared site chrome is hidden. */
 body:has([data-newhome]) [data-chrome] {
   display: none;
 }

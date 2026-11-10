@@ -1,5 +1,5 @@
 /**
- * The homepage is designed as a fixed 1440px canvas (rebuilt 1:1 from Figma).
+ * The older pages that use the shared site chrome (/magazine) are a fixed 1440px canvas.
  * On narrower viewports the root element is zoomed down so the whole canvas fits.
  */
 export const CANVAS_WIDTH = 1440;
@@ -13,8 +13,7 @@ export const CANVAS_WIDTH = 1440;
  * the real viewport and are then scaled down with everything else, which left the hero at
  * 70% of the window with the next section showing beneath it.
  *
- * The homepage ("/", also served at /new-home) is fluid too. The previous fixed-canvas
- * homepage now lives at /old-home and keeps the zoom.
+ * The homepage ("/", also served at /new-home) is fluid too.
  */
 const UNZOOMED = /^\/($|(kit|recitals|new-home)(\/|$))/;
 

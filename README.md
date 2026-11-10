@@ -31,22 +31,21 @@ The site is a static export. `npm run build` writes plain HTML, CSS, JS and imag
 src/
   app/
     layout.tsx        fonts, metadata, site chrome, canvas-fit script
-    page.tsx          the homepage: sections in order
+    page.tsx          the homepage (also served at /new-home)
     magazine/page.tsx the magazine page (/magazine): The Recitals, with the issue archive
     globals.css       Tailwind import, design tokens (@theme), base rules, keyframes
-    fonts/            Figtree and Geist (latin), loaded with next/font/local
+    fonts/            Mukta and Source Sans 3 (homepage), Martel and Instrument Serif
+                      (Recitals), Figtree and Geist (/magazine), loaded with next/font/local
   components/
-    layout/           UtilityBar, SiteHeader, AnnouncementBar, SiteFooter
-    sections/         one folder per section: the component and any client parts
-      Hero/ Toppers/ WhyChoose/ Courses/ GsProgramme/ Faculty/ Batches/
-      Counselling/ SuccessStories/ FreeResources/ Faq/ ContactOptions/
-      Locations/ ClosingCta/
+    new-home/         the homepage sections; all copy is in src/data/new-home.ts
+    recitals/         The Recitals page (/recitals)
+    layout/           UtilityBar, SiteHeader, AnnouncementBar, SiteFooter (used by /magazine)
+    sections/         parts of the older /magazine page
+      ClosingCta/ Faq/
       Magazine/       the magazine page's sections: hero, contents, archive, stages, portal band, FAQ
-    ui/               shared pieces: Buttons, Typography, PeekCarousel,
-                      TrackCarousel, CarouselControls, Photo, RankBadge,
-                      Toast, ScrollReveal, CanvasFit
+    ui/               shared pieces: Buttons, Typography, Toast, ScrollReveal, CanvasFit
     icons.tsx         every inline SVG from the design, as typed components
-  data/               all copy and lists (toppers, courses, faculty, FAQs, magazine issues, ...)
+  data/               all copy and lists (homepage copy, faculty, FAQs, magazine issues, ...)
   lib/                small helpers (canvas zoom, motion, toast events)
 public/images/        logo, photos and illustrations
 scripts/serve-out.mjs preview server for the static export (npm start)
@@ -58,16 +57,16 @@ To change content, edit the files in `src/data`. To change a section's look, edi
 ## Styling
 
 - Everything is styled with Tailwind utilities in the components. There are no per-component CSS files.
-- The design's palette, fonts, easing and canvas width are Tailwind theme tokens in `src/app/globals.css`. For example `bg-brand-500`, `text-neutral-600`, `font-display`, `ease-smooth`, `w-canvas`. The default Tailwind colours are switched off, so only design colours can be used.
-- `font-display` is Figtree and `font-sans` is Geist.
+- Palettes and fonts are Tailwind theme tokens in `src/app/globals.css`, one block per design: `v-` for the homepage (`bg-v-orange-500`, `font-v-head`), `r-` for The Recitals, and the unprefixed shared theme for /magazine. The default Tailwind colours are switched off, so only design colours can be used.
+- Homepage: `font-v-head` is Mukta and `font-v-body` is Source Sans 3. On /magazine, `font-display` is Figtree and `font-sans` is Geist.
 - Shared looks live in small components instead of `@apply`: `Buttons.tsx` for the pill buttons and text links, `Typography.tsx` for eyebrows, section titles and lead paragraphs.
-- A few states are toggled outside React and styled with arbitrary variants: `dragging` on carousels, `swap` on the toppers grid, `run` on the marquee. The scroll-reveal classes `rv-pre` and `rv-in` are plain CSS in `globals.css`.
+- A few states are toggled outside React and styled with arbitrary variants: `run` on the /magazine marquee. The scroll-reveal classes `rv-pre` and `rv-in` are plain CSS in `globals.css`.
 
 ## How it behaves
 
-- The design is a fixed 1440px canvas. On narrower screens the page is zoomed down to fit, exactly like the prototype.
-- Sections are server components. Only the interactive parts are client components: the header, marquee, carousels, year tabs, stat counters, FAQ, city tabs and map zoom, and the counselling form.
+- The homepage and The Recitals are fluid and work down to phone width. The older /magazine page is a fixed 1440px canvas, zoomed down to fit narrower screens.
+- Sections are server components. Only the interactive parts are client components: on the homepage, the ticker, header, hero animation, stage tabs, FAQ and the enquiry form.
 - Links with `href="#"` point at pages that do not exist yet. Clicking one shows a short toast.
-- The counselling form validates input and shows a thank-you state, but it does not send anything yet. Because the site is static, sending it later needs a form service such as Netlify Forms or a serverless function.
+- The homepage enquiry form validates input and shows a thank-you state, but it does not send anything yet. Because the site is static, sending it later needs a form service such as Netlify Forms or a serverless function.
 - Images are served as the original webp files. Next.js image resizing needs a server, so it is off.
 - The magazine page (`/magazine`) lists every issue of The Recitals from `src/data/magazine.ts`. The covers and PDFs are loaded straight from the live site's CDN, so the page needs no local copies; to add an issue, add a row at the top of that file. Links to homepage sections are written as `/#section` so they work from this page too.
