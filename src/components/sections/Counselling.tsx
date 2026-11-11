@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { ArrowRight, NavArrowDown } from "iconoir-react";
 import { contact, counselling } from "@/data/content";
+import { Ripples, ripple } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/SectionIntro";
 import { cx } from "@/lib/cx";
 
@@ -206,15 +207,19 @@ export default function Counselling() {
                 <div className="flex items-end">
                   <button
                     type="submit"
-                    className="group/button inline-flex h-[52px] w-full items-center justify-center gap-2.5 rounded-full bg-saffron-500 px-7 text-[16px] font-semibold text-white transition-colors duration-200 hover:bg-saffron-600"
+                    onPointerEnter={ripple}
+                    className="group/button relative inline-flex h-[52px] w-full items-center justify-center overflow-clip rounded-full bg-saffron-500 px-7 text-[16px] font-semibold text-white [--ripple:255_255_255]"
                   >
-                    {counselling.card.cta}
-                    <ArrowRight
-                      width={18}
-                      height={18}
-                      strokeWidth={1.8}
-                      className="transition-transform duration-300 ease-out-soft group-hover/button:translate-x-1"
-                    />
+                    <Ripples />
+                    <span className="relative flex items-center gap-2.5">
+                      {counselling.card.cta}
+                      <ArrowRight
+                        width={18}
+                        height={18}
+                        strokeWidth={1.8}
+                        className="transition-transform duration-300 ease-out-soft group-hover/button:translate-x-1"
+                      />
+                    </span>
                   </button>
                 </div>
               </form>

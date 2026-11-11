@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, OpenBook } from "iconoir-react";
 import { programmes } from "@/data/content";
-import { Button } from "@/components/ui/Button";
+import { Button, Ripples, ripple } from "@/components/ui/Button";
 import CoverArt from "@/components/ui/CoverArt";
 import SectionIntro, { Eyebrow } from "@/components/ui/SectionIntro";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -436,15 +436,19 @@ function Page({
         <button
           type="button"
           onClick={onTurn}
-          className="group/turn mt-auto flex h-11 w-fit items-center gap-2.5 rounded-full bg-saffron-500 px-5 text-[15px] font-semibold text-white transition-colors hover:bg-saffron-600"
+          onPointerEnter={ripple}
+          className="group/button relative mt-auto flex h-11 w-fit items-center overflow-clip rounded-full bg-saffron-500 px-5 text-[15px] font-semibold text-white [--ripple:255_255_255]"
         >
-          Turn the page to see the courses
-          <ArrowRight
-            width={17}
-            height={17}
-            strokeWidth={1.9}
-            className="transition-transform group-hover/turn:translate-x-1"
-          />
+          <Ripples />
+          <span className="relative flex items-center gap-2.5">
+            Turn the page to see the courses
+            <ArrowRight
+              width={17}
+              height={17}
+              strokeWidth={1.9}
+              className="transition-transform group-hover/button:translate-x-1"
+            />
+          </span>
         </button>
       </>
     );

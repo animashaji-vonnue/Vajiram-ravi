@@ -226,6 +226,69 @@
   animation: draw-x 0.9s var(--ease-out-soft) 0.55s both;
 }
 
+/*
+ * The ripple hover on buttons (Ripples in ui/Button.tsx): a single soft ripple centred where the pointer came in,
+ * spreading out across the button with a gentle ease and fading as it goes, in the tone's --ripple colour (as
+ * "r g b").
+ */
+.ripples {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: clip;
+  pointer-events: none;
+}
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  translate: -50% -50%;
+  scale: 0.08;
+  opacity: 0;
+  pointer-events: none;
+  will-change: scale, opacity;
+  /* A faint fill with a brighter, soft rim. */
+  background: radial-gradient(
+    circle closest-side,
+    rgb(var(--ripple, 255 255 255) / 0.1) 0%,
+    rgb(var(--ripple, 255 255 255) / 0.16) 60%,
+    rgb(var(--ripple, 255 255 255) / 0.35) 86%,
+    transparent 100%
+  );
+  animation:
+    ripple-grow 1.4s cubic-bezier(0.33, 1, 0.68, 1) both,
+    ripple-fade 1.4s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+@keyframes ripple-grow {
+  from {
+    scale: 0.08;
+  }
+  to {
+    scale: 1;
+  }
+}
+@keyframes ripple-fade {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* A subtle pop when the pointer comes onto a button: it springs up a touch, with a slight overshoot, and settles back
+   when the pointer leaves. */
+.group\/button {
+  transition:
+    scale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-color 0.3s;
+}
+.group\/button:hover {
+  scale: 1.04;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .stage-in,
   .fade-up,
@@ -239,5 +302,8 @@
   }
   .cover-art * {
     transition: none !important;
+  }
+  .group\/button:hover {
+    scale: 1;
   }
 }
