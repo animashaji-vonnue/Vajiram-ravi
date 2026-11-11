@@ -12,9 +12,9 @@ import EducatorFlow from "./EducatorFlow";
  * until then a button that goes nowhere would only be a false promise, and the carousel right below
  * already does what it invites.
  *
- * Motion (ui/TextMotion): the heading's letters rise in (data-split), the burnt words catching a light now
- * and then; the lead lights up word by word with the scroll (data-words); the carousel rises into place
- * as it comes up the screen (data-rise), and its ring turns in once it is in view.
+ * Motion (ui/TextMotion): the heading's letters rise in quickly (data-split); the lead is simply there; the
+ * carousel rises into place
+ * once as it comes into view (data-rise, a 560ms rise), and its ring turns in once it is in view.
  */
 export default function Faculty() {
   const { heading, lead, cta } = facultyIntro;
@@ -33,7 +33,7 @@ export default function Faculty() {
           </IndianLink>
         )}
       </div>
-      {/* The carousel rises into place with the scroll (ui/TextMotion, data-rise, measured on this wrapper). */}
+      {/* The carousel rises into place once as it comes into view (ui/TextMotion, data-rise). */}
       <div className="mt-14">
         <div data-rise>
           <EducatorFlow educators={educators} />

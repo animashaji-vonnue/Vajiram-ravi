@@ -48,11 +48,18 @@ export default function SectionJump() {
       if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
       target.focus({ preventScroll: true });
     };
-    // The curtain was the entrance: the section's held entrances end at once (only paused ones, which
-    // ui/TextMotion keeps until an element is seen; nothing that is playing or looping is touched).
+    // The curtain was the entrance: the section's held entrances end at once (only paused, finite script
+    // animations, which ui/TextMotion keeps until an element is seen; nothing playing or looping).
     const settle = (target: HTMLElement) => {
       target.getAnimations({ subtree: true }).forEach((animation) => {
-        if (animation.playState === "paused") animation.finish();
+        // Not the CSS loops held paused off screen (endless: they cannot finish), only script entrances.
+        if (animation.playState !== "paused" || typeof CSSAnimation !== "undefined" && animation instanceof CSSAnimation) return;
+        if (!Number.isFinite(animation.effect?.getComputedTiming().endTime ?? Infinity)) return;
+        try {
+          animation.finish();
+        } catch {
+          // An animation that cannot finish is left as it is.
+        }
       });
     };
 
@@ -85,12 +92,23 @@ export default function SectionJump() {
         { duration: 220, delay: coverEnd - 140, easing: EASE_OUT, fill: "both" },
       );
 
+      // The animations' promises settle on rendered frames; timers stand behind them, so the page always
+      // lands and the curtain always goes, even if the tab is hidden mid-jump.
+      let lifted = false;
+      let done = false;
+      let guard = 0;
       const finish = () => {
+        if (done) return;
+        done = true;
+        window.clearTimeout(guard);
         curtain.getAnimations({ subtree: true }).forEach((animation) => animation.cancel());
         curtain.style.visibility = "hidden";
         running = false;
       };
       const lift = () => {
+        if (lifted) return;
+        lifted = true;
+        window.clearTimeout(guard);
         land(target, href, replace);
         settle(target);
         const lifts = stairs.map((stair, i) =>
@@ -103,8 +121,10 @@ export default function SectionJump() {
         );
         mark?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, delay: HOLD_MS, easing: EASE_OUT, fill: "forwards" });
         Promise.all(lifts.map((animation) => animation.finished)).then(finish, finish);
+        guard = window.setTimeout(finish, HOLD_MS + LIFT_MS + (STAIRS - 1) * STEP_MS + 400);
       };
-      Promise.all(cover.map((animation) => animation.finished)).then(lift, finish);
+      Promise.all(cover.map((animation) => animation.finished)).then(lift, lift);
+      guard = window.setTimeout(lift, coverEnd + 400);
       return true;
     };
 
