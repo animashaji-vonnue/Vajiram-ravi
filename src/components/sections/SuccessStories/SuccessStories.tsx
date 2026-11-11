@@ -4,12 +4,12 @@ import Postcards from "./Postcards";
 
 /**
  * Student stories & experiences (IA 8; Figma "09 · Student Stories", 2392:5350): a cream band with the
- * centred heading (its closing beat, "toppers and alumni", in orange) and lead, and under them the
+ * centred heading (its closing beat, "toppers and alumni", in orange; no lead, at the client's request), and under it the
  * students' words written on postcards, turning on a 3D ring after the `kevin` branch's stories (Postcards). "Watch student stories" goes
- * under the lead once that page exists (links.studentStories is null today), as on the educators' note.
+ * under the heading once that page exists (links.studentStories is null today), as on the educators' note.
  */
 export default function SuccessStories() {
-  const { heading, lead, cta } = storiesIntro;
+  const { heading, cta } = storiesIntro;
   return (
     <section id="stories" aria-labelledby="stories-h" className="relative bg-cream">
       <div className="mx-auto w-canvas px-20 pt-10 pb-24">
@@ -21,11 +21,9 @@ export default function SuccessStories() {
                 {heading.lead}{" "}
                 <em data-reveal-em className="text-orange italic">
                   {heading.emphasis}
-                </em>
+                </em>{" "}
+                {heading.after}
               </h2>
-              <p data-words className="w-[640px] text-[17px]/[1.55] text-clay">
-                {lead}
-              </p>
               {cta.href !== null && (
                 <span data-reveal="sub">
                   <IndianLink tone="light" href={cta.href}>

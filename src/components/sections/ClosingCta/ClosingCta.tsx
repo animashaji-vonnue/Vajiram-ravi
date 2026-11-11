@@ -31,7 +31,7 @@ export default function ClosingCta() {
             {/* "with" and the emphasis take the second line. */}
             <br />
             {closingCta.bridge}
-            <em data-reveal-em className="text-[#fff1c2]">
+            <em data-reveal-em className="not-italic">
               {closingCta.title.em}
             </em>
           </h2>

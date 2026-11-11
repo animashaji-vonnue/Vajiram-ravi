@@ -65,24 +65,28 @@ function AdmissionsTicker({ tag }: { tag: string }) {
   return (
     <a
       href="#batches"
-      className="group/ticker absolute top-6 left-6 flex w-[490px] items-center gap-3.5 rounded-full bg-mahogany/80 py-1.5 pr-5 pl-1.5 text-white ring-1 ring-white/20 [transition:background-color_var(--dur-fast)_var(--ease-out)] hover:bg-mahogany focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-saffron"
+      className="group/ticker absolute top-6 right-6 left-6 flex items-center gap-3.5 rounded-full bg-mahogany/80 p-1.5 text-white ring-1 ring-white/20 [transition:background-color_var(--dur-fast)_var(--ease-out)] hover:bg-mahogany focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-saffron"
     >
-      <span className="flex shrink-0 items-center gap-2 rounded-full bg-saffron px-3.5 py-1 text-[15px]/[20px] font-bold text-mahogany">
-        {/* The butta, the same Indian flower as the benefits' bullets, turning slowly. */}
+      <span className="flex h-7 shrink-0 items-center gap-2 rounded-full bg-saffron px-3.5 text-[15px]/[20px] font-bold text-mahogany">
+        {/* The butta, the same Indian flower as the benefits' bullets, in black (brightness-0), turning slowly. */}
         <img
           src="/images/ornaments/butta.svg"
           alt=""
           aria-hidden="true"
           width={16}
           height={16}
-          className="size-4 shrink-0 animate-[spin_9s_linear_infinite] motion-reduce:animate-none"
+          className="size-4 shrink-0 animate-[spin_9s_linear_infinite] brightness-0 motion-reduce:animate-none"
         />
-        {tag}
+        {/* Centred on its letters, level with the flower (globals.css, .cap-centre). */}
+        <span className="cap-centre">{tag}</span>
       </span>
+      {/* The capsule is inset 24px from the photograph on both sides (left-6 right-6, the client: equal
+          to the picture's edges); inside it the line's window runs to 6px from the right end, as the pill
+          sits 6px from the left one, and fades out over its last 20px. */}
       <span className="relative h-5 min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_20px,black_calc(100%-20px),transparent)]">
-        <span key={line} className="hero-glide absolute top-0 left-0 flex text-[15px]/[20px] font-medium whitespace-nowrap">
-          <span className="pr-10">{line}</span>
-          <span className="pr-10" aria-hidden="true">
+        <span key={line} className="hero-glide absolute top-0 left-0 flex h-full items-center text-[15px]/[20px] font-medium whitespace-nowrap">
+          <span className="cap-centre pr-10">{line}</span>
+          <span className="cap-centre pr-10" aria-hidden="true">
             {line}
           </span>
         </span>

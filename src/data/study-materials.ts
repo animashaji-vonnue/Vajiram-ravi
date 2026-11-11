@@ -23,7 +23,7 @@ export const masthead = {
   /** The two ears beside the logo: a line in small caps over a short one. */
   ears: [
     { top: "Since 1976", bottom: "Price: free" },
-    { top: "New Delhi · Chennai", bottom: "Daily edition" },
+    { top: "New Delhi", bottom: "Daily edition" },
   ],
   /** The paper's address, at the right of the dateline. */
   site: "vajiramandravi.com",
@@ -44,13 +44,11 @@ export const resourcesQuote = {
 export type Story = { title: string; href: Href };
 
 /**
- * A column: its section letter and head, the desk it comes from (the byline), the photograph over its lead
+ * A column: its head, the photograph over its lead
  * story, its lead story and five more, and the way to the rest (the client's link wording).
  */
 export type ResourceColumn = {
-  section: string;
   title: string;
-  byline: string;
   /** `position`: the object-position of its crop. */
   photo: { src: string; width: number; height: number; position?: string };
   lead: Story;
@@ -64,15 +62,12 @@ const SITE = "https://vajiramandravi.com";
 /**
  * The three columns. The headlines are vajiramandravi.com's own latest articles in each (read from its
  * homepage on 14 Nov 2026), in sentence case; TODO: feed them from the CMS so the front page stays current.
- * TODO: the photographs are the site's existing institute photos, standing in for a picture per article;
- * the bylines name the desks rather than writers until the CMS supplies them.
+ * TODO: the photographs are the site's existing institute photos, standing in for a picture per article.
  */
 export const resourceColumns: ResourceColumn[] = [
   {
-    section: "A",
     title: "Prelims pointers",
-    byline: "By the current affairs desk",
-    photo: { src: "/images/programmes/featured-classroom.webp", width: 1024, height: 461 },
+    photo: { src: "/images/free-resources/lecture-wide.webp", width: 1200, height: 797, position: "50% 40%" },
     lead: { title: "CAPEX Support Scheme: Cabinet approves ₹2,814 crore for lithium and nickel processing", href: `${SITE}/current-affairs/capex-support-scheme-to-promote-critical-mineral-processing/` },
     stories: [
       { title: "Liocheles similipalensis", href: `${SITE}/current-affairs/liocheles-similipalensis/` },
@@ -85,9 +80,7 @@ export const resourceColumns: ResourceColumn[] = [
     href: links.prelimsPointers,
   },
   {
-    section: "B",
     title: "Mains articles & editorial analysis",
-    byline: "By the editorial desk",
     photo: { src: "/images/programmes/featured-library.webp", width: 1264, height: 848 },
     lead: { title: "India’s indigenisation drive: 100 critical items and import dependence", href: `${SITE}/current-affairs/indias-indigenisation-drive/` },
     stories: [
@@ -101,17 +94,16 @@ export const resourceColumns: ResourceColumn[] = [
     href: links.mainsArticles,
   },
   {
-    section: "C",
     title: "UPSC study materials",
-    byline: "By the study material desk",
-    photo: { src: "/images/programmes/featured-mentoring.webp", width: 760, height: 760, position: "50% 22%" },
-    lead: { title: "Bhoodan Movement 1951, history, causes, objectives, challenges", href: `${SITE}/upsc-exam/bhoodan-movement/` },
+    // Open study books, notebooks and pens on a library table (the client: an image of study material).
+    photo: { src: "/images/free-resources/study-material.webp", width: 730, height: 240, position: "50% 55%" },
+    lead: { title: "18 Yellow Books covering the General Studies syllabus", href: links.studyMaterial },
     stories: [
+      { title: "Bhoodan Movement 1951, history, causes, objectives, challenges", href: `${SITE}/upsc-exam/bhoodan-movement/` },
       { title: "Personal laws in India, provisions, case laws, challenges", href: `${SITE}/upsc-exam/personal-laws-in-india/` },
       { title: "Sendai Framework, 2030 global targets, priority of actions", href: `${SITE}/upsc-exam/sendai-framework/` },
       { title: "Indian puppetry, history, types, string, shadow, glove, rod", href: `${SITE}/upsc-exam/indian-puppetry/` },
       { title: "Duarte Barbosa, biography, visit to India, accounts, UPSC notes", href: `${SITE}/upsc-exam/duarte-barbosa/` },
-      { title: "Indira Gandhi (1917-84), biography, books, death, contributions", href: `${SITE}/upsc-exam/indira-gandhi/` },
     ],
     cta: "View all study materials",
     href: links.studyMaterial,

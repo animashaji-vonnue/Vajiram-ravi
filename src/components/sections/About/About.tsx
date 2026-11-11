@@ -25,7 +25,7 @@ const PHOTO_MASK = "linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, tr
  *   - The six cards in a coverflow projected outward like the colonnade (Coverflow): the centre card is
  *     the biggest, in its dark look, and shows its sentence; the cards to the sides are collapsed to their
  *     medallion and title. It plays on its own and pauses on hover, focus and off screen, with arrows,
- *     dots and a pause button under it.
+ *     and dots under it.
  * Motion, kept to one entrance so the text reads at once (the client, 11 Nov 2026: effects colliding made
  * it unreadable): as the band arrives, the mark, the heading and the lead rise into place together in one
  * quick 450ms move, with no delay or stagger, and then nothing moves them. The cards are simply there. The
@@ -100,16 +100,16 @@ export default function About() {
             <img
               src="/images/logo-mark.webp"
               alt="Vajiram & Ravi"
-              width={168}
-              height={171}
+              width={487}
+              height={508}
               className="relative size-[132px] object-contain drop-shadow-[0_10px_22px_rgb(77_20_4/0.35)]"
             />
           </span>
 
           <h2 id="about-h" className="mt-7 w-[1000px] font-heading text-[52px]/[1.12] font-normal tracking-[-0.02em] text-balance text-white">
             {heading.lead}{" "}
-            {/* The emphasis keeps to one line, under the first: the heading is two lines. */}
-            <span className="block whitespace-nowrap text-[#ffe9b0]">{heading.emphasis}</span>
+            {/* The second line keeps to one line, in the same white (the client: one colour). */}
+            <span className="block whitespace-nowrap">{heading.emphasis}</span>
           </h2>
           <p className="mt-6 w-[720px] text-[19px]/[1.6] text-white">{aboutIntro.lead}</p>
         </div>
@@ -125,8 +125,9 @@ export default function About() {
           renderSlide={(card, { active, expanded }) => <Card card={card} active={active} expanded={expanded} />}
           width={340}
           height={440}
-          spacing={[340, 560]}
-          scales={[0.78, 0.6]}
+          // Equal gaps (about 35px) between the cards as they stand (scale and turn included), clear of the arrows.
+          spacing={[325, 552]}
+          scales={[0.74, 0.52]}
           turns={[12, 20]}
           interval={AUTOPLAY_MS}
           tone="dark"

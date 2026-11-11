@@ -44,7 +44,7 @@ export default function FeaturedBatch() {
     waiting.forEach((el) => (el.style.opacity = "0"));
 
     const animations: Animation[] = [];
-    const cancel = whenVisible(ticket, 0.4, () => {
+    const cancel = whenVisible(ticket, 0.75, () => {
       waiting.forEach((el) => (el.style.opacity = ""));
       digits.forEach((digit, i) => {
         animations.push(
@@ -91,7 +91,8 @@ export default function FeaturedBatch() {
     <article aria-labelledby="featured-batch-h" data-reveal className="w-full">
       {/* The ticket itself, inside the revealed box so its shake does not fight the reveal's rise. */}
       <div ref={ref} className="relative flex h-[188px] w-full">
-        {/* The head: the label, the target year and what the programme prepares for. */}
+        {/* The head reads "2028 / UPSC CSE preparation programme" (the client's wording): the target year
+            large, what the programme prepares for under it. "Upcoming batch" is kept for screen readers. */}
         <div className="relative flex w-[308px] shrink-0 flex-col items-start justify-center overflow-clip rounded-l-[18px] bg-[#ec5800] px-6 whitespace-nowrap">
           {/* The whole lotus (the tickets' one is cut to their 108px head), its centre where theirs is, turning slowly (TicketArt.css); the head's rounded edge crops it. */}
           <img
@@ -102,8 +103,8 @@ export default function FeaturedBatch() {
             height={260}
             className="ticket-lotus pointer-events-none absolute -top-[58px] left-[124px] max-w-none"
           />
-          <p className="relative text-[13px]/[16px] font-bold tracking-[0.01em] text-saffron">{batch.label}</p>
-          <p className="relative mt-1.5 font-heading text-[64px]/[64px] text-white">
+          <p className="sr-only">{batch.label}</p>
+          <p className="relative font-heading text-[64px]/[64px] text-white">
             <span className="sr-only">{batch.targetYear}</span>
             <span aria-hidden="true">
               {String(batch.targetYear)
@@ -115,7 +116,7 @@ export default function FeaturedBatch() {
                 ))}
             </span>
           </p>
-          <p className="relative mt-2 text-[13px]/[16px] font-bold tracking-[0.01em] text-white/90">{batch.kind}</p>
+          <p className="relative mt-2 text-[17px]/[22px] font-semibold text-white">{batch.kind}</p>
         </div>
 
         {/* The body: the programme and its details. */}
@@ -130,8 +131,8 @@ export default function FeaturedBatch() {
               { label: batch.details.location, value: batch.location },
             ].map((detail) => (
               <div key={detail.label} className="flex flex-col gap-1.5">
-                <dt data-scramble className="text-[12px]/[15px] tracking-[0.01em] text-clay">{detail.label}</dt>
-                <dd className="text-[15px]/[21px] font-semibold text-ink">{detail.value}</dd>
+                <dt data-scramble className="text-[14px]/[18px] font-semibold text-clay">{detail.label}</dt>
+                <dd className="text-[16px]/[22px] font-semibold text-ink">{detail.value}</dd>
               </div>
             ))}
           </dl>

@@ -1,6 +1,6 @@
 /**
  * Site footer, with the contents of Figma "Footer – v5 (minimal)" (2567:4286): the logo row, six link
- * columns, the social links and the legal bar; under the columns, the giant photo-filled wordmark
+ * columns, the social links and the legal bar; under the columns, the giant wordmark, pressed into the paper
  * (feedback item 43). All labels in sentence case (feedback item 9).
  */
 
@@ -49,18 +49,6 @@ export const footerSocial: { name: SocialName; label: string; href: Href }[] = [
 ];
 
 export const footerWordmark = "Vajiram & Ravi";
-
-/**
- * The photographs seen through the wordmark's letters, in turn (feedback item 43); the first is the ground.
- * TODO: dummy institute photos from the other sections; swap in the client's own (or a short campus video
- * poster) when they arrive.
- */
-export const footerWordmarkPhotos = [
-  "/images/locations/campus-exterior.webp",
-  "/images/programmes/featured-classroom.webp",
-  "/images/programmes/featured-library.webp",
-  "/images/programmes/featured-mentoring.webp",
-];
 
 export const footerCopyright = "© 2026 Vajiram & Ravi. All rights reserved";
 

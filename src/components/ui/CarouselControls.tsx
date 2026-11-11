@@ -104,8 +104,8 @@ export function CarouselDots({ count, active, onSelect, label, itemName, tone = 
                   : "bg-clay/30 hover:bg-clay/60"
                 : isActive
                   ? fillRef
-                    ? "bg-cream/30"
-                    : "bg-saffron"
+                    ? "bg-white/30"
+                    : "bg-white"
                   : "bg-cream/65 hover:bg-cream/90",
             )}
           >
@@ -113,7 +113,7 @@ export function CarouselDots({ count, active, onSelect, label, itemName, tone = 
               <span
                 ref={fillRef}
                 aria-hidden="true"
-                className={cx("absolute inset-0 origin-left rounded-full", tone === "light" ? "bg-burnt" : "bg-saffron")}
+                className={cx("absolute inset-0 origin-left rounded-full", tone === "light" ? "bg-burnt" : "bg-white")}
                 // Starts empty; the clock sets the fill (not a scale class, which would multiply with it).
                 style={{ transform: "scaleX(0)" }}
               />

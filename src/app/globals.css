@@ -527,13 +527,10 @@ blockquote {
 }
 
 /*
- * The site's button (ui/Cta). At rest, a fine dash-dot thread stitched just inside its edge, the rhythm of
- * the journey's garland thread and the eyebrow rules (.cta-stitch, its colour --cta-stitch). On hover it
- * behaves as the `kevin` branch's buttons do: the fill steps one shade deeper (--cta-hover) over 200ms
- * while the arrow slides 4px on (ui/Medallion, 300ms on the soft ease-out), and it pops: it grows to 104%
- * with a springy overshoot. Pressed, it sinks to 96% at once and the press ripple spreads from the point
- * pressed (lib/pressRipple; stronger on the buttons than on the carousel arrows), the pulse ring running
- * out past its edge; on release it springs back. Reduced motion: no pop and no press scale.
+ * The site's button (ui/Cta). On hover it behaves as the `kevin` branch's buttons do: the fill steps one shade deeper (--cta-hover) over 200ms
+ * while the arrow slides 4px on (ui/Medallion, 300ms on the soft ease-out), and it pops a little: to 102%
+ * with a springy overshoot. Pressed, it sinks to 97% at once and the ripple spreads inside it from the
+ * point pressed (lib/pressRipple); on release it springs back. Reduced motion: no pop and no press scale.
  */
 .cta {
   transition:
@@ -541,52 +538,70 @@ blockquote {
     border-color 200ms var(--ease-out),
     scale 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+/*
+ * The label, centred on its letters rather than on its line box: the box is trimmed to the capitals' top
+ * and the baseline, so the visible words sit level with the arrow or icon (Source Sans leaves more room
+ * over its capitals than under its baseline, which made the label look high). Where text-box is not
+ * supported, a 1px nudge does nearly the same. .cap-centre does the same for any other short label
+ * set level with an icon in a pill (the flagship card's "Flagship programme" badge and its line).
+ */
+.cta-label,
+.cap-centre {
+  text-box: trim-both cap alphabetic;
+}
+@supports not (text-box: trim-both cap alphabetic) {
+  .cta-label,
+  .cap-centre {
+    translate: 0 1px;
+  }
+}
 .cta:hover,
 .cta:focus-visible {
   background-color: var(--cta-hover);
-  scale: 1.04;
+  scale: 1.02;
 }
 .cta:active {
-  scale: 0.96;
+  scale: 0.97;
   transition-duration: 200ms, 200ms, 90ms;
 }
 /*
- * The buttons' ripple is a wave in bright orange: on press a disc of it spreads from the point pressed and
- * two rings run out past the edge one after the other; while hovered, a soft orange ring breathes out from
- * the edge again and again (.cta::after).
+ * The buttons' ripple is bright orange and stays inside the button: on hover a soft disc spreads from
+ * where the pointer came in (.press-ripple-soft); on press a stronger one spreads from the point pressed.
+ * Both shine (a light core) and spread slowly.
  */
 .cta {
   --ripple: #ff7a1a;
   --press-ring: #ff7a1a;
 }
+/*
+ * The disc shines: a hot, near-white core fading through bright orange to a soft edge, screened onto the
+ * fill so it lights the button rather than tinting it, and it spreads slowly (1.1s on press, 1.4s on hover).
+ */
 .cta .press-ripple {
-  opacity: 0.55;
-  animation-duration: 650ms;
+  background: radial-gradient(
+    circle closest-side,
+    rgb(255 246 224 / 0.95) 0%,
+    rgb(255 196 120 / 0.85) 22%,
+    rgb(255 138 42 / 0.7) 48%,
+    rgb(255 122 26 / 0.25) 78%,
+    rgb(255 122 26 / 0) 100%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  animation-duration: 1100ms;
+  animation-timing-function: cubic-bezier(0.25, 0.8, 0.3, 1);
 }
-.cta .press-pulse {
-  animation-duration: 750ms;
+.cta .press-ripple-soft {
+  opacity: 0.6;
+  animation-duration: 1400ms;
 }
-.cta::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
+/* On the white button, screening would vanish into the white: the shine is laid on as it is, lighter. */
+.cta.bg-white .press-ripple {
+  mix-blend-mode: normal;
+  opacity: 0.45;
 }
-.cta:hover::after,
-.cta:focus-visible::after {
-  animation: cta-wave 1.6s var(--ease-out) infinite;
-}
-@keyframes cta-wave {
-  0% {
-    opacity: 1;
-    box-shadow: 0 0 0 0 rgb(255 122 26 / 0.55);
-  }
-  100% {
-    opacity: 1;
-    box-shadow: 0 0 0 14px rgb(255 122 26 / 0);
-  }
+.cta.bg-white .press-ripple-soft {
+  opacity: 0.3;
 }
 @media (prefers-reduced-motion: reduce) {
   .cta:hover,
@@ -594,23 +609,4 @@ blockquote {
   .cta:active {
     scale: none;
   }
-  .cta:hover::after,
-  .cta:focus-visible::after {
-    animation: none;
-  }
-}
-.cta-stitch {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  /* An SVG left to size itself would take its default 300 x 150. */
-  width: calc(100% - 6px);
-  height: calc(100% - 6px);
-  overflow: visible;
-  pointer-events: none;
-  color: var(--cta-stitch);
-}
-.cta-stitch rect {
-  width: calc(100% - 1px);
-  height: calc(100% - 1px);
 }

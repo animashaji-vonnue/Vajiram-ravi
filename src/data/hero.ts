@@ -4,7 +4,7 @@
  * the panel's slides are the top three of UPSC CSE 2025.
  */
 
-/** A run of the heading; `em` runs are set in white semibold (the rank keeps the saffron). */
+/** A run of the heading; `em` runs are set in a warm cream, in the heading's one weight (the rank keeps the saffron). */
 export type HeadlineRun = { text: string; em?: boolean };
 
 export const hero = {

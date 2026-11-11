@@ -196,7 +196,7 @@ export default function SiteHeader() {
         <div className="relative z-20 h-20 border-b border-[#e8e4df] bg-white">
           <div className="mx-auto flex h-full w-canvas items-center justify-between px-10 pt-3.5 pb-[13px]">
             <a href="#top" onClick={toTop} aria-label="Vajiram & Ravi – Institute for IAS Examination, home" className="flex w-[180px] shrink-0 items-center">
-              <img src="/images/logo.webp" alt="" width={176} height={40} className="h-10 w-[176px] object-cover" />
+              <img src="/images/logo.webp" alt="" width={617} height={206} className="h-[52px] w-[156px] object-contain" />
             </a>
 
             <MainNav current={current} />

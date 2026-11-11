@@ -32,7 +32,10 @@ export type Campus = {
   map: MapView;
 };
 
-/** Campus details come from the CMS on the live site (vajiramandravi.com/contact-vajiram-and-ravi). */
+/**
+ * Campus details come from the CMS on the live site (vajiramandravi.com/contact-vajiram-and-ravi). There is
+ * one centre, in New Delhi (the client, 11 Nov 2026: there is no other).
+ */
 export const campuses: Campus[] = [
   {
     id: "new-delhi",
@@ -49,42 +52,28 @@ export const campuses: Campus[] = [
     // As drawn.
     map: { focus: { x: 0.79, y: 0.5 }, pin: false },
   },
-  {
-    id: "chennai",
-    city: "Chennai",
-    address: "No. 63, Police Commissioner Office Road, Egmore, Chennai – 600008",
-    // TODO: the CMS has no landmark or metro note for Chennai; confirm its hours match New Delhi's.
-    hours: contact.hours,
-    phone: "080-6220-6333",
-    phoneHref: "tel:+918062206333",
-    mapsUrl:
-      "https://www.google.com/maps/search/?api=1&query=Vajiram+and+Ravi+63+Police+Commissioner+Office+Road+Egmore+Chennai+600008",
-    mapLabel: "Egmore, Chennai",
-    // TODO: the design has one (placeholder) street map; replace this pan across it with a real Chennai map.
-    // Panned so the drawing's own pin (New Delhi) leaves the frame; `pin` marks Chennai instead.
-    map: { focus: { x: 0.3, y: 0.56 }, pin: true },
-  },
+
 ];
 
 /** A photograph in the campus gallery: its file and size, and its caption (the main one names the campus). */
 export type GalleryPhoto = { src: string; width: number; height: number; caption: string };
 
 /**
- * The campus gallery beside the details and map (feedback item 41): the building, then three views inside.
+ * The campus gallery beside the details and map (feedback item 41): the building, then three views inside (the client took the crowded classroom photo out).
  * TODO: dummy photographs from the site's other sections, as the client allowed; replace them with each
  * campus's own (the building's front, a classroom in session, the library and a counselling or mentoring
- * room, for New Delhi and for Chennai) and give each campus its own set.
+ * room).
  */
 export const campusGallery: GalleryPhoto[] = [
   { src: "/images/locations/campus-exterior.webp", width: 1024, height: 1024, caption: "The campus" },
-  { src: "/images/programmes/featured-classroom.webp", width: 1024, height: 461, caption: "Classrooms" },
   { src: "/images/programmes/featured-library.webp", width: 1264, height: 848, caption: "Library" },
+  { src: "/images/free-resources/lecture-wide.webp", width: 1200, height: 797, caption: "A class in session" },
+  { src: "/images/programmes/flagship-lecture.webp", width: 1000, height: 1506, caption: "Discussion in class" },
 ];
 
 export const locationsIntro = {
   /** The client's heading of 11 Nov 2026, with no lead under it. */
   title: { lead: "Where can you ", em: "find us?" } satisfies SplitHeading,
-  tabsLabel: "Campus",
   /** The card's heading. */
   label: "Location & timing",
   landmarkPrefix: "Landmark: ",

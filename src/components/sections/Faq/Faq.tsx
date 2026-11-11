@@ -15,7 +15,7 @@ const schema = {
 
 /**
  * Frequently asked questions (IA 10; Figma "11 · FAQ", 2392:7383): a cream band with the centred heading and the Vajiram & Ravi seal (the logo's mark in a
- * lettered wax seal) pressed beside it, and the questions in a 788px column with roman numerals in the
+ * lettered wax seal) pressed beside it, and the questions in a 788px column numbered 1, 2, 3… in the
  * margin, one open at a time, the open one on a tinted panel.
  *
  * The band grows with its questions (the client's seven): nothing in it is drawn to a fixed height.

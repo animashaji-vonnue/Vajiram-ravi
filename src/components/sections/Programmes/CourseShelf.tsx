@@ -374,7 +374,8 @@ export default function CourseShelf({ programmes }: { programmes: Programme[] })
     });
     animations.forEach((animation) => animation.pause());
     stacking.current = animations;
-    const cancel = whenVisible(root, 0.25, () => animations.forEach((animation) => animation.play()));
+    // Well in view first (over half the shelf, or most of the screen), so the stacking plays where the visitor is looking.
+    const cancel = whenVisible(root, 0.55, () => animations.forEach((animation) => animation.play()));
     return () => {
       cancel();
       animations.forEach((animation) => animation.cancel());
@@ -730,7 +731,11 @@ function Book({ index, programme, hidden, out, open, away, style, onPick, onClos
             style={{ backgroundColor: deep, backgroundImage: "linear-gradient(270deg, rgb(0 0 0/0.32), transparent 14%, rgb(0 0 0/0.1))", color: FOIL }}
           >
             <span className="text-[12px]/[14px] tracking-[0.04em] opacity-85">Vajiram &amp; Ravi</span>
-            <span className="font-heading text-[22px]/[1.15] opacity-90">Since 1976</span>
+            {/* At the foot: "Since 1976", and the Vajiram & Ravi emblem in the bottom right corner of every book's cover. */}
+            <span className="flex items-end justify-between">
+              <span className="font-heading text-[22px]/[1.15] opacity-90">Since 1976</span>
+              <img src="/images/logo-mark.webp" alt="" width={487} height={508} className="h-[76px] w-[73px] drop-shadow-[0_4px_10px_rgb(0_0_0/0.35)]" />
+            </span>
           </span>
         </button>
 

@@ -19,8 +19,8 @@ import { whenVisible } from "@/lib/reveal";
  *   - Arrows (at the left and right edges of the stage), dots, the ← → keys, a swipe or a click on a side slide move it; it never ends (the items are
  *     laid out more than once round the loop, so the wrap always happens out of sight).
  *   - It plays on its own (`interval`), showing the time left in the active dot, and pauses while the
- *     pointer is on the centre slide (not the frame around it), while focus is inside it, while it is off screen or the tab is hidden, and for
- *     good with the pause button. Moving it by hand restarts the count.
+ *     pointer is on the centre slide (not the frame around it), while focus is inside it, while it is off screen or the tab is hidden (no pause
+ *     button: the client asked for the dots alone). Moving it by hand restarts the count.
  *   - It enters once, when it comes into view: the slides start gathered at the centre, collapsed, and
  *     spread out to their places, after which the centre one expands.
  *   - Reduced motion: no entrance, no autoplay, moves are instant.
@@ -343,7 +343,7 @@ export default function Coverflow<T>({
         </div>
       )}
 
-      <div className="flex items-center gap-5" style={{ marginTop: gap }}>
+      <div className="flex items-center" style={{ marginTop: gap }}>
         <CarouselDots
           count={count}
           active={active}
@@ -353,29 +353,6 @@ export default function Coverflow<T>({
           tone={tone}
           fillRef={interval && playing && !still ? fillRef : undefined}
         />
-        {interval > 0 && !still && (
-          <button
-            type="button"
-            onClick={() => setPlaying((p) => !p)}
-            aria-label={playing ? "Pause the carousel" : "Play the carousel"}
-            aria-pressed={!playing}
-            className={cx(
-              "flex size-9 cursor-pointer items-center justify-center rounded-full border [transition:background-color_var(--dur-fast)_var(--ease-out),color_var(--dur-fast)_var(--ease-out),border-color_var(--dur-fast)_var(--ease-out)]",
-              tone === "dark" ? "border-cream/45 text-cream hover:border-cream hover:bg-cream hover:text-ink" : "border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-cream",
-            )}
-          >
-            <svg aria-hidden="true" viewBox="0 0 16 16" width={14} height={14} fill="currentColor">
-              {playing ? (
-                <>
-                  <rect x={3.5} y={2.5} width={3} height={11} rx={0.8} />
-                  <rect x={9.5} y={2.5} width={3} height={11} rx={0.8} />
-                </>
-              ) : (
-                <path d="M4.5 2.8v10.4c0 .6.6.9 1.1.6l8-5.2c.4-.3.4-.9 0-1.2l-8-5.2c-.5-.3-1.1 0-1.1.6Z" />
-              )}
-            </svg>
-          </button>
-        )}
       </div>
 
       <p ref={liveRef} aria-live="polite" aria-atomic="true" className="sr-only" />

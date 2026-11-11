@@ -138,7 +138,7 @@ export default function BatchTrack({ batches, shownIds, toneOf }: BatchTrackProp
     const waiting = [...digits, ...stamps];
     waiting.forEach((el) => (el.style.opacity = "0"));
 
-    const cancel = whenVisible(track, 0.3, () => {
+    const cancel = whenVisible(track, 0.55, () => {
       const tickets = Array.from(track.querySelectorAll<HTMLElement>("[data-ticket]"));
       for (const el of waiting) {
         el.style.opacity = "";

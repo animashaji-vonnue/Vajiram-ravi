@@ -1,4 +1,4 @@
-import { counsellingCopy, learningModes } from "@/data/admissions";
+import { callTimes, counsellingCopy } from "@/data/admissions";
 import { programmeChoices } from "@/data/programmes";
 import { contact } from "@/data/site";
 import GuidanceButton from "./GuidanceButton";
@@ -65,7 +65,7 @@ export default function Counselling() {
           </div>
         </div>
 
-        <Postcard programmes={programmeChoices} modes={learningModes} />
+        <Postcard programmes={programmeChoices} times={callTimes} />
       </div>
     </section>
   );

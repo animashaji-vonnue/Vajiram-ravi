@@ -58,8 +58,8 @@ export const institutionCards: InstitutionCard[] = [
   {
     number: "05",
     icon: "location",
-    title: "Centres in Delhi & Chennai",
-    text: "Study at Vajiram & Ravi centres in New Delhi and Chennai, with dedicated spaces for Civil Services preparation.",
+    title: "Our centre in New Delhi",
+    text: "Study at the Vajiram & Ravi centre in New Delhi, with dedicated spaces for Civil Services preparation.",
     paper: ["#fff3dd", "#f1b764"],
   },
   {

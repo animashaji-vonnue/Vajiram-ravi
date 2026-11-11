@@ -11,6 +11,7 @@ import { whenVisible } from "@/lib/reveal";
 import { HEADER_OFFSET, scrollToElement } from "@/lib/smoothScroll";
 import { onEnquiryRequest } from "./enquiry";
 import { INK } from "./InkStamp";
+import SelectMenu from "./SelectMenu";
 import "./Postcard.css";
 import PostageStamp, { Postmark } from "./PostageStamp";
 import { submitEnquiry, type EnquiryValues } from "./submitEnquiry";
@@ -18,11 +19,11 @@ import { submitEnquiry, type EnquiryValues } from "./submitEnquiry";
 type Field = keyof EnquiryValues;
 type Errors = Partial<Record<Field, string>>;
 type Status = "idle" | "sending" | "done";
-type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+type Control = HTMLInputElement | HTMLButtonElement | HTMLTextAreaElement;
 
-const EMPTY: EnquiryValues = { name: "", phone: "", email: "", programme: "", mode: "", query: "" };
+const EMPTY: EnquiryValues = { name: "", phone: "", email: "", programme: "", time: "", query: "" };
 /** The fields in the order they are drawn, checked and focused. */
-const ORDER: Field[] = ["name", "phone", "email", "programme", "mode", "query"];
+const ORDER: Field[] = ["name", "phone", "email", "programme", "time", "query"];
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const copy = counsellingCopy;
 
@@ -63,8 +64,8 @@ function check(field: Field, value: string): string {
       return EMAIL_PATTERN.test(value.trim()) ? "" : copy.errors.email;
     case "programme":
       return value ? "" : copy.errors.programme;
-    case "mode":
-      return value ? "" : copy.errors.mode;
+    case "time":
+      return value ? "" : copy.errors.time;
     case "query":
       return "";
   }
@@ -78,7 +79,6 @@ function check(field: Field, value: string): string {
 const BOX =
   "w-full min-w-0 rounded-[14px] border bg-white text-[15px]/[22px] font-medium outline-offset-3 [transition:border-color_var(--dur-fast)_var(--ease-out)] placeholder:text-[#737373] focus:border-burnt focus:outline-2 focus:outline-saffron";
 const border = (error: boolean) => (error ? "border-burnt" : "border-[#737373] hover:border-clay");
-const SELECT = "h-[52px] cursor-pointer appearance-none pr-10 pl-4 [&_option]:text-ink";
 
 type FieldShellProps = {
   id: string;
@@ -139,19 +139,11 @@ function FocusLine() {
 }
 
 /** The select's "⌄", as drawn at the right of the box. */
-function Chevron() {
-  return (
-    <span aria-hidden="true" className="pointer-events-none absolute top-4 right-[17px] text-[16px]/[20px] font-bold text-clay">
-      ⌄
-    </span>
-  );
-}
-
 type PostcardProps = {
   /** The choices of "Programme of Interest". */
   programmes: string[];
-  /** The choices of "Preferred Learning Mode". */
-  modes: string[];
+  /** The choices of "Preferred time". */
+  times: string[];
   className?: string;
 };
 
@@ -159,7 +151,7 @@ type PostcardProps = {
  * The India Post postcard (Figma "Postcard", 2377:4881, 700 wide): the title; a postage stamp stuck in the
  * corner, turned a little (PostageStamp: the Figma's perforated Vajiram & Ravi postage stamp), cancelled by a round vermilion postmark across its lower left corner (Postmark)
  * whose wavy lines run off onto the card; and the counselling form: Full
- * name; Mobile number and Email address; Programme of interest and Preferred learning mode; Your query
+ * name; Mobile number and Email address; Programme of interest and Preferred time (both drawn as the site's own dropdown, SelectMenu); Your query
  * (optional); "Request a call back". Each field is an outlined box whose real label rests inside it and
  * rises onto the border on focus or once filled (FieldShell); each field is checked when it is left (once
  * something is in it) and all of them on submit, an error showing under its field with a 4px shake. The
@@ -183,7 +175,7 @@ type PostcardProps = {
  *   - Posting: the card lifts and tips back down as if dropped in the box, and the postmark hits as it lands
  *     (scale 1.4 to 1) with its own ink ring.
  */
-export default function Postcard({ programmes, modes, className }: PostcardProps) {
+export default function Postcard({ programmes, times, className }: PostcardProps) {
   const uid = useId();
   /** The ink filter's id: useId's colons do not belong in url(#...). */
   const inkId = `${uid.replace(/[^\w-]/g, "")}-ink`;
@@ -557,35 +549,35 @@ export default function Postcard({ programmes, modes, className }: PostcardProps
           </FieldShell>
 
           <FieldShell id={ids.programme} label={copy.labels.programme} error={errors.programme} filled={!!values.programme} boxRef={boxRef("programme")}>
-            <select
-              {...fieldProps("programme")}
-              ref={controlRef("programme")}
-              className={cx(BOX, border(!!errors.programme), SELECT, values.programme ? "text-ink" : "text-[#737373]")}
-            >
-              <option value="" disabled>
-                {copy.placeholders.programme}
-              </option>
-              {programmeOptions.map((option) => (
-                <option key={option}>{option}</option>
-              ))}
-            </select>
-            <Chevron />
+            <SelectMenu
+              id={ids.programme}
+              name="programme"
+              value={values.programme}
+              options={programmeOptions}
+              placeholder={copy.placeholders.programme}
+              onChange={(value) => update("programme", value)}
+              onBlur={() => leave("programme")}
+              invalid={!!errors.programme}
+              describedBy={errors.programme ? `${ids.programme}-error` : undefined}
+              buttonRef={controlRef("programme")}
+              className={cx(BOX, border(!!errors.programme))}
+            />
           </FieldShell>
 
-          <FieldShell id={ids.mode} label={copy.labels.mode} error={errors.mode} filled={!!values.mode} boxRef={boxRef("mode")}>
-            <select
-              {...fieldProps("mode")}
-              ref={controlRef("mode")}
-              className={cx(BOX, border(!!errors.mode), SELECT, values.mode ? "text-ink" : "text-[#737373]")}
-            >
-              <option value="" disabled>
-                {copy.placeholders.mode}
-              </option>
-              {modes.map((option) => (
-                <option key={option}>{option}</option>
-              ))}
-            </select>
-            <Chevron />
+          <FieldShell id={ids.time} label={copy.labels.time} error={errors.time} filled={!!values.time} boxRef={boxRef("time")}>
+            <SelectMenu
+              id={ids.time}
+              name="time"
+              value={values.time}
+              options={times}
+              placeholder={copy.placeholders.time}
+              onChange={(value) => update("time", value)}
+              onBlur={() => leave("time")}
+              invalid={!!errors.time}
+              describedBy={errors.time ? `${ids.time}-error` : undefined}
+              buttonRef={controlRef("time")}
+              className={cx(BOX, border(!!errors.time))}
+            />
           </FieldShell>
 
           <FieldShell
@@ -631,7 +623,7 @@ export default function Postcard({ programmes, modes, className }: PostcardProps
             </p>
             <p className="text-[15px]/[22px] font-medium text-clay">{copy.thanksText}</p>
             <p className="max-w-full truncate text-[12px]/[16px] tracking-[0.01em] text-clay">
-              {phoneDigits(values.phone)} · {values.programme} · {values.mode}
+              {phoneDigits(values.phone)} · {values.programme} · {values.time}
             </p>
             <div className="mt-2">
               <IndianLink tone="light" onClick={startOver}>

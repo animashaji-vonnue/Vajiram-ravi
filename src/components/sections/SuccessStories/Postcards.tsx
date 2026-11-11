@@ -215,11 +215,11 @@ type PostcardProps = {
 /**
  * One postcard (Figma "postcard · …", 590 × 370): aged paper, the
  * student's words in Mukta italic with their signature on the left of the dividing rule; on the right
- * the postmark with "AIR" over the student's rank (or the exam and its year), the student's portrait as the stamp, then the "address": the
- * name, the rank and year, the programme, and the address lines.
+ * the postmark with "AIR" over the student's rank, the student's portrait as the stamp, then the "address": the
+ * name, the exam and year (the rank is in the postmark only, not repeated here), the programme, and the
+ * address lines.
  */
 function Postcard({ story, front }: PostcardProps) {
-  const standing = [story.rank !== undefined ? `AIR ${story.rank}` : null, `${story.exam} ${story.year}`].filter(Boolean).join(" · ");
   return (
     <figure
       className={cx(
@@ -265,7 +265,11 @@ function Postcard({ story, front }: PostcardProps) {
 
       <figcaption className="absolute top-[160px] left-[366px] flex w-[200px] flex-col items-start">
         <h3 className="font-heading text-[24px]/[1.2] font-normal text-[#5a160f]">{story.name}</h3>
-        <p className="mt-2 text-[12px]/[1.4] tracking-[0.01em] text-burnt">{standing}</p>
+        <p className="mt-2 text-[12px]/[1.4] tracking-[0.01em] text-burnt">
+          {/* The postmark shows the rank; it is drawing, so the rank is read out here instead. */}
+          <span className="sr-only">AIR {story.rank} · </span>
+          {story.exam} {story.year}
+        </p>
         <p className="mt-1 text-[13px]/[1.5] text-clay">{story.programme}</p>
         <span aria-hidden="true" className="mt-4 flex w-full flex-col gap-[29px]">
           {[0, 1, 2].map((line) => (
@@ -281,26 +285,18 @@ function Postcard({ story, front }: PostcardProps) {
 const WAVES = [12.4, 21.4, 30.4, 39.4];
 
 /**
- * The postmark (110 × 60): a burnt ring with "AIR" over the student's All India Rank in it, or, for a
- * student with no rank yet, the exam over its year; and four wavy lines beside it. Decoration: the caption
- * says the same.
+ * The postmark (110 × 60): a burnt ring with "AIR" over the student's All India Rank in it, and four wavy
+ * lines beside it. Decoration: the caption reads the rank out.
  */
 function Postmark({ story }: { story: Story }) {
-  const { rank, exam, year } = story;
+  const { rank } = story;
   return (
     <div aria-hidden="true" className="absolute top-14 left-[360px] h-[60px] w-[110px]">
       <img data-turn="60" src="/images/stories/postmark-ring.svg" alt="" width={53.5} height={53.5} className="absolute top-[3.25px] left-[3.25px] h-[53.5px] w-[53.5px] max-w-none" />
-      {rank !== undefined ? (
-        <span className="absolute top-1 left-1 flex size-[52px] flex-col items-center justify-center text-burnt">
-          <span className="pl-[0.08em] text-[12px]/[14px] tracking-[0.08em]">AIR</span>
-          <span className="font-heading text-[20px]/[20px] font-semibold">{rank}</span>
-        </span>
-      ) : (
-        <span className="absolute top-1 left-1 flex size-[52px] flex-col items-center justify-center text-[12px]/[14px] text-burnt">
-          <span>{exam}</span>
-          <span>{year}</span>
-        </span>
-      )}
+      <span className="absolute top-1 left-1 flex size-[52px] flex-col items-center justify-center text-burnt">
+        <span className="pl-[0.08em] text-[12px]/[14px] tracking-[0.08em]">AIR</span>
+        <span className="font-heading text-[20px]/[20px] font-semibold">{rank}</span>
+      </span>
       {WAVES.map((top) => (
         <img
           key={top}

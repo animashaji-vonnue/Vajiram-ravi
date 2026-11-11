@@ -2,7 +2,7 @@ import type { FaqEntry } from "@/data/faq-chat";
 import { cx } from "@/lib/cx";
 
 /*
- * The questions, each between hairlines, with its roman numeral in the margin. Motion spec
+ * The questions, each between hairlines, with its number in the margin. Motion spec
  * (Shared components, "Accordion toggle", and 11 FAQ):
  *   - The whole row (numeral, question and toggle) is the button, so the focus ring wraps all of it.
  *   - Hover: the toggle's border turns burnt and its plus thickens.
@@ -16,7 +16,6 @@ import { cx } from "@/lib/cx";
  * crawlable.
  */
 
-const ROMAN = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"];
 
 type FaqAccordionProps = {
   entries: FaqEntry[];
@@ -67,11 +66,11 @@ export default function FaqAccordion({ entries, open, onToggle }: FaqAccordionPr
             <span
               aria-hidden="true"
               className={cx(
-                "absolute top-1 left-0 font-heading text-[20px]/[24px] whitespace-nowrap italic [transition:color_var(--dur-base)_var(--ease-in-out)]",
+                "absolute top-1 left-0 font-heading text-[20px]/[24px] whitespace-nowrap tabular-nums [transition:color_var(--dur-base)_var(--ease-in-out)]",
                 expanded ? "text-burnt" : "text-burnt/55",
               )}
             >
-              {`${ROMAN[i] ?? i + 1}.`}
+              {`${i + 1}.`}
             </span>
             <span
               className={cx(

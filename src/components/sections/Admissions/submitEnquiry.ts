@@ -5,8 +5,8 @@ export type EnquiryValues = {
   phone: string;
   email: string;
   programme: string;
-  /** "Classroom" or "LIVE-Online". */
-  mode: string;
+  /** When to call back: morning, afternoon or evening. */
+  time: string;
   /** May be empty. */
   query: string;
 };

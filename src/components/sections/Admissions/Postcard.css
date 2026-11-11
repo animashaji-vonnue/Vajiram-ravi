@@ -68,7 +68,7 @@
 }
 
 /* An empty select shows its "Pick a …" choice only while it has the focus; the label stands in for it otherwise. */
-.vr-field-box[data-empty]:not(:focus-within) select {
+.vr-field-box[data-empty]:not(:focus-within) .vr-select-value {
   color: transparent;
 }
 

@@ -35,13 +35,14 @@ function Ticker({ slide }: { slide: HeroSlide }) {
       href={links.toppers}
       className="group/ticker inline-flex w-[490px] items-center gap-4 rounded-full bg-mahogany/80 py-1.5 pr-4 pl-1.5 text-white ring-1 ring-white/20 [transition:background-color_var(--dur-fast)_var(--ease-out)] hover:bg-mahogany"
     >
-      <span className="shrink-0 rounded-full bg-saffron px-3.5 py-1 text-[15px]/[20px] font-bold text-mahogany">
-        CSE {slide.year} results
+      <span className="flex h-7 shrink-0 items-center rounded-full bg-saffron px-3.5 text-[15px]/[20px] font-bold text-mahogany">
+        {/* Centred on its letters (globals.css, .cap-centre): on its line box it sat high. */}
+        <span className="cap-centre">CSE {slide.year} results</span>
       </span>
       <span className="relative h-5 min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_24px,black_calc(100%-24px),transparent)]">
-        <span key={slide.name} className="hero-glide absolute top-0 left-0 flex text-[15px]/[20px] font-medium whitespace-nowrap">
-          <span className="pr-10">{line}</span>
-          <span className="pr-10" aria-hidden="true">
+        <span key={slide.name} className="hero-glide absolute top-0 left-0 flex h-full items-center text-[15px]/[20px] font-medium whitespace-nowrap">
+          <span className="cap-centre pr-10">{line}</span>
+          <span className="cap-centre pr-10" aria-hidden="true">
             {line}
           </span>
         </span>
@@ -130,9 +131,9 @@ export default function Hero() {
           aria-roledescription="carousel"
           aria-label={`UPSC CSE ${slide.year} toppers`}
           className={cx(
-            // The header (80), the room above the panel (24) and the stats strip under it (154) share the
+            // The header (80), the room above the panel (24) and the stats strip under it (182) share the
             // first screen with it; the announcement strip waits just below.
-            "relative h-[clamp(520px,calc(100svh/var(--canvas-zoom,1)-80px-24px-154px),820px)] overflow-clip rounded-[28px] bg-mahogany",
+            "relative h-[clamp(520px,calc(100svh/var(--canvas-zoom,1)-80px-24px-182px),820px)] overflow-clip rounded-[28px] bg-mahogany",
             ENTER,
           )}
           style={at(AT.art)}
@@ -204,7 +205,7 @@ export default function Hero() {
                 <span key={i} className={cx("block whitespace-nowrap", LINE)} style={at(AT.lines[i])}>
                   {line.map((run) =>
                     run.em ? (
-                      <em key={run.text} className="font-semibold text-white not-italic">
+                      <em key={run.text} className="not-italic">
                         {run.text}
                       </em>
                     ) : (
@@ -215,7 +216,7 @@ export default function Hero() {
               ))}
             </h1>
             <p
-              className={cx("mt-6 w-[500px] text-[17px]/[1.6] text-white/92", RISE)}
+              className={cx("mt-6 w-[800px] text-[17px]/[1.6] text-pretty text-white/92", RISE)}
               style={at(AT.lead)}
             >
               {hero.lead}
@@ -265,7 +266,7 @@ export default function Hero() {
       </div>
 
       {/* Under the panel: the four points, each figure in its laurel, centred (Figma "stats bar", 2425:51305). */}
-      <ul aria-label={achievementsLabel} className="mx-auto flex w-canvas items-center justify-center gap-16 px-12 pt-8 pb-9">
+      <ul aria-label={achievementsLabel} className="mx-auto flex w-canvas items-center justify-center gap-16 px-12 pt-12 pb-12">
         {achievements.map((item, i) => (
           <li key={item.text} data-enter className={cx("flex items-center gap-4", RISE)} style={at(AT.achievements[Math.min(i, AT.achievements.length - 1)] + (i > 2 ? 80 : 0))}>
             <span className="relative flex h-[86px] w-[108px] shrink-0 items-center justify-center">

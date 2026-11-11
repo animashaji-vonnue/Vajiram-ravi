@@ -1,6 +1,6 @@
 import { cx } from "@/lib/cx";
 
-/** The design's line icons (Figma "icon/ur", "icon/l", "icon/r", plus, "icon/minus", and the header's 16px phone). */
+/** The design's line icons (Figma "icon/ur", "icon/l", "icon/r", plus, "icon/minus", the header's 16px phone, and a folded map for "View on maps"). */
 const ICONS = {
   "arrow-ur": "/images/icons/arrow-ur.svg",
   "arrow-l": "/images/icons/arrow-l.svg",
@@ -8,6 +8,7 @@ const ICONS = {
   plus: "/images/icons/plus.svg",
   minus: "/images/icons/minus.svg",
   phone: "/images/icons/phone.svg",
+  map: "/images/icons/map.svg",
 } as const;
 
 export type IconName = keyof typeof ICONS;

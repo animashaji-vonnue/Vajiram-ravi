@@ -24,7 +24,7 @@ const sections: SearchItem[] = [
   { group: "Sections", title: "Meet our educators", detail: "Faculty", href: "#educators" },
   { group: "Sections", title: "Speak to an academic counsellor", detail: "Request a call back", href: "#counselling" },
   { group: "Sections", title: "Student stories", detail: "Experiences that speak", href: "#stories" },
-  { group: "Sections", title: "Our locations", detail: campuses.map((campus) => campus.city).join(" and "), href: "#locations" },
+  { group: "Sections", title: "Our locations", detail: campuses[0].address, href: "#locations" },
 ];
 
 /** Everything the search looks through, built from the page's own data. */

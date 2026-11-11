@@ -1,7 +1,7 @@
 import FooterWordmark from "@/components/sections/ClosingCta/FooterWordmark";
 import LinkOrText from "@/components/ui/LinkOrText";
 import Photo from "@/components/ui/Photo";
-import { footerColumns, footerCopyright, footerLegal, footerSocial, footerWordmark, footerWordmarkPhotos } from "@/data/footer";
+import { footerColumns, footerCopyright, footerLegal, footerSocial, footerWordmark } from "@/data/footer";
 import { cx } from "@/lib/cx";
 
 /** The footer's warm grey for links and small print, and its hairline. */
@@ -26,44 +26,24 @@ function FooterLink({ href, children }: { href: string | null; children: string 
 
 /**
  * The cream footer after the closing call to action, with the contents of Figma "Footer – v5 (minimal)"
- * (2567:4286): the logo over a hairline; six link columns (Vajiram & Ravi, Courses, Test series &
- * mentorship, UPSC exam, Exam updates, Free resources), their heads small and bold, their links in the warm
- * grey; then the giant wordmark, bold and filled with photographs of the institute (FooterWordmark); then
- * the social icons (the Figma's brand marks, painted in the link colour, burnt on hover) and the legal bar
+ * (2567:4286): the logo and, opposite it on the right, the social icons (the Figma's brand marks, painted
+ * in the link colour, burnt on hover), over a hairline; six link columns (Vajiram & Ravi, Courses, Test series &
+ * mentorship, UPSC exam, Exam updates, Free resources), their heads in Mukta semibold capitals (the client's ask; 16px, spaced a little, so the capitals do not
+ * shout), their links at the header's 16px, in the warm
+ * grey; then the giant wordmark pressed into the paper (FooterWordmark, debossed); then the legal bar
  * over a hairline.
  */
 export default function SiteFooter() {
   return (
     <footer className="relative bg-cream">
       <div className="relative mx-auto flex w-canvas flex-col items-center gap-12 px-20 pt-16 pb-8">
-        {/* The logo row, fading in out of a soft blur as it comes into view (ui/TextMotion, data-fade). */}
-        <div data-fade className={cx("flex w-[1280px] items-center border-b pb-6", RULE)}>
+        {/* The logo row, fading in out of a soft blur as it comes into view (ui/TextMotion, data-fade): the
+            logo on the left, the social icons opposite it on the right. */}
+        <div data-fade className={cx("flex w-[1280px] items-center justify-between border-b pb-6", RULE)}>
           <a href="#top" aria-label="Vajiram & Ravi, back to top" className="block">
-            <Photo src="/images/logo.webp" alt="" sizes="176px" className="relative h-[42px] w-44 bg-cream" />
+            <Photo src="/images/logo.webp" alt="" sizes="156px" className="relative h-[52px] w-[156px] bg-cream" />
           </a>
-        </div>
-
-        {/* The six columns. */}
-        <nav aria-label="Footer" data-stagger className={cx("flex w-[1280px] items-start justify-between", TEXT)}>
-          {footerColumns.map((column) => (
-            <div key={column.heading} className="flex flex-col items-start gap-3.5">
-              <h2 className="text-[13px]/[16px] font-bold tracking-[0.01em] whitespace-nowrap text-[#1a1714]">{column.heading}</h2>
-              <ul className="flex flex-col items-start gap-3.5 text-[14px]/[20px] font-medium whitespace-nowrap">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <FooterLink href={link.href}>{link.label}</FooterLink>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </nav>
-
-        <FooterWordmark text={footerWordmark} photos={footerWordmarkPhotos} />
-
-        {/* The social icons and the legal bar. Never pre-hidden by a reveal: at the very foot of the page it might never reach the reveal line. */}
-        <div className={cx("flex w-[1280px] flex-col items-start gap-6", TEXT)}>
-          <ul aria-label="Vajiram & Ravi on social media" className="flex items-start gap-3">
+          <ul aria-label="Vajiram & Ravi on social media" className={cx("flex items-center gap-3", TEXT)}>
             {footerSocial.map((social) => {
               const mark = `url(/images/footer/social-${social.name}.svg) center / contain no-repeat`;
               return (
@@ -81,6 +61,30 @@ export default function SiteFooter() {
               );
             })}
           </ul>
+        </div>
+
+        {/* The six columns. */}
+        {/* At 16px the longest links would push the columns together, so the columns share the width in
+            proportion (the test series column, with the longest links, widest) and a long link wraps. */}
+        <nav aria-label="Footer" data-stagger className={cx("grid w-[1280px] grid-cols-[0.7fr_1.1fr_1.35fr_1fr_0.95fr_1.1fr] items-start gap-x-8", TEXT)}>
+          {footerColumns.map((column) => (
+            <div key={column.heading} className="flex flex-col items-start gap-3.5">
+              <h2 className="font-heading text-[16px]/[22px] font-semibold tracking-[0.06em] whitespace-nowrap text-ink uppercase">{column.heading}</h2>
+              <ul className="flex flex-col items-start gap-3.5 text-[16px]/[22px] font-medium text-pretty">
+                {column.links.map((link) => (
+                  <li key={link.label}>
+                    <FooterLink href={link.href}>{link.label}</FooterLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+
+        <FooterWordmark text={footerWordmark} />
+
+        {/* The legal bar. Never pre-hidden by a reveal: at the very foot of the page it might never reach the reveal line. */}
+        <div className={cx("flex w-[1280px] flex-col items-start", TEXT)}>
           <div className={cx("flex w-full items-start justify-between border-t pt-6 text-[14px]/[20px] whitespace-nowrap", RULE)}>
             <p>{footerCopyright}</p>
             <nav aria-label="Legal" className="flex items-start gap-6">

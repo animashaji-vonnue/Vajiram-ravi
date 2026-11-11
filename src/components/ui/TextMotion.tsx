@@ -258,14 +258,26 @@ export default function TextMotion() {
       const items = el.hasAttribute("data-fade-each") ? (Array.from(el.children) as HTMLElement[]) : [el];
       arm(el, items.map((item, i) => item.animate(FADE, { duration: 500, delay: delay + stagger(i), easing: EASE, fill: "backwards" })));
     });
-    // A row of cards: from different depths into the flat row, together (the children are read when it
-    // plays, so cards a filter has brought in since load are included).
+    // A row of cards: from different depths into the flat row, together. It waits until the row is well up
+    // the screen (its top past 65% of the height), so it plays where the visitor is looking, not below.
+    const deep = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          deep.unobserve(entry.target);
+          (entry.target as Playable).tmPlay?.();
+        }
+      },
+      { rootMargin: "0px 0px -35% 0px" },
+    );
+    cleanups.push(() => deep.disconnect());
     document.querySelectorAll<HTMLElement>("[data-depth-cards]").forEach((el) => {
       if (!below(el)) return;
-      (el as Playable).tmPlay = () => {
-        (Array.from(el.children) as HTMLElement[]).forEach((card, i) => {
+      // Built now and held at their first frame, so the cards wait at their depths rather than sitting flat
+      // and jumping back to them when the row is reached.
+      const animations = (Array.from(el.children) as HTMLElement[]).map((card, i) => {
           const depth = DECK_DEPTH[i % DECK_DEPTH.length];
-          card.animate(
+          return card.animate(
             [
               {
                 translate: `${((i % 2 ? 1 : -1) * 18 * depth).toFixed(1)}px ${(-24 + 64 * depth).toFixed(1)}px`,
@@ -278,8 +290,10 @@ export default function TextMotion() {
             { duration: 560, delay: stagger(i), easing: EASE, fill: "backwards" },
           );
         });
-      };
-      enter.observe(el);
+      animations.forEach((animation) => animation.pause());
+      (el as Playable).tmPlay = () => animations.forEach((animation) => animation.playState === "paused" && animation.play());
+      deep.observe(el);
+      cleanups.push(() => animations.forEach((animation) => animation.cancel()));
     });
     cleanups.push(() => enter.disconnect());
 

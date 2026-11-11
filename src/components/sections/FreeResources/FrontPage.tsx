@@ -13,20 +13,20 @@ import "./front-page.css";
  *   - the headline (the section's H2) in the didone face, its emphasis in italic,
  *     and the standfirst opening on a two-line drop cap; beside them, across a column rule, a pull-quote;
  *   - three ruled columns (Prelims pointers, Mains articles & editorial analysis, UPSC study materials),
- *     each under its section letter and heavy column-head rule, with the desk's byline, a halftone photo,
+ *     each under its heavy column-head rule and its title over a hairline, a photo in colour,
  *     the lead headline, five more between hairlines and the client's link to the rest;
  *   - an index of the other free resources between rules, and the folio (page, paper, date) at the foot.
  * All the headings are in ink (feedback item 38). The sheet is a lighter newsprint than the band's cream,
  * with a second sheet askew beneath it and a faint fold across its middle. Every headline links to its article on vajiramandravi.com: on hover its
- * underline draws in and the column's photo develops into colour. The entrance (PrintIn) prints the page
+ * underline draws in and the column's photo eases closer. The entrance (PrintIn) prints the page
  * in, at the times marked here; with it the headline's letters rise (ui/TextMotion, data-split) and the
- * small labels settle out of shuffling type (data-scramble), and the halftone photos drift in their
+ * small labels settle out of shuffling type (data-scramble), and the photos drift in their
  * frames with the scroll (data-par).
  */
 
-/** Hover underline for a headline: a line drawn left to right under it, across its lines in turn. */
+/** Hover underline for a headline: an orange line drawn left to right under it, across its lines in turn. */
 const UNDERLINE =
-  "bg-[linear-gradient(currentColor,currentColor)] bg-no-repeat bg-[position:0_100%] bg-[length:0%_1px] [transition:background-size_var(--dur-base)_var(--ease-out)] hover:bg-[length:100%_1px] focus-visible:bg-[length:100%_1px]";
+  "bg-[linear-gradient(var(--color-orange),var(--color-orange))] bg-no-repeat bg-[position:0_100%] bg-[length:0%_2px] [transition:background-size_var(--dur-base)_var(--ease-out)] hover:bg-[length:100%_2px] focus-visible:bg-[length:100%_2px]";
 
 /** The printing ink, and its hairlines. */
 const INK = "text-ink";
@@ -37,9 +37,6 @@ const SERIF = "font-heading";
 
 /** When each part prints in, ms after the sheet starts to settle (PrintIn). */
 const AT = { masthead: 250, rule: 350, headline: 480, columnRules: 620, columns: 680, columnStep: 110, footRule: 1000, foot: 1080 };
-
-/** The column rules' places: halfway across the 48px gutters between the 368px columns. */
-const COLUMN_RULES = [392, 808];
 
 /** A heavy rule over a fine one (or the reverse), as a paper frames its dateline. */
 function DoubleRule({ flip = false, at }: { flip?: boolean; at: number }) {
@@ -73,7 +70,7 @@ export default function FrontPage() {
             <span className="text-clay">{ear.bottom}</span>
           </p>
         ))}
-        <img src="/images/logo.webp" alt="Vajiram & Ravi" width={750} height={180} className="col-start-2 row-start-1 mx-auto h-[72px] w-[300px]" />
+        <img src="/images/logo.webp" alt="Vajiram & Ravi" width={617} height={206} className="col-start-2 row-start-1 mx-auto h-[72px] w-[216px]" />
       </div>
 
       {/* The dateline, between double rules. */}
@@ -88,9 +85,8 @@ export default function FrontPage() {
       </div>
 
       {/* The headline and standfirst, and the pull-quote across a column rule. */}
-      <div className="relative mt-7 grid grid-cols-[1fr_336px] gap-x-12">
-        <span aria-hidden="true" data-press="rule-v" data-press-at={AT.headline} className="absolute inset-y-0 right-[360px] w-px origin-top bg-[rgb(42_26_18/0.3)]" />
-        <header className="flex flex-col items-start">
+      <div className="relative mt-7 grid grid-cols-3 gap-x-(--fp-gap) [--fp-gap:48px]">
+        <header className="col-span-2 flex flex-col items-start">
           <h2 id="resources-h" data-split className={`${SERIF} text-[60px]/[1.04] font-bold tracking-[-0.015em] ${INK}`}>
             {heading.before}
             {/* The resources take the second line. */}
@@ -105,7 +101,10 @@ export default function FrontPage() {
           </p>
         </header>
 
-        <figure data-press="ink" data-press-at={AT.headline + 240} className="flex flex-col justify-center">
+        <figure data-press="ink" data-press-at={AT.headline + 240} className="relative flex flex-col justify-center">
+          {/* The rule beside the pull-quote, in the middle of the gap, so it lines up with the column rule
+              below; it runs down to meet the columns' heavy rule. */}
+          <span aria-hidden="true" data-press="rule-v" data-press-at={AT.headline} className="absolute top-0 -bottom-7 left-[calc(var(--fp-gap)/-2)] w-px -translate-x-1/2 origin-top bg-[rgb(42_26_18/0.3)]" />
           <span aria-hidden="true" className={`${SERIF} block h-[52px] text-[96px]/[1] font-bold text-burnt`}>
             “
           </span>
@@ -118,25 +117,24 @@ export default function FrontPage() {
       </div>
 
       {/* The three columns of headlines, their parts on shared rows (subgrid) so heads, photos and links line up. */}
-      <div className="relative mt-7 grid grid-cols-3 gap-x-12">
-        {COLUMN_RULES.map((left) => (
-          <span
-            key={left}
-            aria-hidden="true"
-            data-press="rule-v"
-            data-press-at={AT.columnRules}
-            className="absolute inset-y-0 w-px origin-top bg-[rgb(42_26_18/0.3)]"
-            style={{ left }}
-          />
-        ))}
-        {resourceColumns.map((column, i) => (
-          <article key={column.title} data-press="ink" data-press-at={AT.columns + i * AT.columnStep} className="row-span-6 grid grid-rows-subgrid">
-            {/* The column head: its section letter over a heavy rule, the title, the desk's byline. */}
-            <p data-scramble className="w-full border-b-[3px] border-ink pb-1.5 text-[12px]/[16px] font-medium tracking-[0.02em] text-clay">Section {column.section}</p>
-            <h3 className={`${SERIF} mt-2.5 self-end text-[25px]/[1.15] font-bold ${INK}`}>{column.title}</h3>
-            <p className={`mt-1.5 w-full border-b ${HAIRLINE} pb-3 text-[13px]/[18px] text-clay italic`}>{column.byline}</p>
+      <div className="relative mt-7 grid grid-cols-3 gap-x-(--fp-gap) [--fp-gap:48px]">
+        {resourceColumns.map((column, i) => {
+          // The heavy rule and the hairline under the titles run on across the gap to the next column, so each reads
+          // as one line across the page, crossed by the column rules (the last column's stop at its edge).
+          const across = i < resourceColumns.length - 1 ? "-mr-(--fp-gap)" : "";
+          return (
+          <article key={column.title} data-press="ink" data-press-at={AT.columns + i * AT.columnStep} className="relative row-span-6 grid grid-rows-subgrid">
+            {/* The column rule to its right, in the middle of the gap (none after the last column). */}
+            {i < resourceColumns.length - 1 && (
+              <span aria-hidden="true" data-press="rule-v" data-press-at={AT.columnRules} className="absolute inset-y-0 right-[calc(var(--fp-gap)/-2)] w-px translate-x-1/2 origin-top bg-[rgb(42_26_18/0.3)]" />
+            )}
+            {/* The column head: a heavy rule, the title, a hairline. */}
+            <span aria-hidden="true" className={`block self-end border-b-[3px] border-ink ${across}`} />
+            {/* One line each (24px fits the longest, "Mains articles & editorial analysis", in the column), so the heads line up across the page. */}
+            <h3 className={`${SERIF} mt-2.5 self-end text-[24px]/[1.15] font-bold whitespace-nowrap ${INK}`}>{column.title}</h3>
+            <span aria-hidden="true" className={`mt-3 block border-b ${HAIRLINE} ${across}`} />
 
-            {/* The lead story, under its halftone photo. */}
+            {/* The lead story, under its photo. */}
             <div className="group/story mt-4 flex w-full flex-col gap-3">
               <div className="fp-halftone h-[116px] w-full" data-press="photo" data-press-at={AT.columns + i * AT.columnStep + 120}>
                 {/* TODO: an institute photo standing in for the lead article's own picture. It drifts in its frame with the scroll (ui/TextMotion, data-par). */}
@@ -165,7 +163,8 @@ export default function FrontPage() {
               </IndianLink>
             </div>
           </article>
-        ))}
+          );
+        })}
       </div>
 
       {/* The index of the other free resources, between a heavy rule and a fine one. */}
@@ -180,7 +179,6 @@ export default function FrontPage() {
                   href={item.href}
                   className="group/item flex items-center gap-1.5 text-[14px]/[20px] font-semibold whitespace-nowrap text-ink [transition:color_var(--dur-fast)_var(--ease-out)] hover:text-burnt focus-visible:text-burnt"
                 >
-                  <span aria-hidden="true" className="size-1.5 rotate-45 bg-burnt" />
                   {item.label}
                   <svg aria-hidden="true" viewBox="0 0 16 16" width={13} height={13} fill="none" className="[transition:translate_var(--dur-fast)_var(--ease-out)] group-hover/item:translate-x-0.5">
                     <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" />

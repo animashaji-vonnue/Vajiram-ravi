@@ -116,7 +116,7 @@ export const featuredBatch = {
   /** The batch's start, as the ticket shows it under "Batch starts". */
   // TODO: placeholder. The client's copy has "[Verified date]" here: replace this with the verified start
   // date (e.g. "12 July 2027") when admissions confirm it.
-  start: "January 2027 (to be confirmed)",
+  start: "January 2027",
   /** The ticket's details, in the copy's order. */
   details: { start: "Batch starts", mode: "Mode", location: "Location" },
   mode: "Classroom / LIVE-Online",
@@ -124,8 +124,8 @@ export const featuredBatch = {
   cta: { label: "View programme details", href: links.gsCourse as Href },
 };
 
-/** The choices of "Preferred learning mode" in the counselling form. */
-export const learningModes: BatchMode[] = ["Classroom", "LIVE-Online"];
+/** The choices of "Preferred time" in the counselling form: when a counsellor should call back. */
+export const callTimes: string[] = ["Morning (9 AM – 12 PM)", "Afternoon (12 PM – 4 PM)", "Evening (4 PM – 8 PM)"];
 
 /** Counselling & Academic Guidance (IA 6; Figma "05 · Personalised Counselling", 2377:4839) and its postcard form. */
 export const counsellingCopy = {
@@ -140,7 +140,7 @@ export const counsellingCopy = {
     phone: "Mobile number",
     email: "Email address",
     programme: "Programme of interest",
-    mode: "Preferred learning mode",
+    time: "Preferred time",
     query: "Your query",
   },
   /** After "Your query", which is the one field that may stay empty. */
@@ -150,7 +150,7 @@ export const counsellingCopy = {
     name: "Your full name",
     email: "you@email.com",
     programme: "Pick a programme",
-    mode: "Pick a mode",
+    time: "Pick a time",
     query: "What would you like to ask?",
   },
   submit: "Request a call back",
@@ -164,6 +164,6 @@ export const counsellingCopy = {
     phone: "Enter a 10-digit mobile number",
     email: "Enter a valid email",
     programme: "Choose a programme",
-    mode: "Choose a learning mode",
+    time: "Choose a time",
   },
 };

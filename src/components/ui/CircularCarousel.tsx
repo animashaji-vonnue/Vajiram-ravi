@@ -12,21 +12,21 @@ import { whenVisible } from "@/lib/reveal";
  * ring, facing out, and each card bends to follow it. The camera looks a little down onto the ring, so
  * the backs of the far cards show above and between the near ones, fading into the paper.
  *
- *   - The card at the front is the active one; `renderCaption` shows its item under the ring,
- *     cross-fading as the front changes.
- *   - The ring turns by drag (mouse, finger), a sideways trackpad swipe, the arrows at the stage's edges,
+ *   - The card at the front is the active one; the dots sit right under the ring, and `renderCaption`
+ *     shows the front item under them, cross-fading as the front changes.
+ *   - The ring turns by drag (mouse, finger), a sideways trackpad swipe, the arrows beside the ring (at
+ *     `arrowReach` from the centre, or the stage's edges),
  *     the dots, the ← → keys, or a click on a card. A throw keeps going a little, then always settles
  *     square on a card.
  *   - It plays on its own (`interval`), one card at a time, showing the time left in the active dot, and
  *     pauses while the pointer is on the front card (not anywhere on the ring), while keyboard focus is
- *     inside it, while it is off screen or the tab is hidden, and for good with the pause button
- *     (WCAG 2.2.2). The pointer hold is let go whenever the front changes, since a card that turns away
+ *     inside it, while it is off screen or the tab is hidden (no pause button: the client asked for
+ *     the dots alone). The pointer hold is let go whenever the front changes, since a card that turns away
  *     from under a still pointer never gets its pointerleave. Moving it by hand restarts the count.
  *   - It enters once, when it comes into view: the ring fades in turning a card and a half, and comes to
- *     rest on the first card within about a second. The caption cross-fades in CAPTION_MS (250ms), so it
+ *     rest on the first card within about a second. The caption changes in sequence (the old fades out in 140ms, then the new in 250ms), so it
  *     reads at once, and the first autoplay step waits FIRST_STEP_MS (6s) after it comes into view.
- *   - The camera leans a few degrees toward the pointer.
- *   - Reduced motion: no entrance, no autoplay, no lean; moves are instant.
+ *   - Reduced motion: no entrance and no autoplay; moves are instant.
  *   - Assistive technology: a carousel region; each item is a slide labelled "n of N" holding the item's
  *     content (`renderSlide`, visually hidden), the bent picture hidden from it, as are the repeat copies
  *     that fill out the ring; moves made by hand are announced politely ("3 of 6: title").
@@ -57,6 +57,8 @@ const INTRO_TURN = 1.5;
 const FIRST_STEP_MS = 6000;
 /** The caption's cross-fade, ms. */
 const CAPTION_MS = 250;
+/** The leaving caption's fade, ms: the new one waits for it, so the two never show at once. */
+const CAPTION_OUT_MS = 140;
 /** How far a throw carries, seconds of its release speed. */
 const MOMENTUM = 0.28;
 /** The fastest a throw turns the ring, cards per second. */
@@ -92,8 +94,11 @@ type CircularCarouselProps<T> = {
   backColor: string;
   /** "dark" on a dark band (cream controls), "light" on paper. */
   tone?: "light" | "dark";
-  /** Space between the ring and what follows it (caption, controls), canvas px. */
+  /** Space between the ring and what follows it (dots, caption), canvas px. */
   spacing?: number;
+  /** How far from the stage's centre the arrows' centres sit, canvas px: just clear of the ring's
+   *  visible ends. Without it they stand at the stage's edges. */
+  arrowReach?: number;
   className?: string;
 };
 
@@ -129,6 +134,7 @@ export default function CircularCarousel<T>({
   backColor,
   tone = "light",
   spacing = 32,
+  arrowReach,
   className,
 }: CircularCarouselProps<T>) {
   const count = items.length;
@@ -397,17 +403,8 @@ export default function CircularCarousel<T>({
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
     const stage = stageRef.current;
     const d = drag.current;
-    if (!d || d.id !== event.pointerId) {
-      // The camera leans toward the mouse.
-      if (stage && event.pointerType === "mouse" && !flags.current.still) {
-        const box = stage.getBoundingClientRect();
-        const lean = sim.current.lean;
-        lean.aimX = Math.max(-1, Math.min(1, ((event.clientX - box.left) / box.width) * 2 - 1));
-        lean.aimY = Math.max(-1, Math.min(1, ((event.clientY - box.top) / box.height) * 2 - 1));
-        kick();
-      }
-      return;
-    }
+    // The ring does not follow the pointer (the client asked for no pointer tracking); only a drag moves it.
+    if (!d || d.id !== event.pointerId) return;
     const zoom = getCanvasZoom();
     const dx = (event.clientX - d.x) / zoom;
     const dy = (event.clientY - d.y) / zoom;
@@ -482,7 +479,7 @@ export default function CircularCarousel<T>({
       tabIndex={0}
       onKeyDown={onKeyDown}
       onFocus={(event) => {
-        // Keyboard focus holds the autoplay; a click on a control does not (the pause button is there).
+        // Keyboard focus holds the autoplay; a click on a control does not.
         if ((event.target as Element).matches(":focus-visible")) flags.current.focus = true;
       }}
       onBlur={(event) => {
@@ -620,9 +617,13 @@ export default function CircularCarousel<T>({
           </div>
         </div>
 
-        {/* The arrows at the left and right edges of the stage, level with the front card. */}
+        {/* The arrows level with the front card: just beside the ring's ends, or at the stage's edges. */}
         {([-1, 1] as const).map((side) => (
-          <div key={side} className={cx("absolute top-1/2 z-10 -translate-y-1/2", side < 0 ? "left-10" : "right-10")}>
+          <div
+            key={side}
+            className={cx("absolute top-1/2 z-10 -translate-y-1/2", arrowReach ? "-translate-x-1/2" : side < 0 ? "left-10" : "right-10")}
+            style={arrowReach ? { left: `calc(50% + ${side * arrowReach}px)` } : undefined}
+          >
             <CarouselArrow
               direction={side < 0 ? "prev" : "next"}
               label={`${side < 0 ? "Previous" : "Next"} ${itemName}`}
@@ -634,29 +635,7 @@ export default function CircularCarousel<T>({
         ))}
       </div>
 
-      {renderCaption && (
-        <div aria-hidden="true" className="grid w-full justify-items-center" style={{ marginTop: spacing }}>
-          {items.map((item, i) => {
-            const on = i === active && shown;
-            return (
-              <div
-                key={i}
-                className="col-start-1 row-start-1 w-full"
-                style={{
-                  opacity: on ? 1 : 0,
-                  translate: on ? "0 0" : "0 8px",
-                  visibility: on ? "visible" : "hidden",
-                  transition: still ? "none" : `opacity ${CAPTION_MS}ms ${EASE}, translate ${CAPTION_MS}ms ${EASE}, visibility 0s linear ${on ? "0s" : `${CAPTION_MS}ms`}`,
-                }}
-              >
-                {renderCaption(item, i)}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      <div className="flex items-center gap-5" style={{ marginTop: spacing }}>
+      <div className="flex items-center" style={{ marginTop: spacing }}>
         <CarouselDots
           count={count}
           active={active}
@@ -666,29 +645,35 @@ export default function CircularCarousel<T>({
           tone={tone}
           fillRef={interval && playing && !still ? fillRef : undefined}
         />
-        {interval > 0 && !still && (
-          <button
-            type="button"
-            onClick={() => setPlaying((p) => !p)}
-            aria-label={playing ? "Pause the carousel" : "Play the carousel"}
-            className={cx(
-              "flex size-9 cursor-pointer items-center justify-center rounded-full border [transition:background-color_var(--dur-fast)_var(--ease-out),color_var(--dur-fast)_var(--ease-out),border-color_var(--dur-fast)_var(--ease-out)]",
-              tone === "dark" ? "border-cream/45 text-cream hover:border-cream hover:bg-cream hover:text-ink" : "border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-cream",
-            )}
-          >
-            <svg aria-hidden="true" viewBox="0 0 16 16" width={14} height={14} fill="currentColor">
-              {playing ? (
-                <>
-                  <rect x={3.5} y={2.5} width={3} height={11} rx={0.8} />
-                  <rect x={9.5} y={2.5} width={3} height={11} rx={0.8} />
-                </>
-              ) : (
-                <path d="M4.5 2.8v10.4c0 .6.6.9 1.1.6l8-5.2c.4-.3.4-.9 0-1.2l-8-5.2c-.5-.3-1.1 0-1.1.6Z" />
-              )}
-            </svg>
-          </button>
-        )}
       </div>
+
+      {renderCaption && (
+        <div aria-hidden="true" className="grid w-full justify-items-center" style={{ marginTop: spacing }}>
+          {items.map((item, i) => {
+            const on = i === active && shown;
+            return (
+              <div
+                key={i}
+                className="col-start-1 row-start-1 w-full"
+                // In sequence, never overlapping: the old caption fades out (CAPTION_OUT_MS) and only then
+                // does the new one fade in, drifting up just 3px, so the text never seems to jump.
+                style={{
+                  opacity: on ? 1 : 0,
+                  translate: on ? "0 0" : "0 3px",
+                  visibility: on ? "visible" : "hidden",
+                  transition: still
+                    ? "none"
+                    : on
+                      ? `opacity ${CAPTION_MS}ms ${EASE} ${CAPTION_OUT_MS}ms, translate ${CAPTION_MS}ms ${EASE} ${CAPTION_OUT_MS}ms, visibility 0s linear 0s`
+                      : `opacity ${CAPTION_OUT_MS}ms linear, translate 0s linear ${CAPTION_OUT_MS}ms, visibility 0s linear ${CAPTION_OUT_MS}ms`,
+                }}
+              >
+                {renderCaption(item, i)}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       <p ref={liveRef} aria-live="polite" aria-atomic="true" className="sr-only" />
     </div>

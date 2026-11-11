@@ -25,8 +25,8 @@
 }
 
 /*
- * A photograph printed as a halftone: in black on the newsprint, with a fine dot screen over it. Hovering
- * its column's lead story (or focusing it) develops it into colour as the screen lifts.
+ * A column's photograph, printed in full colour (no dot screen, at the client's request), a touch warmed
+ * to sit on the newsprint. Hovering its column's lead story (or focusing it) eases it a little closer.
  */
 .fp-halftone {
   position: relative;
@@ -34,28 +34,11 @@
   background: #e9e1d3;
 }
 .fp-halftone img {
-  filter: grayscale(1) contrast(1.18) brightness(1.04) sepia(0.12);
-  transition:
-    filter var(--dur-slow) var(--ease-out),
-    scale 900ms var(--ease-out);
-}
-.fp-halftone::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: radial-gradient(circle at center, rgb(22 21 20 / 0.55) 0.75px, transparent 1.35px);
-  background-size: 3.5px 3.5px;
-  mix-blend-mode: multiply;
-  opacity: 0.75;
-  transition: opacity var(--dur-slow) var(--ease-out);
+  filter: sepia(0.08) saturate(0.95);
+  transition: scale 900ms var(--ease-out);
 }
 .group\/story:is(:hover, :focus-within) .fp-halftone img {
-  filter: none;
   scale: 1.03;
-}
-.group\/story:is(:hover, :focus-within) .fp-halftone::after {
-  opacity: 0;
 }
 
 /* The broadsheet's fold across the middle of the page: a faint shadow either side of a lighter crease. */
@@ -71,8 +54,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fp-halftone img,
-  .fp-halftone::after {
+  .fp-halftone img {
     transition: none;
   }
   .group\/story:is(:hover, :focus-within) .fp-halftone img {

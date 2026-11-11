@@ -7,9 +7,12 @@ import type { PointerEvent } from "react";
  * beat behind (.press-pulse, .press-pulse-late). The buttons tint it bright orange (--ripple, --press-ring). The disc goes
  * into the control's `[data-ripple]` layer, which clips it to the shape; the ring goes on the control itself.
  * Both remove themselves when they end. Reduced motion: globals.css hides them.
+ *
+ * Options: `rings: false` keeps it all inside the control (the buttons, ui/Cta: no rings past the edge);
+ * `soft: true` is the gentler disc the buttons spread from where the pointer comes in on hover.
  */
-export function pressRipple(event: PointerEvent<HTMLElement>) {
-  if (event.button !== 0) return;
+export function pressRipple(event: PointerEvent<HTMLElement>, { rings = true, soft = false }: { rings?: boolean; soft?: boolean } = {}) {
+  if (!soft && event.button !== 0) return;
   const target = event.currentTarget;
   const box = target.getBoundingClientRect();
   // The page may be zoomed down (the canvas fit): measure in the control's own px.
@@ -19,7 +22,7 @@ export function pressRipple(event: PointerEvent<HTMLElement>) {
   const reach = Math.hypot(Math.max(x, target.offsetWidth - x), Math.max(y, target.offsetHeight - y)) * 2;
 
   const disc = document.createElement("span");
-  disc.className = "press-ripple";
+  disc.className = soft ? "press-ripple press-ripple-soft" : "press-ripple";
   Object.assign(disc.style, { left: `${x}px`, top: `${y}px`, width: `${reach}px`, height: `${reach}px` });
   // The wave: two rings running out past the edge, the second a beat behind the first.
   const ring = document.createElement("span");
@@ -31,5 +34,5 @@ export function pressRipple(event: PointerEvent<HTMLElement>) {
     el.addEventListener("animationend", () => el.remove(), { once: true });
   }
   (target.querySelector("[data-ripple]") ?? target).append(disc);
-  target.append(ring, echo);
+  if (rings) target.append(ring, echo);
 }
