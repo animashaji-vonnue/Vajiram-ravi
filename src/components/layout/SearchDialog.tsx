@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { searchIndex, searchSuggestions, type SearchItem } from "@/data/search";
-import { ANCHOR_JUMP_EVENT } from "@/components/layout/anchorJump";
+import { ANCHOR_JUMP_EVENT, requestSectionJump } from "@/components/layout/anchorJump";
 import { cx } from "@/lib/cx";
 import { lockScroll, scrollToElement } from "@/lib/smoothScroll";
 
@@ -36,7 +36,7 @@ function SearchIcon({ className }: { className?: string }) {
  * keys move through the results, Enter opens one and Escape closes the box; Tab stays on the field (the
  * focus trap: the field is the dialog's one control). Styled in the final palette: a paper card with a
  * hairline border, ink titles over clay details, the active result on cream with a burnt ↵, and the
- * small labels in Geist Mono. It fades and settles from 0.97 over --dur-base (--ease-out) and leaves in
+ * small labels in Source Sans 3. It fades and settles from 0.97 over --dur-base (--ease-out) and leaves in
  * 70% of that (--ease-in).
  */
 export default function SearchDialog({ open, onClose }: SearchDialogProps) {
@@ -94,6 +94,8 @@ export default function SearchDialog({ open, onClose }: SearchDialogProps) {
     window.dispatchEvent(new Event(ANCHOR_JUMP_EVENT));
     // After the dialog has let go of focus, so the page scrolls from where it is.
     requestAnimationFrame(() => {
+      // A section of this page: the stairs curtain covers the jump (layout/SectionJump), focus and all.
+      if (item.href.startsWith("#") && requestSectionJump(item.href, true)) return;
       const target = document.querySelector(item.href);
       if (target) scrollToElement(target);
       window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}${item.href}`);
@@ -154,7 +156,7 @@ export default function SearchDialog({ open, onClose }: SearchDialogProps) {
             aria-activedescendant={results.length ? `${listId}-${active}` : undefined}
             className="h-16 min-w-0 flex-1 bg-transparent text-[17px] text-ink outline-none placeholder:text-clay/70"
           />
-          <kbd className="rounded-md border border-ink/15 px-1.5 py-0.5 font-mono text-[11px] tracking-[0.04em] text-clay uppercase">Esc</kbd>
+          <kbd className="font-sans rounded-md border border-ink/15 px-1.5 py-0.5 text-[12px] tracking-[0.04em] text-clay uppercase">Esc</kbd>
         </div>
 
         <ul
@@ -167,7 +169,7 @@ export default function SearchDialog({ open, onClose }: SearchDialogProps) {
         >
           {groups.map(([group, items]) => (
             <li key={group} role="presentation">
-              <p className="px-4 pt-3 pb-1.5 font-mono text-[11px]/[1.4] tracking-[0.01em] text-clay/80">
+              <p className="px-4 pt-3 pb-1.5 text-[12px]/[1.4] tracking-[0.01em] text-clay/80">
                 {query.trim() ? group : group === "Sections" ? "Jump to" : "Popular programmes"}
               </p>
               <ul role="presentation">
@@ -210,7 +212,7 @@ export default function SearchDialog({ open, onClose }: SearchDialogProps) {
           )}
         </ul>
 
-        <div className="flex items-center gap-4 border-t border-[#e8e4df] px-6 py-3 font-mono text-[11px] tracking-[0.01em] text-clay/80">
+        <div className="flex items-center gap-4 border-t border-[#e8e4df] px-6 py-3 text-[12px] tracking-[0.01em] text-clay/80">
           <span>↑ ↓ to move</span>
           <span>↵ to open</span>
           <span>Esc to close</span>

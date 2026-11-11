@@ -39,10 +39,9 @@
   /* Nav text. */
   --color-charcoal: #1a1a1a;
 
-  /* Mukta for headings (emphasis by colour), Source Sans 3 for text and UI, Geist Mono for labels. */
+  /* Mukta for headings (emphasis by colour), Source Sans 3 for everything else. The only two faces. */
   --font-sans: var(--font-text-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-heading: var(--font-heading-face), ui-sans-serif, system-ui, "Segoe UI", Arial, sans-serif;
-  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --container-canvas: 1440px;
 
@@ -142,8 +141,9 @@
 
 /*
  * Section reveal (ScrollReveal). Elements marked `data-reveal` wait as `.rv-pre` until their section is
- * 20% in view, then take `.rv-in` with a delay (`--d`) that follows the spec's order: eyebrow, heading,
- * sub text 80ms later, then the content with a 60ms stagger. Unlayered so they win over the elements' own
+ * 20% in view, then take `.rv-in` with a short delay (`--d`) in the spec's order: eyebrow and heading at
+ * once, the sub text 60ms later, then the content from 100ms with a 25ms stagger (never more than 200ms
+ * in all), each over 450ms, so text is readable fast. Unlayered so they win over the elements' own
  * transition utilities while revealing.
  */
 [data-reveal].rv-pre {
@@ -159,44 +159,17 @@
 }
 .rv-in {
   transition:
-    opacity var(--dur-slow) var(--ease-out),
-    transform var(--dur-slow) var(--ease-out);
+    opacity 450ms var(--ease-out),
+    transform 450ms var(--ease-out);
   transition-delay: var(--d, 0ms);
 }
 [data-reveal="eyebrow"].rv-in {
   transition-duration: 400ms;
 }
-/* The italic emphasis words of a heading arrive 120ms after the rest of it, as a soft second beat. */
-.rv-pre [data-reveal-em] {
-  opacity: 0;
-}
-.rv-in [data-reveal-em] {
-  transition: opacity var(--dur-slow) var(--ease-out);
-  transition-delay: calc(var(--d, 0ms) + 120ms);
-  /*
-   * Then a soft light sweeps once across them (after Unlumen's "Dia Text Reveal"): the words are painted
-   * by a gradient of their own colour with a pale band in the middle, which slides across them. The fill
-   * shows through the text only (background-clip), so the words keep their colour before and after. The
-   * padding and negative margin cancel out, so nothing moves; they only give the italics' overhang room.
-   */
-  padding-inline: 0.12em;
-  margin-inline: -0.12em;
-  background-image: linear-gradient(100deg, currentColor 0 38%, color-mix(in srgb, currentColor 35%, #fff6e8) 50%, currentColor 62% 100%);
-  background-size: 300% 100%;
-  background-position: 100% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: em-shine 1100ms var(--ease-in-out) calc(var(--d, 0ms) + 520ms) both;
-}
-@keyframes em-shine {
-  from {
-    background-position: 100% 0;
-  }
-  to {
-    background-position: 0 0;
-  }
-}
+/*
+ * (The italic emphasis words once arrived 120ms after the rest of the heading and then had a light swept
+ * across them; both are gone, so a heading arrives whole and is still once it has: readability first.)
+ */
 /* The eyebrow's rules grow out from the label; the diamonds at their ends arrive as they finish. */
 .rv-pre [data-eyebrow-rule="lead"] {
   clip-path: inset(0 0 0 100%);
@@ -213,14 +186,9 @@
   [data-reveal].rv-pre {
     transform: none;
   }
-  .rv-in,
-  .rv-in [data-reveal-em] {
+  .rv-in {
     transition: opacity 150ms linear !important;
     transition-delay: 0ms !important;
-  }
-  .rv-in [data-reveal-em] {
-    animation: none !important;
-    -webkit-text-fill-color: currentColor;
   }
   .rv-pre [data-eyebrow-rule] {
     clip-path: none;
@@ -345,8 +313,32 @@
 .tm-ch {
   display: inline-block;
 }
-.tm-wd {
-  transition: opacity 120ms linear;
+
+/*
+ * The soft blur at the foot of the screen (layout, ui/GradualBlur): hidden (and so not painted at all)
+ * until TextMotion marks it data-on, then it fades in; never with reduced motion.
+ */
+.gb-viewport {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 500ms var(--ease-out),
+    visibility 0s linear 500ms;
+}
+.gb-viewport[data-on] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 500ms var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .gb-viewport {
+    display: none;
+  }
+}
+
+/* A section reached by a section jump (layout/SectionJump) takes the focus without a ring round it all. */
+section[tabindex="-1"]:focus {
+  outline: none;
 }
 
 /*
@@ -358,8 +350,7 @@
  *   .lp-glow     a warm light breathes at the head of the About centre card (7s).
  *   .lp-wobble   a rubber stamp gives a short wobble, as if pressed again, then rests (6.5s).
  *   .lp-glint    a band of gold light passes across a book's cover now and then (11s).
- *   .tm-glint    the emphasis letters of a heading catch a soft light one after another (10s; the step
- *                between letters is --gs, their place --gi), a filter only.
+ *   (The heading emphasis glint, .tm-glint, is gone: no loop runs over text.)
  */
 .lp-sway {
   transform-origin: 50% 88%;
@@ -454,86 +445,14 @@
     transform: translateX(360%) skewX(-14deg);
   }
 }
-.tm-glint {
-  animation: tm-glint 10s var(--ease-in-out) infinite;
-  animation-delay: calc(2200ms + var(--gi, 0) * var(--gs, 45ms));
-  animation-play-state: var(--lp, paused);
-}
-@keyframes tm-glint {
-  0%,
-  9%,
-  100% {
-    filter: brightness(1) drop-shadow(0 0 0 rgb(255 206 120 / 0));
-  }
-  4.5% {
-    filter: brightness(1.32) drop-shadow(0 0 0.12em rgb(255 206 120 / 0.8));
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .lp-sway,
   .lp-breathe,
   .lp-glow,
-  .lp-wobble,
-  .tm-glint {
+  .lp-wobble {
     animation: none !important;
   }
   .lp-glint {
-    display: none;
-  }
-}
-
-/*
- * The scroll thread (TextMotion): a slim line across the top of the screen in the journey thread's dash-dot
- * rhythm (a 10px dash, a gap, a dot, a gap), over the sticky header. A faint burnt track; over it the fill,
- * orange to burnt across the page, clipped to the share of the page scrolled; a small saffron diamond
- * edged in burnt, the eyebrows' lozenge, rides at its end in a soft saffron glow. It fades in once the page has moved, and is never drawn with reduced motion.
- */
-.tm-thread {
-  --tm-dash-dot: repeating-linear-gradient(90deg, #000 0 10px, transparent 10px 16px, #000 16px 18.5px, transparent 18.5px 24px);
-  position: fixed;
-  inset: 0 0 auto;
-  z-index: 55;
-  height: 3px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 400ms var(--ease-out);
-}
-.tm-thread[data-on] {
-  opacity: 1;
-}
-.tm-thread__track,
-.tm-thread__fill {
-  position: absolute;
-  inset: 0;
-  -webkit-mask-image: var(--tm-dash-dot);
-  mask-image: var(--tm-dash-dot);
-}
-.tm-thread__track {
-  background: rgb(204 85 0 / 0.18);
-}
-.tm-thread__fill {
-  background: linear-gradient(90deg, var(--color-orange), var(--color-burnt));
-  clip-path: inset(0 100% 0 0);
-}
-.tm-thread__bead {
-  position: absolute;
-  inset: 0;
-}
-.tm-thread__bead::after {
-  content: "";
-  position: absolute;
-  top: -2px;
-  left: -4px;
-  width: 7px;
-  height: 7px;
-  rotate: 45deg;
-  background: var(--color-saffron);
-  box-shadow:
-    0 0 0 1px var(--color-burnt),
-    0 0 10px rgb(244 196 48 / 0.8);
-}
-@media (prefers-reduced-motion: reduce) {
-  .tm-thread {
     display: none;
   }
 }
@@ -570,7 +489,7 @@ blockquote {
   position: absolute;
   border-radius: 9999px;
   pointer-events: none;
-  background: currentColor;
+  background: var(--ripple, currentColor);
   opacity: 0.28;
   transform: translate(-50%, -50%) scale(0);
   animation: press-ripple 520ms var(--ease-out) forwards;
@@ -595,6 +514,11 @@ blockquote {
     box-shadow: 0 0 0 10px color-mix(in srgb, var(--press-ring, currentColor) 0%, transparent);
   }
 }
+/* The second ring of the wave, a beat behind the first. */
+.press-pulse-late {
+  animation-delay: 180ms;
+  animation-fill-mode: both;
+}
 @media (prefers-reduced-motion: reduce) {
   .press-ripple,
   .press-pulse {
@@ -603,48 +527,77 @@ blockquote {
 }
 
 /*
- * The site's button (ui/Cta), in the page's own language:
- *   - the thread: a fine dash-dot line stitched just inside the edge, the rhythm of the journey's garland
- *     thread and the eyebrow rules (.cta-stitch, its colour --cta-stitch). On hover it brightens and
- *     marches along the edge.
- *   - the sunrise: on hover a disc rises out of the arrow and fills the button, bright at its core by the
- *     arrow (--cta-core), warming out to a more vivid tone of the ground (--cta-sun), a band of halo light
- *     at its rim (--cta-rim), as the closing banner's sun; the button glows in its colour (--cta-glow) and
- *     lifts a pixel. Leaving, it sinks back.
- *   - the arrow passes: it slides out ahead and comes back in from behind, once per hover.
- * Reduced motion: no march and no pass; the fill changes at once (the global rule).
+ * The site's button (ui/Cta). At rest, a fine dash-dot thread stitched just inside its edge, the rhythm of
+ * the journey's garland thread and the eyebrow rules (.cta-stitch, its colour --cta-stitch). On hover it
+ * behaves as the `kevin` branch's buttons do: the fill steps one shade deeper (--cta-hover) over 200ms
+ * while the arrow slides 4px on (ui/Medallion, 300ms on the soft ease-out), and it pops: it grows to 104%
+ * with a springy overshoot. Pressed, it sinks to 96% at once and the press ripple spreads from the point
+ * pressed (lib/pressRipple; stronger on the buttons than on the carousel arrows), the pulse ring running
+ * out past its edge; on release it springs back. Reduced motion: no pop and no press scale.
  */
-.cta-sun {
-  position: absolute;
-  top: 50%;
-  right: var(--cta-sun-x, 26px);
-  width: 900px;
-  height: 900px;
-  margin: -450px -450px 0 0;
-  border-radius: 9999px;
-  pointer-events: none;
-  /* A bright core at the arrow, warming out to the variant's vivid tone, the halo band at the rim. */
-  background: radial-gradient(closest-side, var(--cta-core) 0, var(--cta-sun) 30%, var(--cta-sun) 93%, var(--cta-rim) 95.5%, transparent 99%);
-  transform: scale(0);
-  transition: transform 300ms var(--ease-in);
-}
-.cta:hover .cta-sun,
-.cta:focus-visible .cta-sun {
-  transform: scale(1);
-  transition: transform 650ms var(--ease-out);
-}
-/* The button glows in its own colour and lifts a pixel while the sun is up. */
 .cta {
   transition:
-    border-color var(--dur-fast) var(--ease-out),
-    box-shadow 500ms var(--ease-out),
-    translate 300ms var(--ease-out),
-    scale 80ms var(--ease-out);
+    background-color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out),
+    scale 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .cta:hover,
 .cta:focus-visible {
-  translate: 0 -1px;
-  box-shadow: 0 10px 26px -10px var(--cta-glow, transparent);
+  background-color: var(--cta-hover);
+  scale: 1.04;
+}
+.cta:active {
+  scale: 0.96;
+  transition-duration: 200ms, 200ms, 90ms;
+}
+/*
+ * The buttons' ripple is a wave in bright orange: on press a disc of it spreads from the point pressed and
+ * two rings run out past the edge one after the other; while hovered, a soft orange ring breathes out from
+ * the edge again and again (.cta::after).
+ */
+.cta {
+  --ripple: #ff7a1a;
+  --press-ring: #ff7a1a;
+}
+.cta .press-ripple {
+  opacity: 0.55;
+  animation-duration: 650ms;
+}
+.cta .press-pulse {
+  animation-duration: 750ms;
+}
+.cta::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+}
+.cta:hover::after,
+.cta:focus-visible::after {
+  animation: cta-wave 1.6s var(--ease-out) infinite;
+}
+@keyframes cta-wave {
+  0% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgb(255 122 26 / 0.55);
+  }
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 14px rgb(255 122 26 / 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta:hover,
+  .cta:focus-visible,
+  .cta:active {
+    scale: none;
+  }
+  .cta:hover::after,
+  .cta:focus-visible::after {
+    animation: none;
+  }
 }
 .cta-stitch {
   position: absolute;
@@ -656,44 +609,8 @@ blockquote {
   overflow: visible;
   pointer-events: none;
   color: var(--cta-stitch);
-  opacity: 0.75;
-  transition: opacity var(--dur-fast) var(--ease-out);
 }
 .cta-stitch rect {
   width: calc(100% - 1px);
   height: calc(100% - 1px);
-}
-.cta:hover .cta-stitch {
-  opacity: 1;
-}
-.cta:hover .cta-stitch rect {
-  animation: cta-march 1.4s linear infinite;
-}
-@keyframes cta-march {
-  to {
-    stroke-dashoffset: -22.5;
-  }
-}
-.cta:hover .cta-arrow svg {
-  animation: cta-arrow 560ms var(--ease-out);
-}
-@keyframes cta-arrow {
-  45% {
-    translate: 12px 0;
-    opacity: 0;
-  }
-  46% {
-    translate: -12px 0;
-    opacity: 0;
-  }
-  to {
-    translate: 0 0;
-    opacity: 1;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cta:hover .cta-stitch rect,
-  .cta:hover .cta-arrow svg {
-    animation: none;
-  }
 }

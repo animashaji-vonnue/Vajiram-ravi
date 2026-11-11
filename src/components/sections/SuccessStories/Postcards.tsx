@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
 import { CarouselArrow } from "@/components/ui/CarouselControls";
+import GradualBlur from "@/components/ui/GradualBlur";
 import Photo from "@/components/ui/Photo";
 import type { Story } from "@/data/stories";
 import { getCanvasZoom } from "@/lib/canvas";
@@ -14,14 +15,15 @@ import { whenVisible } from "@/lib/reveal";
  * (itself after the template carousel on wix.com): the front postcard flat, the next one out on each side
  * turned away and set back, the pair beyond turned further and set further back.
  *   - Every 4.5s the next postcard comes round to the front (600ms, --ease-out). It pauses while the
- *     pointer or the keyboard focus is on the ring; clicking a postcard at the side, the round arrows in
+ *     pointer is on the front postcard or the keyboard focus is on the ring; clicking a postcard at the side, the round arrows in
  *     the heading row, the arrow keys and a swipe bring another forward. The move is announced.
  *   - The round arrows at either edge of the ring are the page's carousel arrows, as they are.
  *   - Entrance, once, when the ring comes into view: the postcards fan out from behind the front one to
  *     their places, nearest first (600ms each, 90ms apart).
  *   - Hover on the front postcard lifts it with the hover shadow.
- *   - With the scroll (ui/TextMotion): the ring drifts up a little faster than the page, so the postcards
- *     seem to float nearer than the heading (data-drift), and the postmarks' rings turn (data-turn).
+ *   - With the scroll (ui/TextMotion): the postmarks' rings turn (data-turn), decoration only. (The ring
+ *     no longer drifts with the scroll: the students' words must hold still while they are read.)
+ *   - The ring's two far sides soften into a stepped blur (ui/GradualBlur), still, in every mode.
  *   - Reduced motion: no turning on its own and no fan; the postcards change places at once.
  */
 
@@ -88,6 +90,9 @@ export default function Postcards({ stories, heading }: PostcardsProps) {
     };
   }, []);
 
+  // A postcard that leaves the front under the pointer never sees it leave: let go of its hold.
+  useEffect(() => setPaused(false), [active]);
+
   useEffect(() => {
     if (paused || still || !spread || count < 2) return;
     const timer = window.setTimeout(() => setActive((i) => (i + 1) % count), ADVANCE_MS);
@@ -131,8 +136,6 @@ export default function Postcards({ stories, heading }: PostcardsProps) {
       aria-roledescription="carousel"
       aria-label="Student stories"
       onKeyDown={onKeyDown}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
       className="flex w-full flex-col gap-10"
@@ -145,7 +148,6 @@ export default function Postcards({ stories, heading }: PostcardsProps) {
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
         onPointerCancel={() => (swipe.current = null)}
-        data-drift="-56"
         className="relative h-[440px] w-full touch-pan-y [perspective:1400px]"
       >
         {/* The arrows at either edge of the ring. */}
@@ -157,6 +159,18 @@ export default function Postcards({ stories, heading }: PostcardsProps) {
           >
             <CarouselArrow direction={side < 0 ? "prev" : "next"} label={side < 0 ? "Previous story" : "Next story"} onClick={() => show(active + side)} />
           </div>
+        ))}
+        {/*
+          The ring's far sides soften into a stepped blur (ui/GradualBlur), from the stage's edge out across
+          the margin, so the postcards turned furthest away melt into the band. Over them, under the arrows.
+        */}
+        {([-1, 1] as const).map((side) => (
+          <GradualBlur
+            key={side}
+            side={side < 0 ? "left" : "right"}
+            strength={6}
+            className={cx("inset-y-0 z-20 w-[200px]", side < 0 ? "-left-20" : "-right-20")}
+          />
         ))}
         {stories.map((story, i) => {
           const offset = offsetOf(i);
@@ -170,6 +184,9 @@ export default function Postcards({ stories, heading }: PostcardsProps) {
               aria-hidden={!front}
               inert={!front}
               onClick={front ? undefined : () => show(i)}
+              // Only the front postcard holds the ring while the pointer is on it.
+              onMouseEnter={front ? () => setPaused(true) : undefined}
+              onMouseLeave={front ? () => setPaused(false) : undefined}
               className={cx(
                 "absolute top-1/2 left-1/2 [transform-style:preserve-3d] [transition:transform_600ms_var(--ease-out),opacity_600ms_var(--ease-out)] motion-reduce:transition-none",
                 !front && "cursor-pointer",
@@ -248,7 +265,7 @@ function Postcard({ story, front }: PostcardProps) {
 
       <figcaption className="absolute top-[160px] left-[366px] flex w-[200px] flex-col items-start">
         <h3 className="font-heading text-[24px]/[1.2] font-normal text-[#5a160f]">{story.name}</h3>
-        <p className="mt-2 font-mono text-[11px]/[1.4] tracking-[0.01em] text-burnt">{standing}</p>
+        <p className="mt-2 text-[12px]/[1.4] tracking-[0.01em] text-burnt">{standing}</p>
         <p className="mt-1 text-[13px]/[1.5] text-clay">{story.programme}</p>
         <span aria-hidden="true" className="mt-4 flex w-full flex-col gap-[29px]">
           {[0, 1, 2].map((line) => (
@@ -275,11 +292,11 @@ function Postmark({ story }: { story: Story }) {
       <img data-turn="60" src="/images/stories/postmark-ring.svg" alt="" width={53.5} height={53.5} className="absolute top-[3.25px] left-[3.25px] h-[53.5px] w-[53.5px] max-w-none" />
       {rank !== undefined ? (
         <span className="absolute top-1 left-1 flex size-[52px] flex-col items-center justify-center text-burnt">
-          <span className="pl-[0.08em] font-mono text-[8px]/[10px] tracking-[0.08em]">AIR</span>
+          <span className="pl-[0.08em] text-[12px]/[14px] tracking-[0.08em]">AIR</span>
           <span className="font-heading text-[20px]/[20px] font-semibold">{rank}</span>
         </span>
       ) : (
-        <span className="absolute top-1 left-1 flex size-[52px] flex-col items-center justify-center font-mono text-[8px]/[10px] text-burnt">
+        <span className="absolute top-1 left-1 flex size-[52px] flex-col items-center justify-center text-[12px]/[14px] text-burnt">
           <span>{exam}</span>
           <span>{year}</span>
         </span>

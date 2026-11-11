@@ -1,11 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Mukta, Source_Sans_3 } from "next/font/google";
+import { Mukta, Source_Sans_3 } from "next/font/google";
 import type { ReactNode } from "react";
 import PageTransition from "@/components/layout/PageTransition";
 import Preloader, { introScript } from "@/components/layout/Preloader";
 import SiteFooter from "@/components/layout/SiteFooter";
+import SectionJump from "@/components/layout/SectionJump";
 import SiteHeader from "@/components/layout/SiteHeader";
 import CanvasFit from "@/components/ui/CanvasFit";
+import GradualBlur from "@/components/ui/GradualBlur";
 import SmoothScroll from "@/components/ui/SmoothScroll";
 import Toast from "@/components/ui/Toast";
 import { fitCanvasScript } from "@/lib/canvas";
@@ -15,8 +17,9 @@ import "./globals.css";
 
 /*
  * The site's type, and no other fonts: Mukta for headings (Light to Bold; it has no italics, so the
- * emphasis in a heading is set apart by its colour alone), Source Sans 3 for text and UI (Regular to Bold, with italics), and Geist Mono for the
- * eyebrows and labels. The variables feed the --font-heading, --font-sans and --font-mono theme tokens.
+ * emphasis in a heading is set apart by its colour alone) and Source Sans 3 for everything else, text, UI
+ * and labels alike (Regular to Bold, with italics). The variables feed the --font-heading and --font-sans
+ * theme tokens.
  */
 const sourceSans = Source_Sans_3({
   weight: ["400", "500", "600", "700"],
@@ -26,10 +29,9 @@ const sourceSans = Source_Sans_3({
   display: "swap",
 });
 const mukta = Mukta({ weight: ["300", "400", "500", "600", "700"], subsets: ["latin"], variable: "--font-heading-face", display: "swap" });
-const geistMono = Geist_Mono({ weight: ["400", "500"], subsets: ["latin"], variable: "--font-mono-face", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Vajiram & Ravi · UPSC Civil Services Examination Preparation",
+  title: "Vajiram & Ravi · UPSC Civil Services Examination preparation",
   description:
     "Prepare for the Civil Services Examination with experienced educators, structured programmes and focused academic guidance at every stage. Since 1976.",
 };
@@ -45,7 +47,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // The canvas-fit script sets an inline zoom on <html> before hydration.
     <html
       lang="en"
-      className={cx(sourceSans.variable, mukta.variable, geistMono.variable)}
+      className={cx(sourceSans.variable, mukta.variable)}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
@@ -66,6 +68,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <SiteHeader />
         {children}
         <SiteFooter />
+        {/*
+          A soft, stepped blur along the very foot of the screen (40px, ui/GradualBlur), under the header,
+          the cursor label and the dialogs. Hidden until TextMotion shows it (data-on), once the page has left
+          its first screen, and gone again near the end of the page; never with reduced motion (globals.css).
+        */}
+        <div data-gb-viewport aria-hidden="true" className="gb-viewport pointer-events-none fixed inset-x-0 bottom-0 z-[35] h-10">
+          <GradualBlur side="bottom" strength={3} layers={3} className="inset-0" />
+        </div>
+        <SectionJump />
         <Toast />
       </body>
     </html>

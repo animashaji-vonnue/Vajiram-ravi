@@ -24,8 +24,8 @@ const ART = {
   },
 } as const;
 
-/** The small uppercase label above a heading, in Geist Mono. */
-const LABEL = "font-mono text-[12px]/[normal] tracking-[0.72px] whitespace-nowrap";
+/** The small label above a heading, in Source Sans 3. */
+const LABEL = "text-[12px]/[normal] tracking-[0.72px] whitespace-nowrap";
 
 type EyebrowProps = {
   children: ReactNode;

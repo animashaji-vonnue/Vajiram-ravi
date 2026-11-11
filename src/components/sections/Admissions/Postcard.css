@@ -73,11 +73,9 @@
 }
 
 /*
- * The postage stamp (PostageStamp, 92 x 112). The paper is cut by a mask: a grid of 2.9px holes on an
- * 11.5 x 11.2px pitch (8 by 10 across the stamp), centred on its edges so each edge is bitten into
- * half-holes and each corner into a quarter, added to a solid fill inside the 3px band they bite. The
- * shadow is a drop shadow on the stamp's wrapper, so it follows the perforation: tight under the edges as
- * if gummed down, with a softer one under it. Hover lifts the stamp 2px and lets its shadow spread.
+ * The postage stamp (PostageStamp, 92 x 118, the Figma stamp with its own perforated edge). The shadow is a
+ * drop shadow on the stamp's wrapper, so it follows the perforation: tight under the edges as if gummed
+ * down, with a softer one under it. Hover lifts the stamp 2px and lets its shadow spread.
  */
 .vr-postage {
   --vr-postage-shadow: drop-shadow(0 0.5px 0.6px rgb(43 18 5 / 0.32)) drop-shadow(0 2px 3px rgb(43 18 5 / 0.16));
@@ -91,16 +89,6 @@
 .vr-postage:hover {
   translate: 0 -2px;
   filter: drop-shadow(0 1px 1px rgb(43 18 5 / 0.24)) drop-shadow(0 7px 9px rgb(43 18 5 / 0.22));
-}
-
-.vr-postage-paper {
-  position: relative;
-  width: 92px;
-  height: 112px;
-  padding: 3px;
-  mask:
-    radial-gradient(circle at center, #0000 2.9px, #000 3.3px) -5.75px -5.6px / 11.5px 11.2px,
-    linear-gradient(#000 0 0) content-box;
 }
 
 @media (prefers-reduced-motion: reduce) {

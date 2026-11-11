@@ -15,7 +15,7 @@ const faqs: Array<{ question: string; answer: string | null }> = [
   {
     question: "Which programmes does Vajiram & Ravi offer for UPSC preparation?",
     answer:
-      "Vajiram & Ravi offers General Studies, Optional Subjects, Test Series, CSAT, Current Affairs, Mentorship and Interview Guidance programmes.",
+      "Vajiram & Ravi offers General Studies, optional subjects, test series, CSAT, current affairs, mentorship and interview guidance programmes.",
   },
   {
     question: "Are classroom and online learning options available?",
@@ -39,7 +39,7 @@ const faqs: Array<{ question: string; answer: string | null }> = [
   },
   {
     question: "How can I find upcoming batch dates?",
-    answer: "Visit the Upcoming Batches section to check commencement dates and programme details.",
+    answer: "Visit the upcoming batches section to check commencement dates and programme details.",
   },
   {
     question: "How can I speak with an academic counsellor?",

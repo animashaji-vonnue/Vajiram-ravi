@@ -44,3 +44,17 @@ export function scrollToElement(el: Element, offset = HEADER_OFFSET) {
     el.scrollIntoView({ behavior: "smooth" });
   }
 }
+
+/**
+ * Puts an element under the sticky header at once, with no glide (a section jump, behind its curtain).
+ * It goes through even while the page's scrolling is held (force).
+ */
+export function jumpToElement(el: Element, offset = HEADER_OFFSET) {
+  const zoom = parseFloat(document.documentElement.style.zoom) || 1;
+  if (instance) {
+    instance.scrollTo(el as HTMLElement, { offset: -offset * zoom, immediate: true, force: true });
+  } else {
+    const top = el.getBoundingClientRect().top + window.scrollY - offset * zoom;
+    window.scrollTo({ top, behavior: "instant" });
+  }
+}

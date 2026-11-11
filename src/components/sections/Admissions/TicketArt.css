@@ -1,0 +1,170 @@
+/*
+ * The batch tickets' drawings in motion (TicketArt, and the lotus on a ticket without a drawing of its
+ * own): slow, small loops in the hairline drawings, running only while the batches are on screen
+ * (TextMotion sets --lp on the section) and still with reduced motion. Transforms work on each stroke's own
+ * box (transform-box: fill-box).
+ */
+.ticket-art path,
+.ticket-art g,
+.ticket-lotus {
+  transform-box: fill-box;
+  animation-play-state: var(--lp, paused);
+}
+
+/* The tent: the flag waves from its pole, the stars twinkle. */
+.ta-flag {
+  transform-origin: 0% 50%;
+  animation: ta-flag 2.4s ease-in-out infinite;
+}
+@keyframes ta-flag {
+  50% {
+    transform: scaleX(0.82) skewY(-8deg);
+  }
+}
+.ta-twinkle {
+  transform-origin: center;
+  animation: ta-twinkle 3.2s ease-in-out infinite;
+}
+@keyframes ta-twinkle {
+  50% {
+    opacity: 0.25;
+    transform: scale(0.6) rotate(45deg);
+  }
+}
+
+/* The globe: the meridians widen and narrow as it turns; the orbit drifts round. */
+.ta-turn {
+  transform-origin: center;
+  animation: ta-turn 6s ease-in-out infinite;
+}
+@keyframes ta-turn {
+  50% {
+    transform: scaleX(0.2);
+  }
+}
+.ta-orbit {
+  transform-origin: center;
+  animation: ta-orbit 14s linear infinite;
+}
+@keyframes ta-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* The paper: the columns are typed in, line by line, again and again; the front page bobs. */
+.ta-type {
+  stroke-dasharray: 260;
+  animation: ta-type 5s ease-in-out infinite;
+}
+@keyframes ta-type {
+  0% {
+    stroke-dashoffset: 260;
+  }
+  55%,
+  85% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -260;
+  }
+}
+.ta-bob {
+  animation: ta-bob 5s ease-in-out infinite;
+}
+@keyframes ta-bob {
+  50% {
+    transform: translate(-2px, -3px) rotate(-1deg);
+  }
+}
+
+/* The book: the rays pulse out one after another; the pages breathe open. */
+.ta-ray {
+  transform-origin: 50% 100%;
+  animation: ta-ray 3.3s ease-in-out infinite;
+}
+@keyframes ta-ray {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.75);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+.ta-page-l,
+.ta-page-r {
+  animation: ta-page-l 4.5s ease-in-out infinite;
+}
+.ta-page-l {
+  transform-origin: 100% 100%;
+}
+.ta-page-r {
+  transform-origin: 0% 100%;
+  animation-name: ta-page-r;
+}
+@keyframes ta-page-l {
+  50% {
+    transform: rotate(-2.5deg);
+  }
+}
+@keyframes ta-page-r {
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+
+/* The lotus: it turns slowly about its centre. */
+.ticket-lotus {
+  animation: ta-orbit 40s linear infinite;
+}
+
+.ta-d2 {
+  animation-delay: -1.1s;
+}
+.ta-d3 {
+  animation-delay: -2.2s;
+}
+.ta-r0 {
+  animation-delay: 0.00s;
+}
+.ta-r1 {
+  animation-delay: 0.18s;
+}
+.ta-r2 {
+  animation-delay: 0.36s;
+}
+.ta-r3 {
+  animation-delay: 0.54s;
+}
+.ta-r4 {
+  animation-delay: 0.72s;
+}
+.ta-r5 {
+  animation-delay: 0.90s;
+}
+.ta-r6 {
+  animation-delay: 1.08s;
+}
+.ta-r7 {
+  animation-delay: 1.26s;
+}
+.ta-r8 {
+  animation-delay: 1.44s;
+}
+.ta-r9 {
+  animation-delay: 1.62s;
+}
+.ta-r10 {
+  animation-delay: 1.80s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticket-art path,
+  .ticket-art g,
+  .ticket-lotus {
+    animation: none;
+  }
+}

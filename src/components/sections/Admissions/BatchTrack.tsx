@@ -9,9 +9,9 @@ import {
   type KeyboardEvent,
   type MouseEvent,
   type PointerEvent,
-  type ReactNode,
 } from "react";
 import { CarouselArrow } from "@/components/ui/CarouselControls";
+import GradualBlur from "@/components/ui/GradualBlur";
 import { batchesCopy, type Batch } from "@/data/admissions";
 import { getCanvasZoom } from "@/lib/canvas";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -29,9 +29,15 @@ const DUR_BASE = 320;
 const FOLD_MS = 160;
 /** ...the exit being 70% of the entry, tickets that join one unfold in this long. */
 const UNFOLD_MS = Math.round(FOLD_MS / 0.7);
-/** Spec: the date's digits flip in 60ms apart; each ticket starts a little after the one before it. */
+/**
+ * Spec: the date's digits flip in 60ms apart (on re-flows); on the first sight, quicker: 30ms apart, each
+ * ticket 40ms after the one before it, so every date reads within about half a second.
+ */
 const DIGIT_STAGGER_MS = 60;
-const TICKET_STAGGER_MS = 120;
+const FIRST_DIGIT_STAGGER_MS = 30;
+const TICKET_STAGGER_MS = 40;
+/** The first sight's digit flip, ms. */
+const FLIP_MS = 280;
 /** Spec: the "Limited seats" stamp comes down in 220ms, then the ticket shakes 2px. */
 const STAMP_MS = 220;
 const SHAKE_PX = 2;
@@ -53,23 +59,29 @@ type BatchTrackProps = {
   shownIds: string[];
   /** A batch's head colour (its place among all batches). */
   toneOf: (id: string) => number;
-  /** The mode and month tabs, at the left of the row above the track. */
-  filters: ReactNode;
-  /** The selected mode and month tab ids, which label the tab panels around the track. */
-  panel: { mode: string; month: string };
 };
 
 /**
- * The row above the track (the tabs and the round arrows) and the track itself: a native horizontal
+ * The ticket track, with a round arrow at either side of it, level with the tickets: a native horizontal
  * scroller with scroll snapping, so trackpads and touch swipe it as usual (the page's smooth scrolling
  * leaves sideways gestures alone). A mouse drags it, with a flick carrying on to the nearest ticket; the
- * arrows and the arrow keys move it one ticket at a time, and an arrow hides when there is nothing further
- * its way. The track is the content's 1280px, so four tickets show, as drawn.
+ * arrows and the arrow keys move it one ticket at a time, and an arrow dims when there is nothing further
+ * its way. The track is the content's 1280px, so four tickets show, as drawn; the arrows sit in the
+ * margins beside it.
  *
  * When it is first seen, the tickets' dates flip in like a departure board and the "Limited seats" stamps
  * come down; with reduced motion they are simply there.
+ *
+ * Opening, after React Bits Pro "Parallax Cards" (ui/TextMotion, data-depth-cards on the track): as the
+ * track comes into view the tickets start at different depths, some lower, smaller and fainter than
+ * others and each a little turned, and settle together into the flat row (560ms, 40ms apart). It is timed,
+ * not scrubbed, so the tickets are never left half-settled where the scroll stops and their text reads
+ * within about half a second. It moves the slides with the individual translate, scale and rotate
+ * properties only, so the re-flow, the folds and the stamp's shake (transform animations) play over it
+ * untouched, and the date flips and stamps land as the row settles.
+ * The track's edges soften into a stepped blur where more tickets wait (ui/GradualBlur).
  */
-export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }: BatchTrackProps) {
+export default function BatchTrack({ batches, shownIds, toneOf }: BatchTrackProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const nodes = useRef(new Map<string, HTMLDivElement>());
   const targetKey = shownIds.join(" ");
@@ -115,8 +127,8 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
   }, []);
 
   // The first sight of the tickets: each date's digits flip in like a departure board (rotateX 90° to 0,
-  // 60ms apart), then each "Limited seats" stamp comes down (scale 1.3 to 1 and a fade, 220ms) and its
-  // ticket gives a 2px shake. Once. The digits and stamps wait hidden until then; tickets that only join
+  // 280ms, 30ms apart, each ticket 40ms after the last), then each "Limited seats" stamp comes down (scale
+  // 1.3 to 1 and a fade, 220ms) and its ticket gives a 2px shake: all done within about 0.8s. Once. The digits and stamps wait hidden until then; tickets that only join
   // later (through the tabs) are shown as they are.
   useEffect(() => {
     const track = trackRef.current;
@@ -126,15 +138,15 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
     const waiting = [...digits, ...stamps];
     waiting.forEach((el) => (el.style.opacity = "0"));
 
-    const cancel = whenVisible(track, 0.4, () => {
+    const cancel = whenVisible(track, 0.3, () => {
       const tickets = Array.from(track.querySelectorAll<HTMLElement>("[data-ticket]"));
       for (const el of waiting) {
         el.style.opacity = "";
         if (!el.isConnected) continue;
         const ticket = el.closest<HTMLElement>("[data-ticket]");
         const order = ticket ? Math.max(0, tickets.indexOf(ticket)) : 0;
-        // A beat after the track is seen, so the flips land while the section's reveal fades the track in.
-        const start = DUR_BASE + order * TICKET_STAGGER_MS;
+        // Straight away, while the tickets settle into their row (the track's one entrance, data-depth-cards).
+        const start = Math.min(order, 4) * TICKET_STAGGER_MS;
         if (el.hasAttribute("data-flip-digit")) {
           const place = Array.from(el.parentElement?.children ?? []).indexOf(el);
           el.animate(
@@ -143,11 +155,11 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
               { opacity: 1, offset: 0.3 },
               { opacity: 1, transform: "perspective(320px) rotateX(0deg)" },
             ],
-            { duration: DUR_BASE, delay: start + place * DIGIT_STAGGER_MS, easing: EASE_OUT, fill: "backwards" },
+            { duration: FLIP_MS, delay: start + place * FIRST_DIGIT_STAGGER_MS, easing: EASE_OUT, fill: "backwards" },
           );
         } else {
           // After the date has landed.
-          const delay = start + DUR_BASE + DIGIT_STAGGER_MS * 2;
+          const delay = start + FLIP_MS + FIRST_DIGIT_STAGGER_MS * 2;
           el.animate(
             [
               { opacity: 0, transform: "scale(1.3)" },
@@ -376,25 +388,27 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
 
   return (
     <>
-      <div data-reveal className="relative flex h-11 w-full items-center justify-between">
-        {filters}
-        <div className="flex shrink-0 items-center gap-2.5">
-          {/* This tells screen readers how many batches a new selection holds. */}
-          <p aria-live="polite" className="sr-only">
-            {count} {count === 1 ? "batch" : "batches"}
-          </p>
-          <CarouselArrow direction="prev" label="Previous batches" onClick={() => step(-1)} hidden={atStart} />
-          <CarouselArrow direction="next" label="Next batches" onClick={() => step(1)} hidden={atEnd} />
-        </div>
-      </div>
-
-      {/* The panels of both tab lists: the mode's, and the month's inside it. */}
-      <div id="batch-mode-panel" role="tabpanel" aria-labelledby={`batch-mode-tab-${panel.mode}`} data-reveal className="relative w-full">
-        <div id="batch-month-panel" role="tabpanel" aria-labelledby={`batch-month-tab-${panel.month}`} className="relative">
+      {/* No section reveal here: the tickets' settling (data-depth-cards) is the track's one entrance. */}
+      <div className="relative w-full">
+        {/* This tells screen readers how many batches a new selection holds. */}
+        <p aria-live="polite" className="sr-only">
+          {count} {count === 1 ? "batch" : "batches"}
+        </p>
+        {/* The arrows in the margins either side of the track, level with the tickets' middle. */}
+        {([-1, 1] as const).map((side) => (
+          <div key={side} className={`absolute top-[180px] z-10 -translate-y-1/2 ${side < 0 ? "-left-[66px]" : "-right-[66px]"}`}>
+            <CarouselArrow
+              direction={side < 0 ? "prev" : "next"}
+              label={side < 0 ? "Previous batches" : "Next batches"}
+              onClick={() => step(side)}
+              disabled={side < 0 ? atStart : atEnd}
+            />
+          </div>
+        ))}
+        <div className="relative">
           {/*
-           * Room around the 360px tickets, which the scroller would otherwise clip: 48px above (the whole gap
-           * to the tabs row) for the hover lift, 48px below
-           * for the lifted ticket's shadow.
+           * Room around the 360px tickets, which the scroller would otherwise clip: 48px above for the hover
+           * lift, 48px below for the lifted ticket's shadow.
            */}
           <div
             ref={trackRef}
@@ -410,6 +424,7 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
             onClickCapture={onClickCapture}
             onKeyDown={onKeyDown}
             onDragStart={(event) => event.preventDefault()}
+            data-depth-cards
             className={`relative -mt-12 -mb-12 flex h-[456px] snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain pt-12 pb-12 select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
           >
             {tickets.map((batch, i) => (
@@ -428,6 +443,20 @@ export default function BatchTrack({ batches, shownIds, toneOf, filters, panel }
               </div>
             ))}
           </div>
+          {/*
+           * The track's edges soften into a stepped blur (ui/GradualBlur) on the side where there are more
+           * tickets to come, over the tickets' height; at the first or last ticket that side is clear.
+           */}
+          {([-1, 1] as const).map((side) => (
+            <GradualBlur
+              key={side}
+              side={side < 0 ? "left" : "right"}
+              strength={4}
+              layers={3}
+              className={`top-0 z-[5] h-[360px] w-7 [transition:opacity_var(--dur-base)_var(--ease-out)] ${side < 0 ? "left-0" : "right-0"}`}
+              style={{ opacity: (side < 0 ? atStart : atEnd) ? 0 : 1 }}
+            />
+          ))}
           {!tickets.length && !count && (
             <p className="absolute inset-x-0 top-0 flex h-[360px] items-center justify-center rounded-[18px] border border-dashed border-ink/20 text-[15px]/[22px] text-clay">
               <span>

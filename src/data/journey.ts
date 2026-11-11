@@ -53,7 +53,7 @@ export const journeyStages: JourneyStage[] = [
     support: [
       { text: "300+ General Studies class lectures and 900+ teaching hours in the GS 2028 programme.", figures: ["300+", "900+"] },
       { text: "18 Yellow Books covering the General Studies syllabus.", figures: ["18"] },
-      { text: "30 Prelims tests covering General Studies and Current Affairs.", figures: ["30"] },
+      { text: "30 Prelims tests covering General Studies and current affairs.", figures: ["30"] },
     ],
     cta: { label: "Explore Prelims preparation", href: links.gsCourse },
   },

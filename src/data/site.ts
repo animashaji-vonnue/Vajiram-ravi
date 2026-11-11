@@ -23,7 +23,7 @@ export type Menu = {
 };
 
 /**
- * The mega menus' link lists: the live site's full listings, by subject. (The footer has its own, shorter lists.)
+ * The mega menus' link lists: the live site's full listings, by subject. The footer lists them too.
  */
 const COURSES: MenuColumn = {
   heading: "Courses",
@@ -88,6 +88,9 @@ const FREE_RESOURCES: MenuColumn = {
   ],
 };
 
+/** The same link lists, for the footer's columns (Figma "Footer – v5 (minimal)", 2567:4286). */
+export const menuColumns = { courses: COURSES, testSeries: TEST_SERIES, upscExam: UPSC_EXAM, examUpdates: EXAM_UPDATES, freeResources: FREE_RESOURCES };
+
 export const menus: Record<MenuId, Menu> = {
   courses: {
     columns: [COURSES, TEST_SERIES],
@@ -130,7 +133,7 @@ export const mainNav: NavItem[] = [
   { label: "UPSC exam", href: links.upscExam, menu: "exam" },
   { label: "Upcoming batches", href: "#batches" },
   { label: "FAQs", href: "#faq" },
-  { label: "Contact us", href: "#contact" },
+  { label: "Contact us", href: "#locations" },
 ];
 
 /** The design's iconoir icons in the announcement strip, drawn in saffron. */

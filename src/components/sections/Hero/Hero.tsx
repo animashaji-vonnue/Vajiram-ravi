@@ -125,14 +125,14 @@ export default function Hero() {
 
   return (
     <section id="hero" aria-labelledby="hero-h" className="hero-ember text-white">
-      <div className="px-4 pt-4">
+      <div className="px-4 pt-6">
         <div
           aria-roledescription="carousel"
           aria-label={`UPSC CSE ${slide.year} toppers`}
           className={cx(
-            // The header (80) and the strip under the panel (150) stay on the first screen with it, with a
-            // little of the page under it showing too (40).
-            "relative h-[clamp(480px,calc(100svh/var(--canvas-zoom,1)-80px-16px-150px-40px),740px)] overflow-clip rounded-[28px] bg-mahogany",
+            // The header (80), the room above the panel (24) and the stats strip under it (154) share the
+            // first screen with it; the announcement strip waits just below.
+            "relative h-[clamp(520px,calc(100svh/var(--canvas-zoom,1)-80px-24px-154px),820px)] overflow-clip rounded-[28px] bg-mahogany",
             ENTER,
           )}
           style={at(AT.art)}
@@ -163,30 +163,35 @@ export default function Hero() {
             );
           })}
 
-          {/* A dark wash from the left for the type, a light one along the foot for the dots, and one in the top right corner for the rank. */}
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-linear-to-r from-black/65 via-black/30 to-transparent" />
-          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-black/35 to-transparent" />
-          <div aria-hidden="true" className="pointer-events-none absolute top-0 right-0 h-1/2 w-[34%] bg-[radial-gradient(80%_80%_at_100%_0%,rgb(0_0_0/0.5),transparent)]" />
+          {/* A wash from the left for the type and a light one along the foot for the dots. */}
+          {/* Warm brown, never pitch black, so every portrait keeps the tone of the office rooms they stand in. */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-linear-to-r from-[rgb(46_17_6/0.7)] via-[rgb(46_17_6/0.32)] to-transparent" />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-[rgb(46_17_6/0.4)] to-transparent" />
 
-          {/* The topper's rank in the top right corner, clear of every portrait, its line pointing back to them; drawn in with each slide. */}
+          {/*
+            The topper's rank in the top right corner, clear of every portrait, on a frosted panel of the
+            rooms' warm brown so it reads over a bright window as well as a dark wall. "AIR" sits on the middle
+            of the figures, with the line (pointing back to the topper) level with it. Drawn in with each slide.
+          */}
           <div
             key={`mark-${current}-${cycle}`}
             aria-hidden="true"
-            className="hero-mark pointer-events-none absolute top-[9%] right-[3.5%] flex flex-row-reverse items-start gap-3 text-right"
+            className="hero-mark pointer-events-none absolute top-[7%] right-[3%] flex items-start"
           >
-            <div>
-              <p className="text-[14px]/[18px] font-semibold text-white/90">All India Rank</p>
-              <p className="mt-1 flex items-baseline justify-end gap-2.5 font-heading text-saffron drop-shadow-[0_6px_18px_rgb(0_0_0/0.35)]">
-                <span className="text-[34px]/[1] font-semibold">AIR</span>
-                <span className="text-[132px]/[0.82] font-bold tracking-[-0.03em]">{pad(slide.rank)}</span>
-              </p>
-              <p className="mt-4 text-[20px]/[26px] font-semibold">{slide.name}</p>
-              <p className="text-[15px]/[20px] text-white/85">UPSC CSE {slide.year}</p>
-            </div>
-            <span className="mt-[84px] flex flex-row-reverse items-center">
-              <span className="hero-mark-line block h-px w-14 origin-right bg-white/70" />
-              <span className="block size-2.5 rounded-full bg-white ring-4 ring-white/25" />
+            {/* Level with the "AIR" row: the panel's top padding and half the row, less half the dot. */}
+            <span className="mt-[54px] flex items-center">
+              <span className="block size-2.5 rounded-full bg-[#ffe9c2] ring-4 ring-[#ffe9c2]/25" />
+              <span className="hero-mark-line block h-[1.5px] w-14 origin-right bg-[#ffe9c2]/80" />
             </span>
+            <div className="rounded-[22px] bg-[rgb(46_17_6/0.62)] px-7 pt-5 pb-6 text-right shadow-[0_18px_40px_-18px_rgb(20_6_2/0.6)] ring-1 ring-[#ffe9c2]/15 backdrop-blur-md">
+              <p className="flex items-center justify-end gap-3 font-heading text-saffron">
+                <span className="text-[34px]/[1] font-semibold">AIR</span>
+                {/* The figures' box is trimmed to their height, so "AIR" centres on the digits themselves. */}
+                <span className="text-[124px]/[0.74] font-bold tracking-[-0.03em] [text-box:trim-both_cap_alphabetic]">{pad(slide.rank)}</span>
+              </p>
+              <p className="mt-4 text-[21px]/[26px] font-semibold text-white">{slide.name}</p>
+              <p className="text-[15px]/[20px] font-medium text-[#ffe9c2]">UPSC CSE {slide.year}</p>
+            </div>
           </div>
 
           {/* The type, on the left. */}

@@ -1,13 +1,12 @@
 import FooterWordmark from "@/components/sections/ClosingCta/FooterWordmark";
 import LinkOrText from "@/components/ui/LinkOrText";
 import Photo from "@/components/ui/Photo";
-import { campuses } from "@/data/contact";
-import { footerColumns, footerContactHeading, footerCopyright, footerLegal, footerTagline, footerWordmark, footerWordmarkPhotos } from "@/data/footer";
-import { contact } from "@/data/site";
+import { footerColumns, footerCopyright, footerLegal, footerSocial, footerWordmark, footerWordmarkPhotos } from "@/data/footer";
 import { cx } from "@/lib/cx";
 
-/** The footer's warm greys: link text and the column heads. */
+/** The footer's warm grey for links and small print, and its hairline. */
 const TEXT = "text-[#6e655c]";
+const RULE = "border-[#1a1714]/12";
 
 /**
  * A footer link (motion spec): it turns burnt as an underline draws in under it from the left. The
@@ -26,44 +25,30 @@ function FooterLink({ href, children }: { href: string | null; children: string 
 }
 
 /**
- * The cream footer after the closing call to action (IA 12; Figma "14 · Footer", 2392:7437): the brand
- * block (logo, the one-line promise and the contact details: both campuses, the phone with its hours, the
- * email) beside the client's three link columns (Explore, Resources, Support), the giant wordmark, bold and
- * filled with photographs of the institute (FooterWordmark), and the legal bar. "Contact us" in the
- * Support column jumps to the contact block (#contact).
+ * The cream footer after the closing call to action, with the contents of Figma "Footer – v5 (minimal)"
+ * (2567:4286): the logo over a hairline; six link columns (Vajiram & Ravi, Courses, Test series &
+ * mentorship, UPSC exam, Exam updates, Free resources), their heads small and bold, their links in the warm
+ * grey; then the giant wordmark, bold and filled with photographs of the institute (FooterWordmark); then
+ * the social icons (the Figma's brand marks, painted in the link colour, burnt on hover) and the legal bar
+ * over a hairline.
  */
 export default function SiteFooter() {
   return (
     <footer className="relative bg-cream">
-      <div className="relative mx-auto flex w-canvas flex-col items-center gap-12 px-20 pt-22 pb-8">
-        <div data-stagger className={cx("relative flex w-[1280px] items-start justify-between", TEXT)}>
-          <div className="flex w-[420px] shrink-0 flex-col items-start gap-5">
-            <a href="#top" aria-label="Vajiram & Ravi, back to top" className="block">
-              <Photo src="/images/logo.webp" alt="" sizes="176px" className="relative h-10 w-44 bg-cream" />
-            </a>
-            <p className="w-[380px] font-heading text-[20px]/[1.35] text-ink">{footerTagline}</p>
-            <address id="contact" className="flex scroll-mt-32 flex-col items-start gap-3 text-[13.5px]/[1.5] not-italic">
-              <h2 className="font-heading text-[17px]/[normal] text-[#1a1714]">{footerContactHeading}</h2>
-              {campuses.map((campus) => (
-                <p key={campus.id} className="w-[360px]">
-                  <span className="font-semibold text-ink">{campus.city}</span> · {campus.address}
-                </p>
-              ))}
-              <p className="whitespace-nowrap">
-                <a href={contact.phoneHref} className={LINK}>
-                  {contact.phone}
-                </a>
-                {` · ${contact.hours}`}
-              </p>
-              <a href={`mailto:${contact.email}`} className={cx("whitespace-nowrap", LINK)}>
-                {contact.email}
-              </a>
-            </address>
-          </div>
+      <div className="relative mx-auto flex w-canvas flex-col items-center gap-12 px-20 pt-16 pb-8">
+        {/* The logo row, fading in out of a soft blur as it comes into view (ui/TextMotion, data-fade). */}
+        <div data-fade className={cx("flex w-[1280px] items-center border-b pb-6", RULE)}>
+          <a href="#top" aria-label="Vajiram & Ravi, back to top" className="block">
+            <Photo src="/images/logo.webp" alt="" sizes="176px" className="relative h-[42px] w-44 bg-cream" />
+          </a>
+        </div>
+
+        {/* The six columns. */}
+        <nav aria-label="Footer" data-stagger className={cx("flex w-[1280px] items-start justify-between", TEXT)}>
           {footerColumns.map((column) => (
-            <div key={column.heading} className="flex w-[200px] shrink-0 flex-col items-start gap-3">
-              <h2 className="w-[200px] font-heading text-[17px]/[normal] text-[#1a1714]">{column.heading}</h2>
-              <ul className="flex w-[200px] flex-col items-start gap-3 text-[13.5px]/[1.4]">
+            <div key={column.heading} className="flex flex-col items-start gap-3.5">
+              <h2 className="text-[13px]/[16px] font-bold tracking-[0.01em] whitespace-nowrap text-[#1a1714]">{column.heading}</h2>
+              <ul className="flex flex-col items-start gap-3.5 text-[14px]/[20px] font-medium whitespace-nowrap">
                 {column.links.map((link) => (
                   <li key={link.label}>
                     <FooterLink href={link.href}>{link.label}</FooterLink>
@@ -72,20 +57,40 @@ export default function SiteFooter() {
               </ul>
             </div>
           ))}
-        </div>
+        </nav>
 
         <FooterWordmark text={footerWordmark} photos={footerWordmarkPhotos} />
 
-        {/* Never pre-hidden by a reveal: at the very foot of the page it might never reach the reveal line. */}
-        <div className={cx("flex w-[1280px] items-start justify-between border-t border-[#1a1714]/12 pt-5 text-[13px]/[normal] whitespace-nowrap", TEXT)}>
-          <p>{footerCopyright}</p>
-          <nav aria-label="Legal" className="flex items-start gap-6">
-            {footerLegal.map((link) => (
-              <FooterLink key={link.label} href={link.href}>
-                {link.label}
-              </FooterLink>
-            ))}
-          </nav>
+        {/* The social icons and the legal bar. Never pre-hidden by a reveal: at the very foot of the page it might never reach the reveal line. */}
+        <div className={cx("flex w-[1280px] flex-col items-start gap-6", TEXT)}>
+          <ul aria-label="Vajiram & Ravi on social media" className="flex items-start gap-3">
+            {footerSocial.map((social) => {
+              const mark = `url(/images/footer/social-${social.name}.svg) center / contain no-repeat`;
+              return (
+                <li key={social.name}>
+                  <LinkOrText
+                    href={social.href}
+                    ariaLabel={social.label}
+                    target={social.href ? "_blank" : undefined}
+                    className="flex size-8 items-center justify-center rounded-full [transition:color_var(--dur-fast)_var(--ease-out),background-color_var(--dur-fast)_var(--ease-out)] hover:bg-burnt/10 hover:text-burnt"
+                  >
+                    <span aria-hidden="true" className="block size-5 bg-current" style={{ mask: mark, WebkitMask: mark }} />
+                    {!social.href && <span className="sr-only">{social.label}</span>}
+                  </LinkOrText>
+                </li>
+              );
+            })}
+          </ul>
+          <div className={cx("flex w-full items-start justify-between border-t pt-6 text-[14px]/[20px] whitespace-nowrap", RULE)}>
+            <p>{footerCopyright}</p>
+            <nav aria-label="Legal" className="flex items-start gap-6">
+              {footerLegal.map((link) => (
+                <FooterLink key={link.label} href={link.href}>
+                  {link.label}
+                </FooterLink>
+              ))}
+            </nav>
+          </div>
         </div>
       </div>
     </footer>

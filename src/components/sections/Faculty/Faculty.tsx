@@ -5,16 +5,16 @@ import EducatorFlow from "./EducatorFlow";
 /**
  * Meet our educators (IA 7; Figma "06 · Meet Our Educators", 2377:4795): a cream band (the journey's).
  * The centred heading, its second beat in burnt orange (Mukta has no italics), and the lead; under them
- * the educators in the shared coverflow, with the centred educator introduced right under the big card
- * (EducatorFlow).
+ * the educators on a circular carousel, a ring of bent portrait cards, with the educator at the front
+ * introduced right under it (EducatorFlow, ui/CircularCarousel).
  *
  * "Meet our faculty" goes under the lead once the faculty page exists (links.faculty is null today):
- * until then a button that goes nowhere would only be a false promise, and the coverflow right below
+ * until then a button that goes nowhere would only be a false promise, and the carousel right below
  * already does what it invites.
  *
  * Motion (ui/TextMotion): the heading's letters rise in (data-split), the burnt words catching a light now
- * and then; the lead lights up word by word with the scroll (data-words); the coverflow rises into place
- * as it comes up the screen (data-rise).
+ * and then; the lead lights up word by word with the scroll (data-words); the carousel rises into place
+ * as it comes up the screen (data-rise), and its ring turns in once it is in view.
  */
 export default function Faculty() {
   const { heading, lead, cta } = facultyIntro;
@@ -33,7 +33,7 @@ export default function Faculty() {
           </IndianLink>
         )}
       </div>
-      {/* The coverflow rises into place with the scroll (ui/TextMotion, data-rise, measured on this wrapper). */}
+      {/* The carousel rises into place with the scroll (ui/TextMotion, data-rise, measured on this wrapper). */}
       <div className="mt-14">
         <div data-rise>
           <EducatorFlow educators={educators} />

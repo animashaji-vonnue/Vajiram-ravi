@@ -1,51 +1,52 @@
-/** Site footer (Figma 2392:7437; IA 12): the brand and contact block, three link columns, the giant photo-filled wordmark and the legal bar. All labels in sentence case (feedback item 9). */
+/**
+ * Site footer, with the contents of Figma "Footer – v5 (minimal)" (2567:4286): the logo row, six link
+ * columns, the social links and the legal bar; under the columns, the giant photo-filled wordmark
+ * (feedback item 43). All labels in sentence case (feedback item 9).
+ */
 
 import { links, type Href } from "./links";
+import { menuColumns } from "./site";
 
 /** A footer link. Its address comes from data/links; one whose page does not exist yet renders as text. */
 export type FooterLink = { label: string; href: Href };
 
-/** The brand line under the logo (IA 12, the client's copy of 10 Nov 2026). */
-export const footerTagline = "Preparing aspirants for the Civil Services Examination since 1976.";
-
-/** The footer's three link columns, as the client listed them. */
+/**
+ * The six columns, left to right as in the Figma: the institute's own pages, then the same lists as the
+ * header's mega menus (data/site), so the two never drift apart.
+ */
 export const footerColumns: { heading: string; links: FooterLink[] }[] = [
   {
-    heading: "Explore",
+    heading: "Vajiram & Ravi",
     links: [
       { label: "About us", href: links.aboutUs },
-      { label: "General Studies", href: links.gsCourse },
-      { label: "Optional subjects", href: links.optionalSubject },
-      { label: "Test series", href: links.testSeries },
-      { label: "Mentorship", href: links.mentorship },
-      { label: "Interview guidance", href: links.interviewGuidance },
-    ],
-  },
-  {
-    heading: "Resources",
-    links: [
-      { label: "The Recitals", href: links.theRecitals },
-      { label: "Current affairs", href: links.dailyCurrentAffairs },
-      { label: "Study materials", href: links.studyMaterial },
-      { label: "Prelims pointers", href: links.prelimsPointers },
-      { label: "Mains articles", href: links.mainsArticles },
-    ],
-  },
-  {
-    heading: "Support",
-    links: [
-      // The footer's own contact block (#contact) holds the addresses, phone and email.
-      { label: "Contact us", href: "#contact" },
-      { label: "Counselling", href: "#counselling" },
+      { label: "Careers", href: links.careers },
+      // The campus section holds the addresses, the phone and the map.
+      { label: "Contact us", href: "#locations" },
       { label: "FAQs", href: "#faq" },
-      { label: "Upcoming batches", href: "#batches" },
     ],
   },
+  menuColumns.courses,
+  menuColumns.testSeries,
+  menuColumns.upscExam,
+  menuColumns.examUpdates,
+  menuColumns.freeResources,
 ];
 
-/** The heading of the contact block. Its campuses come from data/contact, its phone and email from data/site. */
-export const footerContactHeading = "Contact";
-// TODO: the client's content asks for social media links; the live site lists none yet, so the footer has none.
+export type SocialName = "youtube" | "facebook" | "instagram" | "telegram" | "quora" | "whatsapp";
+
+/**
+ * The social links, in the Figma's order. Each icon is the Figma's brand mark
+ * (`/images/footer/social-<name>.svg`), painted in the link colour.
+ * TODO: the client has not given the channels' addresses yet; until then each shows as a plain icon.
+ */
+export const footerSocial: { name: SocialName; label: string; href: Href }[] = [
+  { name: "youtube", label: "YouTube", href: null },
+  { name: "facebook", label: "Facebook", href: null },
+  { name: "instagram", label: "Instagram", href: null },
+  { name: "telegram", label: "Telegram", href: null },
+  { name: "quora", label: "Quora", href: null },
+  { name: "whatsapp", label: "WhatsApp channel", href: null },
+];
 
 export const footerWordmark = "Vajiram & Ravi";
 

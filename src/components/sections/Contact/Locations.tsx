@@ -38,7 +38,7 @@ function Fact({ icon, children }: { icon: string; children: ReactNode }) {
 
 /**
  * "Our locations", after Figma "11 Location · concept D (photo grid)" (2541:5713), kept low (feedback item
- * 41): the heading (the emphasis in orange) and lead, then a 460px grid. On the left a cream tile with
+ * 41): the heading "Where can you find us?" (the emphasis in orange, no lead), then a 460px grid. On the left a cream tile with
  * the city tabs at its head beside the centre's name, then the address, landmark, hours and phone, and
  * under it the street map with "View on maps" over it; on the right a bento gallery of the institute
  * (Gallery).
@@ -59,7 +59,7 @@ export default function Locations() {
   return (
     <section id="locations" aria-labelledby="locations-h" className="relative bg-cream">
       <div className="mx-auto flex w-canvas flex-col gap-12 px-20 pt-10 pb-24">
-        {/* The heading and lead. */}
+        {/* The heading (the client asked for no lead under it). */}
         <div className="flex items-end justify-between gap-10">
           <div className="flex w-[820px] flex-col gap-4">
             <h2 id="locations-h" data-split className="font-heading text-[56px]/[1.08] tracking-[-0.02em] text-ink">
@@ -68,9 +68,6 @@ export default function Locations() {
                 {title.em}
               </em>
             </h2>
-            <p data-words className="w-[640px] text-[17px]/[1.55] text-clay">
-              {locationsIntro.text}
-            </p>
           </div>
         </div>
 
@@ -81,7 +78,7 @@ export default function Locations() {
             <div className="flex h-[252px] shrink-0 flex-col rounded-[20px] border border-[#eadbc4] bg-[#fbf3e6] px-9 pt-6 pb-7">
               <div className="flex items-center justify-between gap-6">
                 <CrossFade id={campus.id} duration={300}>
-                  <p className="font-mono text-[12px]/[16px] tracking-[0.01em] text-burnt">{campus.city} centre</p>
+                  <p className="text-[12px]/[16px] tracking-[0.01em] text-burnt">{campus.city} centre</p>
                 </CrossFade>
                 <TraditionalTabs
                   tabs={campuses.map((place) => ({ id: place.id, label: place.city }))}
@@ -150,10 +147,13 @@ const TILES = ["col-span-2 row-span-2", "col-span-2", "col-span-2"];
  * The gallery: a bento of three photographs of the institute in the right half of the grid (the building,
  * the classrooms and the library), each captioned
  * at its foot over a soft shade and easing in a little closer on hover (the shade deepens with it). The
- * first, the building, is captioned with the campus and its place. As the grid comes into view the
- * photographs are uncovered from their foot up one after another, settling from a little large (ui/
- * TextMotion, data-wipe), and they drift in their frames with the scroll (data-par). With reduced motion
- * the zoom, the wipe and the drift are off.
+ * first, the building, is captioned with the campus and its place. The building's photograph opens with
+ * the scroll expand (ui/TextMotion, data-expand on the picture alone, after React Bits "Scroll Expand"):
+ * it starts as a smaller rounded card in the middle of its tile and opens out to fill it as it rises to
+ * the middle of the screen. Its caption and the shade under it are not part of it, so they are readable
+ * all along. The other two are uncovered from their foot up, 80ms apart, settling from a little large
+ * (data-wipe, 700ms). All three drift in their frames with the scroll (data-par). With reduced motion
+ * the zoom, the expand, the wipe and the drift are off.
  */
 function Gallery({ city, place }: { city: string; place: string }) {
   return (
@@ -161,12 +161,17 @@ function Gallery({ city, place }: { city: string; place: string }) {
       {campusGallery.map((photo, i) => (
         <figure
           key={photo.src}
-          data-wipe
-          data-wipe-delay={160 + i * 140}
+          data-wipe={i === 0 ? undefined : true}
+          data-wipe-delay={i === 0 ? undefined : (i - 1) * 80}
           className={`group/photo relative overflow-clip rounded-[20px] bg-[#e8dccb] ${TILES[i] ?? ""}`}
         >
           {/* TODO: dummy photographs (see campusGallery); replace with each campus's own. */}
-          <div data-par className="absolute inset-x-0 -inset-y-[7%]">
+          <div
+            data-par
+            data-expand={i === 0 ? "0.62 0.5" : undefined}
+            data-expand-radius={i === 0 ? "20" : undefined}
+            className="absolute inset-x-0 -inset-y-[7%]"
+          >
           <img
             src={photo.src}
             alt=""

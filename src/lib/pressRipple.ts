@@ -3,7 +3,8 @@ import type { PointerEvent } from "react";
 /**
  * The press ripple every pressable control on the page shares (the buttons, ui/Cta, and the carousel
  * arrows, ui/CarouselControls), after Material's ripple: a disc grows out from the point pressed and fades
- * (globals.css, .press-ripple), and a ring pulses out past the control's edge (.press-pulse). The disc goes
+ * (globals.css, .press-ripple), and a wave of two rings pulses out past the control's edge, the second a
+ * beat behind (.press-pulse, .press-pulse-late). The buttons tint it bright orange (--ripple, --press-ring). The disc goes
  * into the control's `[data-ripple]` layer, which clips it to the shape; the ring goes on the control itself.
  * Both remove themselves when they end. Reduced motion: globals.css hides them.
  */
@@ -20,12 +21,15 @@ export function pressRipple(event: PointerEvent<HTMLElement>) {
   const disc = document.createElement("span");
   disc.className = "press-ripple";
   Object.assign(disc.style, { left: `${x}px`, top: `${y}px`, width: `${reach}px`, height: `${reach}px` });
+  // The wave: two rings running out past the edge, the second a beat behind the first.
   const ring = document.createElement("span");
   ring.className = "press-pulse";
-  for (const el of [disc, ring]) {
+  const echo = document.createElement("span");
+  echo.className = "press-pulse press-pulse-late";
+  for (const el of [disc, ring, echo]) {
     el.setAttribute("aria-hidden", "true");
     el.addEventListener("animationend", () => el.remove(), { once: true });
   }
   (target.querySelector("[data-ripple]") ?? target).append(disc);
-  target.append(ring);
+  target.append(ring, echo);
 }

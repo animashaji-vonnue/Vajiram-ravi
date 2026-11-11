@@ -93,14 +93,14 @@ export default function FeaturedBatch() {
       <div ref={ref} className="relative flex h-[188px] w-full">
         {/* The head: the label, the target year and what the programme prepares for. */}
         <div className="relative flex w-[308px] shrink-0 flex-col items-start justify-center overflow-clip rounded-l-[18px] bg-[#ec5800] px-6 whitespace-nowrap">
-          {/* The whole lotus (the tickets' one is cut to their 108px head), its centre where theirs is; the head's rounded edge crops it. */}
+          {/* The whole lotus (the tickets' one is cut to their 108px head), its centre where theirs is, turning slowly (TicketArt.css); the head's rounded edge crops it. */}
           <img
             src="/images/admissions/ticket-lotus-full.svg"
             alt=""
             aria-hidden="true"
             width={260}
             height={260}
-            className="pointer-events-none absolute -top-[58px] left-[124px] max-w-none"
+            className="ticket-lotus pointer-events-none absolute -top-[58px] left-[124px] max-w-none"
           />
           <p className="relative text-[13px]/[16px] font-bold tracking-[0.01em] text-saffron">{batch.label}</p>
           <p className="relative mt-1.5 font-heading text-[64px]/[64px] text-white">
@@ -130,7 +130,7 @@ export default function FeaturedBatch() {
               { label: batch.details.location, value: batch.location },
             ].map((detail) => (
               <div key={detail.label} className="flex flex-col gap-1.5">
-                <dt data-scramble className="font-mono text-[11px]/[14px] tracking-[0.01em] text-clay">{detail.label}</dt>
+                <dt data-scramble className="text-[12px]/[15px] tracking-[0.01em] text-clay">{detail.label}</dt>
                 <dd className="text-[15px]/[21px] font-semibold text-ink">{detail.value}</dd>
               </div>
             ))}

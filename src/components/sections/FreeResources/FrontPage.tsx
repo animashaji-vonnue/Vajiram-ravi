@@ -1,9 +1,7 @@
-import type { CSSProperties } from "react";
 import IndianLink from "@/components/ui/IndianLink";
 import LinkOrText from "@/components/ui/LinkOrText";
 import { masthead, otherResources, otherResourcesLabel, resourceColumns, resourcesIntro, resourcesQuote } from "@/data/study-materials";
 import Dateline from "./Dateline";
-import { newsprint } from "./newsprint";
 import PrintIn from "./PrintIn";
 import "./front-page.css";
 
@@ -22,7 +20,7 @@ import "./front-page.css";
  * with a second sheet askew beneath it and a faint fold across its middle. Every headline links to its article on vajiramandravi.com: on hover its
  * underline draws in and the column's photo develops into colour. The entrance (PrintIn) prints the page
  * in, at the times marked here; with it the headline's letters rise (ui/TextMotion, data-split) and the
- * small mono labels settle out of shuffling type (data-scramble), and the halftone photos drift in their
+ * small labels settle out of shuffling type (data-scramble), and the halftone photos drift in their
  * frames with the scroll (data-par).
  */
 
@@ -34,8 +32,8 @@ const UNDERLINE =
 const INK = "text-ink";
 const HAIRLINE = "border-[rgb(42_26_18/0.18)]";
 
-/** The headline face. */
-const SERIF = newsprint.className;
+/** The headline face: the site's heading face, Mukta (the site uses Mukta and Source Sans 3 only). */
+const SERIF = "font-heading";
 
 /** When each part prints in, ms after the sheet starts to settle (PrintIn). */
 const AT = { masthead: 250, rule: 350, headline: 480, columnRules: 620, columns: 680, columnStep: 110, footRule: 1000, foot: 1080 };
@@ -58,7 +56,6 @@ export default function FrontPage() {
   return (
     <PrintIn
       className="relative isolate w-full rounded-[2px] border border-[#eadcc4] bg-[#fffbf4] px-12 pt-8 pb-6 shadow-[0_1px_0_rgb(255_255_255/0.9)_inset,0_28px_56px_-30px_rgb(43_18_5/0.32)]"
-      style={{ "--fp-serif": newsprint.style.fontFamily } as CSSProperties}
     >
       {/* The sheet under this one, a little askew; the grain of fresh newsprint; the fold. Decoration. */}
       <span aria-hidden="true" className="absolute inset-0 -z-10 rotate-[0.7deg] rounded-[2px] border border-[#eadcc4] bg-[#fbf3e5] shadow-[0_18px_36px_-24px_rgb(43_18_5/0.25)]" />
@@ -113,7 +110,7 @@ export default function FrontPage() {
             “
           </span>
           <blockquote className={`${SERIF} text-[25px]/[1.32] font-medium ${INK} italic`}>{resourcesQuote.text}</blockquote>
-          <figcaption data-scramble className="mt-4 flex items-center gap-3 font-mono text-[11px]/[16px] tracking-[0.16em] text-clay uppercase">
+          <figcaption data-scramble className="mt-4 flex items-center gap-3 text-[12px]/[16px] tracking-[0.02em] text-clay">
             <span aria-hidden="true" className="h-px w-8 bg-clay/60" />
             {resourcesQuote.source}
           </figcaption>
@@ -135,7 +132,7 @@ export default function FrontPage() {
         {resourceColumns.map((column, i) => (
           <article key={column.title} data-press="ink" data-press-at={AT.columns + i * AT.columnStep} className="row-span-6 grid grid-rows-subgrid">
             {/* The column head: its section letter over a heavy rule, the title, the desk's byline. */}
-            <p data-scramble className="w-full border-b-[3px] border-ink pb-1.5 font-mono text-[11px]/[16px] font-medium tracking-[0.16em] text-clay uppercase">Section {column.section}</p>
+            <p data-scramble className="w-full border-b-[3px] border-ink pb-1.5 text-[12px]/[16px] font-medium tracking-[0.02em] text-clay">Section {column.section}</p>
             <h3 className={`${SERIF} mt-2.5 self-end text-[25px]/[1.15] font-bold ${INK}`}>{column.title}</h3>
             <p className={`mt-1.5 w-full border-b ${HAIRLINE} pb-3 text-[13px]/[18px] text-clay italic`}>{column.byline}</p>
 

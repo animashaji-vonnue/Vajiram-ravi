@@ -4,12 +4,12 @@ import { cx } from "@/lib/cx";
 /*
  * The arrow medallion: the page-wide signal for "this is clickable", now the arrow alone in the colour of
  * its label (the client took out the circle behind it). The tones are kept for the callers.
- * While any `group/medal` ancestor is hovered the arrow nudges 2px forward. Not with reduced motion. Decoration only: hidden from assistive technology.
+ * While any `group/medal` ancestor is hovered the arrow slides 4px forward (300ms, as the `kevin` branch's buttons). Not with reduced motion. Decoration only: hidden from assistive technology.
  */
 
-/** The arrow's nudge on hover. */
+/** The arrow's slide on hover: 4px over 300ms on the soft ease-out. */
 const NUDGE =
-  "[transition:translate_var(--dur-fast)_var(--ease-out)] group-hover/medal:translate-x-[2px] motion-reduce:transition-none";
+  "[transition:translate_300ms_var(--ease-out)] group-hover/medal:translate-x-1 motion-reduce:transition-none";
 
 /** The arrow, drawn on the 30px box (the 26px medallion is the same drawing, scaled). */
 const ARROW = "M9.23077 15H19.6154M15.5769 19.0385L19.6154 15L15.5769 10.9615";

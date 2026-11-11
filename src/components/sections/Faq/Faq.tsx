@@ -19,8 +19,8 @@ const schema = {
  * margin, one open at a time, the open one on a tinted panel.
  *
  * The band grows with its questions (the client's seven): nothing in it is drawn to a fixed height.
- * Motion: the heading's letters rise in (ui/TextMotion, data-split), its orange answer catching a light
- * now and then; the seal is pressed on after it (FaqSeal) and turns a little with the scroll (data-turn),
+ * Motion: the heading's letters rise in, quickly (ui/TextMotion, data-split); the seal is pressed on
+ * after it (FaqSeal) and turns a little with the scroll (data-turn),
  * and the questions follow one by one (data-stagger).
  */
 export default function Faq() {
@@ -42,7 +42,7 @@ export default function Faq() {
             <FaqSeal className="relative" />
           </span>
 
-          <div className="mt-12 border-b border-[rgb(94_23_16/0.25)]">
+          <div className="mt-12 border-b border-[rgb(94_23_16/0.25)] [transition:border-color_var(--dur-base)_var(--ease-in-out)] has-[>div>div:last-child_[aria-expanded=true]]:border-transparent">
             <FaqList entries={faqEntries} />
           </div>
         </div>

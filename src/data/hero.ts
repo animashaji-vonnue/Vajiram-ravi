@@ -9,15 +9,15 @@ export type HeadlineRun = { text: string; em?: boolean };
 
 export const hero = {
   /**
-   * "Your Civil Services ambition deserves a strong foundation. Build it with Vajiram & Ravi.", in the three
-   * lines it is set in (each rises in on its own), the last as the emphasis.
+   * "Prepare for the UPSC with the institute behind India's top rank-holders." (the client's line of 11 Nov
+   * 2026), in the three lines it is set in (each rises in on its own), the last as the emphasis.
    */
   headline: [
-    [{ text: "Your Civil Services ambition " }],
-    [{ text: "deserves a strong foundation. " }],
-    [{ text: "Build it with Vajiram & Ravi.", em: true }],
+    [{ text: "Prepare for the UPSC with " }],
+    [{ text: "the institute behind " }],
+    [{ text: "India’s top rank-holders.", em: true }],
   ] as HeadlineRun[][],
-  lead: "Established in 1976, Vajiram & Ravi brings 50 years of experience in Civil Services preparation, offering expert guidance, structured programmes, comprehensive resources and flexible learning formats to support aspirants at every stage of their UPSC journey.",
+  lead: "Since 1976, Vajiram & Ravi has brought 50 years of Civil Services teaching experience to your preparation, with expert faculty, structured programmes, comprehensive study resources and flexible learning options.",
   primary: { label: "Explore programmes", href: "#programmes" },
   secondary: { label: "Get expert guidance", href: "#counselling" },
 };

@@ -16,10 +16,10 @@ import { whenVisible } from "@/lib/reveal";
  *   - The centre slide is "expanded" (renderSlide gets `expanded`): it shows its full content; the side
  *     slides are collapsed to their title. An optional caption under the centre (renderCaption) cross-
  *     fades to the next slide's as it changes.
- *   - Arrows, dots, the ← → keys, a swipe or a click on a side slide move it; it never ends (the items are
+ *   - Arrows (at the left and right edges of the stage), dots, the ← → keys, a swipe or a click on a side slide move it; it never ends (the items are
  *     laid out more than once round the loop, so the wrap always happens out of sight).
  *   - It plays on its own (`interval`), showing the time left in the active dot, and pauses while the
- *     pointer is over it, while focus is inside it, while it is off screen or the tab is hidden, and for
+ *     pointer is on the centre slide (not the frame around it), while focus is inside it, while it is off screen or the tab is hidden, and for
  *     good with the pause button. Moving it by hand restarts the count.
  *   - It enters once, when it comes into view: the slides start gathered at the centre, collapsed, and
  *     spread out to their places, after which the centre one expands.
@@ -137,6 +137,11 @@ export default function Coverflow<T>({
 
   const offsetOf = (s: number) => mod(s - slot + half, slots) - half;
 
+  // A slide that leaves the centre under the pointer never sees it leave: let go of its hold.
+  useEffect(() => {
+    hold.current.hover = false;
+  }, [slot]);
+
   // Motion preference, the entrance and whether it is on screen.
   useEffect(() => {
     const stage = stageRef.current;
@@ -239,7 +244,7 @@ export default function Coverflow<T>({
       zIndex: p.z,
       opacity: p.opacity,
       transform: `translateX(${p.x.toFixed(1)}px) rotateY(${p.turn.toFixed(2)}deg) scale(${p.scale.toFixed(4)})`,
-      transition: still ? "none" : `transform 900ms ${EASE} ${delay}ms, opacity 600ms ${EASE} ${delay}ms`,
+      transition: still ? "none" : `transform 600ms ${EASE} ${delay}ms, opacity 400ms ${EASE} ${delay}ms`,
       pointerEvents: p.opacity === 0 ? "none" : undefined,
     };
   };
@@ -257,8 +262,6 @@ export default function Coverflow<T>({
       onBlur={(event) => {
         if (!regionRef.current?.contains(event.relatedTarget as Node | null)) hold.current.focus = false;
       }}
-      onPointerEnter={(event) => event.pointerType === "mouse" && (hold.current.hover = true)}
-      onPointerLeave={() => (hold.current.hover = false)}
       className={cx("relative flex w-full flex-col items-center", className)}
     >
       {/* The stage: every slide is stacked on its centre line and placed by transform alone. */}
@@ -299,11 +302,26 @@ export default function Coverflow<T>({
                 : { role: "group", "aria-roledescription": "slide", "aria-label": `${index + 1} of ${count}` })}
               className={cx("absolute top-0 left-1/2 origin-center [backface-visibility:hidden]", !isActive && "cursor-pointer")}
               style={slideStyle(offset)}
+              // Only the centre slide holds the autoplay while the pointer is on it (not the frame around it).
+              onPointerEnter={isActive ? (event) => event.pointerType === "mouse" && (hold.current.hover = true) : undefined}
+              onPointerLeave={isActive ? () => (hold.current.hover = false) : undefined}
             >
               {renderSlide(items[index], { index, active: isActive, expanded: isActive && spread, copy })}
             </div>
           );
         })}
+        {/* The arrows at the left and right edges of the stage, level with the centre slide. */}
+        {([-1, 1] as const).map((side) => (
+          <div key={side} className={cx("absolute top-1/2 z-[60] -translate-y-1/2", side < 0 ? "left-4" : "right-4")}>
+            <CarouselArrow
+              direction={side < 0 ? "prev" : "next"}
+              label={`${side < 0 ? "Previous" : "Next"} ${itemName}`}
+              tone={tone}
+              size={48}
+              onClick={() => move(side, true)}
+            />
+          </div>
+        ))}
       </div>
 
       {renderCaption && (
@@ -326,7 +344,6 @@ export default function Coverflow<T>({
       )}
 
       <div className="flex items-center gap-5" style={{ marginTop: gap }}>
-        <CarouselArrow direction="prev" label={`Previous ${itemName}`} tone={tone} size={48} onClick={() => move(-1, true)} />
         <CarouselDots
           count={count}
           active={active}
@@ -359,7 +376,6 @@ export default function Coverflow<T>({
             </svg>
           </button>
         )}
-        <CarouselArrow direction="next" label={`Next ${itemName}`} tone={tone} size={48} onClick={() => move(1, true)} />
       </div>
 
       <p ref={liveRef} aria-live="polite" aria-atomic="true" className="sr-only" />

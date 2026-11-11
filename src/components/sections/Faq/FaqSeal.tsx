@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import InkStamp from "@/components/sections/Admissions/InkStamp";
 import { prefersReducedMotion } from "@/lib/motion";
 import { whenVisible } from "@/lib/reveal";
 
@@ -11,10 +10,11 @@ const STAMP_DELAY_MS = 520;
 const STAMP_MS = 260;
 
 /**
- * The Vajiram & Ravi stamp beside the FAQ heading: the same round rubber stamp as on the counselling
- * postcard (Admissions/InkStamp: a double ring, "Vajiram & Ravi" round the top and "New Delhi" along the
- * foot, the emblem's rising sun and 1976 in the middle, in uneven vermilion ink), larger here, turned -10°
- * as a hand would press it and printed into the cream (multiply). When the band comes into view it is
+ * The Vajiram & Ravi seal beside the FAQ heading: the client's "Vintage Terracotta Vajiram & Ravi Seal"
+ * (Figma 2572:4286), its ink lifted off the paper it was drawn on (faq/seal-terracotta.webp, 360px, shown
+ * at 150px): a scalloped rim, "Vajiram & Ravi" round the top, the emblem's rising sun with the tick, the
+ * ribbon and "Estd. 1976", in worn terracotta ink. Turned -10° as a hand would press it and printed into
+ * the cream (multiply). When the band comes into view it is
  * pressed on (scaled down from 1.4 and fading in, after the heading) with an ink ring that spreads and
  * fades. With reduced motion it is simply there. Decoration only.
  */
@@ -60,9 +60,9 @@ export default function FaqSeal({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div ref={ref} aria-hidden="true" className={`pointer-events-none size-[136px] -rotate-10 opacity-90 mix-blend-multiply ${className ?? ""}`}>
-      <span ref={ringRef} className="absolute -inset-3 rounded-full border-2 border-[#a5321b]/40 opacity-0" />
-      <InkStamp filterId="faq-stamp-ink" className="size-full" />
+    <div ref={ref} aria-hidden="true" className={`pointer-events-none size-[150px] -rotate-10 mix-blend-multiply ${className ?? ""}`}>
+      <span ref={ringRef} className="absolute -inset-3 rounded-full border-2 border-[#d24b12]/40 opacity-0" />
+      <img src="/images/faq/seal-terracotta.webp" alt="" width={360} height={360} className="size-full" />
     </div>
   );
 }

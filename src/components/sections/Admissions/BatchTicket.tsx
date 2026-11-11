@@ -110,7 +110,7 @@ export default function BatchTicket({ batch, tone }: BatchTicketProps) {
         <p className="sr-only">
           Starts <time dateTime={batch.startDate}>{`${day} ${month} ${year}`}</time>
         </p>
-        <p className={cx("absolute top-[81px] left-5 text-[11px]/[14px] font-bold tracking-[0.02em]", look.target)}>
+        <p className={cx("absolute top-[81px] left-5 text-[12px]/[15px] font-bold tracking-[0.02em]", look.target)}>
           Target: UPSC CSE {batch.targetYear}
         </p>
       </div>
@@ -119,7 +119,7 @@ export default function BatchTicket({ batch, tone }: BatchTicketProps) {
         <h3 className="text-[18px]/[24px] font-bold text-mahogany">{batch.programme}</h3>
         {modes && <p className="text-[13px]/[18px] font-medium text-clay">{modes}</p>}
         {batch.admissionOpen && (
-          <p className="flex items-center gap-1.5 text-[11px]/[14px] font-bold tracking-[0.01em] text-[#a8431a]">
+          <p className="flex items-center gap-1.5 text-[12px]/[15px] font-bold tracking-[0.01em] text-[#a8431a]">
             <span aria-hidden="true" className="size-1.5 rotate-45 bg-current" />
             Admissions open
           </p>

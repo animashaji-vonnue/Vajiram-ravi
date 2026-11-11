@@ -1,4 +1,5 @@
 import type { TicketArtName } from "@/data/admissions";
+import "./TicketArt.css";
 
 /** The rays fanned over the open book: 11 of them, one for each month of the comprehensive programme. */
 const RAYS = Array.from({ length: 11 }, (_, i) => {
@@ -65,11 +66,29 @@ const ART: Record<TicketArtName, { faint: string[]; strong: string[] }> = {
 };
 
 /**
+ * What moves in each drawing, by the stroke's place in its list (ta-* in TicketArt.css): the tent's flag
+ * waves and the stars twinkle; the globe turns (its meridians widen and narrow) inside a drifting orbit; the
+ * paper's columns are typed in again and again under a gently bobbing front page; the book's rays pulse out
+ * one after another while its pages breathe.
+ */
+const MOTION: Record<TicketArtName, { faint: Record<number, string>; strong: Record<number, string>; strongGroup?: string }> = {
+  camp: { faint: { 3: "ta-twinkle", 4: "ta-twinkle ta-d2", 5: "ta-twinkle ta-d3" }, strong: { 2: "ta-flag" } },
+  globe: { faint: { 1: "ta-turn", 5: "ta-orbit" }, strong: { 1: "ta-turn ta-d2" } },
+  newspaper: { faint: { 3: "ta-type", 4: "ta-type ta-d2" }, strong: {}, strongGroup: "ta-bob" },
+  book: {
+    faint: Object.fromEntries(RAYS.map((_, i) => [3 + i, `ta-ray ta-r${i}`])),
+    strong: { 0: "ta-page-l", 1: "ta-page-r" },
+  },
+};
+
+/**
  * A batch ticket's own drawing on its coloured head (after the lotus mark that the featured ticket carries),
- * fitting its subject. Decoration only.
+ * fitting its subject, with a small loop of motion of its own (MOTION) that runs only while the batches are
+ * on screen and rests with reduced motion. Decoration only.
  */
 export default function TicketArt({ name }: { name: TicketArtName }) {
   const { faint, strong } = ART[name];
+  const motion = MOTION[name];
   return (
     <svg
       aria-hidden="true"
@@ -81,16 +100,16 @@ export default function TicketArt({ name }: { name: TicketArtName }) {
       strokeWidth={1.2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="pointer-events-none absolute top-0 left-[104px] max-w-none"
+      className="ticket-art pointer-events-none absolute top-0 left-[104px] max-w-none"
     >
       <g stroke="white" strokeOpacity={0.1}>
-        {faint.map((d) => (
-          <path key={d} d={d} />
+        {faint.map((d, i) => (
+          <path key={d} d={d} className={motion.faint[i]} />
         ))}
       </g>
-      <g stroke="white" strokeOpacity={0.18}>
-        {strong.map((d) => (
-          <path key={d} d={d} />
+      <g stroke="white" strokeOpacity={0.18} className={motion.strongGroup}>
+        {strong.map((d, i) => (
+          <path key={d} d={d} className={motion.strong[i]} />
         ))}
       </g>
     </svg>

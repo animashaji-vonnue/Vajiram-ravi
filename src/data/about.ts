@@ -5,14 +5,13 @@
 
 export const aboutIntro = {
   /**
-   * The heading, one sentence (client feedback 16: the three sentences it was made "A" a capital twice),
-   * in the client's words. The emphasis, its last beat, is set in the emphasis colour.
+   * The heading, one sentence, in the client's words of 11 Nov 2026 (with a full stop, as every section heading has). The emphasis, its last beat, is set in the emphasis colour.
    */
   heading: {
-    lead: "Five decades of experience, a dedicated academic team and",
-    emphasis: "a legacy in Civil Services preparation.",
+    lead: "Five decades of experience and",
+    emphasis: "a legacy in civil services preparation.",
   },
-  lead: "Since 1976, Vajiram & Ravi has built a strong academic foundation in Civil Services preparation, bringing together experienced subject specialists, dedicated educators and structured programmes to guide generations of aspirants.",
+  lead: "Established in 1976, Vajiram & Ravi has guided generations of aspirants through experienced educators, subject-focused teaching and structured academic programmes.",
 };
 
 /** The line icons in the cards' medallions (About). */

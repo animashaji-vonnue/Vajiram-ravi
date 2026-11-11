@@ -29,7 +29,15 @@ export default function FaqAccordion({ entries, open, onToggle }: FaqAccordionPr
   return entries.map((entry, i) => {
     const expanded = i === open;
     return (
-      <div key={entry.question} className="group/row relative w-[788px] shrink-0 border-t border-[rgb(94_23_16/0.25)] py-5">
+      // The open row drops its rule, and so does the row after it (the list's foot rule, after the last), so
+      // the open panel stands clear of lines above and below.
+      <div
+        key={entry.question}
+        className={cx(
+          "group/row relative w-[788px] shrink-0 border-t py-5 [transition:border-color_var(--dur-base)_var(--ease-in-out)]",
+          expanded || i - 1 === open ? "border-transparent" : "border-[rgb(94_23_16/0.25)]",
+        )}
+      >
         {/* The open panel: a tint from the numeral's margin to past the toggle, its accent bar at the left. */}
         <span
           aria-hidden="true"

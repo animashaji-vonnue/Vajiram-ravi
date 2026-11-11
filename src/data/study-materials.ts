@@ -36,7 +36,7 @@ export const masthead = {
  * the way a paper sets a quote it pulls from the page.
  */
 export const resourcesQuote = {
-  text: "Since 1976, Vajiram & Ravi has built a strong academic foundation in Civil Services preparation.",
+  text: "Established in 1976, Vajiram & Ravi has guided generations of aspirants.",
   source: "Vajiram & Ravi",
 };
 

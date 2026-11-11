@@ -157,8 +157,7 @@ type PostcardProps = {
 
 /**
  * The India Post postcard (Figma "Postcard", 2377:4881, 700 wide): the title; a postage stamp stuck in the
- * corner, turned a little (PostageStamp: perforated, "Vajiram & Ravi" over an engraving of the Parliament
- * House, "India" and 1976), cancelled by a round vermilion postmark across its lower left corner (Postmark)
+ * corner, turned a little (PostageStamp: the Figma's perforated Vajiram & Ravi postage stamp), cancelled by a round vermilion postmark across its lower left corner (Postmark)
  * whose wavy lines run off onto the card; and the counselling form: Full
  * name; Mobile number and Email address; Programme of interest and Preferred learning mode; Your query
  * (optional); "Request a call back". Each field is an outlined box whose real label rests inside it and
@@ -442,8 +441,8 @@ export default function Postcard({ programmes, modes, className }: PostcardProps
         {copy.postcardTitle}
       </h3>
 
-      {/* The postage stamp (92 × 112, turned 2.5°) in the corner, inside the card's frame. */}
-      <div className="absolute top-3.5 left-[584px] rotate-[2.5deg]">
+      {/* The postage stamp (92 × 118, turned 2.5°) in the corner, inside the card's frame. */}
+      <div className="absolute top-2.5 left-[584px] rotate-[2.5deg]">
         <div ref={stampRef}>
           <PostageStamp />
         </div>
@@ -487,7 +486,7 @@ export default function Postcard({ programmes, modes, className }: PostcardProps
       {/* Posted: a round postmark across the top of the stamp, its words over the engraving's light sky, in
           the postmark's vermilion so it reads over the stamp's maroon print, with its ink ring. */}
       {done && (
-        <div aria-hidden="true" className="pointer-events-none absolute top-2 left-[594px] size-[76px] rotate-6 mix-blend-multiply">
+        <div aria-hidden="true" className="pointer-events-none absolute top-0 left-[588px] size-[88px] rotate-6 mix-blend-multiply">
           <span ref={postmarkInkRef} className="absolute -inset-5 rounded-full border-2 border-mahogany/35 opacity-0" />
           <div
             ref={postmarkRef}
@@ -495,9 +494,9 @@ export default function Postcard({ programmes, modes, className }: PostcardProps
             className="relative flex size-full flex-col items-center justify-center gap-px rounded-full border-2 border-current"
           >
             <span className="absolute inset-[5px] rounded-full border border-current/60" />
-            <span className="text-[9px]/[11px] font-bold tracking-[0.1em]">POSTED</span>
-            <span className="font-mono text-[9px]/[11px]">{postedOn}</span>
-            <span className="text-[9px]/[11px] font-bold tracking-[0.1em]">V&amp;R</span>
+            <span className="text-[12px]/[14px] font-bold tracking-[0.04em]">POSTED</span>
+            <span className="text-[12px]/[14px]">{postedOn}</span>
+            <span className="text-[12px]/[14px] font-bold tracking-[0.04em]">V&amp;R</span>
           </div>
         </div>
       )}
@@ -631,7 +630,7 @@ export default function Postcard({ programmes, modes, className }: PostcardProps
               {firstName ? `, ${firstName}` : ""}.
             </p>
             <p className="text-[15px]/[22px] font-medium text-clay">{copy.thanksText}</p>
-            <p className="max-w-full truncate font-mono text-[12px]/[16px] tracking-[0.01em] text-clay">
+            <p className="max-w-full truncate text-[12px]/[16px] tracking-[0.01em] text-clay">
               {phoneDigits(values.phone)} · {values.programme} · {values.mode}
             </p>
             <div className="mt-2">

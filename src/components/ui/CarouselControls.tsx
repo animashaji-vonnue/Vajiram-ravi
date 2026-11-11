@@ -7,7 +7,8 @@ import { pressRipple } from "@/lib/pressRipple";
 
 /*
  * Carousel arrows and dots (motion spec, "Carousel arrows + dots"), the same on every carousel of the page.
- *   - Arrow: a quiet outline at rest (a hairline ring, the icon in ink); only hover fills it ink and turns
+ *   - Arrow: a quiet outline at rest (a hairline ring over a faint frosted backing, so it reads over a card
+ *     or a photo, the icon in ink); only hover fills it ink and turns
  *     the icon cream (--dur-fast). Pressing scales it to 0.96 and sets off the press ripple: a disc grows
  *     out from the point pressed and a ring pulses past the edge (lib/pressRipple, the same as
  *     the buttons). An arrow with nothing further to go hides (opacity 0, out of the tab order) but keeps
@@ -49,12 +50,12 @@ export function CarouselArrow({ direction, onClick, label, hidden = false, disab
       tabIndex={hidden ? -1 : undefined}
       style={{ width: size, height: size }}
       className={cx(
-        "relative isolate flex shrink-0 cursor-pointer items-center justify-center overflow-visible border bg-transparent [transition:background-color_var(--dur-fast)_var(--ease-out),color_var(--dur-fast)_var(--ease-out),border-color_var(--dur-fast)_var(--ease-out),opacity_var(--dur-fast)_var(--ease-out),scale_80ms_var(--ease-out)] active:scale-[.96]",
+        "relative isolate flex shrink-0 cursor-pointer items-center justify-center overflow-visible border [transition:background-color_var(--dur-fast)_var(--ease-out),color_var(--dur-fast)_var(--ease-out),border-color_var(--dur-fast)_var(--ease-out),opacity_var(--dur-fast)_var(--ease-out),scale_80ms_var(--ease-out)] active:scale-[.96]",
         shape === "circle" ? "rounded-full" : "rounded-lg",
-        tone !== "dark" ? "border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-cream" : "border-cream/45 text-cream hover:border-cream hover:bg-cream hover:text-ink",
+        tone !== "dark" ? "border-ink/25 bg-cream/70 text-ink backdrop-blur-sm hover:border-ink hover:bg-ink hover:text-cream" : "border-cream/55 bg-[rgb(62_22_8/0.4)] text-cream backdrop-blur-sm hover:border-cream hover:bg-cream hover:text-ink",
         hidden && "pointer-events-none opacity-0",
-        disabled && "cursor-default opacity-35 hover:bg-transparent",
-        disabled && (tone !== "dark" ? "hover:border-ink/25 hover:text-ink" : "hover:border-cream/45 hover:text-cream"),
+        disabled && "cursor-default opacity-35",
+        disabled && (tone !== "dark" ? "hover:border-ink/25 hover:bg-cream/70 hover:text-ink" : "hover:border-cream/55 hover:bg-[rgb(62_22_8/0.4)] hover:text-cream"),
         className,
       )}
     >

@@ -4,20 +4,24 @@ import { useEffect } from "react";
 import { canvasTop, getCanvasZoom } from "@/lib/canvas";
 import { whenVisible } from "@/lib/reveal";
 
-/** The spec's order inside a section, as start times in ms: eyebrow, heading, sub text 80ms later, content. */
-const START = { eyebrow: 0, heading: 120, sub: 200, content: 320 } as const;
-const STAGGER_MS = 60;
-/** After 8 items the stagger stops growing, so long lists do not feel slow. */
-const MAX_STAGGER_STEPS = 8;
-/** Long enough for the slowest reveal (600ms) after the last stagger step, and for the italic words' shimmer (globals.css) to finish. */
-const SETTLE_MS = 2000;
+/**
+ * The spec's order inside a section, as start times in ms: eyebrow and heading at once, sub text 60ms
+ * later, then the content. Readability first: no text waits more than 200ms, and staggers are short.
+ */
+const START = { eyebrow: 0, heading: 0, sub: 60, content: 100 } as const;
+const STAGGER_MS = 25;
+/** After 4 items the stagger stops growing, so nothing waits more than 200ms. */
+const MAX_STAGGER_STEPS = 4;
+/** Long enough for the slowest reveal (450ms) after the longest delay. */
+const SETTLE_MS = 900;
 
 /**
  * Section reveals (motion spec, "Section reveal"). Mark elements with `data-reveal`:
  *   - `"eyebrow"`: the ornament eyebrow (its rules grow out from the label).
- *   - `"heading"`: fades up --rise over --dur-slow; `data-reveal-em` words inside arrive 120ms later.
- *   - `"sub"`: the sub text, 80ms after the heading.
- *   - no value / `"sm"` / `"fade"`: content blocks, in document order with the 60ms stagger, rising --rise,
+ *   - `"heading"`: fades up --rise over 450ms, whole (its emphasis with it).
+ *   - `"sub"`: the sub text, 60ms after the heading.
+ *   - no value / `"sm"` / `"fade"`: content blocks, in document order from 100ms with a 25ms stagger
+ *     (never more than 200ms; data-reveal-delay is capped there too), rising --rise,
  *     --rise-sm or not at all. Children of a `data-reveal-group` element are content items too.
  *   - `data-reveal-delay="ms"` adds to an element's start.
  * Everything inside one section (or `[data-reveal-section]`) plays once, together, when 20% of that
@@ -61,11 +65,12 @@ export default function ScrollReveal() {
       for (const el of ordered) {
         const role = el.getAttribute("data-reveal");
         const extra = Number(el.getAttribute("data-reveal-delay")) || 0;
+        // No text waits more than 200ms in all.
         const start =
           role === "eyebrow" || role === "heading" || role === "sub"
             ? START[role]
             : START.content + Math.min(step++, MAX_STAGGER_STEPS) * STAGGER_MS;
-        el.style.setProperty("--d", `${start + extra}ms`);
+        el.style.setProperty("--d", `${Math.min(200, start + extra)}ms`);
         el.classList.add("rv-pre");
       }
 

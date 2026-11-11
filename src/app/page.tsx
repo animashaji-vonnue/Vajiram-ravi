@@ -12,6 +12,7 @@ import Journey from "@/components/sections/Journey/Journey";
 import Programmes from "@/components/sections/Programmes/Programmes";
 import SuccessStories from "@/components/sections/SuccessStories/SuccessStories";
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import TextMarquee from "@/components/ui/TextMarquee";
 import TextMotion from "@/components/ui/TextMotion";
 
 /**
@@ -25,6 +26,7 @@ import TextMotion from "@/components/ui/TextMotion";
  *   6. counselling and academic guidance (#counselling)
  *   7. the educators (#educators)
  *   8. student stories (#stories)
+ *   (a band of large type, the brand line "Vajiram & Ravi · Since 1976 ·", sliding with the scroll)
  *   9. free study materials (#resources)
  *   10. FAQs (#faq), then the campuses (#locations)
  *   11. the final call to action (#closing)
@@ -44,6 +46,7 @@ export default function HomePage() {
       <Counselling />
       <Faculty />
       <SuccessStories />
+      <TextMarquee parts={["Vajiram & Ravi", "Since 1976"]} className="bg-cream" />
       <FreeResources />
       <Faq />
       <Locations />

@@ -91,9 +91,10 @@ export default function Programmes() {
           {/*
             The client's closing line, as a card under the shelf: a counsellor's headset in
             a burnt disc, the question and the line, then the phone number and the button to the counselling form.
+            It fades in out of a soft blur as it comes into view (ui/TextMotion, data-fade).
           */}
           <aside
-            data-reveal
+            data-fade
             aria-labelledby="programmes-help-h"
             className="relative mx-auto flex w-[1040px] items-center gap-7 rounded-[20px] border border-[#eadbc4] bg-white/85 py-7 pr-8 pl-7 shadow-rest backdrop-blur-sm"
           >

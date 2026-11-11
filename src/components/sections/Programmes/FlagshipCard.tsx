@@ -53,9 +53,10 @@ function admissionsLine(today: string | null): string {
 }
 
 /**
- * The tag over the photographs, after the hero's pill (Hero, Ticker): "Flagship programme", then a window
- * through which the admissions line glides past (globals.css, .hero-glide), faded at both ends, and an
- * arrow. It links to the upcoming batches. Reduced motion: the line stands still.
+ * The tag over the photographs, after the hero's pill (Hero, Ticker): the butta (the benefits' Indian flower
+ * bullet, turning slowly) and "Flagship programme", then a window through which the admissions line glides
+ * past (globals.css, .hero-glide), faded at both ends. It links to the upcoming batches. Reduced motion: the
+ * line and the flower stand still.
  */
 function AdmissionsTicker({ tag }: { tag: string }) {
   const [today, setToday] = useState<string | null>(null);
@@ -64,13 +65,18 @@ function AdmissionsTicker({ tag }: { tag: string }) {
   return (
     <a
       href="#batches"
-      className="group/ticker absolute top-6 left-6 flex w-[490px] items-center gap-3.5 rounded-full bg-mahogany/80 py-1.5 pr-4 pl-1.5 text-white ring-1 ring-white/20 [transition:background-color_var(--dur-fast)_var(--ease-out)] hover:bg-mahogany focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-saffron"
+      className="group/ticker absolute top-6 left-6 flex w-[490px] items-center gap-3.5 rounded-full bg-mahogany/80 py-1.5 pr-5 pl-1.5 text-white ring-1 ring-white/20 [transition:background-color_var(--dur-fast)_var(--ease-out)] hover:bg-mahogany focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-saffron"
     >
       <span className="flex shrink-0 items-center gap-2 rounded-full bg-saffron px-3.5 py-1 text-[15px]/[20px] font-bold text-mahogany">
-        <span aria-hidden="true" className="relative flex size-1.5">
-          <span className="absolute inset-0 animate-pulse-ring rounded-full bg-mahogany motion-reduce:hidden" />
-          <span className="relative size-1.5 rounded-full bg-mahogany" />
-        </span>
+        {/* The butta, the same Indian flower as the benefits' bullets, turning slowly. */}
+        <img
+          src="/images/ornaments/butta.svg"
+          alt=""
+          aria-hidden="true"
+          width={16}
+          height={16}
+          className="size-4 shrink-0 animate-[spin_9s_linear_infinite] motion-reduce:animate-none"
+        />
         {tag}
       </span>
       <span className="relative h-5 min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_20px,black_calc(100%-20px),transparent)]">
@@ -81,9 +87,6 @@ function AdmissionsTicker({ tag }: { tag: string }) {
           </span>
         </span>
       </span>
-      <svg aria-hidden="true" viewBox="0 0 16 16" width={16} height={16} fill="none" className="shrink-0 [transition:translate_var(--dur-fast)_var(--ease-out)] group-hover/ticker:translate-x-0.5">
-        <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
     </a>
   );
 }
@@ -92,7 +95,7 @@ function AdmissionsTicker({ tag }: { tag: string }) {
  * The flagship programme, General Studies Prelims & Mains (the `kevin` branch's featured card, on the hero's
  * orange gradient): on the left its classroom photographs, fading from one to the next under the
  * "Flagship programme" pill with the admissions line gliding through it (AdmissionsTicker), with a button
- * to pause them; on the right its name, its line, the three things it covers, how it can be taken and its
+ * to pause them; on the right its name, the three things it covers, how it can be taken and its
  * duration, and the two buttons, all on one left edge.
  *
  * Accessibility: white type on the shaded gradient (AA throughout); the buttons are the white and the
@@ -176,25 +179,28 @@ export default function FlagshipCard() {
         <h3 id="flagship-programme-h" data-split className="font-heading text-[44px]/[1.06] tracking-[-0.02em] text-balance text-white">
           {programme.name}
         </h3>
-        <p className="mt-3 font-heading text-[21px]/[1.3] text-[#ffe3b3]">{programme.line}</p>
-
         <ul data-stagger className="mt-7 flex w-full flex-col gap-2.5">
           {programme.benefits.map((benefit) => (
             <li key={benefit} className="flex items-start gap-3 text-[17px]/[25px] text-white">
               <img src="/images/ornaments/butta-cream.svg" alt="" aria-hidden="true" width={16} height={16} className="mt-[5px] size-4 shrink-0" />
-              {keepHyphens(benefit)}
+              <span>
+                {/* The figures carry the weight (bold, not colour). */}
+                {keepHyphens(benefit)
+                  .split(/(\d+\+?)/)
+                  .map((part, i) => (/^\d/.test(part) ? <strong key={i} className="font-bold">{part}</strong> : part))}
+              </span>
             </li>
           ))}
         </ul>
 
-        <dl className="mt-7 flex w-full gap-12 border-t border-white/35 pt-6">
-          {programme.details.map((detail) => (
-            <div key={detail.term} className="flex flex-col gap-1.5">
-              <dt data-scramble className="font-mono text-[12px]/[16px] tracking-[0.01em] text-cream">{detail.term}</dt>
-              <dd data-count className="text-[16px]/[24px] text-white">{keepHyphens(detail.value)}</dd>
-            </div>
-          ))}
-        </dl>
+        {/* How it can be taken: a small note, not a block of its own. */}
+        <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/30 py-1 pr-3.5 pl-2.5 text-[14px]/[20px] text-cream">
+          <svg aria-hidden="true" viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
+            <rect x={1.5} y={2.5} width={13} height={8.5} rx={1.2} />
+            <path d="M5.5 13.5h5M8 11v2.5" />
+          </svg>
+          {programme.modes}
+        </p>
 
         {/*
           The buttons, on the content's left edge: white to enrol (it opens the counselling postcard with the

@@ -127,3 +127,97 @@
     animation: none;
   }
 }
+
+/*
+ * The peeling corner of an open book's right-hand page (CourseShelf, PeelCorner), after the sticker peel on
+ * reactbits.dev. --peel is how far the corner is peeled, as a share of --peel-size: the fold runs across
+ * the corner from --peel × --peel-size up the right edge to as far along the bottom.
+ *   - The paper (.peel__paper) is cut back along the fold, so the next page shows under the corner.
+ *   - .peel__shade darkens that sliver of the next page along the fold, where the corner lifts off it.
+ *   - The corner itself (.peel__back) is folded back over the page: the corner's triangle reflected in the
+ *     fold, its fold edge bowed a little where the paper rolls over, the back of the paper shaded light to
+ *     a highlight to a crease along the curl; a soft shadow under it (.peel__flap).
+ * Both are drawn at the full size and scaled from the page's corner, so they keep pace with the cut.
+ * At rest on the page showing (.peel--on) the corner is a little lifted; hovering the page peels it more,
+ * and hovering the corner more again, with a slight overshoot. While it is pulled (.is-peeling) it follows
+ * the pointer through an inline --peel. Reduced motion: the resting corner, still.
+ */
+.peel {
+  --peel: 0;
+  --peel-size: 120px;
+  --peel-cut: calc(100% - var(--peel) * var(--peel-size));
+}
+.peel--on {
+  --peel: 0.26;
+}
+.peel__paper {
+  clip-path: polygon(0 0, 100% 0, 100% var(--peel-cut), var(--peel-cut) 100%, 0 100%);
+}
+.peel__shade,
+.peel__flap,
+.peel__hit {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: var(--peel-size);
+  height: var(--peel-size);
+}
+.peel__shade,
+.peel__back {
+  transform-origin: 100% 100%;
+  transform: scale(var(--peel));
+  pointer-events: none;
+}
+.peel__shade {
+  background: linear-gradient(135deg, transparent 50%, rgb(60 25 6 / 0.32) 53%, rgb(60 25 6 / 0.1) 63%, transparent 78%);
+}
+.peel__flap {
+  pointer-events: none;
+  filter: drop-shadow(-2px -2px 3px rgb(77 31 8 / 0.22)) drop-shadow(-7px -6px 10px rgb(77 31 8 / 0.14));
+}
+.peel__back {
+  position: absolute;
+  inset: 0;
+  clip-path: path("M120 0 L7 0 Q0 0 0 7 L0 120 Q67 67 120 0 Z");
+  background: linear-gradient(
+    135deg,
+    #e8d5b5 0%,
+    #f5e8d1 20%,
+    #fffaf1 37%,
+    #f4e6cc 45%,
+    #dcc29a 51%,
+    #c9ad82 55%
+  );
+}
+/* The corner to take hold of: its triangle, on the page showing only. */
+.peel__hit {
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  cursor: grab;
+  touch-action: none;
+}
+.peel:not(.peel--on) .peel__hit {
+  display: none;
+}
+.peel.is-peeling .peel__hit {
+  cursor: grabbing;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .peel--on:hover {
+    --peel: 0.42;
+  }
+  .peel--on:has(.peel__hit:hover) {
+    --peel: 0.7;
+  }
+  .peel__paper {
+    transition: clip-path 520ms cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+  .peel__shade,
+  .peel__back {
+    transition: transform 520ms cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+  .peel.is-peeling .peel__paper,
+  .peel.is-peeling .peel__shade,
+  .peel.is-peeling .peel__back {
+    transition: none;
+  }
+}

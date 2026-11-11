@@ -14,11 +14,11 @@ export type Educator = {
   name: string;
   /** The subject or area of expertise, under the name. */
   focus: string;
-  /** A colour portrait, 400 × 600; the coverflow shows it in black and white off centre. */
+  /** A colour portrait, 400 × 600; the carousel shows it in black and white away from the front. */
   photo: string;
   /** The educator's profile page; null while it does not exist (the card then is not a link). */
   profile: Href;
-  /** Academic qualifications, as the institute words them. Shown under the coverflow for the centred educator (with the two below), only when given. */
+  /** Academic qualifications, as the institute words them. Shown under the carousel for the educator at the front (with the two below), only when given. */
   qualifications?: string;
   /** Relevant teaching experience, as the institute words it. Shown only when given. */
   experience?: string;

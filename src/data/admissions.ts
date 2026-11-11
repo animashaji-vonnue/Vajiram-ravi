@@ -37,7 +37,7 @@ const BOTH: BatchMode[] = ["Classroom", "LIVE-Online"];
 export const batches: Batch[] = [
   {
     id: "gs-pcm-2027",
-    programme: "General Studies Prelims cum Mains Programme 2027",
+    programme: "General Studies Prelims cum Mains programme 2027",
     startDate: "2026-11-27",
     modes: BOTH,
     targetYear: 2027,
@@ -46,7 +46,7 @@ export const batches: Batch[] = [
   },
   {
     id: "prelims-camp-3",
-    programme: "Prelims CAMP Batch 3",
+    programme: "Prelims CAMP batch 3",
     startDate: "2027-01-03",
     modes: BOTH,
     targetYear: 2027,
@@ -55,7 +55,7 @@ export const batches: Batch[] = [
   },
   {
     id: "smart-prelims-ca-2026",
-    programme: "SMART Prelims Current Affairs Programme 2026",
+    programme: "SMART Prelims current affairs programme 2026",
     startDate: "2027-01-17",
     modes: BOTH,
     targetYear: 2027,
@@ -66,7 +66,7 @@ export const batches: Batch[] = [
     // TODO: confirm with client — stale? It targets UPSC CSE 2026, which has passed. The design names no
     // mode for it either; LIVE-Online until admissions confirm.
     id: "smart-ca-2026",
-    programme: "SMART Current Affairs Program 2026",
+    programme: "SMART current affairs programme 2026",
     startDate: "2027-01-17",
     modes: ["LIVE-Online"],
     targetYear: 2026,
@@ -75,7 +75,7 @@ export const batches: Batch[] = [
   },
   {
     id: "gs-comprehensive-11m",
-    programme: "11 Months Prelims cum Mains General Studies Comprehensive Programme",
+    programme: "11-month Prelims cum Mains General Studies comprehensive programme",
     startDate: "2027-01-29",
     modes: BOTH,
     targetYear: 2027,
@@ -108,7 +108,7 @@ export const batchesCopy = {
 
 /** The featured batch, on the wide ticket above the batch tabs. */
 export const featuredBatch = {
-  label: "Featured batch",
+  label: "Upcoming batch",
   programme: "General Studies – Prelims & Mains",
   status: "Admissions open",
   targetYear: 2028,

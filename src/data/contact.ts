@@ -82,8 +82,8 @@ export const campusGallery: GalleryPhoto[] = [
 ];
 
 export const locationsIntro = {
-  title: { lead: "Find us in ", em: "New Delhi and Chennai." } satisfies SplitHeading,
-  text: "Meet with an academic counsellor, explore our classrooms and learn more about our programmes in person.",
+  /** The client's heading of 11 Nov 2026, with no lead under it. */
+  title: { lead: "Where can you ", em: "find us?" } satisfies SplitHeading,
   tabsLabel: "Campus",
   /** The card's heading. */
   label: "Location & timing",
