@@ -9,8 +9,9 @@ import { whenVisible } from "@/lib/reveal";
 
 /*
  * A circular carousel after React Bits' "Circular Carousel" (cylinder preset): the cards stand round a
- * ring, facing out, and each card bends to follow it. The camera looks a little down onto the ring, so
- * the backs of the far cards show above and between the near ones, fading into the paper.
+ * ring, facing out, and each card bends to follow it. The camera looks a little down onto the ring. Only
+ * the cards' fronts are drawn: their backs, seen from inside the ring, poked through the near cards as
+ * cream steps while it turned, and the client asked for them gone.
  *
  *   - The card at the front is the active one; the dots sit right under the ring, and `renderCaption`
  *     shows the front item under them, cross-fading as the front changes.
@@ -90,7 +91,7 @@ type CircularCarouselProps<T> = {
   interval?: number;
   /** The colour far cards fade into: the section's paper. */
   fadeColor: string;
-  /** The colour of a card's back. */
+  /** The colour under a card's picture while it loads. */
   backColor: string;
   /** "dark" on a dark band (cream controls), "light" on paper. */
   tone?: "light" | "dark";
@@ -563,16 +564,6 @@ export default function CircularCarousel<T>({
                           }}
                         >
                           <span className="absolute inset-0" style={{ background: fadeColor, opacity: "calc(var(--cc-depth, 0) * 0.9)" }} />
-                        </span>
-                      </span>
-                      {/* Its back, seen from inside the ring. */}
-                      <span
-                        aria-hidden="true"
-                        className="absolute outline outline-1 outline-transparent [backface-visibility:hidden]"
-                        style={{ ...box, transform: `${strip.transform} rotateY(180deg)` }}
-                      >
-                        <span className="absolute inset-0 overflow-hidden" style={{ borderRadius: round(edge === "left" ? "right" : edge === "right" ? "left" : null), background: backColor }}>
-                          <span className="absolute inset-0" style={{ background: fadeColor, opacity: "calc(var(--cc-depth, 0) * 0.62)" }} />
                         </span>
                       </span>
                     </Fragment>
