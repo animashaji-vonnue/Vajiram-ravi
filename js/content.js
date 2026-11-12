@@ -661,7 +661,7 @@
   /* ---------------- faculty ---------------- */
   const FTILT = [-1.6, 1.2, -0.8, 1.6];
   const facCard = ([n, s], i, dup) => `<article class="fc pcd"${dup ? ' aria-hidden="true"' : ''} style="--t:${FTILT[i % 4]}deg"><span class="pcd__clipbox pcd__clipbox--b" aria-hidden="true"><i class="pcd__clip pcd__clip--b"></i></span><div class="pcd__in"><span class="pcd__ph"><span class="pcd__paper"><img src="${PHOTO(`faculty-${i % 4 + 1}.jpg`)}" alt="${esc(n)}" loading="lazy"></span></span><div class="pcd__to"><h3 class="pcd__n">${esc(n)}</h3><p class="pcd__l">${esc(s)}</p><a class="pcd__l pcd__l--p fc__pf" href="${esc(liFor(n, i))}" target="_blank" rel="noopener"${dup ? ' tabindex="-1"' : ''} aria-label="View ${esc(n)}'s profile on LinkedIn">View on LinkedIn <span aria-hidden="true">&rarr;</span></a></div></div><span class="pcd__clipbox pcd__clipbox--f" aria-hidden="true"><i class="pcd__clip pcd__clip--f"></i></span></article>`;
-  $('#team').innerHTML = FACULTY.map((f, i) => facCard(f, i, false)).join('');
+  if ($('#team')) $('#team').innerHTML = FACULTY.map((f, i) => facCard(f, i, false)).join('');   // the faculty ring (js/faculty-ring.js) replaced this rail
 
   /* ---------------- stories: postcards, as if dropped on a table ----------------
      The quotes come from the Figma and are attributed to real rankers: confirm them with the rankers before launch. */
@@ -852,8 +852,8 @@
     sync(); setTimeout(sync, 600);
   });
 
-  // faculty carousel: chevrons and page dots under the rail; one dot per screenful of cards
-  {
+  // faculty carousel: chevrons and page dots under the rail; one dot per screenful of cards (only while the rail is there)
+  if ($('#faculty .rail') && $('#team')) {
     const rail = $('#faculty .rail'), track = $('#team'), n = track.children.length;
     const nav = document.createElement('div'); nav.className = 'rnav';
     const TEER = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h11"/><path d="M8.6 3.6C9.4 5.9 11.2 7.4 13.5 8 11.2 8.6 9.4 10.1 8.6 12.4"/></svg>';   // the CTA's arrow

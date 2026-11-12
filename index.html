@@ -9,7 +9,7 @@
 <link rel="icon" href="assets/img/brand/emblem.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Geist:wght@500&family=Anek+Devanagari:wght@500&family=Geist+Mono:wght@400&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300&family=League+Spartan:wght@600;700&family=Mukta:wght@400;500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Geist:wght@500&family=Anek+Devanagari:wght@500&family=Geist+Mono:wght@400&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300&family=League+Spartan:wght@600;700&family=Mukta:wght@400;500;600;700&family=Source+Sans+3:wght@500;700&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/v49.css?v=251">
 <link rel="stylesheet" href="css/story.css?v=17">
 <link rel="stylesheet" href="css/intro.css?v=2">
@@ -32,6 +32,7 @@
     addEventListener('resize', fit);
   })();
 </script>
+  <link rel="stylesheet" href="css/faculty-ring.css">
   <link rel="stylesheet" href="css/fixed-desktop.css">
 </head>
 <body>
@@ -299,11 +300,8 @@
   <div class="lbl rv" style="--d:.05s"><span class="lbl__t">Faculty</span><i></i><span class="lbl__orn" aria-hidden="true"></span></div>
   <h2 id="facH" class="h2 h2--sec rv" style="--d:.12s">Taught by subject specialists.</h2>
   <p class="intro rv" style="--d:.2s">Specialists for every GS paper, the essay, the optionals and the interview.</p>
-  <div class="rail rail--fac">
-    <div class="fgrid rail__track" id="team" tabindex="0" aria-label="Faculty"></div>
-    <button class="cbtn cbtn--prev" type="button" aria-label="Previous faculty"><img src="assets/img/icons/chev-white.svg" alt="" width="18" height="18"></button>
-    <button class="cbtn cbtn--next" type="button" aria-label="Next faculty"><img src="assets/img/icons/chev-white.svg" alt="" width="18" height="18"></button>
-  </div>
+  <!-- The educators on a ring of bent portrait cards: version 6's carousel (js/faculty-ring.js, css/faculty-ring.css). -->
+  <div class="fr" id="facRing"></div>
 </section>
 
 <!-- ============ STORIES: inland letter cards ============ -->
@@ -534,6 +532,7 @@
 <script src="js/toppers.js?v=33"></script>
 <script src="js/custom-select.js?v=3"></script>
 <script src="js/content.js?v=43"></script>
+<script src="js/faculty-ring.js"></script>
 <script src="js/vendor/lenis.min.js"></script>
 <script src="js/hero-kit.js"></script>
 <script src="js/scroll.js"></script>
