@@ -37,7 +37,7 @@
 
 /* The reel: the clippings drift left, edge to edge of the sheet, fading out at its sides. */
 .gzw__stage { position: relative; margin: 22px -40px 0; }
-.gzw__reel { position: relative; padding: 14px 0 18px; overflow: hidden; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+.gzw__reel { position: relative; padding: 16px 0; overflow: hidden; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
 .gzw__reel.is-grabbing { cursor: grabbing; }
 .gzw__reel { transition: opacity .18s; }
