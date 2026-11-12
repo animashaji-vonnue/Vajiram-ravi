@@ -65,9 +65,11 @@
   /* ---------- which rank holders the reel shows (the dropdown in the strip) ---------- */
   // Named by rank, not by count (the 36 rank holders hold ranks up to AIR 48, with gaps).
   const RANGES = [
-    { label: 'Rank : All', test: () => true },
     { label: 'Rank : 1 - 10', test: t => t.rank <= 10 },
+    { label: 'Rank : 1 - 15', test: t => t.rank <= 15 },
+    { label: 'Rank : All', test: () => true },
   ];
+  const DEFAULT_RANGE = 1; // the reel opens on ranks 1 to 15
 
   /* ---------- build ---------- */
   const deck = document.getElementById('gzDeck');
@@ -76,7 +78,7 @@
   wall.innerHTML = `
     <div class="gzw__head">
       <h3 class="gzw__kick">The rank holders <span>· CSE ${YEAR}</span></h3>
-      <label class="gzw__range"><span class="sr-only">Show</span><select aria-label="Which rank holders to show">${RANGES.map((r, i) => `<option value="${i}">${r.label}</option>`).join('')}</select></label>
+      <label class="gzw__range"><span class="sr-only">Show</span><select aria-label="Which rank holders to show">${RANGES.map((r, i) => `<option value="${i}"${i === DEFAULT_RANGE ? ' selected' : ''}>${r.label}</option>`).join('')}</select></label>
     </div>
     <div class="gzw__stage" role="region" aria-roledescription="carousel" aria-label="CSE ${YEAR} rank holders">
       <div class="gzw__reel"><div class="gzw__track"></div></div>
@@ -137,7 +139,7 @@
      - The round button over the hint stops and starts it. Stopped, hovering it shows the chevrons, which move it one
        clipping at a time, coming to rest square on one. Reduced motion: it starts stopped. */
   const PX_PER_S = 38;   // its drift: slow, as Maven's
-  let shown = list;
+  let shown = list.filter(RANGES[DEFAULT_RANGE].test);
   let x = 0, period = 0, step = 236, playing = !reduce, hover = false, onScreen = true, drag = null, glide = null, swallow = false, last = 0;
   const wrap = v => (period ? ((v % period) + period) % period : 0);
   const apply = () => { track.style.transform = `translate3d(${(-wrap(x)).toFixed(2)}px, 0, 0)`; };
