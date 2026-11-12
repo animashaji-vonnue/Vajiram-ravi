@@ -63,11 +63,10 @@
   const seal = rank => `<span class="gzw__seal" aria-hidden="true"><svg viewBox="0 0 58 58" width="58" height="58"><path d="${SEAL_EDGE}"/><circle cx="29" cy="29" r="22.5"/></svg><span><small>AIR</small><b>${rank}</b></span></span>`;
 
   /* ---------- which rank holders the reel shows (the dropdown in the strip) ---------- */
-  // Named by rank, not by count: the 36 rank holders hold ranks from AIR 1 to AIR 48, with gaps.
-  const topRank = Math.max(...list.map(t => t.rank));
+  // Named by rank, not by count (the 36 rank holders hold ranks up to AIR 48, with gaps).
   const RANGES = [
-    { label: `All ranks · AIR 1–${topRank}`, test: () => true },
-    { label: 'Top 10 · AIR 1–10', test: t => t.rank <= 10 },
+    { label: 'Rank : All', test: () => true },
+    { label: 'Rank : 1 - 10', test: t => t.rank <= 10 },
   ];
 
   /* ---------- build ---------- */
