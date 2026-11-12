@@ -6,7 +6,7 @@
   const foot = document.querySelector('footer.foot'); if (!foot) return;
   const root = document.documentElement;
   const check = () => {
-    root.style.setProperty('--foot-off', Math.min(0, innerHeight / __z() - foot.offsetHeight) + 'px');
+    root.style.setProperty('--foot-off', Math.min(0, innerHeight - foot.offsetHeight) + 'px');
     root.classList.add('foot-curtain');
   };
   check(); addEventListener('resize', check); addEventListener('load', check);

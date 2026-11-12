@@ -3,15 +3,15 @@
    the lead and the tab bar above it stay this page's own (js/content.js builds the tabs and hands the chosen one to
    window.__progShelf).
 
-   - The programmes stand as cloth hardcovers on two walnut planks drawn in CSS, six to a plank, centred on it: the
+   - The programmes stand as cloth hardcovers on walnut planks drawn in CSS, six to a plank on a wide screen (fewer
+     on narrower ones), centred on it: the
      board in the programme's colour, the spine down the left, the page block showing past the board, a gold foil
      frame, "Vajiram & Ravi", the name, a foil rule, the emblem in a foil ring, and the category at the foot. Under
      the foil a geometric motif is pressed faintly into the cloth. Hover: the book lifts off its plank, the cloth
      brightens, the motif moves, the emblem redraws itself, a band of light sweeps across and the foot reads "Open
      the book". While the shelf is on screen, a faint glint passes across one cover or another now and then.
    - A tab lays the books that leave down flat where they stand, fading; slides the rest along the planks to their
-     new places; and stands the arriving ones up in theirs, all within about 500ms. With six or fewer the lower
-     plank fades away.
+     new places; and stands the arriving ones up in theirs, all within about 500ms. Planks with no books fade away.
    - Choosing a book brings it forward to the middle, larger, the rest blurred back; its cover swings open on the
      spine and its pages can be turned: the programme, then the way to enquire about it. A chip above says the page,
      previous and next sit under it, a click on the right-hand page or → turns forward, the left-hand page or ←
@@ -20,7 +20,7 @@
    - Entrance, once, as the shelf comes into view: the books arrive as a stack lying on the lowest plank, then lift
      off it one by one and stand into their places. Reduced motion: no entrance, no glint, and moves are instant.
 
-   Styles: css/programme-shelf.css. The page is zoomed to fit; pointer movement is divided by __z(). */
+   Styles: css/programme-shelf.css. */
 (() => {
   const grid = document.getElementById('pgrid');
   if (!grid || !window.__progs) return;
@@ -47,12 +47,18 @@
   ];
   const PROGS = window.__progs.map((p, i) => ({ name: p.t, category: p.tab, line: p.d, prog: p.prog, cover: COVERS[i % COVERS.length] }));
 
-  /* ---- Measurements (canvas px): version 6's, made to hold this page's twelve programmes on two planks, as version
-     6 holds its eight: six books to a plank, a little smaller than version 6's (172 × 228, the same proportions),
-     30px apart, on a wider stage (1280) and longer planks. The open book keeps version 6's size. ---- */
-  const STAGE_W = 1280, BOOK = { w: 172, h: 228 }, PER_SHELF = 6, GAP = 30, ROW_H = 310, BOOK_TOP = 30;
-  const PLANK_TOP = BOOK_TOP + BOOK.h - 8, PLANK_W = 1240, PAGE = { w: 380, h: 504 }, OPEN_H = Math.max(2 * ROW_H, 704);
+  /* ---- Measurements (px): version 6's, made to hold this page's twelve programmes. Books a little smaller than
+     version 6's (172 × 228, the same proportions), 30px apart. How many stand on a plank follows the room there is
+     (the page is responsive): six on a wide screen (two planks, as version 6), four on a tablet, three, or two on a
+     phone; the stage is just wide enough for them (and scaled down only if even that does not fit). The open book
+     keeps version 6's size; on a screen too narrow for its spread the stage is scaled while it is open. ---- */
+  const BOOK = { w: 172, h: 228 }, GAP = 30, ROW_H = 310, BOOK_TOP = 30, SIDE = 20;
+  const PLANK_TOP = BOOK_TOP + BOOK.h - 8, PAGE = { w: 380, h: 504 }, OPEN_H = Math.max(2 * ROW_H, 704);
+  /** The room the open spread needs across: its two pages and the close button. */
+  const SPREAD_W = 2 * PAGE.w + 80;
+  let PER_SHELF = 6, STAGE_W = 1280, PLANK_W = 1240, FIT = 1;
   const SPINE = { x: STAGE_W / 2, y: OPEN_H / 2 };
+  const MAX_ROWS = 6;
   const MOVE_MS = 650, OPEN_MS = 750, TURN_MS = 700;
   const SETTLE = 'cubic-bezier(0.34, 1.4, 0.64, 1)', EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
   const STACK_TILT = 66, STACK_T = 12, STACK_SHIFT = [-6, 9, -3, 11, -9, 4, -5, 7], STACK_TURN = [-3, 2.5, -1.5, 3.5, -2, 1, -3.5, 2];
@@ -189,8 +195,8 @@
   grid.className = 'ps';
   grid.removeAttribute('role');
   grid.innerHTML = `<p class="ps-sr" aria-live="polite"></p>
-    <div class="ps-stage" id="programme-shelf" style="width:${STAGE_W}px">
-      ${[0, 1].map(r => `<span class="ps-plank" aria-hidden="true" data-row="${r}" style="left:${(STAGE_W - PLANK_W) / 2}px;width:${PLANK_W}px;top:${r * ROW_H + PLANK_TOP}px"><span class="ps-plank__top"></span><span class="ps-plank__front"></span></span>`).join('')}
+    <div class="ps-stage" id="programme-shelf">
+      ${Array.from({ length: MAX_ROWS }, (_, r) => `<span class="ps-plank" aria-hidden="true" data-row="${r}" style="top:${r * ROW_H + PLANK_TOP}px"><span class="ps-plank__top"></span><span class="ps-plank__front"></span></span>`).join('')}
       ${PROGS.map((p, i) => `<div class="ps-book" data-book="${i}">
         <div class="ps-book__in" data-cover>
           <span class="ps-lift" data-lift aria-hidden="true"></span>
@@ -207,6 +213,21 @@
   const live = grid.querySelector('.ps-sr');
   const planks = [...grid.querySelectorAll('.ps-plank')];
   const books = [...grid.querySelectorAll('.ps-book')];
+
+  /* ---- Fitting the shelf to the room it has ---- */
+  const measure = () => {
+    const room = grid.clientWidth || 1280;
+    const fits = n => n * BOOK.w + (n - 1) * GAP + 2 * SIDE + 40;
+    PER_SHELF = [6, 4, 3, 2].find(n => fits(n) <= room) || 2;
+    STAGE_W = fits(PER_SHELF);
+    PLANK_W = STAGE_W - 40;
+    SPINE.x = STAGE_W / 2;
+    FIT = Math.min(1, room / STAGE_W);
+    stage.style.width = STAGE_W + 'px';
+    planks.forEach(pl => { pl.style.left = (STAGE_W - PLANK_W) / 2 + 'px'; pl.style.width = PLANK_W + 'px'; });
+  };
+  /** The stage's scale: to fit the shelf, or (while a book is open) the spread. */
+  const stageZoom = () => (picked === null ? FIT : Math.min(FIT, (grid.clientWidth || 1280) / Math.max(STAGE_W, SPREAD_W)));
 
   /* ---- State ---- */
   let filter = 'All', picked = null, open = false, hovered = null, shuffle = null;
@@ -241,6 +262,7 @@
   const layout = () => {
     const shown = shownIn(filter), rows = rowsFor(shown.length), away = picked !== null;
     stage.style.height = (away ? Math.max(rows * ROW_H, OPEN_H) : rows * ROW_H) + 'px';
+    stage.style.zoom = String(stageZoom());
     planks.forEach((pl, r) => {
       pl.style.opacity = r < rows ? (away ? '0.3' : '1') : '0';
       pl.style.translate = r < rows ? '0 0' : '0 -12px';
@@ -393,7 +415,7 @@
     const dx = e.clientX - peel.x, dy = e.clientY - peel.y;
     if (Math.abs(dx) + Math.abs(dy) > 4) peel.moved = true;
     if (!peel.moved || reduced) return;
-    peel.amount = Math.min(PEEL_MOST, Math.max(0.1, PEEL_GRAB - (dx + dy) / 2 / zoom() / 120));
+    peel.amount = Math.min(PEEL_MOST, Math.max(0.1, PEEL_GRAB - (dx + dy) / 2 / zoom() / stageZoom() / 120));
     peel.page.classList.add('is-peeling');
     peel.page.style.setProperty('--peel', peel.amount.toFixed(3));
   });
@@ -409,7 +431,18 @@
   // The glint runs only while the shelf is on screen.
   new IntersectionObserver(([e]) => stage.classList.toggle('is-on-screen', e.isIntersecting), { threshold: 0.1 }).observe(stage);
 
+  measure();
   layout();
+  let lastPer = PER_SHELF, rz = 0;
+  addEventListener('resize', () => {
+    clearTimeout(rz);
+    rz = setTimeout(() => {
+      measure();
+      // A change in how many stand on a plank re-shelves them at once, without the books' slide.
+      if (PER_SHELF !== lastPer) { lastPer = PER_SHELF; books.forEach(b => { b.style.transition = 'none'; }); }
+      layout();
+    }, 120);
+  });
 
   // The entrance: dealt off a stack as the shelf comes into view (only if it starts out of view).
   const box = stage.getBoundingClientRect();

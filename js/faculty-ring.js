@@ -12,8 +12,7 @@
    (the first step 6s after it comes into view), pausing while the pointer is on the front card, while keyboard
    focus is inside it, while it is off screen or the tab is hidden. Reduced motion: no autoplay, moves are instant.
 
-   The page is zoomed to fit (see the script at the top of index.html): pointer movement, measured in screen pixels,
-   is divided by __z() to get CSS pixels. Styles: css/faculty-ring.css. */
+   The page is responsive: the ring is scaled to the room it has (fitRing). Styles: css/faculty-ring.css. */
 (() => {
   const host = document.getElementById('facRing');
   if (!host) return;
@@ -115,6 +114,23 @@
   const dots = [...host.querySelectorAll('.fr__dots button')];
   const live = host.querySelector('[aria-live]');
   const [prevBtn, nextBtn] = host.querySelectorAll('.fr__btn');
+  const arrows = [...host.querySelectorAll('.fr__arrow')];
+
+  /* The page is responsive: the ring is drawn for a wide screen (its visible ends and arrows about 1110px across)
+     and scaled to the room it has, but never below 55%, so on a phone the front card stays readable and the cards
+     either side run off the edges (clipped); the arrows come in to stay on screen. */
+  const RING_W = 1110, MIN_FIT = 0.55;
+  let fit = 1;
+  const fitRing = () => {
+    const room = host.clientWidth || RING_W;
+    fit = Math.max(MIN_FIT, Math.min(1, room / RING_W));
+    stage.style.zoom = String(fit);
+    const reach = Math.min(ARROW_REACH, room / 2 / fit - 34);
+    arrows[0].style.left = `calc(50% - ${reach}px)`;
+    arrows[1].style.left = `calc(50% + ${reach}px)`;
+  };
+  fitRing();
+  addEventListener('resize', fitRing);
 
   // Far cards fade into the section's paper.
   const sectionBg = getComputedStyle(host.closest('section') || document.body).backgroundColor;
@@ -226,7 +242,7 @@
   stage.addEventListener('pointermove', e => {
     const d = drag;
     if (!d || d.id !== e.pointerId) return;
-    const dx = (e.clientX - d.x) / zoom(), dy = (e.clientY - d.y) / zoom();
+    const dx = (e.clientX - d.x) / zoom() / fit, dy = (e.clientY - d.y) / zoom() / fit;
     if (!d.moved) {
       if (Math.abs(dx) > 6 && Math.abs(dx) > Math.abs(dy)) {
         d.moved = true; d.pos = s.pos; s.held = true; s.vel = 0;
@@ -275,7 +291,7 @@
     e.lenisStopPropagation = true;
     e.preventDefault();
     s.held = true; s.vel = 0;
-    s.pos += (e.deltaX * (e.deltaMode === 1 ? 16 : 1)) / pitch;
+    s.pos += (e.deltaX * (e.deltaMode === 1 ? 16 : 1)) / fit / pitch;
     s.target = s.pos;
     s.clock = 0;
     kick();

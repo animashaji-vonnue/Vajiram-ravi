@@ -76,10 +76,10 @@
       const left = Math.min(Math.max(12, r.left), vw - w - 12);
       const below = vh - r.bottom - 12, above = r.top - 12, want = Math.min(list.scrollHeight, 340);
       const up = below < Math.min(want, 220) && above > below;
-      const z = __z(); list.style.width = w / z + 'px'; list.style.left = left / z + 'px';
-      list.style.maxHeight = Math.max(160, Math.min(340, up ? above - 6 : below - 6)) / z + 'px';
-      if (up) { list.style.top = ''; list.style.bottom = (vh - r.top + 6) / z + 'px'; }
-      else { list.style.bottom = ''; list.style.top = (r.bottom + 6) / z + 'px'; }
+      list.style.width = w + 'px'; list.style.left = left + 'px';
+      list.style.maxHeight = Math.max(160, Math.min(340, up ? above - 6 : below - 6)) + 'px';
+      if (up) { list.style.top = ''; list.style.bottom = (vh - r.top + 6) + 'px'; }
+      else { list.style.bottom = ''; list.style.top = (r.bottom + 6) + 'px'; }
       list.classList.toggle('is-up', up);
       // closes if the field has scrolled out of view
       if (r.bottom < 0 || r.top > vh) close();

@@ -1,7 +1,7 @@
 @import url("v48.css");
 
 /* v49: hero is a timed slideshow (intro -> Plan -> Learn -> Rank) with filling progress bars. Text/card alignment alternates as before. */
-.dl--pin { height: calc(100 * var(--vh, 1vh)); height: calc(100 * var(--vh, 1svh)); min-height: 0; max-height: none; }
+.dl--pin { height: 100vh; height: 100svh; min-height: 0; max-height: none; }
 .dl__stick { position: relative; height: 100%; min-height: 0; }
 .dl__in { opacity: 1; transform: none; transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
 .dl--pin:not([data-s="0"]) .dl__in { opacity: 0; transform: translate3d(0,-40px,0); pointer-events: none; }
@@ -32,7 +32,7 @@
 .bnr__dots button[aria-selected="true"] { width: 36px; height: 4px; background: #CCC; overflow: hidden; }
 .bnr__dots button[aria-selected="true"]::after { content: ""; position: absolute; inset: 0; background: #E57512; transform: scaleX(var(--hp, 0)); transform-origin: 0 50%; }
 
-@media not all { .dl--pin { height: auto; min-height: calc(100 * var(--vh, 1svh)); } .dl__stick { min-height: calc(100 * var(--vh, 1svh)); } }
+@media (max-width: 900px) { .dl--pin { height: auto; min-height: 100svh; } .dl__stick { min-height: 100svh; } }
 @media (prefers-reduced-motion: reduce) {
   .dl--pin { height: auto; } .dl__stick { position: relative; height: auto; }
   .dl--pin:not([data-s="0"]) .dl__in { opacity: 1; transform: none; pointer-events: auto; }
@@ -57,14 +57,14 @@
 .cert__org::after { content: none; }
 .cert__ph { position: relative; z-index: 1; display: block; width: 30%; margin: 10px 0 8px; aspect-ratio: 4 / 5; padding: 3px; background: #fff; border: 1px solid #C9A25A; box-shadow: 0 5px 10px -6px rgba(70, 35, 10, .45); }
 .cert__ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
-.cert__n { display: block; max-width: 100%; padding-bottom: 5px; font: 600 clamp(14px, calc(1.2 * 14.4px), 16px)/1.15 var(--f-d); color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cert__n { display: block; max-width: 100%; padding-bottom: 5px; font: 600 clamp(14px, 1.2vw, 16px)/1.15 var(--f-d); color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cert__r { display: flex; flex-direction: column; align-items: center; margin: 9px 0 0; }
 .cert__r small { font: 700 15px/1 var(--f); letter-spacing: .16em; text-transform: uppercase; color: var(--brand); }
-.cert__r b { margin: 3px 0 2px; font: 400 clamp(44px, calc(3.9 * 14.4px), 56px)/.95 var(--f-n); letter-spacing: -.01em; color: var(--brand); }
+.cert__r b { margin: 3px 0 2px; font: 400 clamp(44px, 3.9vw, 56px)/.95 var(--f-n); letter-spacing: -.01em; color: var(--brand); }
 .cert__r span { font: 500 11px/1.3 var(--f); color: #6B4A30; }
 .cert__p { margin: 4px 0 0; max-width: 100%; font-size: 10.5px; line-height: 1.3; color: #8A6A48; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cert__seal { position: absolute; z-index: 2; right: 22px; bottom: 22px; width: 62px; height: 62px; color: #B8360A; opacity: .82; rotate: -14deg; mix-blend-mode: multiply; font-family: var(--f); pointer-events: none; }
-@media not all { .cert { scroll-snap-align: center; } }
+@media (max-width: 640px) { .cert { scroll-snap-align: center; } }
 @media (prefers-reduced-motion: reduce) { .cert, .cert__in { transition: none; } }
 
 /* toppers: centred header, year tabs centred, View all at the bottom */
@@ -74,20 +74,20 @@
 #toppers .tmore { display: flex; justify-content: center; margin-top: 36px; }
 
 /* hero progress bars: left aligned with the content, brand orange fill */
-.dl__prog { left: clamp(20px, calc(5.5 * 14.4px), 100px); transform: none; }
+.dl__prog { left: clamp(20px, 5.5vw, 100px); transform: none; }
 .dl__prog button i::after { background: #E85020; }
 .dl__prog button i { background: rgba(255, 255, 255, .35); }
 .dl__prog button:focus-visible { outline-color: #E85020; }
 
 /* hero scene sub-line: what you get */
-.sc__p { margin: 22px 0 0; max-width: 34em; font: 400 clamp(16px, calc(1.3 * 14.4px), 19px)/1.5 var(--f); color: rgba(255, 246, 232, .88); }
-@media not all { .sc__p { margin-top: 14px; font-size: 15px; } }
+.sc__p { margin: 22px 0 0; max-width: 34em; font: 400 clamp(16px, 1.3vw, 19px)/1.5 var(--f); color: rgba(255, 246, 232, .88); }
+@media (max-width: 900px) { .sc__p { margin-top: 14px; font-size: 15px; } }
 
 /* no visual on the right: text only, left aligned */
 .sc--r, .sc--l { grid-template-columns: minmax(0, 880px); }
 .sc__txt { padding-left: 0; }
-.sc .vp__h { font-size: clamp(38px, calc(4.8 * 14.4px), 84px); }
-@media not all { .sc--r, .sc--l { grid-template-columns: 1fr; grid-template-rows: auto; } }
+.sc .vp__h { font-size: clamp(38px, 4.8vw, 84px); }
+@media (max-width: 900px) { .sc--r, .sc--l { grid-template-columns: 1fr; grid-template-rows: auto; } }
 
 /* ---- nav: logo-led; over the hero it is transparent and blends into the video ---- */
 .nav__logo { height: 44px; margin-right: 18px; padding: 0 8px 0 2px; border: 0; }
@@ -107,14 +107,14 @@
 .nav--hero .talk { background: transparent; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .55); color: #fff; }
 .nav--hero .talk:hover { box-shadow: inset 0 0 0 1px #fff; }
 .nav--hero .explore.open .nav__a { color: #FFD48A; }
-@media not all { .nav--hero { top: 20px; } .nav--hero .nav__logo .lg { height: 42px; } .nav__logo .lg { height: 34px; } .nav--hero .nav__pill { max-width: none; } }
+@media (max-width: 900px) { .nav--hero { top: 20px; } .nav--hero .nav__logo .lg { height: 42px; } .nav__logo .lg { height: 34px; } .nav--hero .nav__pill { max-width: none; } }
 
 /* ---- toppers: one newspaper page, equal columns ---- */
 #tgrid.tgrid { display: block; overflow: visible; margin: 0; padding: 0; }
-.tp { --ink: #1D1712; --rule: rgba(29, 23, 18, .3); background: radial-gradient(rgba(120, 90, 50, .06) 1px, transparent 1.4px) 0 0 / 4px 4px, #F8F3E8; border: 1px solid rgba(29, 23, 18, .16); box-shadow: 0 24px 40px -28px rgba(60, 30, 10, .45), 6px 6px 0 -1px #EFE8D8, 6px 6px 0 0 rgba(29, 23, 18, .12); padding: 20px clamp(14px, calc(2.4 * 14.4px), 36px) 20px; color: var(--ink); text-align: left; font-family: Georgia, "Times New Roman", "Eczar", serif; }
+.tp { --ink: #1D1712; --rule: rgba(29, 23, 18, .3); background: radial-gradient(rgba(120, 90, 50, .06) 1px, transparent 1.4px) 0 0 / 4px 4px, #F8F3E8; border: 1px solid rgba(29, 23, 18, .16); box-shadow: 0 24px 40px -28px rgba(60, 30, 10, .45), 6px 6px 0 -1px #EFE8D8, 6px 6px 0 0 rgba(29, 23, 18, .12); padding: 20px clamp(14px, 2.4vw, 36px) 20px; color: var(--ink); text-align: left; font-family: Georgia, "Times New Roman", "Eczar", serif; }
 .tp__mast { text-align: center; border-top: 5px solid var(--ink); box-shadow: 0 3px 0 -0px #F8F3E8, 0 4px 0 var(--ink); padding-top: 8px; }
 .tp__ears { display: flex; justify-content: space-between; gap: 12px; margin: 0; padding: 6px 0 10px; font: italic 400 13px/1.2 Georgia, serif; color: #4a3a2c; }
-.tp__title { margin: 4px 0 0; font: 800 clamp(44px, calc(7.4 * 14.4px), 108px)/.9 var(--f-d); letter-spacing: -.025em; text-transform: uppercase; }
+.tp__title { margin: 4px 0 0; font: 800 clamp(44px, 7.4vw, 108px)/.9 var(--f-d); letter-spacing: -.025em; text-transform: uppercase; }
 .tp__sub { margin: 14px 0 0; padding: 7px 0; border-top: 1px solid var(--ink); border-bottom: 3px double var(--ink); font: 600 11.5px/1.3 var(--f); letter-spacing: .14em; text-transform: uppercase; }
 .tp__body { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 10px; }
 .tp__i { position: relative; min-width: 0; padding: 16px 14px 18px; border-left: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
@@ -132,8 +132,8 @@
 .tp__p { margin: 7px 0 0; padding: 0; list-style: none; font: 400 12.5px/1.5 Georgia, "Times New Roman", serif; color: #3b2d20; }
 .tp__p li + li { margin-top: 4px; padding-top: 4px; border-top: 1px dotted rgba(29, 23, 18, .3); }
 .tp__foot { margin: 0; padding: 10px 0 0; border-top: 3px double var(--ink); text-align: center; font: italic 400 14px/1.2 Georgia, serif; color: #4a3a2c; }
-@media not all { .tp__body { grid-template-columns: repeat(3, minmax(0, 1fr)); } .tp__i:nth-child(5n+1) { border-left: 1px solid var(--rule); } .tp__i:nth-child(3n+1) { border-left: 0; } .tp__i:nth-last-child(-n+5) { border-bottom: 1px solid var(--rule); } .tp__i:nth-last-child(-n+1) { border-bottom: 0; } }
-@media not all { .tp__body { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tp__i:nth-child(3n+1) { border-left: 1px solid var(--rule); } .tp__i:nth-child(2n+1) { border-left: 0; } .tp__ears span:not(:nth-child(2)) { display: none; } .tp__ears { justify-content: center; } .tp__n { font-size: 15px; } .tp__air b { font-size: 26px; } .tp__sub { font-size: 10px; letter-spacing: .08em; } }
+@media (max-width: 1100px) { .tp__body { grid-template-columns: repeat(3, minmax(0, 1fr)); } .tp__i:nth-child(5n+1) { border-left: 1px solid var(--rule); } .tp__i:nth-child(3n+1) { border-left: 0; } .tp__i:nth-last-child(-n+5) { border-bottom: 1px solid var(--rule); } .tp__i:nth-last-child(-n+1) { border-bottom: 0; } }
+@media (max-width: 640px) { .tp__body { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tp__i:nth-child(3n+1) { border-left: 1px solid var(--rule); } .tp__i:nth-child(2n+1) { border-left: 0; } .tp__ears span:not(:nth-child(2)) { display: none; } .tp__ears { justify-content: center; } .tp__n { font-size: 15px; } .tp__air b { font-size: 26px; } .tp__sub { font-size: 10px; letter-spacing: .08em; } }
 
 /* year tabs live inside the newspaper masthead */
 #toppers .tbar { display: none; }
@@ -142,7 +142,7 @@
 .tp .seg button { height: 32px; padding: 0 14px; border-radius: 0; background: none; color: var(--ink); font: 700 12.5px/1 var(--f); letter-spacing: .14em; box-shadow: none; transition: background .2s, color .2s; }
 .tp .seg button:hover { background: rgba(29, 23, 18, .08); }
 .tp .seg button[aria-selected="true"] { background: var(--ink); color: #F8F3E8; box-shadow: none; }
-#toppers { padding-top: clamp(56px, calc(7 * 14.4px), 96px); }
+#toppers { padding-top: clamp(56px, 7vw, 96px); }
 .tp { position: relative; isolation: isolate; }
 
 .tp__i { padding: 16px 14px 18px; }
@@ -151,7 +151,7 @@
 /* AIR and its number share one font and size */
 .tp__air { gap: .4em; font: 400 26px/1 var(--f-n); letter-spacing: .02em; }
 .tp__air small, .tp__air b { font: inherit; letter-spacing: inherit; }
-@media not all { .tp__air { font-size: 22px; } .tp__air b { font-size: inherit; } }
+@media (max-width: 640px) { .tp__air { font-size: 22px; } .tp__air b { font-size: inherit; } }
 
 /* hero stays pinned; the Toppers page rises over it, fading in as it covers the hero */
 .cover { position: relative; }
@@ -203,7 +203,7 @@
 .nav--hero .cta.cta.talk { background: transparent; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .55); }
 .nav--hero .cta.cta.talk::before { background: rgba(255, 255, 255, .14); }
 .nav--hero .cta.cta.talk:hover { background: transparent; box-shadow: inset 0 0 0 1px #fff; }
-@media not all { .nav .cta.cta.talk { padding: 0 3px; gap: 0; } .nav .cta.cta.talk .btn__label { display: none; } .nav .cta.cta.talk .sq { width: 36px; height: 36px; } }
+@media (max-width: 480px) { .nav .cta.cta.talk { padding: 0 3px; gap: 0; } .nav .cta.cta.talk .btn__label { display: none; } .nav .cta.cta.talk .sq { width: 36px; height: 36px; } }
 @media (prefers-reduced-motion: reduce) { .cta .btn__t, .cta .sq svg, .cta.cta { transition: none; } }
 
 /* the pinned background must not spill past the section into the gap below it (that was the orange-to-cream strip) */
@@ -231,11 +231,11 @@
   background: linear-gradient(180deg, rgba(0, 0, 0, .46) 0, rgba(0, 0, 0, .36) 11%, rgba(0, 0, 0, .27) 28%, rgba(0, 0, 0, .20) 39%, rgba(0, 0, 0, .14) 50%, rgba(0, 0, 0, .08) 60%, rgba(0, 0, 0, .04) 72%, rgba(0, 0, 0, .012) 93%, rgba(0, 0, 0, 0) 100%); }
 
 /* ---- Programmes: the original book cards standing on shelves, wall / shelf / shadow calibrated to the Shopify Editions scene ---- */
-#courses.band--wall { margin-top: 24px; padding: clamp(64px, calc(7 * 14.4px), 110px) var(--px) 240px; overflow: clip; border-radius: 0;
+#courses.band--wall { margin-top: 24px; padding: clamp(64px, 7vw, 110px) var(--px) 240px; overflow: clip; border-radius: 0;
  }
 #courses.band--wall .band__in { position: static; height: auto; padding: 0; min-height: 0; }
 #courses.band--wall::before, #courses.band--wall::after, #courses.band--wall .band__in::before, #courses.band--wall .band__in::after { display: none !important; }
-.shelves { display: block; width: min(1240px, 100%); margin: clamp(56px, calc(6 * 14.4px), 96px) auto 0; }
+.shelves { display: block; width: min(1240px, 100%); margin: clamp(56px, 6vw, 96px) auto 0; }
 .shelf + .shelf { margin-top: 70px; }
 .shelf__row { display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); justify-items: center; align-items: start; padding: 0 26px; height: calc(var(--h-book, 358px) + 0px); }
 .shelf__row .pbk { position: relative; width: auto; display: flex; flex-direction: column; align-items: center; height: auto; }
@@ -246,8 +246,8 @@
 /* a standing book: no floating, no ground shadow of its own (the shelf casts it), a small lift on hover */
 .shelf .gsbook--p::after { display: none; }
 .shelf .gsbook--p .gsbook__in { animation: none; }
-@media not all { .shelf__row { padding: 0 10px; } }
-@media not all {
+@media (max-width: 900px) { .shelf__row { padding: 0 10px; } }
+@media (max-width: 640px) {
   .shelf .gsbook--p { zoom: .62; }
   .shelf__row { height: calc(var(--h-book, 358px) * .62); }
   .shelf .pbk__b .pc__tags { font-size: 11px; }
@@ -335,8 +335,8 @@
 .pst__who { position: absolute; left: 28px; right: 28px; bottom: 20px; display: grid; gap: 0; padding-top: 8px; border-top: 1px solid rgba(27, 42, 82, .25); }
 .pst__who b { font: 600 25px/28px "Caveat", "Segoe Script", cursive; color: #1B2A52; }
 .pst__who em { font: 500 18px/22px "Caveat", "Segoe Script", cursive; font-style: normal; color: rgba(27, 42, 82, .75); }
-@media not all { .pst { width: min(380px, calc(86 * 14.4px)); } }
-@media not all { .pst__q { font-size: 19px; line-height: 24px; } .pst__ph { width: 62px; height: 78px; } }
+@media (max-width: 900px) { .pst { width: min(380px, 86vw); } }
+@media (max-width: 460px) { .pst__q { font-size: 19px; line-height: 24px; } .pst__ph { width: 62px; height: 78px; } }
 @media (prefers-reduced-motion: reduce) { .pst, .pst__in { transition: none; } }
 /* reduced motion: no sliding; the row scrolls by hand instead */
 @media (prefers-reduced-motion: reduce) { .pst__track { animation: none; } #tcar.ilgrid { overflow-x: auto; -webkit-mask-image: none; mask-image: none; } .pst[aria-hidden="true"] { display: none; } }
@@ -371,7 +371,7 @@
 #faculty .rnav__b:hover { transform: translateY(-50%) scale(1.06); }
 #faculty .rnav__b[disabled] { opacity: 0; pointer-events: none; }
 #faculty .rnav { gap: 0; }
-@media not all { #faculty .rnav__b { width: 42px; height: 42px; } #faculty .rnav__b--prev { left: -8px; } #faculty .rnav__b--next { right: -8px; } }
+@media (max-width: 760px) { #faculty .rnav__b { width: 42px; height: 42px; } #faculty .rnav__b--prev { left: -8px; } #faculty .rnav__b--next { right: -8px; } }
 
 /* faculty arrows: the same teer arrow as the CTA buttons, and the same hover (it slides out of the circle as a fresh one slides in) */
 #faculty .rnav__b { background: linear-gradient(135deg, #F06A2C 0%, #E85020 45%, #C2410C 100%); }
@@ -405,7 +405,7 @@
 /* ---- counselling form as a sentence: the fields are blanks you fill in, written in handwriting on a dashed line ---- */
 .form--note h3 { margin: 0; font: 700 11.5px/1.2 var(--f); letter-spacing: .16em; text-transform: uppercase; color: var(--brand); }
 .form--note h3::after { content: none; }
-.form__sent { margin: 14px 0 8px; font: 500 clamp(19px, calc(1.6 * 14.4px), 24px)/2.35 var(--f-d); color: var(--ink); letter-spacing: -.005em; }
+.form__sent { margin: 14px 0 8px; font: 500 clamp(19px, 1.6vw, 24px)/2.35 var(--f-d); color: var(--ink); letter-spacing: -.005em; }
 .blank { display: inline-flex; align-items: baseline; vertical-align: baseline; position: relative; min-width: 0; }
 .blank input, .blank select { height: 1.5em; padding: 0 6px; border: 0; border-bottom: 2px dashed rgba(194, 65, 12, .6); border-radius: 2px 2px 0 0; background: transparent; box-shadow: none;
   font: 600 1.18em/1.5 "Caveat", "Segoe Script", cursive; letter-spacing: 0; color: #1B2A52; outline: none; transition: background-color .2s, border-color .2s; }
@@ -419,7 +419,7 @@
 .blank--name { flex: 1; min-width: 0; }
 .blank--name input { width: 100%; }
 .keep { white-space: nowrap; }
-.blank--prog select { width: 205px; max-width: calc(46 * 14.4px); text-overflow: ellipsis; }
+.blank--prog select { width: 205px; max-width: 46vw; text-overflow: ellipsis; }
 .blank--tel { gap: 4px; }
 .blank--tel input { width: 150px; }
 .blank__cc { font: 600 1.05em "Caveat", cursive; color: rgba(27, 42, 82, .6); }
@@ -430,7 +430,7 @@
 .form__opt { display: block; margin-top: 4px; font-size: .74em; color: var(--muted); }
 .form--note .form__err { margin-top: 10px; }
 .form--note .bt--full { margin-top: 4px; }
-@media not all { .blank--name input, .blank--prog select, .blank--time select, .blank--mail input { width: min(100%, 250px); } .form--note { padding: 34px 26px 30px; } }
+@media (max-width: 600px) { .blank--name input, .blank--prog select, .blank--time select, .blank--mail input { width: min(100%, 250px); } .form--note { padding: 34px 26px 30px; } }
 
 /* FAQ: no section background of its own */
 #faq.sheet { background: none; border: 0; box-shadow: none; }
@@ -469,7 +469,7 @@
 .rv__cal li::before { content: counter(cs); position: absolute; left: 0; top: 50%; translate: 0 -50%; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--brand); color: #fff; font: 700 13px/1 var(--f); z-index: 1; }
 .rv__cal li::after { content: ""; position: absolute; left: 14px; top: calc(50% + 15px); bottom: calc(-50% + 15px); width: 2px; background: rgba(194, 65, 12, .3); }
 .rv__cal li:last-child::after { display: none; }
-@media not all { .ra__h { grid-template-columns: 38px minmax(0, 1fr) 40px; gap: 12px; } .ra__tag { display: none; } .ra__h b { font-size: 22px; } .ra__bi { grid-template-columns: 1fr; padding-left: 50px; } }
+@media (max-width: 800px) { .ra__h { grid-template-columns: 38px minmax(0, 1fr) 40px; gap: 12px; } .ra__tag { display: none; } .ra__h b { font-size: 22px; } .ra__bi { grid-template-columns: 1fr; padding-left: 50px; } }
 @media (prefers-reduced-motion: reduce) { .ra__b, .ra__h, .ra__pm::before, .ra__pm::after { transition: none; } }
 
 /* resources: light like the rest of the page; header centred, text dark */
@@ -478,8 +478,8 @@
 .dl__cta, .sc__cta { margin-top: 30px; }
 .sc .dl__cta { pointer-events: auto; }
 /* the first slide's subcopy now matches the other slides */
-.dl__p { margin: 22px 0 0; max-width: 34em; font: 400 clamp(16px, calc(1.3 * 14.4px), 19px)/1.5 var(--f); color: rgba(255, 246, 232, .88); text-shadow: none; }
-@media not all { .dl__p { margin-top: 14px; font-size: 15px; } .dl__cta { margin-top: 22px; } }
+.dl__p { margin: 22px 0 0; max-width: 34em; font: 400 clamp(16px, 1.3vw, 19px)/1.5 var(--f); color: rgba(255, 246, 232, .88); text-shadow: none; }
+@media (max-width: 900px) { .dl__p { margin-top: 14px; font-size: 15px; } .dl__cta { margin-top: 22px; } }
 
 /* nav "Let's talk": the orange pill by default, including over the hero */
 .nav--hero .cta.cta.talk { background: linear-gradient(135deg, #F06A2C 0%, #E85020 45%, #C2410C 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 12px 24px -12px rgba(194, 65, 12, .65); color: #fff; }
@@ -498,7 +498,7 @@
 .nav--hero .nav__logo { margin-right: 18px; }
 .nav__a.is-current { background: var(--brand); color: #fff; text-shadow: none; }
 .nav--hero .nav__a.is-current { background: rgba(255, 255, 255, .95); color: var(--brand-d, #A8380A); text-shadow: none; }
-@media not all { .nav__a { padding: 0 11px; font-size: 14.5px; } }
+@media (max-width: 1180px) { .nav__a { padding: 0 11px; font-size: 14.5px; } }
 
 /* over the hero the menu blends in: no bar, no blur, no outline. Bold white links read against the soft dark fade at the top. */
 .nav--hero .nav__pill { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; padding-left: 0; }
@@ -574,7 +574,7 @@
 /* resources: make sure old section rules don't recolour the new tiles */
 
 /* resources as rows with a link button each (no accordion) */
-@media not all { .ra__i { grid-template-columns: 38px minmax(0, 1fr); } .ra__go.tlink { grid-column: 2; justify-self: start; } .ra__n { font-size: 22px; } }
+@media (max-width: 800px) { .ra__i { grid-template-columns: 38px minmax(0, 1fr); } .ra__go.tlink { grid-column: 2; justify-self: start; } .ra__n { font-size: 22px; } }
 
 /* resources header: the same label / heading / intro as the other sections */
 
@@ -599,20 +599,20 @@
 .dl__cta.cta.cta { height: 60px; padding: 0 7px 0 30px; gap: 18px; font-size: 17px; }
 .dl__cta .sq { width: 46px; height: 46px; }
 .dl__cta .sq svg { width: 19px; height: 19px; }
-@media not all { .dl__cta.cta.cta { height: 54px; padding-left: 24px; font-size: 16px; } .dl__cta .sq { width: 42px; height: 42px; } }
+@media (max-width: 900px) { .dl__cta.cta.cta { height: 54px; padding-left: 24px; font-size: 16px; } .dl__cta .sq { width: 42px; height: 42px; } }
 
 /* hero: every headline and every subline sits on exactly two lines (desktop) */
 .dl__p, .sc__p { max-width: 46em; text-wrap: balance; }
 .dl__h span { display: block; }
 .dl__h span { white-space: nowrap; }
 .sc .vp__h .ln i { white-space: nowrap; }
-@media not all { .dl__p, .sc__p { max-width: 30em; } }
+@media (max-width: 900px) { .dl__p, .sc__p { max-width: 30em; } }
 
 /* ---- hero: slide 1 uses the same position and type scale as slides 2 to 4 ---- */
 .dl__in { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding-top: 0; padding-bottom: 0; max-width: none; }
 .dl__in > * { max-width: 880px; }
 .dl__k { margin: 0 0 24px; }
-.dl__h { margin: 0; font: 500 clamp(38px, calc(4.8 * 14.4px), 84px)/1.04 var(--f-d); letter-spacing: -.025em; }
+.dl__h { margin: 0; font: 500 clamp(38px, 4.8vw, 84px)/1.04 var(--f-d); letter-spacing: -.025em; }
 .dl__k, .sc .vp__k { font-size: 12.5px; }
 
 /* ---- consistency pass ---- */
@@ -625,28 +625,28 @@
 .gsbook__title span, .gsbook--p .gsbook__title span { font-size: max(12px, 1em); }
 
 /* phones: headlines may wrap (two lines is not possible at this width), forms stay inside their card */
-@media not all {
+@media (max-width: 600px) {
   .dl__h span, .sc .vp__h .ln i { white-space: normal; }
-  .dl__h, .sc .vp__h { font-size: clamp(30px, calc(8.6 * 14.4px), 38px); }
-  .blank--prog select { width: min(190px, calc(52 * 14.4px)); max-width: 100%; }
-  .blank--time select { width: min(210px, calc(60 * 14.4px)); max-width: 100%; }
-  .blank--tel input { width: min(150px, calc(44 * 14.4px)); }
+  .dl__h, .sc .vp__h { font-size: clamp(30px, 8.6vw, 38px); }
+  .blank--prog select { width: min(190px, 52vw); max-width: 100%; }
+  .blank--time select { width: min(210px, 60vw); max-width: 100%; }
+  .blank--tel input { width: min(150px, 44vw); }
   .form__sent { font-size: 19px; }
 }
 
 /* ---- hero CTA: ONE fixed button, outside the slides. It never moves, fades or re-animates when the slides change.
    Every slide's text block has the same height (kicker + two-line headline + two-line subline), so the button always sits right under it. ---- */
-.dl { --hh: clamp(38px, calc(4.8 * 14.4px), 84px); --pp: clamp(16px, calc(1.3 * 14.4px), 19px); --txt-h: calc(61px + 2.08 * var(--hh) + 3 * var(--pp)); }
+.dl { --hh: clamp(38px, 4.8vw, 84px); --pp: clamp(16px, 1.3vw, 19px); --txt-h: calc(61px + 2.08 * var(--hh) + 3 * var(--pp)); }
 .dl__h, .sc .vp__h { font-size: var(--hh); min-height: 2.08em; }
 .dl__p, .sc__p { font-size: var(--pp); min-height: 3em; }
 .dl__in, .sc { padding-bottom: 96px; }
-.dl__cta.cta.cta { position: absolute; z-index: 6; left: clamp(20px, calc(5.5 * 14.4px), 100px); top: calc(50% - 48px + var(--txt-h) / 2 + 30px); margin: 0; opacity: 1 !important; transform: none !important; transition: none; pointer-events: auto; }
-@media not all {
+.dl__cta.cta.cta { position: absolute; z-index: 6; left: clamp(20px, 5.5vw, 100px); top: calc(50% - 48px + var(--txt-h) / 2 + 30px); margin: 0; opacity: 1 !important; transform: none !important; transition: none; pointer-events: auto; }
+@media (max-width: 900px) {
   .dl__h, .sc .vp__h, .dl__p, .sc__p { min-height: 0; }
   .dl__in, .sc { padding-bottom: 0; }
   .dl__cta.cta.cta { top: auto; bottom: 74px; }
 }
-@media (prefers-reduced-motion: reduce) { .dl__cta.cta.cta { position: relative; top: auto; left: auto; display: inline-flex; margin: 24px clamp(20px, calc(5.5 * 14.4px), 100px); } }
+@media (prefers-reduced-motion: reduce) { .dl__cta.cta.cta { position: relative; top: auto; left: auto; display: inline-flex; margin: 24px clamp(20px, 5.5vw, 100px); } }
 
 /* scroll focus (see js/page-motion.js): the opacity follows the scroll position through --fx, which the script sets per section */
 .fx-on .fx { opacity: var(--fx, .16); will-change: opacity; }
@@ -660,7 +660,7 @@
 .tlink, .tlink span { font-size: 18px; }
 .nav .cta.cta.cta.cta { height: 48px; }
 .nav .cta.cta.talk { gap: 14px; padding-left: 20px; }
-@media not all { .nav .cta.cta.talk .btn__label { display: none; } }
+@media (max-width: 480px) { .nav .cta.cta.talk .btn__label { display: none; } }
 
 /* hero headlines: the text column is wide enough for the largest headline size, so no line is ever clipped */
 .sc--r, .sc--l { grid-template-columns: minmax(0, 1200px); }
@@ -682,7 +682,7 @@
 .line--tel { display: flex; align-items: baseline; gap: .35em; }
 .blank--tel { flex: 1; min-width: 0; }
 .blank--tel input { flex: 1; width: 100%; min-width: 0; }
-@media not all { .blank--tel input { width: 100%; } }
+@media (max-width: 600px) { .blank--tel input { width: 100%; } }
 
 /* footer text, larger (user 2026-11-10): logo 20 -> 24, intro 17 -> 19, column heads 17 -> 20, links 14.5 -> 16.5, bottom bar 14 -> 15.5 */
 footer.foot .foot__logo { font-size: 24px; }
@@ -711,13 +711,13 @@ footer.foot .foot__bot { font-size: 15.5px; }
 /* hero: slightly darker scrim behind the copy for readability */
 .dl__bg::after { background: linear-gradient(90deg, rgba(30,12,2,.86) 0%, rgba(30,12,2,.62) 50%, rgba(30,12,2,.24) 100%), linear-gradient(0deg, rgba(30,12,2,.6) 0%, transparent 42%); }
 .dl--pin:not([data-s="0"]) .dl__bg::after { background: linear-gradient(90deg, rgba(30,12,2,.9) 0%, rgba(30,12,2,.82) 48%, rgba(30,12,2,.72) 100%), linear-gradient(0deg, rgba(30,12,2,.6) 0%, transparent 42%); }
-@media not all { .dl__bg::after, .dl--pin:not([data-s="0"]) .dl__bg::after { background: linear-gradient(0deg, rgba(30,12,2,.86) 0%, rgba(30,12,2,.62) 60%, rgba(30,12,2,.46) 100%); } }
+@media (max-width: 900px) { .dl__bg::after, .dl--pin:not([data-s="0"]) .dl__bg::after { background: linear-gradient(0deg, rgba(30,12,2,.86) 0%, rgba(30,12,2,.62) 60%, rgba(30,12,2,.46) 100%); } }
 
 /* hero copy: long headlines must wrap (sizes and spacing stay as before) */
 .dl__h span, .sc .vp__h .ln i { white-space: normal; }
-.dl { --hh: clamp(32px, calc(4 * 14.4px), 68px); }
+.dl { --hh: clamp(32px, 4vw, 68px); }
 .dl__h span, .sc .vp__h .ln i { text-wrap: balance; }
-@media not all { .dl { --hh: clamp(28px, calc(7.4 * 14.4px), 38px); } }
+@media (max-width: 900px) { .dl { --hh: clamp(28px, 7.4vw, 38px); } }
 
 /* slide 1 eyebrow matches the eyebrow on slides 2-4 */
 .dl__k { display: block; margin: 0 0 24px; font: 600 16px/1 var(--f-hi); letter-spacing: 0; text-transform: none; color: #FFD48A; }
@@ -728,7 +728,7 @@ footer.foot .foot__bot { font-size: 15.5px; }
 .dl__scroll i { position: relative; width: 1px; height: 34px; background: rgba(255, 246, 232, .25); overflow: hidden; }
 .dl__scroll i::after { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 50%; background: #FFD48A; animation: dlScroll 2s cubic-bezier(.6, 0, .3, 1) infinite; }
 @keyframes dlScroll { 0% { transform: translateY(-100%); } 70%, 100% { transform: translateY(200%); } }
-@media not all { .dl__scroll { display: none; } }
+@media (max-width: 900px) { .dl__scroll { display: none; } }
 @media (prefers-reduced-motion: reduce) { .dl__scroll { display: none; } }
 
 /* footer wordmark reveal (js/footer-word.js): hidden until it scrolls into view, then each letter rises in, staggered */
@@ -771,20 +771,20 @@ html.foot-curtain footer.foot { position: sticky; bottom: var(--foot-off, 0px); 
 .nav__a.is-sw, .drawer a.is-sw, .talk .btn__label.is-sw { animation: langSw .45s var(--ease); }
 @keyframes langSw { from { opacity: 0; transform: translateY(6px); } }
 html[lang="hi"] .nav__a, html[lang="hi"] .drawer a, html[lang="hi"] .talk .btn__t { font-family: "Mukta", var(--f); }
-@media not all { .nav__end { margin-left: 10px; } .nav__end .talk { margin-left: 0; } }
-@media not all { .nav__end { gap: 6px; margin-left: 6px; } .lang__b { min-width: 32px; padding: 0 6px; font-size: 12.5px; } .lang__b[lang="hi"] { font-size: 14.5px; } .nav .nav__logo, .nav--hero .nav__logo { margin-right: 8px; } .nav--hero .nav__logo .lg, .nav__logo .lg { height: 34px; } }
+@media (max-width: 1100px) { .nav__end { margin-left: 10px; } .nav__end .talk { margin-left: 0; } }
+@media (max-width: 480px) { .nav__end { gap: 6px; margin-left: 6px; } .lang__b { min-width: 32px; padding: 0 6px; font-size: 12.5px; } .lang__b[lang="hi"] { font-size: 14.5px; } .nav .nav__logo, .nav--hero .nav__logo { margin-right: 8px; } .nav--hero .nav__logo .lg, .nav__logo .lg { height: 34px; } }
 @media (prefers-reduced-motion: reduce) { .lang, .lang__thumb, .lang__b { transition: none; animation: none; } .nav__a.is-sw, .drawer a.is-sw, .talk .btn__label.is-sw { animation: none; } }
 
 /* ---- section titles: one size everywhere (64px on desktop, 40px on phones). The hero, the Toppers masthead and card headings are not section titles. ---- */
-:root { --h2: clamp(40px, calc(6 * 14.4px), 64px); }
+:root { --h2: clamp(40px, 6vw, 64px); }
 .h2, .stats__h, .hw__h, .wc__h, .rs__head2 .h2 { font-size: var(--h2); line-height: 1.04; letter-spacing: -.03em; }
 .h2 { max-width: 15em; text-wrap: balance; }
 .gs__h { max-width: 14em; }
 .stats__h { max-width: 18em; }
-@media all { .stats__h { width: auto; } .stats__h .ln { display: inline; white-space: normal; } }
+@media (min-width: 1000px) { .stats__h { width: auto; } .stats__h .ln { display: inline; white-space: normal; } }
 
 /* ---- section rhythm: one vertical padding and one gap for every section (the hero, the banner carousel and the footer are not sections) ---- */
-:root { --sec-y: clamp(72px, calc(7 * 14.4px), 104px); --sec-gap: 24px; --py: var(--sec-y); --pb: var(--sec-y); }
+:root { --sec-y: clamp(72px, 7vw, 104px); --sec-gap: 24px; --py: var(--sec-y); --pb: var(--sec-y); }
 .band--gap, .sheet, .gs, .bnr, #courses.band--wall { margin-top: var(--sec-gap); }
 #courses.band--wall { padding-top: var(--sec-y); padding-bottom: calc(var(--sec-y) + 24px); }   /* the bottom shelf board casts its shadow below the last row of books */
 #toppers { padding-top: var(--sec-y); padding-bottom: var(--sec-y); }
@@ -829,7 +829,7 @@ html.vrv-lock .wa { opacity: 0; pointer-events: none; }
   .wa:hover .wa__t { max-width: 180px; padding-right: 22px; }
   .wa:hover .wa__ic svg { transform: rotate(-10deg) scale(1.08); }
 }
-@media not all { .wa { height: 52px; right: 16px; bottom: 16px; } .wa__ic { width: 52px; height: 52px; } .wa__ic svg { width: 28px; height: 28px; } }
+@media (max-width: 600px) { .wa { height: 52px; right: 16px; bottom: 16px; } .wa__ic { width: 52px; height: 52px; } .wa__ic svg { width: 28px; height: 28px; } }
 @media (prefers-reduced-motion: reduce) { .wa { opacity: 1; transform: none; transition: none; } .wa::before { animation: none; } .wa__ic svg, .wa__t { transition: none; } }
 
 /* ---- body text: one size, one line height, one colour for running copy; one smaller size for card detail text.
@@ -868,8 +868,8 @@ html.vrv-lock .wa { opacity: 0; pointer-events: none; }
 .cm__item:last-child { border-bottom: 0; }
 .cm__item.is-on { border-left-color: var(--amber); background: linear-gradient(90deg, rgba(254, 170, 28, .12), transparent 70%); }
 .cm__tag { margin: 0; font: 700 12px/1.3 var(--f); letter-spacing: .14em; text-transform: uppercase; color: var(--brand); }
-.cm__item h3 { margin: 6px 0 0; font: 600 clamp(22px, calc(1.9 * 14.4px), 28px)/1.1 var(--f-d); letter-spacing: -.02em; color: var(--ink); }
-.cm__item h3.cm__mail { font-size: clamp(17px, calc(1.3 * 14.4px), 20px); overflow-wrap: anywhere; }
+.cm__item h3 { margin: 6px 0 0; font: 600 clamp(22px, 1.9vw, 28px)/1.1 var(--f-d); letter-spacing: -.02em; color: var(--ink); }
+.cm__item h3.cm__mail { font-size: clamp(17px, 1.3vw, 20px); overflow-wrap: anywhere; }
 .cm__item p { margin: 6px 0 0; font-size: var(--body-fs, 16.5px); line-height: var(--body-lh, 1.55); color: var(--body); }
 .cm__item .cm__tag { margin: 0; font-size: 12px; line-height: 1.3; color: var(--brand); }
 .cm__item .cm__near { font-size: var(--small-fs, 14.5px); line-height: var(--small-lh, 1.5); color: var(--muted); }
@@ -902,8 +902,8 @@ html.vrv-lock .wa { opacity: 0; pointer-events: none; }
   .cm__item--chan:hover { background: linear-gradient(90deg, rgba(254, 170, 28, .08), transparent 70%); }
   .cm__label:not(.is-on):hover { background: rgba(194, 65, 12, .08); }
 }
-@media not all { .cm { grid-template-columns: 1fr; gap: 32px; padding: 28px 24px; } .cm__map { max-width: 440px; } }
-@media not all { .cm { padding: 22px 16px; border-radius: 22px; } .cm__item { padding-left: 14px; } }
+@media (max-width: 1000px) { .cm { grid-template-columns: 1fr; gap: 32px; padding: 28px 24px; } .cm__map { max-width: 440px; } }
+@media (max-width: 480px) { .cm { padding: 22px 16px; border-radius: 22px; } .cm__item { padding-left: 14px; } }
 @media (prefers-reduced-motion: reduce) {
   .cm__pin.is-on .cm__pulse { animation: none; opacity: .5; }
   .cm__pin .cm__dot, .cm__link::after, .cm__link svg { transition: none; }
@@ -961,8 +961,8 @@ html.vrv-lock .wa { opacity: 0; pointer-events: none; }
   .sm__chip:hover { border-color: var(--sm-accent); color: var(--sm-accent); transform: translateY(-2px); }
   .sm__chip:hover img { transform: translateX(3px); }
 }
-@media not all { .sm__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sm__card--wide { grid-column: auto; } .sm__card--wide .sm__rays { left: 210px; right: auto; } }
-@media not all { .sm__grid { grid-template-columns: 1fr; } .sm__card, .sm__card > a { min-height: 200px; } .sm__foot { flex-direction: column; align-items: flex-start; } }
+@media (max-width: 1000px) { .sm__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sm__card--wide { grid-column: auto; } .sm__card--wide .sm__rays { left: 210px; right: auto; } }
+@media (max-width: 640px) { .sm__grid { grid-template-columns: 1fr; } .sm__card, .sm__card > a { min-height: 200px; } .sm__foot { flex-direction: column; align-items: flex-start; } }
 @media (prefers-reduced-motion: reduce) { .sm__grid.is-swap > .sm__card { animation: none; } .sm__card, .sm__card::before, .sm__go, .sm__go img, .sm__rays, .sm__tag, .sm__t, .sm__chip, .sm__chip img { transition: none; } }
 
 
@@ -1018,7 +1018,7 @@ html.vrv-lock .wa { opacity: 0; pointer-events: none; }
   .cl__proof:hover .cl__faces img:nth-child(5) { transition-delay: 160ms; }
   .cl__call a:hover { color: #fff; background-size: 100% 1px; }
 }
-@media not all {
+@media (max-width: 640px) {
   .cl__card { min-height: 0; padding: 48px 20px 200px; border-radius: 28px; }
   .cl__proof { font-size: 12.5px; gap: 8px; padding-right: 12px; white-space: nowrap; }
   .cl__faces img { width: 28px; height: 28px; }
@@ -1046,9 +1046,9 @@ html.vrv-lock .wa { opacity: 0; pointer-events: none; }
 /* ---- faculty v5: the toppers' postcard (buff card, clipped snapshot, perforated stamp, postmark, ruled lines) reused for faculty ---- */
 #faculty { --fcw: calc((100% - 3 * 28px) / 4); }
 #faculty .rail--fac { --cw: var(--fcw); }
-@media not all { #faculty .rail--fac { --cw: calc((100% - 2 * 28px) / 3); } }
-@media not all { #faculty .rail--fac { --cw: calc((100% - 28px) / 2.3); } }
-@media not all { #faculty .rail--fac { --cw: calc(100% / 1.35); } }
+@media (max-width: 1200px) { #faculty .rail--fac { --cw: calc((100% - 2 * 28px) / 3); } }
+@media (max-width: 1000px) { #faculty .rail--fac { --cw: calc((100% - 28px) / 2.3); } }
+@media (max-width: 640px) { #faculty .rail--fac { --cw: calc(100% / 1.35); } }
 #faculty #team.rail__track { gap: 28px; padding-top: 40px; padding-bottom: 56px; margin-bottom: -20px; }
 #team .fc.pcd { display: block; padding: 0; background: none; box-shadow: none; border-radius: 0; overflow: visible; text-align: left; aspect-ratio: 3 / 4; }
 #team .fc.pcd::before, #team .fc.pcd::after { content: none; }
@@ -1066,9 +1066,9 @@ html.vrv-lock .wa { opacity: 0; pointer-events: none; }
 
 /* faculty postcards, smaller (5 across) with a clear text hierarchy: name > subject > profile link */
 #faculty { --fcw: calc((100% - 4 * 22px) / 5); }
-@media not all { #faculty .rail--fac { --cw: calc((100% - 3 * 22px) / 4); } }
-@media not all { #faculty .rail--fac { --cw: calc((100% - 22px) / 2.6); } }
-@media not all { #faculty .rail--fac { --cw: calc(100% / 1.6); } }
+@media (max-width: 1200px) { #faculty .rail--fac { --cw: calc((100% - 3 * 22px) / 4); } }
+@media (max-width: 1000px) { #faculty .rail--fac { --cw: calc((100% - 22px) / 2.6); } }
+@media (max-width: 640px) { #faculty .rail--fac { --cw: calc(100% / 1.6); } }
 #faculty #team.rail__track { gap: 22px; }
 #team .fc .pcd__in { padding: 11px 12px 13px; }
 #team .fc .pcd__ph { width: 70%; }
@@ -1145,16 +1145,16 @@ html.vrv-lock .wa { opacity: 0; pointer-events: none; }
 .hw__k { margin-bottom: 14px; }
 
 /* form section: more breathing room at the sides (desktop) */
-@media all { #contact .contact__in { padding-left: clamp(40px, calc(8 * 14.4px), 150px); padding-right: clamp(40px, calc(8 * 14.4px), 150px); } }
-@media not all { #contact .contact__in { padding-left: max(var(--px), 22px); padding-right: max(var(--px), 22px); } }
+@media (min-width: 901px) { #contact .contact__in { padding-left: clamp(40px, 8vw, 150px); padding-right: clamp(40px, 8vw, 150px); } }
+@media (max-width: 900px) { #contact .contact__in { padding-left: max(var(--px), 22px); padding-right: max(var(--px), 22px); } }
 
 /* one content width for every section: the content column stops at 1440px (what the Why section already used) and centres on wider
    screens, while section backgrounds stay full-bleed. The side padding grows to take up the slack, so everything that reads --px follows. */
-:root { --px: max(clamp(16px, calc(2.71 * 14.4px), 52px), calc((calc(100 * 14.4px) - 1440px) / 2)); }
-@media all { #contact .contact__in { padding-left: max(clamp(40px, calc(8 * 14.4px), 150px), calc((calc(100 * 14.4px) - 1440px) / 2 + 40px)); padding-right: max(clamp(40px, calc(8 * 14.4px), 150px), calc((calc(100 * 14.4px) - 1440px) / 2 + 40px)); } }
+:root { --px: max(clamp(16px, 2.71vw, 52px), calc((100vw - 1440px) / 2)); }
+@media (min-width: 901px) { #contact .contact__in { padding-left: max(clamp(40px, 8vw, 150px), calc((100vw - 1440px) / 2 + 40px)); padding-right: max(clamp(40px, 8vw, 150px), calc((100vw - 1440px) / 2 + 40px)); } }
 
 /* programme books on small or touch screens: no button under the shelf; the whole book is the click target */
-@media (hover: none), (pointer: coarse) {
+@media (max-width: 900px), (hover: none), (pointer: coarse) {
   #courses .pbk__b { display: none; }
   #courses .gsbook--p { cursor: pointer; }
 }
@@ -1165,7 +1165,7 @@ html.vrv-lock .wa { opacity: 0; pointer-events: none; }
   -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 44px, #000 calc(100% - 44px), transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 44px, #000 calc(100% - 44px), transparent 100%); }
 #faculty #team.rail__track::-webkit-scrollbar { display: none; }
 #team .fc.pcd { width: auto; margin: 0; scroll-snap-align: start; }
-@media not all { #faculty #team.rail__track { grid-auto-columns: 244px; gap: 20px; } }
+@media (max-width: 640px) { #faculty #team.rail__track { grid-auto-columns: 244px; gap: 20px; } }
 @media (prefers-reduced-motion: reduce) { #faculty #team.rail__track { scroll-behavior: auto; } }
 
 /* faculty cards and their photos sit straight (no resting tilt) */
@@ -1177,13 +1177,13 @@ html.vrv-lock .wa { opacity: 0; pointer-events: none; }
 #faq .qa p { max-width: 48em; }
 
 /* tighter side padding on every section (was ~39px at 1440, now ~20px); the 1440px content cap is unchanged */
-:root { --px: max(clamp(14px, calc(1.4 * 14.4px), 24px), calc((calc(100 * 14.4px) - 1440px) / 2)); }
-@media all { #contact .contact__in { padding-left: max(clamp(20px, calc(3 * 14.4px), 56px), calc((calc(100 * 14.4px) - 1440px) / 2 + 20px)); padding-right: max(clamp(20px, calc(3 * 14.4px), 56px), calc((calc(100 * 14.4px) - 1440px) / 2 + 20px)); } }
+:root { --px: max(clamp(14px, 1.4vw, 24px), calc((100vw - 1440px) / 2)); }
+@media (min-width: 901px) { #contact .contact__in { padding-left: max(clamp(20px, 3vw, 56px), calc((100vw - 1440px) / 2 + 20px)); padding-right: max(clamp(20px, 3vw, 56px), calc((100vw - 1440px) / 2 + 20px)); } }
 #faculty #team.rail__track { padding-left: calc(var(--px) + 16px); padding-right: calc(var(--px) + 16px); scroll-padding-inline: calc(var(--px) + 16px); }
 
 /* content cap raised from 1440px to 1680px, then 1800px so wide screens (1536, 1920 and up) no longer get a large empty margin each side; inner caps follow it */
-:root { --px: max(clamp(14px, calc(1.4 * 14.4px), 24px), calc((calc(100 * 14.4px) - 1800px) / 2)); }
-@media all { #contact .contact__in { padding-left: max(clamp(20px, calc(3 * 14.4px), 56px), calc((calc(100 * 14.4px) - 1800px) / 2 + 20px)); padding-right: max(clamp(20px, calc(3 * 14.4px), 56px), calc((calc(100 * 14.4px) - 1800px) / 2 + 20px)); } }
+:root { --px: max(clamp(14px, 1.4vw, 24px), calc((100vw - 1800px) / 2)); }
+@media (min-width: 901px) { #contact .contact__in { padding-left: max(clamp(20px, 3vw, 56px), calc((100vw - 1800px) / 2 + 20px)); padding-right: max(clamp(20px, 3vw, 56px), calc((100vw - 1800px) / 2 + 20px)); } }
 .wc__in { max-width: none; }
 .vrnp .np-page { max-width: none; }
 .lv__in { max-width: none; }
@@ -1209,7 +1209,7 @@ html.vrv-lock .wa { opacity: 0; pointer-events: none; }
 footer.foot { padding-left: max(var(--px), 48px); padding-right: max(var(--px), 48px); }   /* content clears the inner rule (30px in) */
 .foot .foot__bot { margin-left: 0; margin-right: 0; padding: 18px 0 44px; }   /* divider stays inside the frame; the row clears the bottom rules */
 .foot .foot__word { margin-top: 8px; }   /* gives back the bottom bar's extra room, so the footer still fits the screen (the curtain needs that) */
-@media not all {
+@media (max-width: 640px) {
   .foot__frame { inset: 4px; }
   footer.foot { padding-left: 30px; padding-right: 30px; }
 }
@@ -1262,7 +1262,7 @@ footer.foot { padding-left: max(var(--px), 48px); padding-right: max(var(--px), 
 /* ---- Footer: more room between the content and the gold border (was 18px inside the inner rule) ---- */
 footer.foot { padding-left: max(var(--px), 76px); padding-right: max(var(--px), 76px); padding-top: 76px; }
 .foot .foot__bot { padding-bottom: 64px; }
-@media not all { footer.foot { padding-left: 40px; padding-right: 40px; padding-top: 56px; } .foot .foot__bot { padding-bottom: 44px; } }
+@media (max-width: 640px) { footer.foot { padding-left: 40px; padding-right: 40px; padding-top: 56px; } .foot .foot__bot { padding-bottom: 44px; } }
 
 /* ---- Contact and campus CTAs: the site's pill buttons instead of small underlined links; labels say what happens.
    Primary (brand): directions, call. Secondary (white outline): ask about Chennai, email. Rolling label from js/page-motion.js. ---- */
@@ -1271,7 +1271,7 @@ footer.foot { padding-left: max(var(--px), 76px); padding-right: max(var(--px), 
 #visit .cta.cta.bt--line { box-shadow: inset 0 0 0 1.5px rgba(194, 65, 12, .45); color: var(--brand); }
 #visit .cta.cta.bt--line::before { background: rgba(194, 65, 12, .08); }
 #visit .cta.cta.bt--line:hover { box-shadow: inset 0 0 0 1.5px var(--brand); color: var(--brand); }
-@media not all { #visit .cm__cta { white-space: normal; } }
+@media (max-width: 480px) { #visit .cm__cta { white-space: normal; } }
 
 
 /* ---- One light ground (user 2026-11-10): every light section takes the Free resources background, a cream gradient #fff7ee -> #fffbf5.
@@ -1322,7 +1322,7 @@ section#toppers.vrnp { padding-left: var(--px); padding-right: var(--px); }   /*
 .gsbook__ico .a { fill: currentColor; stroke: none; }
 
 /* hero: lighter scrim on the right so the subject of each photo gets more focus; the left, behind the copy, stays dark enough to read */
-@media all {
+@media (min-width: 901px) {
   .dl__bg::after { background: linear-gradient(90deg, rgba(30,12,2,.86) 0%, rgba(30,12,2,.52) 50%, rgba(30,12,2,.1) 100%), linear-gradient(0deg, rgba(30,12,2,.5) 0%, transparent 40%); }
   .dl--pin:not([data-s="0"]) .dl__bg::after { background: linear-gradient(90deg, rgba(30,12,2,.88) 0%, rgba(30,12,2,.62) 48%, rgba(30,12,2,.2) 100%), linear-gradient(0deg, rgba(30,12,2,.5) 0%, transparent 40%); }
 }
@@ -1348,15 +1348,15 @@ section#toppers.vrnp { padding-left: var(--px); padding-right: var(--px); }   /*
 }
 
 /* ---- one horizontal system for the whole page ----
-   --px is the page margin: 20px on phones, growing gently with the screen (calc(2.4 * 14.4px)) up to 44px, and beyond 1800px wide the content column stops
+   --px is the page margin: 20px on phones, growing gently with the screen (2.4vw) up to 44px, and beyond 1800px wide the content column stops
    and centres (margin = half of the leftover). Sections, the hero copy, the nav and the footer all read it, so every left and right edge lines up. */
-:root { --px: max(clamp(20px, calc(2.4 * 14.4px), 44px), calc((calc(100 * 14.4px) - 1800px) / 2)); }
+:root { --px: max(clamp(20px, 2.4vw, 44px), calc((100vw - 1800px) / 2)); }
 .dl__in, .sc { padding-left: var(--px); padding-right: var(--px); }
 .dl__prog, .dl__cta.cta.cta { left: var(--px); }
 .hw { padding-left: var(--px); padding-right: var(--px); }
 .nav { left: var(--px); right: var(--px); }
 #contact .contact__in { padding-left: var(--px); padding-right: var(--px); }
-@media all { #contact .contact__in { padding-left: var(--px); padding-right: var(--px); } }
+@media (min-width: 901px) { #contact .contact__in { padding-left: var(--px); padding-right: var(--px); } }
 #stories.sheet, #faq.sheet { margin-left: 0; margin-right: 0; }   /* the 12px sheet margin pushed these two off the shared edge */
 
 /* ===== merged 2026-11-10: rules below came after the block above and win where they overlap (incl. --px: 1440px cap, wider small-screen margins) ===== */
@@ -1364,10 +1364,10 @@ section#toppers.vrnp { padding-left: var(--px); padding-right: var(--px); }   /*
 #faq .qa { border-radius: 4px; overflow: hidden; }
 
 /* global content container: max width 1440px (was 1800px). Every section reads --px, so all of them follow. */
-:root { --px: max(clamp(14px, calc(1.4 * 14.4px), 24px), calc((calc(100 * 14.4px) - 1440px) / 2)); }
-/* footer wordmark: sized with the screen (calc(12.4 * 14.4px)) up to the 1440px container, then held (186px font, about 1130px wide), so on wide screens it
+:root { --px: max(clamp(14px, 1.4vw, 24px), calc((100vw - 1440px) / 2)); }
+/* footer wordmark: sized with the screen (12.4vw) up to the 1440px container, then held (186px font, about 1130px wide), so on wide screens it
    stays centred inside the content instead of running past it */
-.foot .foot__word { font-size: min(calc(12.4 * 14.4px), 186px); }
+.foot .foot__word { font-size: min(12.4vw, 186px); }
 
 /* ---- Free resources, resource cards (content from vajiram-ravi-sharon.vercel.app): tag, title, description, optional list, and an action
    at the foot. Same card as before: white, 24px radius, orange gradient + sun rays on hover, site fonts, the rounded-square arrow. ---- */
@@ -1377,12 +1377,12 @@ section#toppers.vrnp { padding-left: var(--px); padding-right: var(--px); }   /*
 /* ---- Footer: full width (no 1440px cap). Content sits 76px inside the screen edge at every size (clear of the gold frame), and the
    wordmark scales with the screen again (it was held at 186px only to fit the capped content). ---- */
 footer.foot { padding-left: 76px; padding-right: 76px; }
-.foot .foot__word { font-size: calc(12.4 * 14.4px); }
-@media not all { footer.foot { padding-left: 40px; padding-right: 40px; } }
+.foot .foot__word { font-size: 12.4vw; }
+@media (max-width: 640px) { footer.foot { padding-left: 40px; padding-right: 40px; } }
 
 /* ---- Footer news strip: the latest current-affairs headlines (moved here from the Free resources card). Gold tag + white headline, the
    headline underline draws in on hover; a hairline above separates it from the link columns. ---- */
-.foot__news { display: flex; align-items: baseline; gap: 14px 32px; flex-wrap: wrap; margin: 40px 0 clamp(20px, calc(3 * 14.4px), 48px); padding: 20px 0 4px; border-top: 1px solid rgba(255, 255, 255, .22); }
+.foot__news { display: flex; align-items: baseline; gap: 14px 32px; flex-wrap: wrap; margin: 40px 0 clamp(20px, 3vw, 48px); padding: 20px 0 4px; border-top: 1px solid rgba(255, 255, 255, .22); }
 .foot__news-k { flex: none; margin: 0; font: 700 12px/1.4 var(--f); letter-spacing: .14em; text-transform: uppercase; color: #FFD48A; }
 .foot__news-list { flex: 1 1 0; display: flex; flex-wrap: wrap; gap: 10px 36px; margin: 0; padding: 0; list-style: none; }
 .foot__news-list li { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
@@ -1390,7 +1390,7 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 .foot__news-list a { font: 500 15.5px/1.4 var(--f); color: #fff; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .3s var(--ease), color .25s var(--ease); }
 .foot__news-list a:focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 2px; }
 @media (hover: hover) and (pointer: fine) { .foot__news-list a:hover { color: #FFE3B8; background-size: 100% 1px; } }
-@media not all { .foot__news { flex-direction: column; } .foot__news-list { flex-direction: column; } }
+@media (max-width: 900px) { .foot__news { flex-direction: column; } .foot__news-list { flex-direction: column; } }
 @media (prefers-reduced-motion: reduce) { .foot__news-list a { transition: none; } }   /* an old dark-ground rule (v25 #resources .intro) made it near-white cream; same grey as every other intro */
 .sm__card--res { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-height: 300px; padding: 26px; box-sizing: border-box; }
 .sm__card--res > *:not(.sm__rays) { position: relative; }
@@ -1414,19 +1414,19 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
   .sm__list a:hover { background-size: 100% 1px; }
   .sm__act:hover { color: var(--brand); text-decoration: underline; text-underline-offset: 4px; }
 }
-@media not all { .sm__card--res { min-height: 0; } }
+@media (max-width: 640px) { .sm__card--res { min-height: 0; } }
 @media (prefers-reduced-motion: reduce) { .sm__d, .sm__list li, .sm__list span, .sm__list a, .sm__stages li, .sm__act { transition: none; } }
 
-/* side margins on smaller desktops: they grow with the screen (calc(5.5 * 14.4px), up to 80px) instead of staying near 20px, so a 1440px screen gets
+/* side margins on smaller desktops: they grow with the screen (5.5vw, up to 80px) instead of staying near 20px, so a 1440px screen gets
    comfortable margins like larger screens; from about 1600px the 1440px content cap centres as before. Every section reads --px. */
-:root { --px: max(clamp(16px, calc(5.5 * 14.4px), 80px), calc((calc(100 * 14.4px) - 1440px) / 2)); }
+:root { --px: max(clamp(16px, 5.5vw, 80px), calc((100vw - 1440px) / 2)); }
 
 /* Programmes: room below the last shelf for its full 230px floor shadow (the section clips overflow, so 125px of padding cut the shadow off) */
 #courses.band--wall { padding-bottom: calc(230px + 24px); }
 
 /* ---- tighter space between each section heading block and the content it introduces ---- */
 #courses .ptabs { margin-top: 20px; }
-.shelves { margin-top: clamp(28px, calc(3 * 14.4px), 44px); }
+.shelves { margin-top: clamp(28px, 3vw, 44px); }
 #batches .bhead { margin-bottom: 24px; }
 #faculty .rail { margin-top: 16px; }
 #faculty #team.rail__track { padding-top: 28px; }
@@ -1455,7 +1455,7 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 #courses .ptabs .seg button[aria-selected="true"]:hover { background: var(--brand); color: #fff; }
 #courses .ptabs .seg button[aria-selected="true"] small { background: rgba(255, 255, 255, .24); color: #fff; }
 #courses .ptabs .seg button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-@media not all { #courses .ptabs .seg button { padding: 0 12px; font-size: 14px; } }
+@media (max-width: 640px) { #courses .ptabs .seg button { padding: 0 12px; font-size: 14px; } }
 /* segmented Programmes tabs: no dividers between the options */
 #courses .ptabs .seg button:not([aria-selected="true"]) + button:not([aria-selected="true"])::before { display: none; }
 
@@ -1505,7 +1505,7 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 .ticket__stub { position: relative; flex: none; display: flex; align-items: center; height: 94px; padding: 0 24px; }
 .ticket__stub::before { content: ""; position: absolute; left: 18px; right: 18px; top: 0; border-top: 1.5px dashed #C9A98C; }
 .inv--ticket .inv__reg.cta { width: 100%; height: 48px; margin: 0; }
-@media not all { .inv--ticket h3 { min-height: 0; } }
+@media (max-width: 700px) { .inv--ticket h3 { min-height: 0; } }
 @media (prefers-reduced-motion: reduce) { .inv--ticket, .inv--ticket.inv--pre, .inv--ticket.inv--pre.in { transform: none; opacity: 1; transition: none; } }
 .inv--ticket .inv__frame { background: #fff; }   /* white paper instead of cream */
 
@@ -1587,15 +1587,15 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 /* hero subcopy: 18px on every slide and screen size (the reserved text height and the button position follow --pp) */
 .dl { --pp: 18px; }
 .dl__p, .sc__p { font-size: 18px; line-height: 1.55; }
-@media not all { .dl__p, .sc__p { font-size: 18px; } }
+@media (max-width: 900px) { .dl__p, .sc__p { font-size: 18px; } }
 
 /* hero only: 80px of side padding for the copy, the progress bars and the button (the other sections keep the page margin; phones keep 20px) */
-@media all {
+@media (min-width: 901px) {
   .dl__in, .sc { padding-left: 80px; padding-right: 80px; }
   .dl__prog, .dl__cta.cta.cta { left: 80px; }
 }
 /* navigation: the same 80px side padding as the hero, so the logo lines up with the hero copy */
-@media all { .nav { left: 80px; right: 80px; } }
+@media (min-width: 901px) { .nav { left: 80px; right: 80px; } }
 
 /* hero CTA: the whole button fades with the copy (out with the old copy, back in with the new one); it used to be pinned with opacity forced to 1 */
 @media (prefers-reduced-motion: no-preference) {
@@ -1609,14 +1609,14 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 /* the logo keeps its size; below 1360px the seven links no longer fit beside it and the language / CTA group, so the nav switches to the
    burger menu there (it used to switch at 1100px, which left 1100-1360 with links wrapping onto two lines and a squashed logo) */
 .nav__logo { flex: none; }
-@media not all {
+@media (max-width: 1360px) {
   .nav__links { display: none; }
   .nav__burger { display: block; }
   .nav__pill { flex: 1; max-width: 360px; padding-right: 4px; }
   .nav__end { margin-left: 10px; } .nav__end .talk { margin-left: 0; }
 }
 /* nav between 1361 and 1600px: slightly tighter links and logo spacing so all seven fit beside the language / CTA group */
-@media all { .nav__a { padding: 0 10px; font-size: 14.5px; } .nav--hero .nav__logo, .nav__logo { margin-right: 10px; } .nav__links { gap: 0; } }
+@media (max-width: 1600px) { .nav__a { padding: 0 10px; font-size: 14.5px; } .nav--hero .nav__logo, .nav__logo { margin-right: 10px; } .nav__links { gap: 0; } }
 
 /* footer news in the brand column, under the social links (the column was empty below them); heading like the link columns, each
    headline under its Mains / Prelims tag */
@@ -1625,14 +1625,14 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 .foot__news--col .foot__news-list { display: grid; gap: 14px; margin-top: 14px; }
 .foot__news--col .foot__news-list li { display: grid; justify-items: start; gap: 5px; }
 .foot__news--col .foot__news-list a { font-size: 15px; line-height: 1.4; }
-@media not all { .foot__news--col { max-width: none; } }
+@media (max-width: 900px) { .foot__news--col { max-width: none; } }
 
 /* ---- All courses dropdown (refined): anchored to the nav pill and as wide as the content column. Five numbered stage columns sit on one
    connecting rule; each programme is a full row (name, one-line description, course count) that warms on hover; a guidance column with the
    counsellor CTA ends the panel. Opens with a short fade-and-drop and the columns follow, staggered. Desktop only (the nav uses the
    burger menu from 1360px down). ---- */
 .explore { position: static; }
-.mega { left: 0; right: auto; top: calc(100% + 12px); width: min(1180px, calc(calc(100 * 14.4px) - 2 * var(--px))); box-sizing: border-box;
+.mega { left: 0; right: auto; top: calc(100% + 12px); width: min(1180px, calc(100vw - 2 * var(--px))); box-sizing: border-box;
   display: grid; grid-template-columns: minmax(0, 1fr) 248px; gap: 0; padding: 0; border-radius: 22px; overflow: hidden;
   background: #fff; box-shadow: 0 0 0 1px rgba(38, 20, 8, .06), 0 30px 60px -24px rgba(60, 24, 6, .45);
   opacity: 0; visibility: hidden; transform: translateY(-8px); transition: opacity .2s var(--ease), transform .25s var(--ease), visibility 0s .25s; }
@@ -1668,12 +1668,12 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
   .mega a.mega__a:hover .mega__n { background: var(--brand); color: #fff; }
   .mega a.mega__all:hover svg { transform: translateX(3px); }
 }
-@media all { .mega { grid-template-columns: minmax(0, 1fr) 220px; } .mega__stages { padding-left: 22px; } .mega a.mega__a .mega__d { -webkit-line-clamp: 3; } }
+@media (max-width: 1500px) { .mega { grid-template-columns: minmax(0, 1fr) 220px; } .mega__stages { padding-left: 22px; } .mega a.mega__a .mega__d { -webkit-line-clamp: 3; } }
 @media (prefers-reduced-motion: reduce) { .mega, .explore.open .mega { transition: none; transform: none; } .explore.open .mega__col, .explore.open .mega__aside { animation: none; } }
-.mega { width: min(1440px, calc(calc(100 * 14.4px) - 2 * var(--px))); grid-template-columns: minmax(0, 1fr) 272px; }
+.mega { width: min(1440px, calc(100vw - 2 * var(--px))); grid-template-columns: minmax(0, 1fr) 272px; }
 .mega .mega__cta.cta.cta { align-self: stretch; justify-content: space-between; margin: 4px 0 0; padding-left: 18px; color: #fff; font-size: 14px; }
 .mega .mega__cta.cta.cta .btn__t { color: #fff; }
-@media all { .mega { grid-template-columns: minmax(0, 1fr) 248px; } }
+@media (max-width: 1500px) { .mega { grid-template-columns: minmax(0, 1fr) 248px; } }
 .mega .mega__cta.cta.cta { gap: 10px; padding-left: 16px; }
 .mega .mega__cta .btn__label, .mega .mega__cta .btn__t { font-size: 15px; white-space: nowrap; }
 .mega .mega__cta .sq { width: 36px; height: 36px; }
@@ -1694,7 +1694,7 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
   .sm__pill:hover { background: var(--brand); border-color: var(--brand); color: #fff; transform: translateY(-2px); box-shadow: 0 10px 20px -12px rgba(194, 65, 12, .7); }
   .sm__pill:hover svg { stroke: #fff; transform: translateX(3px); }
 }
-@media not all {
+@media (max-width: 760px) {
   .sm__more { flex-direction: column; align-items: flex-start; margin-top: 32px; padding-top: 22px; }
   .sm__more-list { gap: 8px; }
   .sm__pill { height: 38px; padding: 0 12px 0 14px; font-size: 14px; }
@@ -1724,11 +1724,11 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 .sm__more { flex-direction: column; align-items: center; gap: 18px; text-align: center; }
 .sm__more-k { line-height: 1.3; }
 .sm__more-list { flex: none; width: 100%; justify-content: center; }
-@media not all { .sm__more { align-items: center; gap: 14px; } }
+@media (max-width: 760px) { .sm__more { align-items: center; gap: 14px; } }
 
 /* ---- closing CTA: AIR 1 and AIR 2 stand in the bottom corners of the card (after the V5 hero face-off), fading toward the copy ---- */
 .cl__copy { position: relative; z-index: 1; }
-.cl__tp { position: absolute; bottom: 0; z-index: 0; width: clamp(240px, calc(27 * 14.4px), 430px); margin: 0; pointer-events: none; }
+.cl__tp { position: absolute; bottom: 0; z-index: 0; width: clamp(240px, 27vw, 430px); margin: 0; pointer-events: none; }
 .cl__tp--l { left: 0; }
 .cl__tp--r { right: 0; }
 .cl__tp img { display: block; width: 100%; height: auto; filter: grayscale(1) contrast(1.06) brightness(1.02); transform-origin: 50% 100%;
@@ -1740,24 +1740,24 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 .cl__tp-cap { position: absolute; bottom: 20px; display: flex; flex-direction: column; gap: 2px; text-shadow: 0 2px 12px rgba(60, 15, 0, .45); }
 .cl__tp--l .cl__tp-cap { left: 26px; align-items: flex-start; }
 .cl__tp--r .cl__tp-cap { right: 26px; align-items: flex-end; }
-.cl__tp-cap b { font: 400 clamp(26px, calc(2.4 * 14.4px), 36px)/1 "Newsreader", Georgia, serif; letter-spacing: -.01em; color: #FFD48A; }
+.cl__tp-cap b { font: 400 clamp(26px, 2.4vw, 36px)/1 "Newsreader", Georgia, serif; letter-spacing: -.01em; color: #FFD48A; }
 .cl__tp-cap span { font: 600 13.5px/1.3 "Hanken Grotesk", var(--f); color: #fff; }
 @media (hover: hover) and (pointer: fine) {
   .cl__card:hover .cl__tp img { transform: translateY(-6px) scale(1.02); filter: grayscale(.85) contrast(1.06) brightness(1.04); }
   .cl__card:hover .cl__tp--r img { transition-delay: 60ms; }
 }
 /* tablets: smaller, into the corners under the call line (the card grows a bottom band for them) */
-@media not all {
+@media (max-width: 1100px) {
   .cl__card { padding-bottom: 230px; }
-  .cl__tp { width: clamp(190px, calc(24 * 14.4px), 250px); }
+  .cl__tp { width: clamp(190px, 24vw, 250px); }
   .cl__tp img { -webkit-mask: linear-gradient(0deg, transparent 0%, #000 30%); mask: linear-gradient(0deg, transparent 0%, #000 30%); }
   .cl__tp-cap { bottom: 14px; }
   .cl__tp--l .cl__tp-cap { left: 18px; } .cl__tp--r .cl__tp-cap { right: 18px; }
 }
 /* phones: the existing 200px bottom band holds both, either side of the lotus */
-@media not all {
+@media (max-width: 640px) {
   .cl__card { padding-bottom: 210px; }
-  .cl__tp { width: min(calc(46 * 14.4px), 190px); }
+  .cl__tp { width: min(46vw, 190px); }
   .cl__tp-cap b { font-size: 24px; }
   .cl__tp-cap span { font-size: 12px; }
   .cl__tp-cap { bottom: 12px; }
@@ -1777,7 +1777,7 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 @media (hover: hover) and (pointer: fine) {
   .cl__card:hover::before, #contact.contact:hover::before { transform: translate(22px, -22px); }
 }
-@media not all { .cl__card::before, #contact.contact::before { background-size: 32px 32px; } }
+@media (max-width: 640px) { .cl__card::before, #contact.contact::before { background-size: 32px 32px; } }
 @media (prefers-reduced-motion: reduce) { .cl__card::before, #contact.contact::before { transition: none; opacity: .14; transform: none; } }
 /* Talk to us (#contact) shares the lattice above: same tile, opacity and motion (it settles in with the eyebrow). The section is full-bleed with the
    copy left and the form right, so the clear zone is a wide band through the middle and the lattice keeps to the outer edges and the top. */
@@ -1822,8 +1822,8 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 .sm__card--res:nth-child(1) > a.sm__act.tlink, .sm__card--res:nth-child(4) > a.sm__act.tlink { color: #fff; }
 .sm__card--res:nth-child(4) > a.sm__act.tlink { color: #FFD48A; }
 .sm__card--res:nth-child(3) .sm__tag { background: #fff; }
-@media not all { .sm__grid--res { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media not all { .sm__grid--res { grid-template-columns: 1fr; } .sm__card--res:nth-child(1), .sm__card--res:nth-child(6) { grid-column: auto; } }
+@media (max-width: 1000px) { .sm__grid--res { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .sm__grid--res { grid-template-columns: 1fr; } .sm__card--res:nth-child(1), .sm__card--res:nth-child(6) { grid-column: auto; } }
 
 /* bento colours, softened: no dark card. Brand orange for the lead card, then warm peach, sand and white in turn */
 .sm__card--res:nth-child(2) { background: #fff; }
@@ -1856,7 +1856,7 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 /* Contact us: the call and email actions are the site's link button; the channel cards no longer need a column for a button */
 .cm__item--chan .tlink.cm__cta { align-self: flex-start; }
 /* Contact rows (directions, call, email): details on the left, the link button on the right, on one line above phone width */
-@media all {
+@media (min-width: 641px) {
   #visit .cm__item--chan { flex-wrap: nowrap; }
   #visit .cm__item--chan > div { flex: 1 1 auto; min-width: 0; }
   #visit .cm__item--chan > .cm__cta { flex: none; white-space: nowrap; }
@@ -1894,7 +1894,7 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 #gs .gs__h span { display: block; }
 #gs .gs__p { margin-top: 28px; }
 #gs .gs__in > .rv-btn { margin-top: 36px; }
-@media all { #gs .gs__h, #gs .gs__h span { white-space: nowrap; } #gs .gs__h { font-size: min(var(--h2), calc(4.7 * 14.4px)); } }   /* 64px from ~1360px up; a little smaller below so the two lines fit the text column */
+@media (min-width: 1001px) { #gs .gs__h, #gs .gs__h span { white-space: nowrap; } #gs .gs__h { font-size: min(var(--h2), 4.7vw); } }   /* 64px from ~1360px up; a little smaller below so the two lines fit the text column */
 
 /* ---- Closing CTA section: the same jaali ground as the other light sections (it was left out of that list, so it showed the plain cream) ---- */
 #closing { background: linear-gradient(90deg, rgba(255, 250, 243, 0) 0%, rgba(255, 250, 243, .94) 30%, rgba(255, 250, 243, .94) 70%, rgba(255, 250, 243, 0) 100%), url(../assets/img/patterns/bg-jaali.svg) 0 0 / auto, var(--ground); background-size: 100% 100%, 36px 36px, auto; }
@@ -1913,7 +1913,7 @@ main :is(#courses, #batches, #faculty, #stories.sheet, #resources, #visit, #faq.
 main .cover > #dlPin + section { background: linear-gradient(90deg, rgba(255, 250, 243, 0) 0%, rgba(255, 250, 243, .94) 30%, rgba(255, 250, 243, .94) 70%, rgba(255, 250, 243, 0) 100%), url(../assets/img/patterns/bg-jaali.svg) 0 0 / 36px 36px repeat, #fffaf3;
   background-size: 100% 100%, 36px 36px, auto; border-radius: 28px 28px 0 0; }
 
-/* ---- General Studies: a set-height band instead of a full-screen section (it was min-height: max(600px, calc(100 * var(--vh, 1svh)))). Height comes from
+/* ---- General Studies: a set-height band instead of a full-screen section (it was min-height: max(600px, 100svh)). Height comes from
    the content and the shared --sec-y padding; the copy and the book stay centred in it. ---- */
 #gs.gs { min-height: 0; height: auto; align-items: center; }
 
@@ -1942,9 +1942,9 @@ main .cover > #dlPin + section { background: linear-gradient(90deg, rgba(255, 25
 .cm.rv.in .cm__gal { opacity: 1; translate: 0 0; }
 @media (prefers-reduced-motion: reduce) { .cm.rv .cm__gal { opacity: 1; translate: none; transition: none; } .cm__ph, .cm__ph img { transition: none; } .cm__gal .cm__ph img { transform: none; } }
 /* Contact us: the phone number at the same size as the email address below it */
-.cm__item h3.cm__tel { font-size: clamp(17px, calc(1.3 * 14.4px), 20px); }
+.cm__item h3.cm__tel { font-size: clamp(17px, 1.3vw, 20px); }
 /* Contact us card: the carousel and the contact rows split the card 50 / 50 (was 6 : 5); stacked below 1000px as before */
-@media all { #visit .cm { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (min-width: 1001px) { #visit .cm { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 
 /* ---- Contact us: the carousel sits on the page ground beside the white card, not inside it. .cm is now just the 50 / 50 row;
    the white card (8px corners, the soft shadow) is the contact list. The photo fills the card's height; the progress bar sits inside it. ---- */
@@ -1953,12 +1953,12 @@ main .cover > #dlPin + section { background: linear-gradient(90deg, rgba(255, 25
   box-shadow: 0 0 0 1px rgba(122, 42, 10, .05), 0 1px 2px rgba(122, 42, 10, .04), 0 24px 48px -28px rgba(122, 42, 10, .16); }
 #visit .cm__gal { display: flex; flex-direction: column; align-self: stretch; }
 #visit .cm__track { flex: 1; aspect-ratio: auto; min-height: 380px; border-radius: 8px; }
-@media not all {
+@media (max-width: 1000px) {
   #visit .cm { gap: 20px; }
   #visit .cm__track { flex: none; aspect-ratio: 4 / 3; min-height: 0; }
   #visit .cm__list { padding: 12px 24px; }
 }
-@media not all { #visit .cm__list { padding: 8px 16px; } }
+@media (max-width: 480px) { #visit .cm__list { padding: 8px 16px; } }
 
 /* ---- "More free resources" as a mini bento under the main one: eight equal small white cards in a 4 x 2 grid
    (2 columns on tablets, 1 on phones). Each is a link: the title and an arrow chip, no sub-copy.
@@ -1984,19 +1984,19 @@ main .cover > #dlPin + section { background: linear-gradient(90deg, rgba(255, 25
   .sm__mini:hover .sm__mini-go { background: #fff; }
   .sm__mini:hover .sm__mini-go svg { transform: translateX(3px); }
 }
-@media not all { .sm__more-list--bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media not all { .sm__more-list--bento { grid-template-columns: 1fr; gap: 10px; } .sm__mini { min-height: 0; padding: 16px 60px 16px 18px; } .sm__mini-t { font-size: 17px; } }
+@media (max-width: 1000px) { .sm__more-list--bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .sm__more-list--bento { grid-template-columns: 1fr; gap: 10px; } .sm__mini { min-height: 0; padding: 16px 60px 16px 18px; } .sm__mini-t { font-size: 17px; } }
 @media (prefers-reduced-motion: reduce) { .sm__mini, .sm__mini::before, .sm__mini-t, .sm__mini-d, .sm__mini-go, .sm__mini-go svg { transition: none; } }
 /* mini bento without sub-copy: the title alone, centred on the card's height beside the arrow chip */
 .sm__mini { justify-content: center; min-height: 84px; }
 .sm__mini-go { top: 50%; margin-top: -17px; }
-@media not all { .sm__mini { min-height: 64px; } }
+@media (max-width: 560px) { .sm__mini { min-height: 64px; } }
 /* mini bento arrow: the site's CTA arrow (.tlink: curved head, 2.2 stroke, 18px, brand), bare, no chip; it slides 5px on hover */
 .sm__mini { padding-right: 52px; }
 .sm__mini-go { position: absolute; top: 50%; right: 20px; width: 18px; height: 18px; margin-top: -9px; border-radius: 0; background: none;
   fill: none; stroke: var(--brand); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform .35s cubic-bezier(.2, .8, .2, 1), stroke .3s var(--ease); }
 @media (hover: hover) and (pointer: fine) { .sm__mini:hover .sm__mini-go { background: none; stroke: #fff; transform: translateX(5px); } }
-@media not all { .sm__mini { padding-right: 48px; } .sm__mini-go { right: 18px; } }
+@media (max-width: 560px) { .sm__mini { padding-right: 48px; } .sm__mini-go { right: 18px; } }
 @media (prefers-reduced-motion: reduce) { .sm__mini-go { transition: none; } }
 
 /* ---- Free resources: each main card leads with its own line drawing at the top left; the title, line and link follow below it.
@@ -2019,7 +2019,7 @@ main .cover > #dlPin + section { background: linear-gradient(90deg, rgba(255, 25
   #resources .sm__card--res:hover .sm__ill { color: #fff; transform: translateY(-3px) rotate(-4deg); }
   #resources .sm__grid.rise.in .sm__card--res:hover .sm__ill .f { fill-opacity: .16; }
 }
-@media not all { #resources .sm__ill { width: 48px; height: 48px; margin-bottom: 6px; } }
+@media (max-width: 640px) { #resources .sm__ill { width: 48px; height: 48px; margin-bottom: 6px; } }
 @media (prefers-reduced-motion: reduce) {
   #resources .sm__ill, #resources .sm__grid.rise .sm__ill [pathLength] { transition: none; stroke-dashoffset: 0; }
   #resources .sm__grid.rise .sm__ill .f { fill-opacity: .08; }
@@ -2062,7 +2062,7 @@ main .cover > #dlPin + section { background: linear-gradient(90deg, rgba(255, 25
 
 /* Talk to us: the label / heading / intro block sits vertically centred against the form beside it (user 2026-11-11); stacked on phones as before.
    The form carries the section's bottom padding as margin-bottom: var(--pb) (v25.css .form), so the text column takes the same margin and both cells end level. */
-@media all { #contact .contact__in { align-items: stretch; } #contact .contact__l { justify-content: center; margin-bottom: var(--pb); } }
+@media (min-width: 901px) { #contact .contact__in { align-items: stretch; } #contact .contact__l { justify-content: center; margin-bottom: var(--pb); } }
 
 /* FAQ: open and closed read apart at a glance (user 2026-11-11). Closed stays a white card with the orange "+". Open turns warm:
    a peach ground, a 4px brand bar on the left, a brand-tinted outline and lift, the question in brand orange, a dashed rule between
@@ -2075,7 +2075,7 @@ main .cover > #dlPin + section { background: linear-gradient(90deg, rgba(255, 25
 #faq .qa summary img { transition: transform .3s var(--ease), background-color .3s; }
 /* ---- Upcoming batches: one colour per programme family (set from BFAM in js/content.js as --ticket on each ticket: General Studies
    orange, Prelims gold, Current affairs plum, Mains teal, Mentorship indigo). The ticket head and the tag (which names the family) take it. Eight tickets, four to a row. The nth-child colours from before are replaced by the inline --ticket. ---- */
-#batches .cards { row-gap: clamp(22px, calc(2.6 * 14.4px), 36px); }
+#batches .cards { row-gap: clamp(22px, 2.6vw, 36px); }
 
 
 /* Free resources, Contact us and FAQ read as one closing run: the padding where they meet is half the section rhythm
@@ -2087,10 +2087,10 @@ main .cover > #dlPin + section { background: linear-gradient(90deg, rgba(255, 25
 /* Contact us: a live map of the Old Rajinder Nagar campus under its address (user 2026-11-11), full width of the row, 200px tall */
 .cm__item--chan .cm__map { flex: 1 0 100%; margin-top: 6px; height: 200px; overflow: hidden; border-radius: 8px; box-shadow: inset 0 0 0 1px rgba(46, 46, 46, .12); background: #F2EEE9; }
 .cm__map iframe { display: block; width: 100%; height: 100%; border: 0; }
-@media not all { .cm__item--chan .cm__map { height: 180px; } }
+@media (max-width: 640px) { .cm__item--chan .cm__map { height: 180px; } }
 /* the address row wraps so the map takes its own line under the address and "Get directions" (the rows above were set to nowrap) */
 #visit .cm__item--chan[data-city="delhi"] { flex-wrap: wrap; }
-@media all { #visit .cm__item--chan[data-city="delhi"] > div:not(.cm__map) { flex: 1 1 0; } }   /* the address takes the full row (the "Get directions" link was removed; the map below still opens in Google Maps) */
+@media (min-width: 641px) { #visit .cm__item--chan[data-city="delhi"] > div:not(.cm__map) { flex: 1 1 0; } }   /* the address takes the full row (the "Get directions" link was removed; the map below still opens in Google Maps) */
 /* no hover highlight on the address row that holds the map (user 2026-11-11); the map keeps the full row width at every size
    (an older .cm__map rule above capped it at 440px under 1000px) */
 #visit .cm__item--chan[data-city="delhi"]:hover { background: none; }
@@ -2102,19 +2102,19 @@ main .cover > #dlPin + section { background: linear-gradient(90deg, rgba(255, 25
 .cm__prog span { flex: none; width: 32px; }
 
 /* footer: five link columns after the menu was refined (user 2026-11-11; was six) */
-@media all { .foot__cols { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+@media (min-width: 1201px) { .foot__cols { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 
 /* footer: "Latest current affairs" sits at the right (user 2026-11-11: "news at the right"). Above phone width the top row is the brand on the
    left and the headlines on the right (a gold rule on the left of them), and the five link columns take the full width in the row below, so
    they keep their room (beside the news they were squeezed to 88-120px and most links wrapped). Phones: brand, links, then the news. */
 .foot__news--side { margin: 0; max-width: none; }
-@media all {
+@media (min-width: 901px) {
   .foot__top { grid-template-columns: minmax(0, 1fr) minmax(0, 460px); grid-template-areas: "brand news" "cols cols"; gap: 44px 56px; }
   .foot__brand { grid-area: brand; }
   .foot__cols { grid-area: cols; }
   .foot__news--side { grid-area: news; align-self: start; padding: 0 0 0 32px; border-top: 0; border-left: 1px solid rgba(255, 255, 255, .22); }
 }
-@media not all { .foot__news--side { margin-top: 8px; } }
+@media (max-width: 900px) { .foot__news--side { margin-top: 8px; } }
 
 /* footer menu links dimmed (user 2026-11-11): 70% white so the white column headings lead; hover / focus brings them to full white and draws
    the underline the news headlines use (the old v25 hover turned them brand orange, invisible on the orange ground) */
@@ -2129,16 +2129,16 @@ footer.foot .foot__cols h3, footer.foot .foot__news--col .foot__news-k { font: 7
 
 /* closing CTA: the two toppers sit further out to the sides (user 2026-11-11), past the card edges (the card clips their outer shoulders),
    leaving the copy more room; the captions move back in by the same amount so "AIR 1 / AIR 2" stay where they were, fully inside the card */
-.cl__card { --tp-out: clamp(24px, calc(3.6 * 14.4px), 60px); }
+.cl__card { --tp-out: clamp(24px, 3.6vw, 60px); }
 .cl__tp--l { left: calc(-1 * var(--tp-out)); }
 .cl__tp--r { right: calc(-1 * var(--tp-out)); }
 .cl__tp--l .cl__tp-cap { left: calc(26px + var(--tp-out)); }
 .cl__tp--r .cl__tp-cap { right: calc(26px + var(--tp-out)); }
-@media not all {
+@media (max-width: 1100px) {
   .cl__card { --tp-out: 16px; }
   .cl__tp--l .cl__tp-cap { left: calc(18px + var(--tp-out)); } .cl__tp--r .cl__tp-cap { right: calc(18px + var(--tp-out)); }
 }
-@media not all {
+@media (max-width: 640px) {
   .cl__card { --tp-out: 8px; }
   .cl__tp--l .cl__tp-cap { left: calc(14px + var(--tp-out)); } .cl__tp--r .cl__tp-cap { right: calc(14px + var(--tp-out)); }
 }
@@ -2169,18 +2169,18 @@ footer.foot .foot__news--side .foot__news-list { position: relative; z-index: 0;
   footer.foot .foot__news--side .foot__news-list li:hover::after { opacity: 1; transform: translateX(3px); }
 }
 footer.foot .foot__news--side .foot__news-list li:focus-within::before { opacity: 1; transform: none; }
-@media not all { footer.foot .foot__news--side { padding: 18px 18px 10px 22px; } }
+@media (max-width: 900px) { footer.foot .foot__news--side { padding: 18px 18px 10px 22px; } }
 @media (prefers-reduced-motion: reduce) { .foot__news-live i::after { animation: none; opacity: 0; } footer.foot .foot__news--side .foot__news-list li::before, footer.foot .foot__news--side .foot__news-list li::after { transition: none; } }
 /* footer news panel: no drop shadow (user 2026-11-11); only the fine inner top highlight stays */
 footer.foot .foot__news--side { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18); }
 /* closing CTA: AIR 2 (right) sits further left, toward the copy, than AIR 1 on wide screens (user 2026-11-11): it now hangs past the card
    edge 30px further than AIR 1 (user: "move more to right"); its caption stays 26px from the card edge */
-@media all {
+@media (min-width: 1101px) {
   .cl__tp--r { right: calc(-1 * (var(--tp-out) + 30px)); }
   .cl__tp--r .cl__tp-cap { right: calc(26px + var(--tp-out) + 30px); }
 }
 /* closing CTA: AIR 1 (left) also 30px further out on wide screens (user: "move the AIR 1 topper to the left"), mirroring AIR 2; caption stays put */
-@media all {
+@media (min-width: 1101px) {
   .cl__tp--l { left: calc(-1 * (var(--tp-out) + 30px)); }
   .cl__tp--l .cl__tp-cap { left: calc(26px + var(--tp-out) + 30px); }
 }
@@ -2205,12 +2205,12 @@ footer.foot .foot__bot a:focus-visible { color: #fff; outline: 2px solid #fff; o
 /* footer: four link columns + "Latest current affairs" as the fifth (user 2026-11-11). The brand sits alone on top; the news panel joins
    the link row (js/content.js appends it to #footCols). 1201px+: one row, the news a little wider. 901-1200: the four columns, the news
    full width under them. Phones keep their own column layout with the news last, full width. */
-@media all {
+@media (min-width: 901px) {
   .foot__top { grid-template-columns: minmax(0, 1fr); grid-template-areas: "brand" "cols"; }
 }
 footer.foot .foot__cols > .foot__news--5th { grid-area: auto; grid-column: 1 / -1; align-self: start; margin: 8px 0 0; }
-@media not all { .foot__cols { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media all {
+@media (min-width: 901px) and (max-width: 1200px) { .foot__cols { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1201px) {
   .foot__cols { grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(300px, 1.45fr); column-gap: 40px; }
   footer.foot .foot__cols > .foot__news--5th { grid-column: auto; margin: -4px 0 0; }
 }
@@ -2225,7 +2225,7 @@ footer.foot .foot__cols > .foot__news--5th { grid-area: auto; grid-column: 1 / -
 #team .fc .pcd__to { align-self: stretch; grid-template-rows: auto auto 1fr; padding-top: 14px; }
 #team .fc .pcd__to > .fc__pf { align-self: end; }
 #team .fc .pcd__n { font-size: 21px; line-height: 1.15; }
-@media not all { #team .fc .pcd__n { font-size: 19px; } }
+@media (max-width: 640px) { #team .fc .pcd__n { font-size: 19px; } }
 /* Programme tabs: no outline or shadow on the bar; the bar is a sand a step darker than the section's cream; the counts on unselected
    tabs are plain numbers (no light orange circle); the selected tab keeps its brand pill and its white-on-orange count */
 #courses .ptabs .seg { background: #F9F0E4; border: 0; box-shadow: none; }
@@ -2237,7 +2237,7 @@ footer.foot .foot__cols > .foot__news--5th { grid-area: auto; grid-column: 1 / -
 #resources .sm__more-k::after { transform-origin: 0 50%; }
 #resources .sm__more.rv .sm__more-k::before, #resources .sm__more.rv .sm__more-k::after { transform: scaleX(0); transition: transform .8s var(--ease) .25s; }
 #resources .sm__more.rv.in .sm__more-k::before, #resources .sm__more.rv.in .sm__more-k::after { transform: scaleX(1); }
-@media not all { #resources .sm__more-k::before, #resources .sm__more-k::after { width: 32px; } }
+@media (max-width: 640px) { #resources .sm__more-k::before, #resources .sm__more-k::after { width: 32px; } }
 @media (prefers-reduced-motion: reduce) { #resources .sm__more.rv .sm__more-k::before, #resources .sm__more.rv .sm__more-k::after { transform: none; transition: none; } }
 /* Programme tab switch: while the shelves ease to their new height they used to clip at their own box (overflow: clip), which cut the
    cast shadow under the bottom shelf into a hard edge until the resize ended, then popped it back. The clip now reaches past the box
@@ -2291,7 +2291,7 @@ footer.foot .foot__cols > .foot__news--5th { grid-area: auto; grid-column: 1 / -
 /* ---- Study materials mega menu (js/content.js STUDY): the course menu's frame and rows, four groups (Current affairs, Exam essentials,
    Practice, Books & notes) and the guidance aside. Current affairs is no longer its own nav link. Same open / stagger motion and row
    hovers as All courses (.explore / .mega rules above). ---- */
-.mega--sm { width: min(1240px, calc(calc(100 * 14.4px) - 2 * var(--px))); }
+.mega--sm { width: min(1240px, calc(100vw - 2 * var(--px))); }
 .mega--sm .mega__stages { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 /* Mega menus (All courses, Study materials): no rule running through the numbered column headings */
 .mega__stages::before { content: none; }
@@ -2307,7 +2307,7 @@ footer.foot .foot__cols > .foot__news--5th { grid-area: auto; grid-column: 1 / -
    grid that starts at the top: the brand block heads the first column with the "Vajiram & Ravi" links under it; Courses, UPSC exam,
    Free resources and (1201px+) the "Latest current affairs" panel stand beside it from the top edge. .foot__cols dissolves into that
    grid (display: contents); 901-1200px the news panel runs full width under the columns. Phones keep their stacked layout. ---- */
-@media all {
+@media (min-width: 901px) {
   .foot__top { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-areas: none; column-gap: 40px; row-gap: 28px; align-items: start; }
   .foot__top > .foot__brand { grid-area: auto; grid-column: 1; grid-row: 1; }
   .foot__top > .foot__cols { display: contents; }
@@ -2317,7 +2317,7 @@ footer.foot .foot__cols > .foot__news--5th { grid-area: auto; grid-column: 1 / -
   .foot__cols > div:nth-child(4) { grid-column: 4; grid-row: 1 / span 2; }
   footer.foot .foot__cols > .foot__news--5th { grid-column: 1 / -1; grid-row: 3; margin: 8px 0 0; }
 }
-@media all {
+@media (min-width: 1201px) {
   .foot__top { grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(300px, 1.45fr); }
   footer.foot .foot__cols > .foot__news--5th { grid-column: 5; grid-row: 1 / span 2; margin: 0; }
 }
@@ -2335,19 +2335,19 @@ footer.foot .foot__logo--mark { display: inline-block; line-height: 0; transitio
 footer.foot .foot__logo--mark img { width: auto; height: 52px; object-fit: contain; }
 footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-offset: 6px; border-radius: 4px; }
 @media (hover: hover) and (pointer: fine) { footer.foot .foot__logo--mark:hover { transform: translateY(-2px); filter: drop-shadow(0 6px 14px rgba(60, 15, 0, .35)); } }
-@media not all { footer.foot .foot__logo--mark img { height: 44px; } }
+@media (max-width: 640px) { footer.foot .foot__logo--mark img { height: 44px; } }
 @media (prefers-reduced-motion: reduce) { footer.foot .foot__logo--mark { transition: none; } }
 
 /* ---- Study materials dropdown: the All courses panel (same .explore / .mega design and motion), four groups instead of five stages,
    so it is narrower; the CTA spans the guidance column like the courses one ---- */
-.mega--sm { width: min(1180px, calc(calc(100 * 14.4px) - 2 * var(--px))); }
+.mega--sm { width: min(1180px, calc(100vw - 2 * var(--px))); }
 .mega--sm .mega__stages { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 #megaSm .mega__cta.cta.cta { width: 100%; font-size: 15px; }
 #megaSm .mega__cta.cta.cta .btn__label, #megaSm .mega__cta.cta.cta .btn__t { font-size: 15px !important; }
 
 /* ---- Study materials dropdown, refined: compact one-line rows (title with its tag, a one-line description), Current affairs as a featured
    column on a warm tint with a live dot, and the guidance column carrying today's three headlines above the CTA. All courses is untouched. ---- */
-.mega--sm { width: min(1240px, calc(calc(100 * 14.4px) - 2 * var(--px))); grid-template-columns: minmax(0, 1fr) 300px; }
+.mega--sm { width: min(1240px, calc(100vw - 2 * var(--px))); grid-template-columns: minmax(0, 1fr) 300px; }
 .mega--sm .mega__stages { gap: 0 6px; padding: 22px 18px 20px 22px; align-items: start; }
 .mega--sm .mega__stages::before { left: 36px; right: 36px; top: 36px; }
 .mega--sm .mega__col { padding: 0 8px 0 0; }
@@ -2374,7 +2374,7 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
   .mega a.mega__h:hover { background: #fff; }
   .mega a.mega__h:hover .mega__ht { color: var(--brand); }
 }
-@media all { .mega--sm { grid-template-columns: minmax(0, 1fr) 270px; } .mega--sm a.mega__a .mega__d { -webkit-line-clamp: 1; } }
+@media (max-width: 1500px) { .mega--sm { grid-template-columns: minmax(0, 1fr) 270px; } .mega--sm a.mega__a .mega__d { -webkit-line-clamp: 1; } }
 @media (prefers-reduced-motion: reduce) { .mega__live i::after { animation: none; opacity: 0; } .mega a.mega__h, .mega__ht { transition: none; } }
 /* Study materials rows: every row is title + one line; Current affairs prefixes its frequency in brand orange */
 .mega--sm .mega__f { margin-right: 6px; font: 700 10.5px/1 var(--f); letter-spacing: .08em; text-transform: uppercase; color: var(--brand); }
@@ -2395,7 +2395,7 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
    when there is no room below. The native <select> stays in the form, visually hidden. ---- */
 .cs__native { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); border: 0 !important; opacity: 0; pointer-events: none; }
 .cs { position: relative; display: inline-flex; flex: 1 1 auto; min-width: 0; max-width: 100%; }
-.blank--prog .cs { width: 205px; max-width: calc(46 * 14.4px); } .blank--time .cs { width: 215px; max-width: calc(60 * 14.4px); }
+.blank--prog .cs { width: 205px; max-width: 46vw; } .blank--time .cs { width: 215px; max-width: 60vw; }
 .form--note .form__sent .blank .cs { width: 100%; max-width: none; }
 .cs__btn { display: flex; align-items: center; gap: 6px; width: 100%; min-width: 0; height: 1.5em; padding: 0 4px 0 6px; box-sizing: border-box; cursor: pointer;
   border-bottom: 2px dashed rgba(194, 65, 12, .6); border-radius: 2px 2px 0 0; background: transparent; outline: none;
@@ -2426,7 +2426,7 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
 .cs__opt.is-sel { color: var(--brand); font-weight: 600; }
 .cs__opt.is-sel::after { content: ""; position: absolute; right: 10px; top: 50%; width: 14px; height: 14px; margin-top: -7px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23C2410C' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.8'/%3E%3C/svg%3E") center / 14px no-repeat; }
-@media not all { .cs__list { font-size: 15.5px; } .cs__opt { padding-top: 10px; padding-bottom: 10px; } }
+@media (max-width: 600px) { .cs__list { font-size: 15.5px; } .cs__opt { padding-top: 10px; padding-bottom: 10px; } }
 @media (prefers-reduced-motion: reduce) { .cs__list, .cs__chev, .cs__btn, .cs__opt { transition: none; } .cs__list, .cs__list.is-up { transform: none; } }
 
 /* Contact card: the rows sit on the card's own 40px padding on both sides (the left had 4px of an unused accent border + 18px row padding,

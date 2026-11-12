@@ -12,7 +12,7 @@
   if (!sec) return;
   const stage = sec.querySelector('.cmp__stage'), card = sec.querySelector('.cmp__card'), track = sec.querySelector('.cmp__track');
   const panels = [...track.children], N = panels.length;
-  const wide = matchMedia('(min-height: 600px)') /* fixed desktop layout */, reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const wide = matchMedia('(min-width: 900px) and (min-height: 600px)'), reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const seg = (u, a, b) => clamp((u - a) / (b - a));
   const io = t => ((t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2) + (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)) / 2;
@@ -25,15 +25,15 @@
   const START = S0;
   const spacer = document.createElement('div');
   spacer.className = 'cmp__run'; spacer.setAttribute('aria-hidden', 'true');
-  const H = () => (document.documentElement.clientHeight || innerHeight) / __z();   // the screen's height in CSS pixels (fixed desktop layout: the page is zoomed)
-  const pxVar = () => { const d = document.createElement('div'); d.style.width = 'var(--px)'; d.style.position = 'absolute'; sec.append(d); const w = d.getBoundingClientRect().width / __z(); d.remove(); return w; };
+  const H = () => document.documentElement.clientHeight || innerHeight;
+  const pxVar = () => { const d = document.createElement('div'); d.style.width = 'var(--px)'; d.style.position = 'absolute'; sec.append(d); const w = d.getBoundingClientRect().width; d.remove(); return w; };
   let on = false, raf = 0, last = 0, su = null, px = 0;
 
   // scroll progress in vh since the section's top reached the top of the screen (the section is sticky, so read the spacer's position)
-  const aim = () => START + clamp((H() - spacer.getBoundingClientRect().top / __z()) / H() * 100, 0, RUN - START);
+  const aim = () => START + clamp((H() - spacer.getBoundingClientRect().top) / H() * 100, 0, RUN - START);
 
   const draw = u => {
-    const W = 1440, h = H(); // fixed desktop layout: the page is always 1440 CSS pixels wide
+    const W = document.documentElement.clientWidth, h = H();
     const g = io(seg(u, 0, 168)), m = io(seg(u, 182, 280)), st = stage.style;
     st.setProperty('--g', g.toFixed(4));
     st.setProperty('--s', io(seg(u, 140, 196)).toFixed(4));
@@ -51,7 +51,7 @@
       p.style.transform = r > .01 ? `rotate(${r.toFixed(3)}deg)` : '';
       p.style.setProperty('--e', e.toFixed(4));   // css/story.css: the photo settles from a slight zoom as its chapter lands
     });
-    track.style.setProperty('--tx', (-shift * W).toFixed(1) + 'px');   // fixed desktop layout: a chapter is 1440px wide
+    track.style.setProperty('--tx', (-shift * 100).toFixed(3) + 'vw');
     const w = lerp(lerp(22, 92, g), SW, m) * W / 100, ht = lerp(lerp(49, 82, g), SH, m) * h / 100;
     // settled, the card sits exactly on the first chapter's photo slot: left = --px, top = ST
     const xEnd = px + SW / 200 * W - W / 2, yEnd = (ST + SH / 200) * h - h / 2;

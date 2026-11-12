@@ -13,7 +13,7 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
   const outP = (t, p) => 1 - Math.pow(1 - t, p);
-  const desktop = () => true; // fixed desktop layout
+  const desktop = () => innerWidth > 900;
 
   let lenis = null;
   if (!reduce && window.Lenis) {
@@ -47,12 +47,12 @@
   const frame = () => {
     tick = false;
     const vh = innerHeight, y = scrollY, dsk = desktop();
-    if (dl && dlBg && !reduce) { dlBg.style.setProperty('--py', `${(y * .18 / __z()).toFixed(1)}px`); dlBg.style.setProperty('--sc', (1.06 - clamp(y / vh) * .04).toFixed(3)); }
-    if (hwBg && hwSec && !reduce) { const r = hwSec.getBoundingClientRect(); hwBg.style.setProperty('--hy', `${((r.top + r.height / 2 - vh / 2) * -.12 / __z()).toFixed(1)}px`); }
+    if (dl && dlBg && !reduce) { dlBg.style.setProperty('--py', `${(y * .18).toFixed(1)}px`); dlBg.style.setProperty('--sc', (1.06 - clamp(y / vh) * .04).toFixed(3)); }
+    if (hwBg && hwSec && !reduce) { const r = hwSec.getBoundingClientRect(); hwBg.style.setProperty('--hy', `${((r.top + r.height / 2 - vh / 2) * -.12).toFixed(1)}px`); }
 
     rows.forEach(r => {
       const b = r.row.getBoundingClientRect(), k = b.height / 457, top = b.top;
-      if (r.ph && !reduce) r.ph.style.setProperty('--iy', `${(-0.295 * (top - 221 * k) / __z()).toFixed(1)}px`);
+      if (r.ph && !reduce) r.ph.style.setProperty('--iy', `${(-0.295 * (top - 221 * k)).toFixed(1)}px`);
       if (!dsk || reduce) {
         if (reduce && dsk) { const on = Math.abs(top + b.height / 2 - vh / 2) < b.height / 2; r.fix.style.visibility = on ? 'visible' : 'hidden'; r.fix.style.opacity = on ? 1 : 0; r.fix.style.transform = 'none'; }
         return;
@@ -63,7 +63,7 @@
       if (X) u = clamp((X[0] * k - top) / (X[1] * k));
       else { const ulB = r.row.parentElement.getBoundingClientRect().bottom; u = clamp((0.42 * vh - ulB) / (0.38 * vh)); }
       const op = outP(t, 3) * (1 - u * u);
-      const wy = 0.2857 * (top - (123 + 282.5 * r.i) * k) / __z();
+      const wy = 0.2857 * (top - (123 + 282.5 * r.i) * k);
       r.fix.style.visibility = op > 0.003 ? 'visible' : 'hidden';
       r.fix.style.opacity = op.toFixed(4);
       r.fix.style.transform = `translate3d(0, ${wy.toFixed(2)}px, 0)`;

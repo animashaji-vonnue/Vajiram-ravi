@@ -76,7 +76,7 @@
 /* Consultation form: a plain white card with the ornamental frame drawn inside it, with white margin all round */
 .form { border: 0; border-image: none; border-radius: 4px; background: #fff; padding: 46px 54px 42px; box-shadow: 0 8px 22px rgba(56, 56, 56, .12), 0 0 0 1px rgba(194, 65, 12, .08); }
 .form::before { content: ""; position: absolute; inset: 12px; border: 16px solid transparent; border-image: url(../assets/img/patterns/frame.svg) 16 stretch; pointer-events: none; }
-@media not all { .form { padding: 40px 36px 36px; } }
+@media (max-width: 640px) { .form { padding: 40px 36px 36px; } }
 
 /* Footer in Sharon's style: a painted scene (Samvidhan Sadan at golden hour) whose peach sky meets the page, a centred
    call to action under it, then white link columns on the deep-brown foliage and a ruled base line. */
@@ -87,10 +87,10 @@
   background: linear-gradient(180deg, #FFD8B5 0, #FFD8B5 9%, rgba(255,216,181,.78) 18%, rgba(255,226,200,.32) 28%, transparent 40%, transparent 50%, rgba(52,26,12,.6) 64%, rgba(44,22,11,.93) 79%, #26140A 100%); }
 .foot > .kinari, .foot__word, .foot__hi { display: none; }
 .foot__cta { display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; color: var(--ink); }
-.foot__h { font: 600 clamp(36px, calc(4.1 * 14.4px), 60px)/1.125 var(--f-d); letter-spacing: -.01em; }
+.foot__h { font: 600 clamp(36px, 4.1vw, 60px)/1.125 var(--f-d); letter-spacing: -.01em; }
 .foot__h span { color: #902502; }
 .foot__lede { max-width: 520px; font-weight: 500; font-size: 18px; line-height: 1.5; color: rgba(46, 46, 46, .82); }
-.foot__top { margin-top: clamp(230px, calc(25 * 14.4px), 380px); padding-bottom: 48px; }
+.foot__top { margin-top: clamp(230px, 25vw, 380px); padding-bottom: 48px; }
 .foot__logo, .foot__brand p, .foot__cols a { color: rgba(255, 255, 255, .82); }
 .foot__logo { color: #fff; font-family: var(--f-d); font-weight: 700; }
 .foot__cols h3 { font-family: var(--f-d); font-weight: 700; font-size: 17px; color: #fff; }
@@ -100,12 +100,12 @@
 .foot .socials img { filter: brightness(0) invert(1); opacity: .9; }
 .foot__bot { margin: 0 -48px; padding: 20px 48px 26px; border-top: 1px solid rgba(255, 255, 255, .18); color: rgba(255, 255, 255, .65); }
 .foot__bot a:hover { color: #FFD08A; }
-@media not all { .foot { padding: 48px 20px 0; } .foot__bot { margin: 0 -20px; padding: 20px; } .foot__top { margin-top: 110px; } }
+@media (max-width: 640px) { .foot { padding: 48px 20px 0; } .foot__bot { margin: 0 -20px; padding: 20px; } .foot__top { margin-top: 110px; } }
 
 /* footer keeps the previous copy (brand line, wordmark, Hindi line); only the scene look is Sharon's */
 .foot__word, .foot__hi { display: block; }
 .foot__hi { display: flex; }
-.foot__top { margin-top: clamp(260px, calc(28 * 14.4px), 420px); }
+.foot__top { margin-top: clamp(260px, 28vw, 420px); }
 .foot__word { color: #fff; text-shadow: 0 6px 30px rgba(0, 0, 0, .3); }
 .foot__word span { color: #FFD08A; }
 .foot__hi { color: #FFD08A; }
@@ -121,13 +121,13 @@
 /* orange comes in earlier so the link columns sit on orange, not the pale sky */
 .foot { background: linear-gradient(180deg, #FFD8B5 0 12%, #B83A0A 55%); }
 .foot::before { background: linear-gradient(180deg, #FFD8B5 0, #FFD8B5 6%, rgba(255,205,160,.6) 13%, rgba(251,120,60,.55) 24%, rgba(238,86,28,.82) 36%, rgba(214,66,16,.8) 52%, rgba(190,52,8,.95) 74%, #AE3407 100%); }
-.foot__top { margin-top: clamp(150px, calc(15 * 14.4px), 230px); }
+.foot__top { margin-top: clamp(150px, 15vw, 230px); }
 
 /* no empty sky above the columns: the footer starts straight on the orange and the columns sit near the top */
 .foot { padding-top: 56px; background: linear-gradient(180deg, #F2692F, #B83A0A); }
 .foot::before { background: linear-gradient(180deg, rgba(255,150,90,.55) 0, rgba(246,100,40,.7) 18%, rgba(228,74,20,.82) 40%, rgba(206,60,12,.9) 62%, rgba(186,50,8,.96) 82%, #AE3407 100%); }
 .foot__top { margin-top: 0; }
-@media not all { .foot { padding-top: 40px; } .foot__top { margin-top: 0; } }
+@media (max-width: 640px) { .foot { padding-top: 40px; } .foot__top { margin-top: 0; } }
 
 /* section eyebrows: no dotted line and no ornament on the right (the footer's Hindi-line ornaments are not eyebrows, so they stay) */
 .lbl > i, .lbl > .lbl__orn, .lbl .lbl__orn { display: none !important; }

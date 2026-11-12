@@ -1,7 +1,0 @@
-/* Version 7 has one layout, its 1440px desktop design: every width media query is resolved as at 1440px and sizes
-   set in vw are pinned to their 1440px values. The script at the top of index.html scales the page (zoom) so those
-   1440px fill the window's width, and sizes based on the screen's height go through --vh, which it keeps true to the
-   screen. */
-html {
-  width: 1440px;
-}
