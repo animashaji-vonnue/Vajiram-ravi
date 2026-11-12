@@ -90,7 +90,7 @@
       <p class="gzw__hint">Choose a rank holder to read their story.</p>
     </div>
     <article class="gzw__story" aria-live="polite">
-      <div class="gzw__lead"><div class="gzw__by">${seal(1)}<p><b></b><span></span></p></div><figure class="gzw__shot"><img alt="" decoding="async"></figure></div>
+      <div class="gzw__lead"><figure class="gzw__shot"><span class="gzw__shot-ph"><img alt="" decoding="async"></span>${seal(1)}<figcaption class="gzw__by"><p><b></b><span></span></p></figcaption></figure></div>
       <div class="gzw__text"><h3 class="gz__sub"></h3><div class="gz__cols"></div></div>
     </article>`;
   const stage = wall.querySelector('.gzw__stage'), reel = wall.querySelector('.gzw__reel'), track = wall.querySelector('.gzw__track');
