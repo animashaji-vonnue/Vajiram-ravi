@@ -6,9 +6,10 @@
    - A clipping: the portrait in newsprint tones (colour on hover or focus), the name and the programmes as its caption,
      and the rank on a serrated orange seal at the top left, as the educators' years of experience are stamped
      (js/faculty-ring.js): "AIR" over the number.
-   - The reel loops on its own, slowly, and stops while the pointer is on it, when it can be dragged through. A button
-     in the strip stops and starts it; stopped, chevrons show on hover to step through it. Reduced motion: it starts
-     stopped.
+   - The reel loops on its own, slowly, and stops while the pointer is on it, when it can be dragged through. A round
+     button over the hint under it stops and starts it; stopped, chevrons show on hover to step through it. Reduced
+     motion: it starts stopped.
+   - A dropdown in the strip chooses which rank holders the reel shows: all of them, or ranks 1 to 10.
    - Choosing a clipping makes it the lead story under the reel: its headline and two paragraphs, set in newspaper
      columns, as the earlier front page did.
 
@@ -61,6 +62,12 @@
   })();
   const seal = rank => `<span class="gzw__seal" aria-hidden="true"><svg viewBox="0 0 58 58" width="58" height="58"><path d="${SEAL_EDGE}"/><circle cx="29" cy="29" r="22.5"/></svg><span><small>AIR</small><b>${rank}</b></span></span>`;
 
+  /* ---------- which rank holders the reel shows (the dropdown in the strip) ---------- */
+  const RANGES = [
+    { label: `All ${list.length} rank holders`, test: () => true },
+    { label: 'Ranks 1–10', test: t => t.rank <= 10 },
+  ];
+
   /* ---------- build ---------- */
   const deck = document.getElementById('gzDeck');
   if (deck) deck.innerHTML = `The UPSC CSE ${YEAR} top-ten rank holders were associated with Vajiram &amp; Ravi through different programmes, from General Studies preparation and test series to interview guidance.`;
@@ -68,20 +75,23 @@
   wall.innerHTML = `
     <div class="gzw__head">
       <h3 class="gzw__kick">The rank holders <span>· CSE ${YEAR}</span></h3>
-      <button type="button" class="gzw__play" aria-pressed="false"><span class="gzw__play-i" aria-hidden="true"></span><span class="gzw__play-t">Pause</span></button>
+      <label class="gzw__range"><span class="sr-only">Show</span><select aria-label="Which rank holders to show">${RANGES.map((r, i) => `<option value="${i}">${r.label}</option>`).join('')}</select></label>
     </div>
     <div class="gzw__stage" role="region" aria-roledescription="carousel" aria-label="CSE ${YEAR} rank holders">
       <div class="gzw__reel"><div class="gzw__track"></div></div>
       <button type="button" class="gzw__chev gzw__chev--prev" aria-label="Previous rank holders" tabindex="-1"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5"/></svg></button>
       <button type="button" class="gzw__chev gzw__chev--next" aria-label="Next rank holders" tabindex="-1"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5"/></svg></button>
     </div>
-    <p class="gzw__hint">Choose a rank holder to read their story.</p>
+    <div class="gzw__ctl">
+      <button type="button" class="gzw__play" aria-pressed="false" aria-label="Pause the rank holders"><span class="gzw__play-i" aria-hidden="true"></span></button>
+      <p class="gzw__hint">Choose a rank holder to read their story.</p>
+    </div>
     <article class="gzw__story" aria-live="polite">
       <div class="gzw__by">${seal(1)}<p><b></b><span></span></p></div>
       <div class="gzw__text"><h3 class="gz__sub"></h3><div class="gz__cols"></div></div>
     </article>`;
   const stage = wall.querySelector('.gzw__stage'), reel = wall.querySelector('.gzw__reel'), track = wall.querySelector('.gzw__track');
-  const playBtn = wall.querySelector('.gzw__play'), [prevBtn, nextBtn] = wall.querySelectorAll('.gzw__chev');
+  const playBtn = wall.querySelector('.gzw__play'), [prevBtn, nextBtn] = wall.querySelectorAll('.gzw__chev'), rangeSel = wall.querySelector('.gzw__range select');
   const story = wall.querySelector('.gzw__story');
 
   const card = (t, copy) => `<article class="gzw__card${t.rank === 1 ? ' is-first' : ''}" data-key="${t.key}"${copy ? ' aria-hidden="true"' : ''}>
@@ -123,10 +133,10 @@
      a seam.
      - It drifts while playing, except while the pointer is over it, while it is dragged, or while it is off screen.
      - Under the pointer it can be dragged (mouse or finger); a drag is not a click on a clipping.
-     - The button in the strip stops and starts it. Stopped, hovering it shows the chevrons, which move it one
+     - The round button over the hint stops and starts it. Stopped, hovering it shows the chevrons, which move it one
        clipping at a time, coming to rest square on one. Reduced motion: it starts stopped. */
   const PX_PER_S = 38;   // its drift: slow, as Maven's
-  const shown = list;
+  let shown = list;
   let x = 0, period = 0, step = 236, playing = !reduce, hover = false, onScreen = true, drag = null, glide = null, swallow = false, last = 0;
   const wrap = v => (period ? ((v % period) + period) % period : 0);
   const apply = () => { track.style.transform = `translate3d(${(-wrap(x)).toFixed(2)}px, 0, 0)`; };
@@ -160,11 +170,17 @@
     playing = on;
     stage.classList.toggle('is-stopped', !on);
     playBtn.setAttribute('aria-pressed', String(!on));
-    playBtn.querySelector('.gzw__play-t').textContent = on ? 'Pause' : 'Play';
     playBtn.setAttribute('aria-label', on ? 'Pause the rank holders' : 'Play the rank holders');
     [prevBtn, nextBtn].forEach(b => { b.tabIndex = on ? -1 : 0; b.setAttribute('aria-hidden', String(on)); });
   };
   playBtn.addEventListener('click', () => setPlaying(!playing));
+
+  // The dropdown: all the rank holders, or ranks 1 to 10; the reel starts again from the first.
+  rangeSel.addEventListener('change', () => {
+    shown = list.filter(RANGES[+rangeSel.value].test);
+    reel.classList.add('is-swapping');
+    setTimeout(() => { x = 0; glide = null; fill(); reel.classList.remove('is-swapping'); }, reduce ? 0 : 180);
+  });
 
   // The chevrons: one clipping at a time, coming to rest square on one.
   const go = dir => {

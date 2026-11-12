@@ -7,15 +7,26 @@
 .gzw__kick { margin: 0; font: 800 19px/1.2 var(--gz-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--gz-ink); }
 .gzw__kick span { color: var(--gz-red); letter-spacing: .1em; }
 
-/* The stop / play button, on the right of the strip. */
-.gzw__play { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 10px; border: 1px solid rgba(194, 65, 12, .3); border-radius: 999px; background: #fff; cursor: pointer;
-  font: 600 13px/1 var(--gz-sans); letter-spacing: .04em; color: var(--gz-ink); transition: border-color .2s, background-color .2s, color .2s; }
+/* The dropdown on the right of the strip: which rank holders the reel shows. */
+.gzw__range { position: relative; display: inline-flex; }
+.gzw__range::after { content: ""; position: absolute; top: 50%; right: 14px; width: 7px; height: 7px; margin-top: -5px; border-right: 1.6px solid #C2410C; border-bottom: 1.6px solid #C2410C;
+  rotate: 45deg; pointer-events: none; }
+.gzw__range select { height: 38px; padding: 0 38px 0 16px; border: 1px solid rgba(194, 65, 12, .3); border-radius: 999px; background: #fff; cursor: pointer;
+  font: 600 14px/1 var(--gz-sans); color: var(--gz-ink); -webkit-appearance: none; appearance: none; transition: border-color .2s; }
+.gzw__range select:hover { border-color: #C2410C; }
+.gzw__range select:focus-visible { outline: 2px solid var(--gz-ink); outline-offset: 2px; }
+
+/* Under the reel: the round stop / play button over the hint. */
+.gzw__ctl { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.gzw__play { display: flex; width: 40px; height: 40px; align-items: center; justify-content: center; padding: 0; border: 1px solid rgba(194, 65, 12, .3); border-radius: 50%; background: #fff;
+  cursor: pointer; box-shadow: 0 8px 18px -12px rgba(70, 30, 8, .45); transition: border-color .2s, background-color .2s, scale .15s; }
 .gzw__play:hover { border-color: #C2410C; }
+.gzw__play:active { scale: .94; }
 .gzw__play:focus-visible { outline: 2px solid var(--gz-ink); outline-offset: 2px; }
-.gzw__play-i { position: relative; display: flex; width: 22px; height: 22px; align-items: center; justify-content: center; border-radius: 50%; background: #C2410C; }
+.gzw__play-i { display: flex; width: 26px; height: 26px; align-items: center; justify-content: center; border-radius: 50%; background: #C2410C; }
 /* Pause: two bars; play: a triangle. */
-.gzw__play-i::before, .gzw__play-i::after { content: ""; width: 3px; height: 9px; margin: 0 1.5px; border-radius: 1px; background: #fff; }
-.gzw__play[aria-pressed="true"] .gzw__play-i::before { width: 0; height: 0; margin: 0 0 0 2px; border-style: solid; border-width: 5px 0 5px 8px; border-color: transparent transparent transparent #fff; border-radius: 0; background: none; }
+.gzw__play-i::before, .gzw__play-i::after { content: ""; width: 3px; height: 10px; margin: 0 1.5px; border-radius: 1px; background: #fff; }
+.gzw__play[aria-pressed="true"] .gzw__play-i::before { width: 0; height: 0; margin: 0 0 0 3px; border-style: solid; border-width: 5.5px 0 5.5px 9px; border-color: transparent transparent transparent #fff; border-radius: 0; background: none; }
 .gzw__play[aria-pressed="true"] .gzw__play-i::after { display: none; }
 
 /* The reel: the clippings drift left, edge to edge of the sheet, fading out at its sides. */
@@ -23,6 +34,8 @@
 .gzw__reel { position: relative; padding: 14px 0 18px; overflow: hidden; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
 .gzw__reel.is-grabbing { cursor: grabbing; }
+.gzw__reel { transition: opacity .18s; }
+.gzw__reel.is-swapping { opacity: 0; }
 .gzw__reel.is-grabbing .gzw__pick { pointer-events: none; }
 .gzw__track { display: flex; gap: 20px; width: max-content; padding: 0 40px; will-change: transform; }
 .gzw__ph img { -webkit-user-drag: none; user-select: none; }
