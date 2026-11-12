@@ -3,14 +3,14 @@
    the lead and the tab bar above it stay this page's own (js/content.js builds the tabs and hands the chosen one to
    window.__progShelf).
 
-   - The programmes stand as cloth hardcovers on walnut planks drawn in CSS, four to a plank, centred on it: the
+   - The programmes stand as cloth hardcovers on two walnut planks drawn in CSS, six to a plank, centred on it: the
      board in the programme's colour, the spine down the left, the page block showing past the board, a gold foil
      frame, "Vajiram & Ravi", the name, a foil rule, the emblem in a foil ring, and the category at the foot. Under
      the foil a geometric motif is pressed faintly into the cloth. Hover: the book lifts off its plank, the cloth
      brightens, the motif moves, the emblem redraws itself, a band of light sweeps across and the foot reads "Open
      the book". While the shelf is on screen, a faint glint passes across one cover or another now and then.
    - A tab lays the books that leave down flat where they stand, fading; slides the rest along the planks to their
-     new places; and stands the arriving ones up in theirs, all within about 500ms. With four or fewer the lower
+     new places; and stands the arriving ones up in theirs, all within about 500ms. With six or fewer the lower
      plank fades away.
    - Choosing a book brings it forward to the middle, larger, the rest blurred back; its cover swings open on the
      spine and its pages can be turned: the programme, then the way to enquire about it. A chip above says the page,
@@ -47,9 +47,11 @@
   ];
   const PROGS = window.__progs.map((p, i) => ({ name: p.t, category: p.tab, line: p.d, prog: p.prog, cover: COVERS[i % COVERS.length] }));
 
-  /* ---- Measurements (canvas px), as in version 6 ---- */
-  const STAGE_W = 1180, BOOK = { w: 196, h: 260 }, PER_SHELF = 4, GAP = 60, ROW_H = 352, BOOK_TOP = 30;
-  const PLANK_TOP = BOOK_TOP + BOOK.h - 8, PLANK_W = 1080, PAGE = { w: 380, h: 504 }, OPEN_H = 2 * ROW_H;
+  /* ---- Measurements (canvas px): version 6's, made to hold this page's twelve programmes on two planks, as version
+     6 holds its eight: six books to a plank, a little smaller than version 6's (172 × 228, the same proportions),
+     30px apart, on a wider stage (1280) and longer planks. The open book keeps version 6's size. ---- */
+  const STAGE_W = 1280, BOOK = { w: 172, h: 228 }, PER_SHELF = 6, GAP = 30, ROW_H = 310, BOOK_TOP = 30;
+  const PLANK_TOP = BOOK_TOP + BOOK.h - 8, PLANK_W = 1240, PAGE = { w: 380, h: 504 }, OPEN_H = Math.max(2 * ROW_H, 704);
   const SPINE = { x: STAGE_W / 2, y: OPEN_H / 2 };
   const MOVE_MS = 650, OPEN_MS = 750, TURN_MS = 700;
   const SETTLE = 'cubic-bezier(0.34, 1.4, 0.64, 1)', EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
@@ -161,7 +163,7 @@
         <span class="ps-face__brand" aria-hidden="true">Vajiram &amp; Ravi</span>
         <span class="ps-face__name">${esc(p.name)}</span>
         <span class="ps-face__rule" aria-hidden="true"><i></i><b></b><i></i></span>
-        <span class="ps-face__em" aria-hidden="true">${emblem(p.cover.emblem, large ? 128 : 66)}</span>
+        <span class="ps-face__em" aria-hidden="true">${emblem(p.cover.emblem, large ? 128 : 58)}</span>
         <span class="ps-face__foot"><span class="ps-face__cat">${esc(p.category)}</span><span class="ps-face__open" aria-hidden="true">Open the book</span></span>
       </span>
       <span class="ps-glint" aria-hidden="true" style="animation-delay:${-glintOffset(p.name)}s"></span>
@@ -182,7 +184,7 @@
   grid.removeAttribute('role');
   grid.innerHTML = `<p class="ps-sr" aria-live="polite"></p>
     <div class="ps-stage" id="programme-shelf" style="width:${STAGE_W}px">
-      ${[0, 1, 2].map(r => `<span class="ps-plank" aria-hidden="true" data-row="${r}" style="left:${(STAGE_W - PLANK_W) / 2}px;width:${PLANK_W}px;top:${r * ROW_H + PLANK_TOP}px"><span class="ps-plank__top"></span><span class="ps-plank__front"></span></span>`).join('')}
+      ${[0, 1].map(r => `<span class="ps-plank" aria-hidden="true" data-row="${r}" style="left:${(STAGE_W - PLANK_W) / 2}px;width:${PLANK_W}px;top:${r * ROW_H + PLANK_TOP}px"><span class="ps-plank__top"></span><span class="ps-plank__front"></span></span>`).join('')}
       ${PROGS.map((p, i) => `<div class="ps-book" data-book="${i}">
         <div class="ps-book__in" data-cover>
           <span class="ps-lift" data-lift aria-hidden="true"></span>
@@ -417,7 +419,7 @@
       if (!e.isIntersecting) return;
       io.disconnect();
       anims.forEach(a => a.play());
-    }, { threshold: 0.3 });   // three planks are taller than a laptop screen, so a third in view is enough
+    }, { threshold: 0.45 });
     io.observe(stage);
   }
 })();
