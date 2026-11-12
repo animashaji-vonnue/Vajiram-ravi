@@ -34,7 +34,7 @@
   const COVERS = [
     { light: '#d9581c', base: '#c2410c', deep: '#8f3010', emblem: 'books', art: 'bars' },      // General Studies PCM
     { light: '#4f7d5a', base: '#3b6345', deep: '#26422d', emblem: 'sprout', art: 'steps' },    // GS PCM, 2-year Fledgling
-    { light: '#b8673a', base: '#9b5029', deep: '#6e3519', emblem: 'bolt', art: 'chevrons' },   // GS Mains crash course
+    { light: '#5b4486', base: '#45336b', deep: '#2b1f48', emblem: 'bolt', art: 'chevrons' },   // GS Mains crash course: deep indigo, not the pale copper that read like the planks
     { light: '#c0362c', base: '#a3231c', deep: '#701510', emblem: 'quill', art: 'circles' },   // Optional subjects
     { light: '#2e6a80', base: '#1f4a5f', deep: '#14323f', emblem: 'abacus', art: 'grid' },     // CSAT
     { light: '#5e5f63', base: '#4a4b4e', deep: '#303133', emblem: 'mic', art: 'arches' },      // Interview guidance
