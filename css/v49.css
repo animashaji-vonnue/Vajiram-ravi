@@ -2456,9 +2456,29 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
 
 /* the GS book's cover carries the Vajiram & Ravi emblem in place of the name line (the emblem's banner reads the name), stamped in
    gold foil like a real book cover: a metallic gold gradient cut out by the emblem's own light and dark (a luminance mask), so the rays
-   and the banner come out as bright foil and the tick and the lettering as pressed-in detail; a hairline shadow presses it in */
-.gsbook__brand--stamp { margin: 0 auto 2px; letter-spacing: 0; filter: drop-shadow(0 1px 0 rgba(60, 14, 0, .55)) drop-shadow(0 -1px 0 rgba(255, 228, 170, .18)); }
+   and the banner come out as bright foil; a hairline shadow presses it in. The V and R mark keeps its own colours (crimson V, yellow R,
+   a touch richer), laid over the foil through a mask of just those two strokes (assets/img/brand/emblem-vr-mask.png). A glint of light
+   runs across the foil and the mark every few seconds. */
+.gsbook__brand--stamp { position: relative; margin: 0 auto 2px; letter-spacing: 0; filter: drop-shadow(0 1px 0 rgba(60, 14, 0, .55)) drop-shadow(0 -1px 0 rgba(255, 228, 170, .18)); }
 .gsbook__brand--stamp span { display: block; width: 58px; height: 59px;
-  background: linear-gradient(160deg, #FFF2CC 0%, #F6C77A 28%, #D99A3E 52%, #FBE2A6 70%, #C88A34 100%);
-  mask: url(../assets/img/brand/emblem.png) center / contain no-repeat luminance; }
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 252, 235, .95) 50%, transparent 60%) 120% 0 / 260% 100% no-repeat,
+    linear-gradient(160deg, #FFF2CC 0%, #F6C77A 28%, #D99A3E 52%, #FBE2A6 70%, #C88A34 100%);
+  mask: url(../assets/img/brand/emblem.png) center / contain no-repeat luminance;
+  animation: gsStampShine 6s cubic-bezier(.45, .05, .55, .95) 1s infinite; }
+.gsbook__brand--stamp::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 250, 230, .55) 50%, transparent 60%) 120% 0 / 260% 100% no-repeat,
+    url(../assets/img/brand/emblem.png) center / contain no-repeat;
+  filter: saturate(1.25) brightness(1.05);
+  mask: url(../assets/img/brand/emblem-vr-mask.png) center / contain no-repeat;
+  animation: gsStampShineMark 6s cubic-bezier(.45, .05, .55, .95) 1s infinite; }
+/* the glint itself, over the whole emblem (cut to its outline): a soft band added onto whatever is under it, so the foil flares as it passes */
+.gsbook__brand--stamp::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; mix-blend-mode: plus-lighter;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 236, 190, .25) 45%, rgba(255, 248, 225, .6) 50%, rgba(255, 236, 190, .25) 55%, transparent 62%) 120% 0 / 260% 100% no-repeat;
+  mask: url(../assets/img/brand/emblem.png) center / contain no-repeat;
+  animation: gsStampGlint 6s cubic-bezier(.45, .05, .55, .95) 1s infinite; }
+.gsbook__brand--stamp::after { z-index: 2; }
+@keyframes gsStampGlint { 0% { background-position: 120% 0; } 30%, 100% { background-position: -20% 0; } }
+@keyframes gsStampShine { 0% { background-position: 120% 0, 0 0; } 30%, 100% { background-position: -20% 0, 0 0; } }
+@keyframes gsStampShineMark { 0% { background-position: 120% 0, center; } 30%, 100% { background-position: -20% 0, center; } }
+@media (prefers-reduced-motion: reduce) { .gsbook__brand--stamp span, .gsbook__brand--stamp::after { animation: none; } .gsbook__brand--stamp::before { display: none; } }
 
