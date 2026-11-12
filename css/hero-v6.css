@@ -118,6 +118,25 @@
   transition: opacity .9s ease-out var(--at, 0ms), translate .9s ease-out var(--at, 0ms), filter .9s ease-out var(--at, 0ms); }
 .hx.is-in .hx__dots.hx__in { translate: -50% 0; }
 
+/* ---------- into Programmes: the section after the hero slides up over it (as it did over v7's earlier hero). The hero stays pinned
+   (when it is taller than the screen, as on phones, it pins once its foot is in view: --hx-stick, set in js/hero-v6.js); as the next
+   section rises (--cover, 0 to 1, set on the hero by js/page-motion.js) the hero darkens and its panel and points settle back a
+   little, and the next section's content fades and lifts in (--cov). ---------- */
+.cover > #hero { position: sticky; top: var(--hx-stick, 0px); z-index: 0; }
+.hx__shade { position: absolute; inset: 0; z-index: 6; pointer-events: none; background: #1a0a02; opacity: calc(var(--cover, 0) * .85); }
+.hx__panel, .hx__stats { scale: calc(1 - var(--cover, 0) * .06); transform-origin: 50% 35%; }
+main .cover > #hero.hx + section { position: relative; z-index: 2; margin-top: 0; border-radius: 28px 28px 0 0; box-shadow: 0 -30px 60px -24px rgba(20, 8, 2, .55);
+  background: linear-gradient(90deg, rgba(255, 250, 243, 0) 0%, rgba(255, 250, 243, .94) 30%, rgba(255, 250, 243, .94) 70%, rgba(255, 250, 243, 0) 100%), url(../assets/img/patterns/bg-jaali.svg) 0 0 / 36px 36px repeat, #fffaf3;
+  background-size: 100% 100%, 36px 36px, auto; }
+main .cover > #hero.hx + section > * { opacity: var(--cov, 1); transform: translate3d(0, calc((1 - var(--cov, 1)) * 44px), 0); will-change: opacity, transform; }
+.fx-on main .cover > #hero.hx + section > .fx { opacity: calc(var(--cov, 1) * var(--fx, .16)); }
+@media (prefers-reduced-motion: reduce) {
+  .cover > #hero { position: relative; }
+  .hx__shade { display: none; }
+  .hx__panel, .hx__stats { scale: none; }
+  main .cover > #hero.hx + section > * { opacity: 1; transform: none; }
+}
+
 /* ---------- narrower screens ---------- */
 @media (max-width: 1180px) {
   .hx__mark-air span { font-size: 26px; }

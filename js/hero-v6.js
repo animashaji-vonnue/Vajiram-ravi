@@ -76,6 +76,10 @@
     }, at);
   });
 
+  // pinned under the next section: a hero taller than the screen pins once its foot is in view, so none of it is hidden
+  const pin = () => hero.style.setProperty('--hx-stick', Math.min(0, innerHeight - hero.offsetHeight) + 'px');
+  pin(); addEventListener('resize', pin);
+
   const start = () => {
     ready = true;
     hero.classList.add('is-in');
