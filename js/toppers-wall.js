@@ -99,7 +99,7 @@
       <button type="button" class="gzw__pick"${copy ? ' tabindex="-1"' : ''} aria-label="${esc(t.name)}, All India Rank ${t.rank}: read the story">
         <span class="gzw__ph"><img src="${esc(t.img)}" alt="" loading="lazy" decoding="async"></span>
         ${seal(t.rank)}
-        <span class="gzw__cap"><b class="gzw__nm">${esc(t.name)}</b>${t.progs.length ? `<span class="gzw__pg">${t.progs.map(p => esc(p.name)).join(' · ')}</span>` : ''}</span>
+        <span class="gzw__cap"><b class="gzw__nm"><span>${esc(t.name)}</span></b>${t.progs.length ? `<span class="gzw__pg">${t.progs.map(p => esc(p.name)).join(' · ')}</span>` : ''}</span>
       </button>
     </article>`;
 

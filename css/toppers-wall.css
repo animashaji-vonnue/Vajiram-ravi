@@ -69,6 +69,14 @@
 .gzw__pick:hover .gzw__ph img { transform: scale(1.03); }
 .gzw__cap { display: flex; flex: 1; flex-direction: column; gap: 4px; padding: 10px 2px 12px; border-top: 0; }
 .gzw__nm { font: 800 16px/1.2 var(--gz-sans); letter-spacing: -.005em; color: var(--gz-ink); }
+/* The name's marker stroke, from the earlier front page (.gz__nm in css/toppers.css): a slanted orange band through the
+   lower half of the letters, drawn in from the left on hover and kept on the chosen rank holder. On the inline span, so
+   it follows the words when a name wraps. */
+.gzw__nm span { padding: 0 2px; margin-left: -2px; -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  background: linear-gradient(176deg, transparent 52%, rgba(249, 135, 31, .55) 52%, rgba(249, 135, 31, .55) 88%, transparent 88%) 0 0 / 0 100% no-repeat;
+  transition: background-size .45s cubic-bezier(.22, 1, .36, 1); }
+.gzw__card.is-on .gzw__nm span, .gzw__pick:focus-visible .gzw__nm span { background-size: 100% 100%; }
+@media (hover: hover) and (pointer: fine) { .gzw__pick:hover .gzw__nm span { background-size: 100% 100%; } }
 .gzw__pg { font: 400 12.5px/1.4 var(--gz-sans); color: var(--gz-mute); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
 /* The rank seal: the educators' experience stamp (serrated orange edge, a fine white ring), carrying "AIR" and the rank. */
@@ -113,5 +121,5 @@
   .gzw__text .gz__cols { column-count: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gzw__pick, .gzw__ph img { transition: none; }
+  .gzw__pick, .gzw__ph img, .gzw__nm span { transition: none; }
 }
