@@ -2454,9 +2454,11 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
    so the text started 62px in against 40px on the right). The hover tint is unchanged. */
 #visit .cm__list .cm__item { padding-left: 0; border-left: 0; }
 
-/* the GS book's cover carries the Vajiram & Ravi emblem in place of the name line (the emblem's banner reads the name), set like a
-   crest: its own colours, in a fine gold ring with a soft shadow, so it sits with the cover's gold rules */
-.gsbook__brand--logo { display: grid; place-items: center; width: 58px; height: 58px; margin: 0 auto 2px; padding: 4px; box-sizing: border-box; border-radius: 50%;
-  box-shadow: 0 0 0 1px rgba(246, 199, 122, .75), 0 0 0 4px rgba(246, 199, 122, .12), 0 6px 14px -6px rgba(40, 10, 0, .6); letter-spacing: 0; }
-.gsbook__brand--logo img { display: block; width: 100%; height: auto; }
-.gsbook--p .gsbook__brand--logo { width: 46px; height: 46px; padding: 3px; }
+/* the GS book's cover carries the Vajiram & Ravi emblem in place of the name line (the emblem's banner reads the name), stamped in
+   gold foil like a real book cover: a metallic gold gradient cut out by the emblem's own light and dark (a luminance mask), so the rays
+   and the banner come out as bright foil and the tick and the lettering as pressed-in detail; a hairline shadow presses it in */
+.gsbook__brand--stamp { margin: 0 auto 2px; letter-spacing: 0; filter: drop-shadow(0 1px 0 rgba(60, 14, 0, .55)) drop-shadow(0 -1px 0 rgba(255, 228, 170, .18)); }
+.gsbook__brand--stamp span { display: block; width: 58px; height: 59px;
+  background: linear-gradient(160deg, #FFF2CC 0%, #F6C77A 28%, #D99A3E 52%, #FBE2A6 70%, #C88A34 100%);
+  mask: url(../assets/img/brand/emblem.png) center / contain no-repeat luminance; }
+
