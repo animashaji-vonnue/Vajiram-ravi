@@ -691,7 +691,7 @@
   $('#price').innerHTML = BATCHES.map((b, i) => {
     const [d, mon] = b.d.split(' ');
     const fam = BFAM[b.fam] || BFAM.gs;
-    return `<article class="inv inv--ticket inv--${b.fam}" style="--i:${i};--ticket:${fam.c}">
+    return `<article class="inv inv--ticket inv--${b.fam}${b.chip === 'Limited seats' ? ' inv--limited' : ''}" style="--i:${i};--ticket:${fam.c}">
       <div class="inv__frame">
         <div class="ticket__head">
           <img class="ticket__lotus" src="assets/img/brand/lotus-ticket.svg" alt="" aria-hidden="true">
@@ -701,7 +701,7 @@
         <div class="ticket__body">
           <span class="inv__tag">${esc(fam.t)}${b.chip === 'Flagship' ? ' · Flagship' : ''}</span>
           <h3>${esc(b.n)}</h3><p class="inv__w">${esc(b.what)}</p>
-          <div class="ticket__meta"><dl><div><dt>Study mode</dt><dd>Classroom and LIVE&#8209;Online</dd></div></dl>${b.chip === 'Limited seats' ? '<span class="ticket__limited" aria-label="Limited seats"><span>Limited<br>seats</span></span>' : ''}</div>
+          ${b.chip === 'Limited seats' ? '<span class="ticket__limited" aria-label="Limited seats"><span>Limited<br>seats</span></span>' : ''}
         </div>
         <div class="ticket__stub"><a class="inv__reg" href="#contact" data-prog="${esc(b.full)}" aria-label="Enroll now in ${esc(b.full)}">Enroll now<span class="sq sq--38 sq--brand">${ico('arrow-white.svg')}</span></a></div>
       </div></article>`;
