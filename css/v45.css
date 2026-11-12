@@ -11,10 +11,10 @@ html.lenis, html.lenis body { height: auto; }
 
 /* ---------- section 2 ---------- */
 .vp__list { list-style: none; margin: 0; padding: 180px 0; }
-.vp__row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr); height: clamp(380px, 50.8svh, 560px); min-height: 0; border-bottom: 1px solid var(--dl-line); }
+.vp__row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr); height: clamp(380px, calc(50.8 * var(--vh, 1svh)), 560px); min-height: 0; border-bottom: 1px solid var(--dl-line); }
 .vp__list .vp__row:first-child { border-top: 1px solid var(--dl-line); }
 .vp__mid { position: relative; display: block; padding: 0; }
-.vp__fix { position: fixed; left: calc(25 * 14.4px); width: calc(50 * 14.4px); top: 0; height: 100svh; z-index: 5; box-sizing: border-box; padding: 0 clamp(20px, calc(3 * 14.4px), 56px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; text-align: center; pointer-events: none; visibility: hidden; will-change: transform, opacity; }
+.vp__fix { position: fixed; left: calc(25 * 14.4px); width: calc(50 * 14.4px); top: 0; height: calc(100 * var(--vh, 1svh)); z-index: 5; box-sizing: border-box; padding: 0 clamp(20px, calc(3 * 14.4px), 56px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; text-align: center; pointer-events: none; visibility: hidden; will-change: transform, opacity; }
 .vp__k { color: #5A4A40; display: block; }
 .vp__k span:not(.ln) { }
 .vp__k [lang="hi"] { margin-right: 12px; font: 600 16px/1 var(--f-hi); letter-spacing: 0; text-transform: none; color: var(--brand); }
@@ -55,8 +55,8 @@ html.lenis, html.lenis body { height: auto; }
 .hw--intro { padding-bottom: clamp(90px, calc(10 * 14.4px), 150px); }
 .hp { background: var(--dl-cream); }
 .hp__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 300px; }
-.hp__li { position: sticky; top: 0; height: 220svh; }
-.hp__card { position: relative; height: calc(100svh - 40px); margin: 20px; box-sizing: border-box; overflow: hidden; border-radius: 16px; background: #F0E4CF; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(24px, calc(4 * 14.4px), 80px); padding: 0 clamp(28px, calc(5.5 * 14.4px), 100px); box-shadow: 0 -20px 50px -30px rgba(60, 20, 0, .35); }
+.hp__li { position: sticky; top: 0; height: calc(220 * var(--vh, 1svh)); }
+.hp__card { position: relative; height: calc(calc(100 * var(--vh, 1svh)) - 40px); margin: 20px; box-sizing: border-box; overflow: hidden; border-radius: 16px; background: #F0E4CF; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(24px, calc(4 * 14.4px), 80px); padding: 0 clamp(28px, calc(5.5 * 14.4px), 100px); box-shadow: 0 -20px 50px -30px rgba(60, 20, 0, .35); }
 .hp__jaali { position: absolute; inset: 0; background: url(../assets/img/patterns/jaali-ink.svg) 0 0 / 44px 44px; opacity: .1; pointer-events: none; }
 .hp__txt, .hp__vis { position: relative; will-change: transform, opacity; }
 .hp__txt { max-width: 460px; }
@@ -88,8 +88,8 @@ html.lenis, html.lenis body { height: auto; }
   .ln i { transform: none !important; opacity: 1 !important; }
   .vp__side { padding: 28px 20px; min-height: 340px; } .vp__card { width: min(100%, 360px); }
   .vp__row[data-i="1"] .vp__side { order: 2; }
-  .hp__list { gap: 0; } .hp__li { height: 100svh; }
-  .hp__card { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; align-content: center; gap: 22px; padding: 26px 22px; margin: 10px; height: calc(100svh - 20px); }
+  .hp__list { gap: 0; } .hp__li { height: calc(100 * var(--vh, 1svh)); }
+  .hp__card { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; align-content: center; gap: 22px; padding: 26px 22px; margin: 10px; height: calc(calc(100 * var(--vh, 1svh)) - 20px); }
   .hp__txt h3 { font-size: clamp(30px, calc(8.6 * 14.4px), 42px); } .hp__sub { margin-top: 18px; } .hp__b { font-size: 15px; }
   .hp__vis { width: 100%; } .hp__stages li, .hp__stack li { padding: 12px 16px; }
 }

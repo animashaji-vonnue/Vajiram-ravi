@@ -34,7 +34,7 @@ html.vrv-lock, html.vrv-lock body { overflow: hidden; }
 .vrv__bar { position: absolute; z-index: 4; left: 0; top: 0; height: 3px; width: 100%; background: #FFD48A; transform: scaleX(0); transform-origin: 0 50%; }
 .vrv--fin .vrv__bar { animation: bar 2.3s linear forwards; }
 @keyframes bar { to { transform: scaleX(1); } }
-.vrv__skip { position: absolute; z-index: 5; right: clamp(16px, calc(3 * 14.4px), 40px); bottom: clamp(16px, 4vh, 40px); height: 40px; padding: 0 16px; border: 1px solid rgba(255, 255, 255, .55); border-radius: 4px; background: rgba(120, 40, 5, .25); color: #fff; font: 600 14px/1 "Mukta", Arial, sans-serif; cursor: pointer; transition: background-color .2s; }
+.vrv__skip { position: absolute; z-index: 5; right: clamp(16px, calc(3 * 14.4px), 40px); bottom: clamp(16px, calc(4 * var(--vh, 1vh)), 40px); height: 40px; padding: 0 16px; border: 1px solid rgba(255, 255, 255, .55); border-radius: 4px; background: rgba(120, 40, 5, .25); color: #fff; font: 600 14px/1 "Mukta", Arial, sans-serif; cursor: pointer; transition: background-color .2s; }
 .vrv__skip:hover { background: rgba(120, 40, 5, .5); }
 .vrv__skip:focus-visible { outline: 2px solid #FFD48A; outline-offset: 3px; }
 .vrv__edge { position: absolute; left: 0; right: 0; bottom: -30px; height: 30px; background: url(../assets/img/patterns/kinari.svg) 0 0 / 40px 30px repeat-x; }

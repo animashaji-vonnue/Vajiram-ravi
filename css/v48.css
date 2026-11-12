@@ -1,8 +1,8 @@
 @import url("v46.css");
 
 /* v48: hero stays pinned; scrolling morphs it into Plan -> Learn -> Rank over the same video */
-.dl--pin { height: 520svh; max-height: none; min-height: 0; overflow: clip; }
-.dl__stick { position: sticky; top: 0; height: 100svh; min-height: 640px; overflow: hidden; }
+.dl--pin { height: calc(520 * var(--vh, 1svh)); max-height: none; min-height: 0; overflow: clip; }
+.dl__stick { position: sticky; top: 0; height: calc(100 * var(--vh, 1svh)); min-height: 640px; overflow: hidden; }
 .dl__bg::after { background: linear-gradient(90deg, rgba(30, 12, 2, calc(.74 + var(--dk, 0) * .1)) 0%, rgba(30, 12, 2, calc(.46 + var(--dk, 0) * .3)) 48%, rgba(30, 12, 2, calc(.16 + var(--dk, 0) * .5)) 100%), linear-gradient(0deg, rgba(30, 12, 2, .5) 0%, transparent 38%); }
 .dl__in { opacity: var(--ho, 1); transform: translate3d(0, var(--hy, 0px), 0); }
 .sc { position: absolute; inset: 0; z-index: 3; display: grid; align-items: center; padding: 0 clamp(20px, calc(5.5 * 14.4px), 100px); opacity: 1; visibility: hidden; pointer-events: none; }

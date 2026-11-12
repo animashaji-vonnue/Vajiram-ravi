@@ -1,7 +1,7 @@
 @import url("v48.css");
 
 /* v49: hero is a timed slideshow (intro -> Plan -> Learn -> Rank) with filling progress bars. Text/card alignment alternates as before. */
-.dl--pin { height: 100vh; height: 100svh; min-height: 0; max-height: none; }
+.dl--pin { height: calc(100 * var(--vh, 1vh)); height: calc(100 * var(--vh, 1svh)); min-height: 0; max-height: none; }
 .dl__stick { position: relative; height: 100%; min-height: 0; }
 .dl__in { opacity: 1; transform: none; transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
 .dl--pin:not([data-s="0"]) .dl__in { opacity: 0; transform: translate3d(0,-40px,0); pointer-events: none; }
@@ -32,7 +32,7 @@
 .bnr__dots button[aria-selected="true"] { width: 36px; height: 4px; background: #CCC; overflow: hidden; }
 .bnr__dots button[aria-selected="true"]::after { content: ""; position: absolute; inset: 0; background: #E57512; transform: scaleX(var(--hp, 0)); transform-origin: 0 50%; }
 
-@media not all { .dl--pin { height: auto; min-height: 100svh; } .dl__stick { min-height: 100svh; } }
+@media not all { .dl--pin { height: auto; min-height: calc(100 * var(--vh, 1svh)); } .dl__stick { min-height: calc(100 * var(--vh, 1svh)); } }
 @media (prefers-reduced-motion: reduce) {
   .dl--pin { height: auto; } .dl__stick { position: relative; height: auto; }
   .dl--pin:not([data-s="0"]) .dl__in { opacity: 1; transform: none; pointer-events: auto; }
@@ -1913,7 +1913,7 @@ main :is(#courses, #batches, #faculty, #stories.sheet, #resources, #visit, #faq.
 main .cover > #dlPin + section { background: linear-gradient(90deg, rgba(255, 250, 243, 0) 0%, rgba(255, 250, 243, .94) 30%, rgba(255, 250, 243, .94) 70%, rgba(255, 250, 243, 0) 100%), url(../assets/img/patterns/bg-jaali.svg) 0 0 / 36px 36px repeat, #fffaf3;
   background-size: 100% 100%, 36px 36px, auto; border-radius: 28px 28px 0 0; }
 
-/* ---- General Studies: a set-height band instead of a full-screen section (it was min-height: max(600px, 100svh)). Height comes from
+/* ---- General Studies: a set-height band instead of a full-screen section (it was min-height: max(600px, calc(100 * var(--vh, 1svh)))). Height comes from
    the content and the shared --sec-y padding; the copy and the book stay centred in it. ---- */
 #gs.gs { min-height: 0; height: auto; align-items: center; }
 

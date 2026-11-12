@@ -22,15 +22,15 @@
   const S0 = 322, STEP = 119, DUR = 112, RUN = S0 + (N - 1) * STEP + 40, TAU = .12;
   const spacer = document.createElement('div');
   spacer.className = 'cmp__run'; spacer.setAttribute('aria-hidden', 'true');
-  const H = () => document.documentElement.clientHeight || innerHeight;
-  const pxVar = () => { const d = document.createElement('div'); d.style.width = 'var(--px)'; d.style.position = 'absolute'; sec.append(d); const w = d.getBoundingClientRect().width; d.remove(); return w; };
+  const H = () => (document.documentElement.clientHeight || innerHeight) / __z();   // the screen's height in CSS pixels (fixed desktop layout: the page is zoomed)
+  const pxVar = () => { const d = document.createElement('div'); d.style.width = 'var(--px)'; d.style.position = 'absolute'; sec.append(d); const w = d.getBoundingClientRect().width / __z(); d.remove(); return w; };
   let on = false, raf = 0, last = 0, su = null, px = 0;
 
   // scroll progress in vh since the section's top reached the top of the screen (the section is sticky, so read the spacer's position)
-  const aim = () => clamp((H() - spacer.getBoundingClientRect().top) / H() * 100, 0, RUN);
+  const aim = () => clamp((H() - spacer.getBoundingClientRect().top / __z()) / H() * 100, 0, RUN);
 
   const draw = u => {
-    const W = Math.max(1440, document.documentElement.clientWidth), h = H(); // fixed desktop layout: never narrower than 1440px
+    const W = 1440, h = H(); // fixed desktop layout: the page is always 1440 CSS pixels wide
     const g = io(seg(u, 0, 168)), m = io(seg(u, 182, 280)), st = stage.style;
     st.setProperty('--g', g.toFixed(4));
     st.setProperty('--s', io(seg(u, 140, 196)).toFixed(4));
@@ -48,7 +48,7 @@
       p.style.transform = r > .01 ? `rotate(${r.toFixed(3)}deg)` : '';
       p.style.setProperty('--e', e.toFixed(4));   // css/story.css: the photo settles from a slight zoom as its chapter lands
     });
-    track.style.setProperty('--tx', (-shift * 100).toFixed(3) + 'vw');
+    track.style.setProperty('--tx', (-shift * W).toFixed(1) + 'px');   // fixed desktop layout: a chapter is 1440px wide
     const w = lerp(lerp(22, 92, g), SW, m) * W / 100, ht = lerp(lerp(49, 82, g), SH, m) * h / 100;
     // settled, the card sits exactly on the first chapter's photo slot: left = --px, top = ST
     const xEnd = px + SW / 200 * W - W / 2, yEnd = (ST + SH / 200) * h - h / 2;

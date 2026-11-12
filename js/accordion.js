@@ -11,10 +11,10 @@
   const setOpen = (d, open) => {
     target.set(d, open);
     if (reduce || !d.animate) { d.open = open; return; }
-    const from = d.getBoundingClientRect().height;      // includes a running animation's current height
+    const from = d.getBoundingClientRect().height / __z();      // includes a running animation's current height
     const prev = running.get(d); if (prev) prev.cancel();
     d.open = open;
-    const to = d.getBoundingClientRect().height;         // the size it should settle at
+    const to = d.getBoundingClientRect().height / __z();         // the size it should settle at
     d.open = true;                                       // keep the content in place while it closes
     d.classList.toggle('is-closing', !open);
     d.style.overflow = 'hidden';

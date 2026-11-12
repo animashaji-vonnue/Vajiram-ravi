@@ -60,7 +60,7 @@
 (() => {
   const nav = document.getElementById('nav'), hero = document.getElementById('dlPin'); if (!nav || !hero) return;
   let tick = false;
-  const f = () => { tick = false; nav.classList.toggle('nav--hero', scrollY < hero.offsetHeight - 120); };
+  const f = () => { tick = false; nav.classList.toggle('nav--hero', scrollY / __z() < hero.offsetHeight - 120); };
   addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(f); } }, { passive: true });
   addEventListener('resize', f); f();
 })();
@@ -170,7 +170,7 @@
   const loop = () => {
     x += (tx - x) * .12; y += (ty - y) * .12;
     const dx = x / w * 2 - 1, dy = y / h * 2 - 1;     // -1 … 1 across the card
-    if (spot) spot.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
+    if (spot) spot.style.translate = `${(x / __z()).toFixed(1)}px ${(y / __z()).toFixed(1)}px`;
     if (lotus) lotus.style.translate = `${(-dx * 18).toFixed(1)}px ${(-dy * 12).toFixed(1)}px`;
     if (glow) glow.style.translate = `${(dx * 26).toFixed(1)}px ${(dy * 16).toFixed(1)}px`;
     raf = Math.abs(tx - x) + Math.abs(ty - y) > .4 ? requestAnimationFrame(loop) : 0;

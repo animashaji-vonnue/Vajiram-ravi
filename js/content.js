@@ -477,7 +477,7 @@
   const setSp = () => $$('#pgrid .shelf').forEach(sh => {
     const bs = $$('.pbk', sh); if (bs.length < 2) return;
     const a = bs[0].getBoundingClientRect(), b = bs[1].getBoundingClientRect();
-    sh.style.setProperty('--sp', (((bs.length - 1) / 2) * Math.abs((b.left + b.width / 2) - (a.left + a.width / 2))).toFixed(1) + 'px');
+    sh.style.setProperty('--sp', (((bs.length - 1) / 2) * Math.abs((b.left + b.width / 2) - (a.left + a.width / 2)) / __z()).toFixed(1) + 'px');
   });
   renderShelves();
   // tabs: All / IGP / General Studies / Optional / Module Courses / Test Series; each one re-lays the shelves with just its programmes
@@ -622,8 +622,8 @@
       const bk = e.target.closest('.gsbook'); if (!bk) return;
       const card = bk.closest('.pbk'), b = $('.pbk__b .vbtn', card);
       const r = bk.getBoundingClientRect(), c = card.getBoundingClientRect(), w = b.offsetWidth, h = b.offsetHeight;
-      const tx = r.left - c.left + clamp(e.clientX - r.left, w / 2 + 14, r.width - w / 2 - 14) - w / 2;
-      const ty = r.top - c.top + clamp(e.clientY - r.top, h / 2 + 14, r.height - h / 2 - 14) - h / 2;
+      const z = __z(), tx = (r.left - c.left) / z + clamp((e.clientX - r.left) / z, w / 2 + 14, r.width / z - w / 2 - 14) - w / 2;
+      const ty = (r.top - c.top) / z + clamp((e.clientY - r.top) / z, h / 2 + 14, r.height / z - h / 2 - 14) - h / 2;
       if (!cur || cur.b !== b) {
         if (cur) cur.b.classList.remove('is-follow');
         cur = { b, x: tx, y: ty, tx, ty };
