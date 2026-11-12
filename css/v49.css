@@ -1535,6 +1535,19 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 }
 .inv--ticket .inv__reg.cta:active { translate: 0 2px; box-shadow: inset 0 2px 5px rgba(120, 30, 0, .45), 0 2px 4px -2px rgba(198, 70, 19, .5); }
 @media (prefers-reduced-motion: reduce) { .inv--ticket:hover { transform: none; } }
+/* The flagship ticket: a warm glow that breathes behind it, and a band of light that sweeps across it every few seconds
+   (it gleams on the dyed head and the button, and leaves a faint warm sheen on the white paper). */
+.inv--flagship::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 6px; pointer-events: none;
+  box-shadow: 0 0 26px 4px rgba(240, 106, 44, .5), 0 0 60px 10px rgba(240, 106, 44, .18); opacity: .55; animation: flagGlow 3.2s ease-in-out infinite; }
+@keyframes flagGlow { 50% { opacity: 1; } }
+.inv--flagship .inv__frame::before { content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 222, 190, .32) 46%, rgba(255, 255, 255, .55) 50%, rgba(255, 222, 190, .32) 54%, transparent 60%) 110% 0 / 250% 100% no-repeat;
+  animation: flagShine 5.5s cubic-bezier(.45, 0, .25, 1) 1.2s infinite; }
+@keyframes flagShine { 0% { background-position: 110% 0; } 32%, 100% { background-position: -10% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .inv--flagship::before { animation: none; opacity: .8; }
+  .inv--flagship .inv__frame::before { animation: none; background: none; }
+}
 
 /* ---- 64px between each section's heading block and the content it introduces ---- */
 #courses .ptabs { margin-top: 64px; }

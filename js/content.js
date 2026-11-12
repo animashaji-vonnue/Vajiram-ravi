@@ -691,7 +691,7 @@
   $('#price').innerHTML = BATCHES.map((b, i) => {
     const [d, mon] = b.d.split(' ');
     const fam = BFAM[b.fam] || BFAM.gs;
-    return `<article class="inv inv--ticket inv--${b.fam}${b.chip === 'Limited seats' ? ' inv--limited' : ''}" style="--i:${i};--ticket:${fam.c}">
+    return `<article class="inv inv--ticket inv--${b.fam}${b.chip === 'Limited seats' ? ' inv--limited' : ''}${b.chip === 'Flagship' ? ' inv--flagship' : ''}" style="--i:${i};--ticket:${fam.c}">
       <div class="inv__frame">
         <div class="ticket__head">
           <img class="ticket__lotus" src="assets/img/brand/lotus-ticket.svg" alt="" aria-hidden="true">
