@@ -39,7 +39,7 @@
 
 /* ---------- the pinned stage (js/story.js adds .cmp--run and a spacer after the section that the scene plays over) ---------- */
 #story.cmp--run { position: sticky; top: 0; padding: 0; z-index: -1; }   /* behind the sheets: the pinned scene must not show through the --sec-gap bands between sections */
-.cmp--run .cmp__stage { height: calc(100 * var(--vh, 1vh)); height: calc(100 * var(--vh, 1svh)); margin: 0; overflow: hidden; --g: 0; --s: 0; --bo: 1; --ov: 0; --ti: 0; --tr: 0; --tb: 0; }
+.cmp--run .cmp__stage { height: calc(100 * var(--vh, 1vh)); height: calc(100 * var(--vh, 1svh)); margin: 0; overflow: hidden; --g: 1; --s: 1; --bo: 0; --ov: 1; --ti: 1; --tr: 1; --tb: 1; }   /* version 7: starts settled, no opening zoom */
 .cmp--run .cmp__bg { display: block; position: absolute; inset: 0; z-index: 1; opacity: calc(1 - var(--g)); }
 .cmp--run .cmp__bg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
 .cmp--run .cmp__bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(240, 127, 26, .42), rgba(138, 68, 9, .62)); mix-blend-mode: multiply; }

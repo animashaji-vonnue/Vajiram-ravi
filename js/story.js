@@ -20,6 +20,9 @@
   // the first chapter's photo slot (css/story.css .cmp--run .cmp__ph): width SW vw, height SH vh, top ST of the screen
   const SW = 44, SH = 54, ST = .36;
   const S0 = 322, STEP = 119, DUR = 112, RUN = S0 + (N - 1) * STEP + 40, TAU = .12;
+  // Version 7: the opening zoom (0-322) is skipped. The scene starts settled on the first chapter, and the scroll only
+  // carries the chapters sliding in from the right.
+  const START = S0;
   const spacer = document.createElement('div');
   spacer.className = 'cmp__run'; spacer.setAttribute('aria-hidden', 'true');
   const H = () => (document.documentElement.clientHeight || innerHeight) / __z();   // the screen's height in CSS pixels (fixed desktop layout: the page is zoomed)
@@ -27,7 +30,7 @@
   let on = false, raf = 0, last = 0, su = null, px = 0;
 
   // scroll progress in vh since the section's top reached the top of the screen (the section is sticky, so read the spacer's position)
-  const aim = () => clamp((H() - spacer.getBoundingClientRect().top / __z()) / H() * 100, 0, RUN);
+  const aim = () => START + clamp((H() - spacer.getBoundingClientRect().top / __z()) / H() * 100, 0, RUN - START);
 
   const draw = u => {
     const W = 1440, h = H(); // fixed desktop layout: the page is always 1440 CSS pixels wide
@@ -68,7 +71,7 @@
     if (Math.abs(want - su) > .02) raf = requestAnimationFrame(tick); else { su = want; draw(su); last = 0; }
   };
   const queue = () => { if (on && !raf) raf = requestAnimationFrame(tick); };
-  const size = () => { spacer.style.height = (RUN / 100 * H()).toFixed(0) + 'px'; px = pxVar(); };
+  const size = () => { spacer.style.height = ((RUN - START) / 100 * H()).toFixed(0) + 'px'; px = pxVar(); };
 
   const set = () => {
     const want = wide.matches && !reduce.matches;
@@ -76,7 +79,7 @@
     on = want;
     sec.classList.toggle('cmp--run', on);
     if (on) {
-      sec.after(spacer); size(); su = null;
+      sec.after(spacer); size(); su = aim(); draw(su);   // version 7: draw the settled first chapter at once, before any scroll
       sec.querySelectorAll('img[loading="lazy"]').forEach(i => { i.loading = 'eager'; });   // off-screen chapters would never intersect
       queue();
     } else {
@@ -92,7 +95,7 @@
     const p = e.target.closest('.cmp__p'); if (!p) return;
     const k = panels.indexOf(p), u = k ? S0 + (k - 1) * STEP + DUR : S0;
     const y0 = spacer.getBoundingClientRect().top + scrollY - H();
-    const y = y0 + u / 100 * H();
+    const y = y0 + (u - START) / 100 * H();
     if (window.__lenis) window.__lenis.scrollTo(y, { immediate: true }); else scrollTo({ top: y, behavior: 'auto' });
   });
   addEventListener('scroll', queue, { passive: true });
@@ -100,4 +103,5 @@
   wide.addEventListener?.('change', set);
   reduce.addEventListener?.('change', set);
   set();
+  addEventListener('load', () => { if (on) { size(); su = aim(); draw(su); } });   // re-measure once fonts and images are in
 })();
