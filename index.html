@@ -17,6 +17,7 @@
 <script>document.documentElement.classList.add('js')</script>
   <link rel="stylesheet" href="css/faculty-ring.css">
   <link rel="stylesheet" href="css/programme-shelf.css">
+  <link rel="stylesheet" href="css/toppers-wall.css">
 </head>
 <body>
 <!-- brand intro: Vajiram & Ravi reveal on orange, plays on every load -->
@@ -100,28 +101,8 @@
       <p class="gz__deck rv" style="--d:.28s" id="gzDeck"></p>
     </div>
 
-    <div class="gz__front">
-    <div class="gz__body rv" style="--d:.1s" id="gzLead">
-      <figure class="gz__fig">
-        <span class="gz__frame"><img id="gzImg" src="assets/img/toppers/portrait/2025/01-anuj-agnihotri.webp" alt="" width="768" height="768" decoding="async"><span class="gz__progs" id="gzProgs"></span></span>
-        <span class="gz__seal" id="gzSeal" aria-hidden="true"></span>
-      </figure>
-      <div class="gz__story">
-        <h3 class="gz__sub" id="gzSub"></h3>
-        <div class="gz__cols" id="gzCols"></div>
-      </div>
-    </div>
-
-    <section class="gz__roll rv" style="--d:.05s" aria-labelledby="gzRollH">
-      <h3 class="sr-only" id="gzRollH">The first ten</h3>
-      <p class="gz__ct" id="gzCount" aria-live="polite"></p>
-      <p class="sr-only" id="gzSay" aria-live="polite"></p>
-      <div class="gz__scroll"><div class="gz__scrolli" id="gzScroll" data-lenis-prevent>
-        <ol class="gz__ten" id="gzTen"></ol>
-        <button type="button" class="gz__all" id="gzAll" aria-expanded="false" aria-controls="gzTen" hidden></button>
-      </div></div>
-    </section>
-    </div>
+    <!-- The rank holders: a reel of clippings with rank seals, and the lead story (js/toppers-wall.js, css/toppers-wall.css). -->
+    <div class="gzw" id="gzWall"></div>
     <div class="gz__foot rv" style="--d:.05s">
       <div class="gz__more">
         <a class="bt bt--brand" href="https://vajiramandravi.com/ias-selections-from-vajiram/" target="_blank" rel="noopener">Explore all UPSC results<span class="sq sq--52 sq--white"><img src="assets/img/icons/arrow-brand.svg" alt="" width="16" height="16"></span></a>
@@ -513,6 +494,7 @@
 <script src="js/data/toppers.js?v=2"></script>
 <script src="js/data/toppers-archive.js?v=4"></script>
 <script src="js/toppers.js?v=33"></script>
+<script src="js/toppers-wall.js"></script>
 <script src="js/custom-select.js?v=3"></script>
 <script src="js/content.js?v=43"></script>
 <script src="js/faculty-ring.js"></script>

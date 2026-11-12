@@ -1,0 +1,89 @@
+/* The CSE 2025 rank holders (js/toppers-wall.js): Maven's team reel, set in the newspaper's type and colours
+   (--gz-ink, --gz-sans, --gz-line, --gz-mute, --gz-orange, --gz-red from css/toppers.css). */
+.gzw { padding-top: 26px; text-align: left; }
+
+/* The section strip: a heavy rule, the kicker on the left and the programme tabs on the right. */
+.gzw__head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; padding: 12px 0; border-top: 3px solid var(--gz-ink); border-bottom: 1px solid var(--gz-line); }
+.gzw__kick { margin: 0; font: 800 19px/1.2 var(--gz-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--gz-ink); }
+.gzw__kick span { color: var(--gz-red); letter-spacing: .1em; }
+.gzw__tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.gzw__tab { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 8px 0 15px; border: 1px solid rgba(194, 65, 12, .3); border-radius: 999px; background: #fff; cursor: pointer;
+  font: 600 14px/1 var(--gz-sans); color: var(--gz-ink); transition: background-color .2s, color .2s, border-color .2s; }
+.gzw__tab small { min-width: 24px; padding: 4px 7px; border-radius: 999px; background: rgba(194, 65, 12, .1); font: 700 12px/16px var(--gz-sans); color: #C2410C; text-align: center;
+  transition: background-color .2s, color .2s; }
+.gzw__tab:hover { border-color: #C2410C; }
+.gzw__tab[aria-pressed="true"] { border-color: #C2410C; background: #C2410C; color: #fff; }
+.gzw__tab[aria-pressed="true"] small { background: rgba(255, 255, 255, .22); color: #fff; }
+.gzw__tab:focus-visible { outline: 2px solid var(--gz-ink); outline-offset: 2px; }
+
+/* The reel: the clippings drift left, edge to edge of the sheet, fading out at its sides. */
+.gzw__reel { position: relative; margin: 22px -40px 0; padding: 14px 0 18px; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  transition: opacity .18s; }
+.gzw__reel.is-swapping { opacity: 0; }
+.gzw__track { display: flex; gap: 20px; width: max-content; padding: 0 40px; will-change: transform; }
+.gzw__reel:hover .gzw__track, .gzw__reel:focus-within .gzw__track { animation-play-state: paused !important; }
+.gzw__reel.is-still .gzw__track { width: auto; justify-content: center; flex-wrap: nowrap; }
+.gzw__reel.is-still { -webkit-mask-image: none; mask-image: none; }
+.gzw__reel.is-manual { overflow-x: auto; scroll-snap-type: x mandatory; }
+.gzw__reel.is-manual .gzw__card { scroll-snap-align: start; }
+@keyframes gzw-drift { to { transform: translateX(var(--gzw-shift, -50%)); } }
+
+/* A clipping: the portrait in newsprint tones, the rank on a seal, the name and programmes as its caption. */
+.gzw__card { position: relative; flex: none; width: 216px; }
+.gzw__pick { position: relative; display: flex; flex-direction: column; width: 100%; height: 100%; padding: 8px 8px 0; border: 1px solid var(--gz-line); border-radius: 4px; background: #fff;
+  text-align: left; cursor: pointer; font: inherit; color: inherit; box-shadow: 0 1px 0 rgba(42, 26, 18, .04);
+  transition: box-shadow .35s cubic-bezier(.22, 1, .36, 1), translate .35s cubic-bezier(.22, 1, .36, 1), border-color .25s; }
+.gzw__pick:hover, .gzw__pick:focus-visible { translate: 0 -4px; box-shadow: 0 18px 30px -18px rgba(70, 30, 8, .45); }
+.gzw__pick:focus-visible { outline: 2px solid var(--gz-orange); outline-offset: 3px; }
+.gzw__card.is-on .gzw__pick { border-color: var(--gz-orange); box-shadow: 0 0 0 1px var(--gz-orange), 0 18px 30px -20px rgba(70, 30, 8, .45); }
+.gzw__ph { display: block; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 2px; background: #F2EEE9; }
+.gzw__ph img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%;
+  filter: grayscale(.92) sepia(.18) contrast(1.06); transition: filter .5s cubic-bezier(.22, 1, .36, 1), transform .6s cubic-bezier(.22, 1, .36, 1); }
+.gzw__pick:hover .gzw__ph img, .gzw__pick:focus-visible .gzw__ph img, .gzw__card.is-on .gzw__ph img { filter: none; }
+.gzw__pick:hover .gzw__ph img { transform: scale(1.03); }
+.gzw__cap { display: flex; flex: 1; flex-direction: column; gap: 4px; padding: 10px 2px 12px; border-top: 0; }
+.gzw__nm { font: 800 16px/1.2 var(--gz-sans); letter-spacing: -.005em; color: var(--gz-ink); }
+.gzw__pg { font: 400 12.5px/1.4 var(--gz-sans); color: var(--gz-mute); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* The rank seal: the educators' experience stamp (serrated orange edge, a fine white ring), carrying "AIR" and the rank. */
+.gzw__seal { position: absolute; z-index: 2; width: 58px; height: 58px; filter: drop-shadow(0 4px 6px rgba(43, 18, 6, .35)); }
+.gzw__card .gzw__seal { top: 16px; left: 16px; }
+.gzw__seal svg { position: absolute; inset: 0; color: #e57512; }
+.gzw__seal path { fill: currentColor; stroke: currentColor; stroke-width: 1.2; stroke-linejoin: round; }
+.gzw__seal circle { fill: none; stroke: #fff; stroke-opacity: .7; stroke-width: .8; }
+.gzw__seal > span { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+.gzw__seal small { font: 800 7px/8px var(--gz-sans); letter-spacing: .2em; padding-left: .2em; }
+.gzw__seal b { margin-top: 1px; font: 800 20px/18px var(--gz-sans); letter-spacing: -.02em; }
+.gzw__card.is-first .gzw__seal svg { color: #C2410C; }
+
+.gzw__hint { margin: 0; font: 400 13px/1.4 var(--gz-sans); color: var(--gz-mute); text-align: center; }
+
+/* The lead story: the chosen rank holder's seal and line, then the headline and two newspaper columns. */
+.gzw__story { display: grid; grid-template-columns: minmax(0, .3fr) minmax(0, .7fr); gap: 0; margin-top: 20px; padding-top: 22px; border-top: 1px solid var(--gz-line); }
+.gzw__by { position: relative; display: flex; align-items: flex-start; gap: 14px; padding-right: 29px; }
+.gzw__by .gzw__seal { position: relative; flex: none; width: 74px; height: 74px; }
+.gzw__by .gzw__seal svg { width: 74px; height: 74px; }
+.gzw__by .gzw__seal small { font-size: 8.5px; }
+.gzw__by .gzw__seal b { font-size: 26px; line-height: 24px; }
+.gzw__by p { display: flex; flex-direction: column; gap: 6px; margin: 4px 0 0; }
+.gzw__by p b { font: 800 22px/1.15 var(--gz-sans); color: var(--gz-ink); }
+.gzw__by p span { font: 400 13.5px/1.45 var(--gz-sans); color: var(--gz-mute); }
+.gzw__text { padding-left: 29px; border-left: 1px solid var(--gz-line); }
+.gzw__text .gz__sub { margin-top: 0; }
+
+@media (max-width: 900px) {
+  .gzw__story { grid-template-columns: 1fr; }
+  .gzw__by { padding: 0 0 16px; }
+  .gzw__text { padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--gz-line); }
+}
+@media (max-width: 640px) {
+  .gzw__reel { margin-inline: -20px; }
+  .gzw__track { padding-inline: 20px; gap: 14px; }
+  .gzw__card { width: 184px; }
+  .gzw__text .gz__cols { column-count: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gzw__track { animation: none !important; }
+  .gzw__pick, .gzw__ph img { transition: none; }
+}
