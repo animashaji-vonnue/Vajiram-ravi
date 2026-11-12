@@ -76,9 +76,23 @@
     }, at);
   });
 
-  // pinned under the next section: a hero taller than the screen pins once its foot is in view, so none of it is hidden
-  const pin = () => hero.style.setProperty('--hx-stick', Math.min(0, innerHeight - hero.offsetHeight) + 'px');
-  pin(); addEventListener('resize', pin);
+  // the panel starts 16px under v7's floating nav, wherever the nav sits at this width (it is lower on wide screens); and pinned
+  // under the next section, a hero taller than the screen pins once its foot is in view, so none of it is hidden
+  const nav = document.getElementById('nav');
+  const fit = () => {
+    if (nav && !nav.classList.contains('is-hidden')) {
+      const r = nav.getBoundingClientRect();
+      // the foot of what shows of the nav (its pills), measured as if the page were at the top
+      const foot = Math.max(...[...nav.children].filter(el => el.offsetParent !== null).map(el => el.getBoundingClientRect().bottom)) - r.top + nav.offsetTop;
+      hero.style.setProperty('--hx-top', Math.round(foot + 16) + 'px');
+      // and its sides line up with the nav's ends
+      hero.style.setProperty('--hx-side', Math.round(r.left) + 'px');
+      hero.style.setProperty('--hx-side-r', Math.round(innerWidth - r.right) + 'px');
+    }
+    hero.style.setProperty('--hx-stick', Math.min(0, innerHeight - hero.offsetHeight) + 'px');
+  };
+  fit(); addEventListener('resize', fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 
   const start = () => {
     ready = true;

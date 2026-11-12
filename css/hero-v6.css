@@ -10,7 +10,7 @@
    - Under the panel, on the orange: the four points, each figure in a cream laurel that sways a little while on screen.
    Type is v7's: Newsreader (--f-title) for the headline and figures, Mukta (--f) for the rest. */
 .hx { --hx-gold: #FFD48A; --hx-cream: #FFF3E1; --hx-brown: 46 17 6; --hx-top: 96px; --hx-stats: 182px;
-  position: relative; isolation: isolate; overflow: clip; padding: var(--hx-top) clamp(12px, 1.2vw, 20px) 0; color: #fff;
+  position: relative; isolation: isolate; overflow: clip; padding: var(--hx-top) var(--hx-side-r, var(--hx-side, 20px)) 0 var(--hx-side, 20px); color: #fff;   /* sides: the nav's ends (js/hero-v6.js) */
   background:
     radial-gradient(48% 60% at 85% 20%, rgba(255, 170, 90, .45), transparent 70%),
     radial-gradient(45% 55% at 8% 100%, rgba(150, 40, 8, .5), transparent 70%),
@@ -40,14 +40,20 @@
 
 /* the topper's rank, top right, on a frosted card; "AIR" sits level with the middle of the figures, the line pointing back at the topper */
 .hx__mark { position: absolute; top: 7%; right: 3%; z-index: 2; display: flex; align-items: flex-start; pointer-events: none; }
-.hx__mark-pt { display: flex; align-items: center; margin-top: 54px; }
+.hx__mark-pt { display: flex; align-items: center; margin-top: 65px; }   /* level with the middle of the figures */
 .hx__mark-pt i { display: block; width: 10px; height: 10px; border-radius: 50%; background: #ffe9c2; box-shadow: 0 0 0 4px rgb(255 233 194 / .25); }
 .hx__mark-pt em { display: block; width: 56px; height: 1.5px; background: rgb(255 233 194 / .8); transform-origin: right center; }
-.hx__mark-card { padding: 20px 28px 24px; border-radius: 22px; text-align: right; background: rgb(var(--hx-brown) / .62);
+.hx__mark-card { padding: 28px 28px 24px; border-radius: 22px; text-align: right; background: rgb(var(--hx-brown) / .62);
   box-shadow: 0 18px 40px -18px rgb(20 6 2 / .6), inset 0 0 0 1px rgb(255 233 194 / .15); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 .hx__mark-air { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin: 0; color: var(--hx-gold); font-family: var(--f-title, Georgia), serif; }
 .hx__mark-air span { font-size: 34px; line-height: 1; font-weight: 500; }
-.hx__mark-air b { font-size: 124px; line-height: .74; font-weight: 600; letter-spacing: -.03em; font-variant-numeric: lining-nums; }
+.hx__mark-air b { font-size: 124px; line-height: 1; font-weight: 600; letter-spacing: -.03em; font-variant-numeric: lining-nums; }
+/* the figures' box is trimmed to the digits themselves (cap height to baseline), so the card's top padding is the space you see above
+   them and "AIR" centres on the digits; without text-box, a tight line height and a nudge come close */
+.hx__mark-air span, .hx__mark-air b { text-box: trim-both cap alphabetic; }
+@supports not (text-box: trim-both cap alphabetic) {
+  .hx__mark-air b { line-height: .74; margin-top: 10px; }
+}
 .hx__mark-name { margin: 16px 0 0; font: 600 21px/26px var(--f); color: #fff; }
 .hx__mark-exam { margin: 0; font: 500 15px/20px var(--f); color: #ffe9c2; }
 /* drawn in with each topper */
@@ -141,9 +147,9 @@ main .cover > #hero.hx + section > * { opacity: var(--cov, 1); transform: transl
 @media (max-width: 1180px) {
   .hx__mark-air span { font-size: 26px; }
   .hx__mark-air b { font-size: 92px; }
-  .hx__mark-card { padding: 16px 22px 20px; }
+  .hx__mark-card { padding: 22px 22px 20px; }
   .hx__mark-name { margin-top: 12px; font-size: 18px; line-height: 23px; }
-  .hx__mark-pt { margin-top: 40px; }
+  .hx__mark-pt { margin-top: 48px; }
   .hx__mark-pt em { width: 36px; }
   .hx__stats { gap: 24px 40px; }
 }
@@ -164,7 +170,7 @@ main .cover > #hero.hx + section > * { opacity: var(--cov, 1); transform: transl
   .hx__mark-card { text-align: left; }
   .hx__mark-air { justify-content: flex-start; }
   .hx__mark-pt { display: none; }
-  .hx__mark-card { padding: 12px 16px 14px; border-radius: 16px; }
+  .hx__mark-card { padding: 16px 16px 14px; border-radius: 16px; }
   .hx__mark-air { gap: 8px; }
   .hx__mark-air span { font-size: 18px; }
   .hx__mark-air b { font-size: 56px; }
