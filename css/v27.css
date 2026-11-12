@@ -1,0 +1,133 @@
+@import url("v26.css");
+
+/* Free resources: dark band, with "The V&R Daily" as a real sheet of newsprint lying on it.
+   Natural paper: warm off-white with faint grain and edge-aging, one soft contact shadow and a barely-there second sheet,
+   instead of the tilted decorative layers. Ink is a warm near-black, like printed type. */
+#resources.band.is-paper { background: linear-gradient(170deg, #5A1E0A 0%, #3A1306 55%, #2A0D04 100%); color: #fff; }
+#resources.is-paper .lbl__t { color: rgba(255, 240, 225, .82); }
+#resources.is-paper .lbl__hi { color: #FFD48A; border-color: rgba(255, 212, 138, .35); }
+#resources.is-paper .h2 { color: #fff; }
+#resources.is-paper .intro { color: rgba(255, 240, 225, .72); }
+
+.np {
+  --paper: #F7F1E4; --ink: #231B14; --muted: #5E5246;
+  color: var(--ink); border-radius: 1px;
+  background:
+    linear-gradient(90deg, transparent 49.7%, rgba(60, 40, 20, .035) 50%, rgba(255, 255, 255, .25) 50.25%, transparent 50.9%),   /* centre fold */
+    radial-gradient(140% 110% at 50% 45%, transparent 62%, rgba(120, 80, 30, .07) 100%),   /* edges very slightly aged */
+    repeating-linear-gradient(0deg, rgba(60, 40, 20, .018) 0 1px, transparent 1px 3px),     /* faint grain */
+    var(--paper);
+  box-shadow: 0 6px 0 -3px #E6DCC8, 0 7px 0 -3px rgba(0, 0, 0, .18), 0 12px 0 -6px #D9CEB8, 0 1px 1px rgba(0, 0, 0, .25), 0 14px 22px -8px rgba(0, 0, 0, .5), 0 44px 70px -30px rgba(0, 0, 0, .7);
+}
+/* a second sheet just peeking out underneath, straight, like a stack of papers */
+.np::before { display: none; }   /* (the pseudo sheet painted over the paper; the stacked sheet is now a box-shadow) */
+.np::after { display: none; }
+/* printed type: ink, not UI grey */
+.np__title, .np__sec, .np__lead, .np__also a, .np__exp b { color: var(--ink); }
+.np__meta, .np__strap, .np__strap span, .np__deck, .np__exp span { color: var(--muted); }
+.np__mast { border-top-color: var(--ink); border-bottom-color: var(--ink); }
+.np__col + .np__col { border-left-color: rgba(35, 27, 20, .28); }
+.np__sec { border-bottom-color: var(--ink); }
+/* print is slightly soft on newsprint */
+.np__title, .np__lead { text-shadow: 0 0 .6px rgba(35, 27, 20, .35); }
+.np__idx { border-top-color: var(--ink); }
+.np__item { border-left-color: rgba(35, 27, 20, .22); }
+.np__strap { border-bottom-color: rgba(35, 27, 20, .25); }
+
+/* Nav: hides while scrolling down, comes back as soon as you scroll up (js/v27.js) */
+.nav { transition: top .3s var(--ease), translate .35s var(--ease), opacity .25s ease; }
+.nav.is-hidden { translate: 0 calc(-100% - 70px); opacity: 0; pointer-events: none; }
+.nav.is-hidden > * { pointer-events: none; }
+
+/* ---- refinement: a proper broadsheet hierarchy ---- */
+.np { padding: 30px 48px 28px; }
+/* masthead: smaller nameplate, flanked by boxed "ears" */
+.np__mast { padding: 14px 0 12px; border-top: 3px double var(--ink); border-bottom: 1px solid var(--ink); }
+.np__title { font-size: 46px; letter-spacing: -.015em; }
+.np__title i { font-size: 18px; }
+.np__meta { font-size: 10.5px; letter-spacing: .16em; line-height: 1.5; }
+.np__strap { padding: 8px 0; border-bottom: 1px solid var(--ink); font-size: 11px; }
+.np__strap span { font-size: 13px; }
+/* columns: give the lead story the room it needs */
+.np__body { grid-template-columns: minmax(0, 3fr) minmax(0, 6.4fr) minmax(0, 3fr); margin-top: 22px; }
+.np__col { padding: 0 26px; }
+.np__col + .np__col { border-left: 1px solid rgba(35, 27, 20, .35); }
+.np__sec { font-size: 22px; letter-spacing: .01em; border-bottom: 1px solid var(--ink); box-shadow: 0 -3px 0 var(--ink); padding-top: 8px; margin-top: 10px; text-transform: uppercase; }
+.np__briefs a { font-size: 14.5px; padding: 10px 0; }
+/* lead: a headline, not a poster */
+.np__lead { font-size: 33px; line-height: 1.12; letter-spacing: -.012em; margin-top: 12px; }
+.np__deck { font-size: 15.5px; line-height: 1.6; margin: 14px 0 20px; color: #3D342B; text-align: justify; hyphens: auto; }
+.np__deck::first-letter { float: left; font: 700 3.3em/.82 var(--f-d); margin: 3px 8px 0 0; padding: 0; color: var(--ink); }
+/* "Also in Mains": a ruled list instead of three cramped columns */
+.np__also { columns: 1; column-rule: 0; margin-top: 4px; }
+.np__also li { border-top: 1px dotted rgba(35, 27, 20, .4); }
+.np__also a { padding: 10px 0; font-size: 15.5px; line-height: 1.32; }
+.np__kick--sub { border-top: 2px solid var(--ink); }
+/* Quest explainers: slightly tighter */
+.np__exp a { padding: 11px 0; }
+.np__exp b { font-size: 15.5px; }
+.np__exp a::before { color: var(--ink); }
+/* "read more" links read as end-of-column cues */
+.np__more { margin-top: auto; padding-top: 16px; font-style: italic; font-size: 13.5px; }
+/* edition index along the foot */
+.np__idx { border-top: 3px double var(--ink); margin-top: 26px; padding-top: 14px; }
+.np__item svg { stroke: var(--ink); }
+
+/* Consultation form: a plain white card with the ornamental frame drawn inside it, with white margin all round */
+.form { border: 0; border-image: none; border-radius: 4px; background: #fff; padding: 46px 54px 42px; box-shadow: 0 8px 22px rgba(56, 56, 56, .12), 0 0 0 1px rgba(194, 65, 12, .08); }
+.form::before { content: ""; position: absolute; inset: 12px; border: 16px solid transparent; border-image: url(../assets/img/patterns/frame.svg) 16 stretch; pointer-events: none; }
+@media (max-width: 640px) { .form { padding: 40px 36px 36px; } }
+
+/* Footer in Sharon's style: a painted scene (Samvidhan Sadan at golden hour) whose peach sky meets the page, a centred
+   call to action under it, then white link columns on the deep-brown foliage and a ruled base line. */
+.foot { position: relative; isolation: isolate; margin: 24px 12px 18px; padding: 72px 48px 0; border-radius: 28px; color: #fff; overflow: hidden;
+  background: linear-gradient(180deg, #FFD8B5 0 45%, #2A160C 70%); }
+.foot__scene { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; }
+.foot::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, #FFD8B5 0, #FFD8B5 9%, rgba(255,216,181,.78) 18%, rgba(255,226,200,.32) 28%, transparent 40%, transparent 50%, rgba(52,26,12,.6) 64%, rgba(44,22,11,.93) 79%, #26140A 100%); }
+.foot > .kinari, .foot__word, .foot__hi { display: none; }
+.foot__cta { display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; color: var(--ink); }
+.foot__h { font: 600 clamp(36px, 4.1vw, 60px)/1.125 var(--f-d); letter-spacing: -.01em; }
+.foot__h span { color: #902502; }
+.foot__lede { max-width: 520px; font-weight: 500; font-size: 18px; line-height: 1.5; color: rgba(46, 46, 46, .82); }
+.foot__top { margin-top: clamp(230px, 25vw, 380px); padding-bottom: 48px; }
+.foot__logo, .foot__brand p, .foot__cols a { color: rgba(255, 255, 255, .82); }
+.foot__logo { color: #fff; font-family: var(--f-d); font-weight: 700; }
+.foot__cols h3 { font-family: var(--f-d); font-weight: 700; font-size: 17px; color: #fff; }
+.foot__cols a:hover { color: #FFD08A; }
+.foot .socials a { background: rgba(255, 255, 255, .12); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .28); color: #fff; }
+.foot .socials a:hover { background: rgba(255, 255, 255, .22); }
+.foot .socials img { filter: brightness(0) invert(1); opacity: .9; }
+.foot__bot { margin: 0 -48px; padding: 20px 48px 26px; border-top: 1px solid rgba(255, 255, 255, .18); color: rgba(255, 255, 255, .65); }
+.foot__bot a:hover { color: #FFD08A; }
+@media (max-width: 640px) { .foot { padding: 48px 20px 0; } .foot__bot { margin: 0 -20px; padding: 20px; } .foot__top { margin-top: 110px; } }
+
+/* footer keeps the previous copy (brand line, wordmark, Hindi line); only the scene look is Sharon's */
+.foot__word, .foot__hi { display: block; }
+.foot__hi { display: flex; }
+.foot__top { margin-top: clamp(260px, 28vw, 420px); }
+.foot__word { color: #fff; text-shadow: 0 6px 30px rgba(0, 0, 0, .3); }
+.foot__word span { color: #FFD08A; }
+.foot__hi { color: #FFD08A; }
+.foot__hi .lbl__orn { filter: brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(-10deg); opacity: .85; }
+
+/* footer branding: the foliage and ground are tinted in the brand orange (was deep brown) */
+.foot { background: linear-gradient(180deg, #FFD8B5 0 45%, #B83A0A 70%); }
+.foot::before { background: linear-gradient(180deg, #FFD8B5 0, #FFD8B5 9%, rgba(255,216,181,.78) 18%, rgba(255,226,200,.28) 28%, transparent 38%, rgba(251,86,33,.28) 48%, rgba(228,72,18,.72) 62%, rgba(196,56,10,.93) 78%, #AE3407 100%); }
+.foot__word span, .foot__hi, .foot__bot a:hover, .foot__cols a:hover { color: #FFE3B8; }
+.foot__bot { border-top-color: rgba(255, 255, 255, .3); color: rgba(255, 255, 255, .8); }
+.foot__logo, .foot__brand p, .foot__cols a { color: #fff; }
+.foot__brand p, .foot__cols a { opacity: .92; }
+/* orange comes in earlier so the link columns sit on orange, not the pale sky */
+.foot { background: linear-gradient(180deg, #FFD8B5 0 12%, #B83A0A 55%); }
+.foot::before { background: linear-gradient(180deg, #FFD8B5 0, #FFD8B5 6%, rgba(255,205,160,.6) 13%, rgba(251,120,60,.55) 24%, rgba(238,86,28,.82) 36%, rgba(214,66,16,.8) 52%, rgba(190,52,8,.95) 74%, #AE3407 100%); }
+.foot__top { margin-top: clamp(150px, 15vw, 230px); }
+
+/* no empty sky above the columns: the footer starts straight on the orange and the columns sit near the top */
+.foot { padding-top: 56px; background: linear-gradient(180deg, #F2692F, #B83A0A); }
+.foot::before { background: linear-gradient(180deg, rgba(255,150,90,.55) 0, rgba(246,100,40,.7) 18%, rgba(228,74,20,.82) 40%, rgba(206,60,12,.9) 62%, rgba(186,50,8,.96) 82%, #AE3407 100%); }
+.foot__top { margin-top: 0; }
+@media (max-width: 640px) { .foot { padding-top: 40px; } .foot__top { margin-top: 0; } }
+
+/* section eyebrows: no dotted line and no ornament on the right (the footer's Hindi-line ornaments are not eyebrows, so they stay) */
+.lbl > i, .lbl > .lbl__orn, .lbl .lbl__orn { display: none !important; }

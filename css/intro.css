@@ -1,0 +1,50 @@
+/* v49 intro: the original "logo frame" (iris opens, mandala ring, logo, tagline, curtain lifts), recoloured to brand orange. No video. */
+html.vrv-lock, html.vrv-lock body { overflow: hidden; }
+.vrv { --verm: #C2410C; --mari: #FEAA1C; --ink: #120D09; --e: cubic-bezier(.45, .05, .25, 1);
+  position: fixed; inset: 0; z-index: 1000; overflow: visible; background: var(--ink); color: #fff;
+  animation: vrvIn .3s ease-out both, vrvFail 0s 8s forwards; transition: transform .85s cubic-bezier(.7, 0, .2, 1), opacity .26s; }
+@keyframes vrvIn { from { opacity: 0; } }
+@keyframes vrvFail { to { visibility: hidden; pointer-events: none; } }
+
+.vrv__fin { position: absolute; inset: 0; z-index: 3; display: grid; place-content: center; justify-items: center; padding: 24px; text-align: center; clip-path: circle(0% at 50% 52%);
+  background: radial-gradient(ellipse 70% 60% at 50% 45%, #E85020 0%, #C2410C 55%, #A8380A 100%); }
+.vrv--fin .vrv__fin { animation: iris .8s cubic-bezier(.65, 0, .3, 1) forwards; }
+@keyframes iris { to { clip-path: circle(150% at 50% 52%); } }
+.vrv__ring { position: absolute; left: 50%; top: 50%; width: min(760px, 120vw); aspect-ratio: 1; transform: translate(-50%, -50%); background: url(../assets/img/patterns/mandala.svg) center / contain no-repeat; filter: brightness(0) invert(1); opacity: 0; }
+.vrv--fin .vrv__ring { animation: ring 1.4s .15s var(--e) forwards; }
+@keyframes ring { from { opacity: 0; transform: translate(-50%, -50%) scale(.86); } to { opacity: .16; transform: translate(-50%, -50%) scale(1); } }
+
+/* logo: the emblem keeps its colours (on a soft cream glow so it reads on orange), the wordmark and tagline turn white */
+.vrv__logo { position: relative; width: min(460px, 80vw); aspect-ratio: 966 / 227; opacity: 0; }
+.vrv__logo::before { content: ""; position: absolute; left: -2%; top: -14%; width: 28%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255, 244, 228, .95) 0 58%, rgba(255, 244, 228, 0) 72%); }
+.vrv__logo img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.vrv__logo .lw { filter: brightness(0) invert(1); clip-path: inset(0 0 0 24%); }
+.vrv__logo .lc { clip-path: inset(0 76% 0 0); }
+.vrv--fin .vrv__logo { animation: logo .85s .3s cubic-bezier(.2, .8, .2, 1) forwards; }
+@keyframes logo { from { opacity: 0; transform: translateY(14px) scale(.97); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+.vrv__tag { position: relative; margin: 26px 0 0; font: 400 clamp(22px, 2.2vw, 34px)/1.2 "Newsreader", Georgia, serif; letter-spacing: -.01em; color: #fff; }
+.vrv__tag span { display: inline-block; opacity: 0; }
+.vrv__tag span + span { color: #FFD48A; }
+.vrv--fin .vrv__tag span { animation: tin .6s .6s var(--e) forwards; }
+.vrv--fin .vrv__tag span + span { animation-delay: .75s; }
+.vrv__tag-hi { position: relative; margin: 10px 0 0; font: 400 clamp(16px, 1.3vw, 20px)/1.3 "Tiro Devanagari Hindi", serif; color: #FFE9C9; opacity: 0; }
+.vrv--fin .vrv__tag-hi { animation: tin .6s .9s var(--e) forwards; }
+@keyframes tin { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.vrv__bar { position: absolute; z-index: 4; left: 0; top: 0; height: 3px; width: 100%; background: #FFD48A; transform: scaleX(0); transform-origin: 0 50%; }
+.vrv--fin .vrv__bar { animation: bar 2.3s linear forwards; }
+@keyframes bar { to { transform: scaleX(1); } }
+.vrv__skip { position: absolute; z-index: 5; right: clamp(16px, 3vw, 40px); bottom: clamp(16px, 4vh, 40px); height: 40px; padding: 0 16px; border: 1px solid rgba(255, 255, 255, .55); border-radius: 4px; background: rgba(120, 40, 5, .25); color: #fff; font: 600 14px/1 "Mukta", Arial, sans-serif; cursor: pointer; transition: background-color .2s; }
+.vrv__skip:hover { background: rgba(120, 40, 5, .5); }
+.vrv__skip:focus-visible { outline: 2px solid #FFD48A; outline-offset: 3px; }
+.vrv__edge { position: absolute; left: 0; right: 0; bottom: -30px; height: 30px; background: url(../assets/img/patterns/kinari.svg) 0 0 / 40px 30px repeat-x; }
+.vrv--out { transform: translateY(calc(-100% - 30px)); }
+.vrv--out .vrv__skip { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vrv { animation: none; background: #C2410C; }
+  .vrv__fin, .vrv__fin * { clip-path: none !important; animation: none !important; opacity: 1 !important; transform: none; }
+  .vrv__ring { transform: translate(-50%, -50%) !important; opacity: .16 !important; }
+  .vrv__bar, .vrv__edge { display: none; }
+  .vrv--out { transform: none; opacity: 0; transition: opacity .4s; }
+}

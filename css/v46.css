@@ -1,0 +1,8 @@
+@import url("v45.css");
+
+/* v46: hero is a full-bleed background video; no search field, no orange card, no grid */
+.dl__bg { background: #2a1408; }
+.dl__bg video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.dl__bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(30, 12, 2, .74) 0%, rgba(30, 12, 2, .46) 48%, rgba(30, 12, 2, .16) 100%), linear-gradient(0deg, rgba(30, 12, 2, .5) 0%, transparent 38%); }
+.dl__fn { margin-top: 30px; }
+@media (max-width: 900px) { .dl__bg::after { background: linear-gradient(0deg, rgba(30, 12, 2, .78) 0%, rgba(30, 12, 2, .5) 60%, rgba(30, 12, 2, .35) 100%); } }
