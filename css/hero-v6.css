@@ -4,8 +4,7 @@
      that section too: white type, the gold of its labels (#FFD48A) for the accents, the cream of its numerals (#FFF3E1).
    - A rounded panel inset from the edges, under v7's floating nav, in which the top three of UPSC CSE 2025 follow one another
      (6.5s each, a 1s cross-fade, each portrait pushing in slowly). A warm wash from the left keeps the type legible.
-   - The topper's rank top right, on a frosted card, with a fine line drawn out to a dot; the pill (a gold "CSE 2025 results" tag,
-     the current topper's line gliding past); the headline line by line, the lead, two buttons (v7's own .bt); dots that fill
+   - The topper's rank top right, on a frosted card, with a fine line drawn out to a dot; the headline line by line, the lead, two buttons (v7's own .bt); dots that fill
      with the slide's time.
    - Under the panel, on the orange: the four points, each figure in a cream laurel that sways a little while on screen.
    Type is v7's: Newsreader (--f-title) for the headline and figures, Mukta (--f) for the rest. */
@@ -65,23 +64,8 @@
 /* ---------- the type, on the left ---------- */
 .hx__copy { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; height: 100%;
   padding: 0 clamp(24px, 4vw, 64px) 8px; box-sizing: border-box; }
-/* the pill: a gold tag, then a window the current topper's line glides through (faded at both ends), and an arrow */
-.hx__tick { display: inline-flex; align-items: center; gap: 16px; width: 490px; max-width: 100%; padding: 6px 16px 6px 6px; border-radius: 999px; box-sizing: border-box;
-  background: rgba(38, 18, 5, .72); color: #fff; text-decoration: none; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .2); transition: background-color .2s; }
-.hx__tick:hover { background: rgba(38, 18, 5, .9); }
-.hx__tick:focus-visible { outline: 2px solid var(--hx-gold); outline-offset: 3px; }
-.hx__tick-tag { display: flex; flex: none; align-items: center; height: 28px; padding: 0 14px; border-radius: 999px; background: var(--hx-gold); color: #3A1E04;
-  font: 700 15px/1 var(--f); padding-top: 2px; box-sizing: border-box; }
-.hx__tick-win { position: relative; flex: 1; min-width: 0; height: 20px; overflow: hidden;
-  -webkit-mask: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent); mask: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent); }
-.hx__tick-run { position: absolute; top: 0; left: 0; display: flex; height: 100%; align-items: center; white-space: nowrap; font: 500 15px/20px var(--f);
-  animation: hxGlide 14s linear infinite; }
-.hx__tick-run > span { padding: 2px 40px 0 0; }
-@keyframes hxGlide { to { transform: translateX(-50%); } }
-.hx__tick svg { flex: none; transition: translate .2s; }
-.hx__tick:hover svg { translate: 2px 0; }
 /* the headline: Newsreader, as the Why section's; the last line in italic cream gold */
-.hx__h { margin: 24px 0 0; font: 400 clamp(40px, 4.2vw, 60px)/1.06 var(--f-title, Georgia), serif; letter-spacing: -.02em; color: #fff; }
+.hx__h { margin: 0; font: 400 clamp(40px, 4.2vw, 60px)/1.06 var(--f-title, Georgia), serif; letter-spacing: -.02em; color: #fff; }
 .hx__line { display: block; white-space: nowrap; }
 .hx__h em { font-style: italic; color: #FFE3B0; }
 .hx__lead { max-width: 760px; margin: 24px 0 0; font: 400 17px/1.6 var(--f); color: rgba(255, 255, 255, .92); text-wrap: pretty; }
@@ -114,7 +98,7 @@
 .hx__fig { position: relative; font: 500 28px/1 var(--f-title, Georgia), serif; color: var(--hx-cream); white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
 .hx__stat-t { width: 150px; font: 400 17px/1.35 var(--f); color: rgba(255, 255, 255, .92); }
 
-/* ---------- the entrance (after the intro screen lifts): the panel settles, the pill, the headline line by line (from a small blur),
+/* ---------- the entrance (after the intro screen lifts): the panel settles, the headline line by line (from a small blur),
    the lead, the buttons, the dots and the four points rise in on their own delays (--at) ---------- */
 .hx.is-pre .hx__in, .hx.is-pre .hx__line { opacity: 0; translate: 0 24px; }
 .hx.is-pre .hx__panel.hx__in { translate: none; }
@@ -183,9 +167,6 @@ main .cover > #hero.hx + section > * { opacity: var(--cov, 1); transform: transl
 @media (max-width: 560px) {
   .hx__copy { padding: 140px 18px 80px; }
   .hx__h { font-size: 32px; }
-  .hx__tick { gap: 10px; }
-  .hx__tick-tag { padding: 2px 10px 0; font-size: 13px; }
-  .hx__tick-run { font-size: 14px; }
   .hx__btns { width: 100%; }
   .hx__btns > span, .hx__btns .bt { width: 100%; }
   .hx__btns .bt { justify-content: space-between; }
@@ -197,6 +178,6 @@ main .cover > #hero.hx + section > * { opacity: var(--cov, 1); transform: transl
 
 @media (prefers-reduced-motion: reduce) {
   .hx__slide, .hx__slide img, .hx.is-in .hx__slide.is-on img { transition: none; scale: 1; }
-  .hx__tick-run, .hx__sway, .hx__mark.is-drawn, .hx__mark.is-drawn .hx__mark-pt em { animation: none; }
+  .hx__sway, .hx__mark.is-drawn, .hx__mark.is-drawn .hx__mark-pt em { animation: none; }
   .hx__dots button[aria-current="true"] i { transform: scaleX(1); }
 }

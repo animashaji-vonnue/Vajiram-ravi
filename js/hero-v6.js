@@ -2,7 +2,7 @@
    - The slideshow: each topper stays 6.5s, then hands over with a 1s cross-fade. The active dot's fill is the clock: when it
      finishes, the next topper comes in; pausing (the keyboard-only button, or the panel scrolled off screen) pauses it.
      Choosing a dot jumps to that topper and gives it its full time.
-   - With each topper the rank card (AIR, name) is drawn in again and the pill's gliding line names them.
+   - With each topper the rank card (AIR, name) is drawn in again.
    - The entrance waits for the intro screen (js/intro.js: html.vrv-lock, then 'vr:intro-done'); the four figures under the
      panel then roll up to their values as each one rises in. The laurels sway only while the hero is on screen.
    - Reduced motion: everything in place, the first topper stays (the dots still switch), nothing pushes in or rolls. */
@@ -10,10 +10,10 @@
   const hero = document.getElementById('hero');
   if (!hero || !hero.classList.contains('hx')) return;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const SLIDE = 6500, YEAR = 2025;
+  const SLIDE = 6500;
   const slides = [...hero.querySelectorAll('.hx__slide')], dots = [...hero.querySelectorAll('.hx__dots button')];
   const mark = hero.querySelector('.hx__mark'), air = mark.querySelector('.hx__mark-air b'), name = mark.querySelector('.hx__mark-name');
-  const run = hero.querySelector('.hx__tick-run'), pauseBtn = hero.querySelector('.hx__pause');
+  const pauseBtn = hero.querySelector('.hx__pause');
   const pad = n => String(n).padStart(2, '0');
   let cur = 0, ready = false, paused = false, onScreen = true, clock = null;
 
@@ -37,9 +37,7 @@
     dots.forEach((d, k) => { if (k === cur) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current'); });
     air.textContent = pad(rank);
     name.textContent = who;
-    const line = `${who} · AIR ${rank}, UPSC CSE ${YEAR} · See all the results`;
-    run.querySelectorAll('span').forEach(sp => { sp.textContent = line; });
-    if (!reduce) { restart(mark, 'is-drawn'); run.style.animation = 'none'; void run.offsetWidth; run.style.animation = ''; }
+    if (!reduce) restart(mark, 'is-drawn');
     tick();
   };
 
