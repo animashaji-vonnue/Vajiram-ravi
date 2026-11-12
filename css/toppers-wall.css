@@ -97,7 +97,7 @@
 .gzw__lead { padding-right: 29px; }
 .gzw__by { position: relative; display: flex; align-items: flex-start; gap: 14px; }
 /* the chosen topper's photograph under the byline, set as a clipping (a white mat and a fine rule), in colour */
-.gzw__shot { margin: 18px 0 0; padding: 8px; border: 1px solid var(--gz-line); border-radius: 4px; background: #fff; box-shadow: 0 1px 0 rgba(42, 26, 18, .04); }
+.gzw__shot { max-width: 220px; margin: 18px 0 0; padding: 6px; border: 1px solid var(--gz-line); border-radius: 4px; background: #fff; box-shadow: 0 1px 0 rgba(42, 26, 18, .04); }
 .gzw__shot img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 16%; border-radius: 2px; background: #F2EEE9;
   transition: opacity .18s ease; }
 .gzw__shot.is-swapping img { opacity: 0; }
@@ -114,7 +114,6 @@
 @media (max-width: 900px) {
   .gzw__story { grid-template-columns: 1fr; }
   .gzw__lead { padding: 0 0 16px; }
-  .gzw__shot { max-width: 320px; }
   .gzw__text { padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--gz-line); }
 }
 @media (max-width: 640px) {
