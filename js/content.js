@@ -708,7 +708,7 @@
   }).join('');
   {
     const invs = $$('.inv');
-    // as the section arrives the tickets flip face-up one after another, left to right along each row: the delay comes from the
+    // as the section arrives the tickets flip round on their own axis one after another, left to right along each row: the delay comes from the
     // card's column in the current layout (four, two or one across), so every row turns over in reading order
     if (!reduce && 'IntersectionObserver' in window) {
       invs.forEach(c => c.classList.add('inv--pre'));
