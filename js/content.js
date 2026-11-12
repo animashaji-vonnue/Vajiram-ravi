@@ -299,7 +299,7 @@
       if (now - (card._cf || 0) < 900) return; card._cf = now;
       let box = $('.cft', card);
       if (!box) { box = document.createElement('span'); box.className = 'cft'; box.setAttribute('aria-hidden', 'true'); card.append(box); }
-      const w = card.offsetWidth, small = innerWidth <= 640;
+      const w = card.offsetWidth, small = false; // fixed desktop layout
       for (let k = 0; k < 30; k++) {
         const el = document.createElement('i'), kind = [0, 0, 0, 1, 2, 0, 3][k % 7];   // mostly strips, some squares and dots
         const sw = kind === 3 ? R(4.5, 6.5) : kind === 2 ? R(5, 8) : R(3.5, 6), sh = kind >= 2 ? sw * (kind === 2 ? R(.8, 1.2) : 1) : R(7, 14);
@@ -460,7 +460,7 @@
   const PGROUPS = PTABS.map(t => ({ t, items: PROGS.map((p, i) => (t === 'All' || p.tab === t) ? i : -1).filter(i => i > -1) }));
   let shelfCols = 0, active = PGROUPS[0].items;
   const renderShelves = force => {
-    const w = innerWidth, cols = w > 1180 ? 4 : w > 900 ? 3 : 2;
+    const w = 1440, cols = w > 1180 ? 4 : w > 900 ? 3 : 2; // fixed desktop layout
     if (cols === shelfCols && !force) return; shelfCols = cols;
     const n = Math.ceil(active.length / cols);
     pageG.innerHTML = Array.from({ length: n }, (_, r) => {

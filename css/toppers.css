@@ -18,9 +18,9 @@
                           url(../assets/img/photos/toppers-collage.webp) center / cover no-repeat fixed, var(--brand, #C2410C); }
 #toppers.gz::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
   background: url(../assets/img/patterns/grain.png) repeat fixed; background-size: 220px; mix-blend-mode: soft-light; opacity: .35; }
-@media (max-width: 1023px), (hover: none) {
-  #toppers.gz { background: linear-gradient(180deg, rgba(194, 65, 12, .8) 0, rgba(194, 65, 12, .88) 40vw, var(--brand, #C2410C) 75vw),
-                            url(../assets/img/photos/toppers-collage.webp) center top / auto 75vw no-repeat, var(--brand, #C2410C); }
+@media (hover: none) {
+  #toppers.gz { background: linear-gradient(180deg, rgba(194, 65, 12, .8) 0, rgba(194, 65, 12, .88) calc(40 * 14.4px), var(--brand, #C2410C) calc(75 * 14.4px)),
+                            url(../assets/img/photos/toppers-collage.webp) center top / auto calc(75 * 14.4px) no-repeat, var(--brand, #C2410C); }
   #toppers.gz::before { background-attachment: scroll; }
 }
 .gz__sheet { position: relative; padding: 40px 40px 52px; border-top: 8px solid var(--gz-orange); border-radius: 6px; background: #fff;
@@ -31,7 +31,7 @@
 .gz__ear { display: flex; flex-direction: column; gap: 2px; margin: 0; font: 600 12px/1.35 var(--gz-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--gz-mute); }
 .gz__ear--r { align-items: flex-end; }
 .gz__title { text-align: center; }
-.gz__name { margin: 0; font: 700 clamp(34px, 4.1vw, 59px)/1 var(--gz-sans); letter-spacing: -.012em; color: var(--gz-ink); }
+.gz__name { margin: 0; font: 700 clamp(34px, calc(4.1 * 14.4px), 59px)/1 var(--gz-sans); letter-spacing: -.012em; color: var(--gz-ink); }
 .gz__hin { margin: 6px 0 0; font: 400 14px/1.4 "Tiro Devanagari Hindi", var(--gz-sans); letter-spacing: .03em; color: #B85A0C; }
 .gz__tag { display: inline-block; padding: 5px 10px; border-radius: 999px; background: var(--gz-red); font: 700 12px/1 var(--gz-sans); letter-spacing: .08em; color: #fff; }
 .gz__date { display: flex; justify-content: space-between; align-items: center; gap: 8px 24px; flex-wrap: wrap; margin: 0; padding: 8px 2px;
@@ -47,9 +47,9 @@
 /* ---------- banner ---------- */
 .gz__banner { padding: 22px 0 18px; border-bottom: 1px solid var(--gz-line); text-align: center; }
 .gz__kicker { margin: 0; font: 700 13px/1.3 var(--gz-sans); letter-spacing: .16em; text-transform: uppercase; color: var(--gz-red); }
-.gz__hl { margin: 12px auto 0; max-width: none; font: 800 clamp(38px, 5.33vw, 77px)/.95 var(--gz-sans) !important; letter-spacing: -.02em !important; text-transform: uppercase; color: var(--gz-ink); text-wrap: balance; }
+.gz__hl { margin: 12px auto 0; max-width: none; font: 800 clamp(38px, calc(5.33 * 14.4px), 77px)/.95 var(--gz-sans) !important; letter-spacing: -.02em !important; text-transform: uppercase; color: var(--gz-ink); text-wrap: balance; }
 .gz__hl em { display: inline-block; font-style: normal; background: linear-gradient(100deg, #EA6119 0%, #E2481C 55%, #C8340E 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.gz__deck { max-width: 642px; margin: 16px auto 0; font: 400 clamp(17px, 1.45vw, 20.8px)/1.4 var(--gz-sans); color: var(--gz-mute); text-wrap: balance; }
+.gz__deck { max-width: 642px; margin: 16px auto 0; font: 400 clamp(17px, calc(1.45 * 14.4px), 20.8px)/1.4 var(--gz-sans); color: var(--gz-mute); text-wrap: balance; }
 
 /* ---------- lead: portrait | story ---------- */
 .gz__body { display: grid; grid-template-columns: minmax(0, .365fr) minmax(0, .635fr); padding-top: 22px; }
@@ -66,7 +66,7 @@
 .gz__cap b { font-weight: 700; color: var(--gz-ink); }
 .gz__story { padding-left: 29px; border-left: 1px solid var(--gz-line); text-align: left; }
 .gz__kicker--s { text-align: left; }
-.gz__sub { margin: 10px 0 0; max-width: 24em; font: 800 clamp(23px, 2.05vw, 29.6px)/1.12 var(--gz-sans); letter-spacing: -.01em; color: var(--gz-ink); text-wrap: balance; }
+.gz__sub { margin: 10px 0 0; max-width: 24em; font: 800 clamp(23px, calc(2.05 * 14.4px), 29.6px)/1.12 var(--gz-sans); letter-spacing: -.01em; color: var(--gz-ink); text-wrap: balance; }
 .gz__by { margin: 12px 0 0; padding: 6px 0; border-top: 1px solid var(--gz-line); border-bottom: 1px solid var(--gz-line); font: 600 11px/1.3 var(--gz-sans); letter-spacing: .16em; text-transform: uppercase; color: var(--gz-mute); }
 .gz__cols { margin-top: 14px; column-count: 2; column-gap: 29px; column-rule: 1px solid var(--gz-line); }
 .gz__cols p { margin: 0 0 12px; font: 400 15px/1.58 var(--gz-sans); color: var(--gz-ink); text-align: justify; hyphens: auto; }
@@ -140,15 +140,15 @@
 }
 
 /* ---------- responsive ---------- */
-@media (max-width: 1100px) { .gz__ten { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (max-width: 960px) {
+@media not all { .gz__ten { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media not all {
   .gz__sheet { padding: 28px 24px 40px; }
   .gz__body { grid-template-columns: 1fr; }
   .gz__fig { padding-right: 0; max-width: 460px; width: 100%; margin: 0 auto; }
   .gz__story { padding-left: 0; border-left: 0; margin-top: 24px; }
   .gz__ten { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-@media (max-width: 640px) {
+@media not all {
   .gz__sheet { padding: 22px 16px 32px; border-top-width: 6px; }
   .gz__mast { grid-template-columns: 1fr; gap: 10px; text-align: center; }
   .gz__ear { flex-direction: row; justify-content: center; gap: 12px; }
@@ -164,7 +164,7 @@
   .gz__ten { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .gz__more { flex-direction: column; align-items: flex-start; }
 }
-@media (max-width: 420px) { .gz__ten { grid-template-columns: 1fr; } }
+@media not all { .gz__ten { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) {
   #gzLead.is-swap *, .gz__mug img, .gz__nm, .gz__pick, .gz__tab, .gz__rk, .gz__mug { animation: none !important; transition: none !important; }
 }
@@ -185,7 +185,7 @@
   .gz__tab:hover { border-color: var(--brand, #C2410C); background: #fff; color: var(--brand, #C2410C); }
   .gz__tab[aria-pressed="true"]:hover { background: var(--brand, #C2410C); color: #fff; }
 }
-@media (max-width: 640px) { .gz__rollh { padding: 12px 0 10px; } .gz__rollh h3 { font-size: 17px; } }
+@media not all { .gz__rollh { padding: 12px 0 10px; } .gz__rollh h3 { font-size: 17px; } }
 
 /* "Show all" toggle: a site pill with a chevron that turns; revealed cards rise in staggered, hidden ones fade out as the list closes */
 .gz__all { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 18px 0 22px; border: 1px solid rgba(194, 65, 12, .3); font-size: 15px; }
@@ -203,21 +203,21 @@
 /* ---------- paper clip (after vajiram-ravi-homepage.vercel.app #results .np__sheet::before): a wire clip over the top edge of the front page,
    near the left. A 21 x 52px rounded loop of 2.6px dark-brown wire, open at the bottom, upright, standing 13px above the paper (the top is
    measured inside the 8px orange top border, so -21px), with a soft contact shadow. It slides into place with the masthead. ---------- */
-.gz__sheet::before { content: ""; position: absolute; z-index: 4; top: -21px; left: clamp(34px, 7vw, 88px); width: 21px; height: 52px; box-sizing: border-box;
+.gz__sheet::before { content: ""; position: absolute; z-index: 4; top: -21px; left: clamp(34px, calc(7 * 14.4px), 88px); width: 21px; height: 52px; box-sizing: border-box;
   border: 2.6px solid rgba(58, 30, 4, .46); border-bottom-color: transparent; border-radius: 11px; pointer-events: none;
   box-shadow: inset 0 0 0 4.4px transparent, 0 1px 2px rgba(58, 30, 4, .22);
   transition: opacity .5s var(--ease, ease) .15s, translate .6s var(--ease, ease) .15s; }
 .js .gz__sheet:not(:has(.gz__date.in))::before { opacity: 0; translate: 0 -8px; }
-@media (max-width: 640px) { .gz__sheet::before { top: -19px; } }   /* the top border is 6px here */
+@media not all { .gz__sheet::before { top: -19px; } }   /* the top border is 6px here */
 
 /* ---- front page in three equal columns (user 2026-11-11): portrait | story | the rank holders. The story runs as one column; the roll
    takes the lead's height and scrolls inside itself (the absolute inner box keeps it from stretching the row). Below 961px it stacks as before. ---- */
 .gz__foot .gz__more { margin-top: 18px; border-top: 1px solid var(--gz-line); }
-@media (min-width: 961px) {
+@media all {
   .gz__front { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); padding-top: 22px; }
   .gz__front .gz__body { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding-top: 0; }
   .gz__front .gz__story { padding-right: 29px; }   /* keeps the story off the roll's rule */
-  .gz__front .gz__sub { font-size: clamp(22px, 1.75vw, 26px); }
+  .gz__front .gz__sub { font-size: clamp(22px, calc(1.75 * 14.4px), 26px); }
   .gz__front .gz__cols { column-count: 1; }
   .gz__front .gz__cols p { text-align: left; hyphens: manual; text-wrap: pretty; }   /* justified type opened wide gaps in the narrow column */
   .gz__front .gz__roll { display: flex; flex-direction: column; min-height: 0; margin-top: 0; padding-left: 29px; border-left: 1px solid var(--gz-line); }
@@ -238,16 +238,16 @@
 .gz__story > .gz__sub:first-child { margin-top: 0; }
 .gz__banner > .gz__hl:first-child { margin-top: 0; }
 .gz__foot .gz__more { justify-content: flex-end; }
-@media (min-width: 961px) { .gz__scroll { margin-top: 0; } }
-@media (max-width: 640px) { .gz__foot .gz__more { align-items: stretch; } }
+@media all { .gz__scroll { margin-top: 0; } }
+@media not all { .gz__foot .gz__more { align-items: stretch; } }
 /* masthead removed (user 2026-11-11): the section opens on the exam / year line, so it drops the heavy top rule it shared with the masthead */
 .gz__sheet > .gz__date:first-child { border-top: 0; padding-top: 0; }
 /* story fills its column (user 2026-11-11): beside the portrait the story runs the portrait's full height. The body is set larger, and the
    closing line on the year (the last paragraph) sits at the foot of the column on a hairline rule, level with the bottom of the photo. */
-@media (min-width: 961px) {
+@media all {
   .gz__front .gz__story { display: flex; flex-direction: column; }
   .gz__front .gz__cols { display: flex; flex-direction: column; flex: 1; margin-top: 18px; }
-  .gz__front .gz__cols p { font-size: clamp(15px, 1.12vw, 16.5px); line-height: 1.58; margin-bottom: 12px; }
+  .gz__front .gz__cols p { font-size: clamp(15px, calc(1.12 * 14.4px), 16.5px); line-height: 1.58; margin-bottom: 12px; }
   .gz__front .gz__cols p:first-child::first-letter { font-size: 64px; margin-top: 5px; }
   .gz__front .gz__cols p:last-child:not(:first-child) { margin: auto 0 0; padding-top: 14px; border-top: 1px solid var(--gz-line); color: var(--gz-mute); }
 }
@@ -264,9 +264,9 @@
 /* seal: "AIR" and the rank on one line in the same size (user 2026-11-11) */
 .gz__seal .gz__air { display: flex; align-items: baseline; gap: 6px; margin: 4px 0 5px; }
 .gz__seal .gz__air i, .gz__seal .gz__air b { margin: 0; font: 800 32px/1 var(--gz-sans); letter-spacing: -.02em; }
-@media (max-width: 640px) { .gz__seal .gz__air i, .gz__seal .gz__air b { font-size: 24px; } .gz__seal .gz__air { gap: 4px; margin: 2px 0 3px; } }
+@media not all { .gz__seal .gz__air i, .gz__seal .gz__air b { font-size: 24px; } .gz__seal .gz__air { gap: 4px; margin: 2px 0 3px; } }
 /* the portrait runs the full height of the story beside it, so both columns end on the same line (cropped from the top, never shorter than 4:5) */
-@media (min-width: 961px) {
+@media all {
   .gz__front .gz__fig { display: flex; flex-direction: column; }
   .gz__front .gz__frame { flex: 1; aspect-ratio: auto; min-height: 0; }
   .gz__front .gz__frame::before { content: ""; display: block; aspect-ratio: 4 / 5; width: 100%; }
@@ -274,7 +274,7 @@
 }
 /* "Explore all UPSC results" centred under the front page (user 2026-11-11), with the same 28px above and below the rule */
 .gz__foot .gz__more { justify-content: center; margin-top: 28px; padding-top: 28px; }
-@media (max-width: 640px) { .gz__foot .gz__more { align-items: center; margin-top: 22px; padding-top: 22px; } }
+@media not all { .gz__foot .gz__more { align-items: center; margin-top: 22px; padding-top: 22px; } }
 
 /* lead photo: the rank holder's programmes across the foot of the picture (user 2026-11-11, "show the programmes with the image").
    A dark scrim rising from the bottom edge, a small "Prepared with" eyebrow, then one white label per programme; written by fill() in
@@ -285,7 +285,7 @@
 .gz__progs small { flex: 0 0 100%; margin-bottom: 2px; font: 700 10.5px/1.2 var(--gz-sans); letter-spacing: .14em; text-transform: uppercase; color: #FFD48A; }
 .gz__progs span { padding: 5px 10px; border-radius: 999px; background: rgba(255, 255, 255, .94); font: 600 12.5px/1.25 var(--gz-sans); color: var(--gz-ink); }
 #gzLead.is-swap .gz__progs { animation: gzIn .45s var(--ease) .1s both; }
-@media (max-width: 640px) { .gz__progs { padding: 44px 10px 10px; } .gz__progs span { font-size: 12px; padding: 4px 9px; } }
+@media not all { .gz__progs { padding: 44px 10px 10px; } .gz__progs span { font-size: 12px; padding: 4px 9px; } }
 @media (prefers-reduced-motion: reduce) { #gzLead.is-swap .gz__progs { animation: none; } }
 
 /* lead story drop cap (user 2026-11-11): black, and it now spans whole lines so the text beside it lines up. Where initial-letter is

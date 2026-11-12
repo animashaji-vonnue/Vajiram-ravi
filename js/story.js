@@ -12,7 +12,7 @@
   if (!sec) return;
   const stage = sec.querySelector('.cmp__stage'), card = sec.querySelector('.cmp__card'), track = sec.querySelector('.cmp__track');
   const panels = [...track.children], N = panels.length;
-  const wide = matchMedia('(min-width: 900px) and (min-height: 600px)'), reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const wide = matchMedia('(min-height: 600px)') /* fixed desktop layout */, reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const seg = (u, a, b) => clamp((u - a) / (b - a));
   const io = t => ((t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2) + (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)) / 2;
@@ -30,7 +30,7 @@
   const aim = () => clamp((H() - spacer.getBoundingClientRect().top) / H() * 100, 0, RUN);
 
   const draw = u => {
-    const W = document.documentElement.clientWidth, h = H();
+    const W = Math.max(1440, document.documentElement.clientWidth), h = H(); // fixed desktop layout: never narrower than 1440px
     const g = io(seg(u, 0, 168)), m = io(seg(u, 182, 280)), st = stage.style;
     st.setProperty('--g', g.toFixed(4));
     st.setProperty('--s', io(seg(u, 140, 196)).toFixed(4));

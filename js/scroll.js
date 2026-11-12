@@ -13,7 +13,7 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
   const outP = (t, p) => 1 - Math.pow(1 - t, p);
-  const desktop = () => innerWidth > 900;
+  const desktop = () => true; // fixed desktop layout
 
   let lenis = null;
   if (!reduce && window.Lenis) {
