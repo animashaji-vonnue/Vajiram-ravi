@@ -2483,37 +2483,28 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
 @media (prefers-reduced-motion: reduce) { .gsbook__brand--stamp span, .gsbook__brand--stamp::after { animation: none; } .gsbook__brand--stamp::before { display: none; } }
 
 
-/* ---- Free resources, with photographs (2026-11-12): each card's picture (assets/img/resources) in place of the line icon, set the way the
-   reference bento places its screens: anchored in the bottom right corner, tilted a little in perspective and running off the card's
-   edges, its top and left fading into the card's own colour (a two-way gradient mask), so the text keeps the top left and the picture
-   melts into the ground (white at rest, the orange of the hover). On hover the picture straightens, lifts and comes in a little closer,
-   and a soft band of light passes across it. ---- */
+/* ---- Free resources, with pictures (2026-11-12): each card's subject, cut out of its photograph (assets/img/resources/cutout, lifted
+   with macOS Vision from the user's images), stands in the bottom right corner on a soft shadow, turned a little as if set down on the
+   card; the text keeps the top left, the link right under it. On hover (with the card's orange turn) the subject straightens, lifts and
+   comes a little closer, its shadow deepening. ---- */
 #resources .sm__card--res { min-height: 360px; padding-bottom: 26px; }
-/* the link follows the text (it used to sit at the foot), so the lower part of the card is the picture's */
-#resources .sm__card--res > a.sm__act.tlink, #resources .sm__card--res .sm__stages + .sm__act { margin-top: 4px; }
+#resources .sm__card--res > a.sm__act.tlink, #resources .sm__card--res .sm__stages + .sm__act { margin-top: 4px; }   /* the link follows the text; the lower part of the card is the picture's */
 #resources .sm__card--res > :not(.sm__pic) { z-index: 2; max-width: 100%; }
-#resources .sm__card--res .sm__d { max-width: 62%; }
 #resources .sm__card--res:nth-child(1) .sm__d, #resources .sm__card--res:nth-child(6) .sm__d { max-width: 46%; }
-#resources .sm__card--res .sm__stages { max-width: 50%; }
-#resources .sm__pic { position: absolute; z-index: 1; right: -24%; bottom: -10%; width: 104%; aspect-ratio: 3 / 2; margin: 0; overflow: hidden; border-radius: 14px;
-  background: #F2EBE3; pointer-events: none; transform-origin: 100% 100%;
-  transform: perspective(1100px) rotateY(-16deg) rotateX(7deg) rotateZ(-3deg);
-  -webkit-mask: linear-gradient(90deg, transparent 0%, #000 34%), linear-gradient(180deg, transparent 0%, #000 30%); -webkit-mask-composite: source-in;
-  mask: linear-gradient(90deg, transparent 0%, #000 34%), linear-gradient(180deg, transparent 0%, #000 30%); mask-composite: intersect;
-  transition: transform .9s cubic-bezier(.22, 1, .36, 1); }
-#resources .sm__card--res:nth-child(1) .sm__pic, #resources .sm__card--res:nth-child(6) .sm__pic { right: -6%; bottom: -12%; width: 70%; }
-#resources .sm__pic img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.001); filter: saturate(.94);
-  transition: transform 1.1s cubic-bezier(.22, 1, .36, 1), filter .6s ease; }
-#resources .sm__pic::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0;
-  background: linear-gradient(110deg, transparent 35%, rgba(255, 250, 238, .4) 50%, transparent 65%) 150% 0 / 250% 100% no-repeat;
-  transition: background-position 1.2s cubic-bezier(.22, 1, .36, 1), opacity .3s ease; }
+#resources .sm__card--res:nth-child(6) .sm__stages { max-width: 50%; }
+#resources .sm__pic { position: absolute; z-index: 1; right: 5%; bottom: 5%; width: 74%; height: 50%; margin: 0; pointer-events: none;
+  transform: rotate(-4deg); transform-origin: 70% 90%; transition: transform .8s cubic-bezier(.22, 1, .36, 1); }
+#resources .sm__card--res:nth-child(1) .sm__pic, #resources .sm__card--res:nth-child(6) .sm__pic { right: 4%; bottom: 7%; width: 48%; height: 80%; }
+#resources .sm__pic img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: 100% 100%;
+  filter: drop-shadow(0 18px 20px rgba(70, 30, 8, .22)) drop-shadow(0 4px 6px rgba(70, 30, 8, .12));
+  transition: transform .9s cubic-bezier(.22, 1, .36, 1), filter .6s ease; transform-origin: 100% 100%; }
 @media (hover: hover) and (pointer: fine) {
-  #resources .sm__card--res:hover .sm__pic { transform: perspective(1100px) rotateY(-7deg) rotateX(3deg) rotateZ(-1deg) translate(-10px, -12px); }
-  #resources .sm__card--res:hover .sm__pic img { transform: scale(1.06); filter: saturate(1.08) contrast(1.03); }
-  #resources .sm__card--res:hover .sm__pic::after { opacity: 1; background-position: -50% 0; }
+  #resources .sm__card--res:hover .sm__pic { transform: rotate(0deg) translateY(-8px); }
+  #resources .sm__card--res:hover .sm__pic img { transform: scale(1.06); filter: drop-shadow(0 26px 26px rgba(60, 15, 0, .38)) drop-shadow(0 6px 8px rgba(60, 15, 0, .2)); }
 }
-@media (max-width: 1000px) { #resources .sm__card--res:nth-child(1) .sm__pic, #resources .sm__card--res:nth-child(6) .sm__pic { right: -24%; bottom: -10%; width: 104%; }
-  #resources .sm__card--res:nth-child(1) .sm__d, #resources .sm__card--res:nth-child(6) .sm__d { max-width: 62%; } }
-@media (max-width: 640px) { #resources .sm__card--res { min-height: 350px; } #resources .sm__card--res .sm__stages { max-width: 100%; } #resources .sm__card--res .sm__d, #resources .sm__card--res:nth-child(n) .sm__d { max-width: 78%; } #resources .sm__pic { width: 84%; right: -12%; bottom: -12%; }
-  #resources .sm__card--res:nth-child(1) .sm__pic, #resources .sm__card--res:nth-child(6) .sm__pic { width: 84%; right: -12%; bottom: -12%; } }
-@media (prefers-reduced-motion: reduce) { #resources .sm__pic, #resources .sm__pic img, #resources .sm__pic::after { transition: none; } }
+@media (max-width: 1000px) { #resources .sm__card--res:nth-child(1) .sm__pic, #resources .sm__card--res:nth-child(6) .sm__pic { right: 5%; bottom: 5%; width: 74%; height: 50%; }
+  #resources .sm__card--res:nth-child(1) .sm__d, #resources .sm__card--res:nth-child(6) .sm__d, #resources .sm__card--res:nth-child(6) .sm__stages { max-width: 100%; } }
+/* phones: the picture joins the card's flow under the text (order puts it last), right-aligned, so text of any length never meets it */
+@media (max-width: 640px) { #resources .sm__card--res { min-height: 0; }
+  #resources .sm__pic, #resources .sm__card--res:nth-child(n) .sm__pic { position: relative; order: 99; right: auto; bottom: auto; align-self: flex-end; width: 76%; height: 190px; margin: 14px 0 -4px auto; } }
+@media (prefers-reduced-motion: reduce) { #resources .sm__pic, #resources .sm__pic img { transition: none; } }
