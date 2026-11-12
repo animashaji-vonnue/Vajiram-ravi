@@ -1535,26 +1535,11 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 }
 .inv--ticket .inv__reg.cta:active { translate: 0 2px; box-shadow: inset 0 2px 5px rgba(120, 30, 0, .45), 0 2px 4px -2px rgba(198, 70, 19, .5); }
 @media (prefers-reduced-motion: reduce) { .inv--ticket:hover { transform: none; } }
-/* The flagship ticket, finished like polished copper: the dyed head carries bands of light and shade and a fine brushed
-   grain, the date is struck in gold, the head's inset rule turns gold; a glint of light sweeps across it every few
-   seconds. */
-.inv--flagship .ticket__head {
-  background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, .045) 0 1px, transparent 1px 3px),
-    linear-gradient(115deg, rgba(255, 226, 190, .30) 0%, rgba(255, 226, 190, 0) 20%, rgba(60, 14, 0, .22) 36%, rgba(255, 236, 214, .34) 54%, rgba(60, 14, 0, .2) 72%, rgba(255, 214, 170, .26) 92%),
-    var(--ticket); }
-.inv--flagship .ticket__head::after { border-color: rgba(255, 214, 150, .6); }
-.inv--flagship .ticket__date time b { background: linear-gradient(180deg, #fff8e6 0%, #ffe2a3 38%, #e9ad55 62%, #fff1cf 100%); -webkit-background-clip: text; background-clip: text;
-  color: transparent; filter: drop-shadow(0 1px 0 rgba(90, 24, 0, .45)); }
-.inv--flagship .ticket__date time > span, .inv--flagship .ticket__target strong { color: #ffe9c2; }
-/* the glint: a band of light over everything in the card */
+/* The flagship ticket: a glint of light sweeps across it every few seconds. */
 .inv--flagship .inv__frame::before { content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none;
   background: linear-gradient(105deg, transparent 40%, rgba(255, 222, 190, .32) 46%, rgba(255, 255, 255, .55) 50%, rgba(255, 222, 190, .32) 54%, transparent 60%) 110% 0 / 250% 100% no-repeat;
   animation: flagShine 5.5s cubic-bezier(.45, 0, .25, 1) 1.2s infinite; }
 @keyframes flagShine { 0% { background-position: 110% 0; } 32%, 100% { background-position: -10% 0; } }
-/* the button: the same copper, polished */
-.inv--ticket.inv--flagship .inv__reg.cta.cta { background: linear-gradient(115deg, rgba(255, 230, 200, .28) 0%, rgba(255, 230, 200, 0) 26%, rgba(80, 20, 0, .18) 48%, rgba(255, 236, 214, .26) 70%, rgba(80, 20, 0, .14) 100%),
-  linear-gradient(135deg, #F06A2C 0%, #E85020 45%, #C2410C 100%); }
 @media (prefers-reduced-motion: reduce) {
   .inv--flagship .inv__frame::before { animation: none; background: none; }
 }
