@@ -6,8 +6,9 @@
    - A clipping: the portrait in newsprint tones (colour on hover or focus), the name and the programmes as its caption,
      and the rank on a serrated orange seal at the top left, as the educators' years of experience are stamped
      (js/faculty-ring.js): "AIR" over the number.
-   - The reel loops on its own, slowly, and stops while the pointer or keyboard focus is on it; with too few clippings
-     to fill it it stands still, centred. Reduced motion: it stands still and scrolls sideways by hand.
+   - The reel loops on its own, slowly, and stops while the pointer is on it, when it can be dragged through. A button
+     in the strip stops and starts it; stopped, chevrons show on hover to step through it. Reduced motion: it starts
+     stopped.
    - Choosing a clipping makes it the lead story under the reel: its headline and two paragraphs, set in newspaper
      columns, as the earlier front page did.
 
@@ -67,16 +68,20 @@
   wall.innerHTML = `
     <div class="gzw__head">
       <h3 class="gzw__kick">The rank holders <span>· CSE ${YEAR}</span></h3>
+      <button type="button" class="gzw__play" aria-pressed="false"><span class="gzw__play-i" aria-hidden="true"></span><span class="gzw__play-t">Pause</span></button>
     </div>
-    <div class="gzw__reel" role="region" aria-roledescription="carousel" aria-label="CSE ${YEAR} rank holders">
-      <div class="gzw__track"></div>
+    <div class="gzw__stage" role="region" aria-roledescription="carousel" aria-label="CSE ${YEAR} rank holders">
+      <div class="gzw__reel"><div class="gzw__track"></div></div>
+      <button type="button" class="gzw__chev gzw__chev--prev" aria-label="Previous rank holders" tabindex="-1"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5"/></svg></button>
+      <button type="button" class="gzw__chev gzw__chev--next" aria-label="Next rank holders" tabindex="-1"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5"/></svg></button>
     </div>
     <p class="gzw__hint">Choose a rank holder to read their story.</p>
     <article class="gzw__story" aria-live="polite">
       <div class="gzw__by">${seal(1)}<p><b></b><span></span></p></div>
       <div class="gzw__text"><h3 class="gz__sub"></h3><div class="gz__cols"></div></div>
     </article>`;
-  const reel = wall.querySelector('.gzw__reel'), track = wall.querySelector('.gzw__track');
+  const stage = wall.querySelector('.gzw__stage'), reel = wall.querySelector('.gzw__reel'), track = wall.querySelector('.gzw__track');
+  const playBtn = wall.querySelector('.gzw__play'), [prevBtn, nextBtn] = wall.querySelectorAll('.gzw__chev');
   const story = wall.querySelector('.gzw__story');
 
   const card = (t, copy) => `<article class="gzw__card${t.rank === 1 ? ' is-first' : ''}" data-key="${t.key}"${copy ? ' aria-hidden="true"' : ''}>
@@ -112,34 +117,112 @@
     story.querySelector('.gz__cols').innerHTML = paras.map(p => `<p>${p}</p>`).join('');
   };
 
-  /* ---------- the reel ---------- */
+  /* ---------- the reel ----------
+     Its position is kept here (x, in px, the track's shift left), so the drift, a drag and the chevrons all move the
+     same strip. Two sets of clippings stand one after the other; x wraps within one set's width, so it loops without
+     a seam.
+     - It drifts while playing, except while the pointer is over it, while it is dragged, or while it is off screen.
+     - Under the pointer it can be dragged (mouse or finger); a drag is not a click on a clipping.
+     - The button in the strip stops and starts it. Stopped, hovering it shows the chevrons, which move it one
+       clipping at a time, coming to rest square on one. Reduced motion: it starts stopped. */
   const PX_PER_S = 38;   // its drift: slow, as Maven's
   const shown = list;
+  let x = 0, period = 0, step = 236, playing = !reduce, hover = false, onScreen = true, drag = null, glide = null, swallow = false, last = 0;
+  const wrap = v => (period ? ((v % period) + period) % period : 0);
+  const apply = () => { track.style.transform = `translate3d(${(-wrap(x)).toFixed(2)}px, 0, 0)`; };
+
   const fill = () => {
-    track.style.animation = 'none';
-    track.innerHTML = shown.map(t => card(t, false)).join('');
-    const one = track.scrollWidth;
-    const loop = !reduce && one > reel.clientWidth * 1.05;
-    reel.classList.toggle('is-still', !loop);
-    reel.classList.toggle('is-manual', reduce);
-    if (loop) {
-      // A second set straight after the first, so the drift loops without a seam.
-      track.insertAdjacentHTML('beforeend', shown.map(t => card(t, true)).join(''));
-      const half = track.scrollWidth / 2;
-      track.style.setProperty('--gzw-shift', `-${half}px`);
-      track.style.animation = `gzw-drift ${(half / PX_PER_S).toFixed(1)}s linear infinite`;
-    }
+    track.innerHTML = shown.map(t => card(t, false)).join('') + shown.map(t => card(t, true)).join('');
+    const cards = track.children;
+    period = cards[shown.length].offsetLeft - cards[0].offsetLeft;
+    step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : 236;
     wall.querySelectorAll('.gzw__card').forEach(c => c.classList.toggle('is-on', +c.dataset.key === current.key));
+    apply();
   };
 
+  const ease = u => 1 - Math.pow(1 - u, 3);
+  const tick = time => {
+    const dt = last ? Math.min(0.05, (time - last) / 1000) : 0;
+    last = time;
+    if (glide) {
+      const u = Math.min(1, (time - glide.t0) / glide.ms);
+      x = glide.from + (glide.to - glide.from) * ease(u);
+      if (u >= 1) glide = null;
+    } else if (playing && !hover && !drag && onScreen && !document.hidden) {
+      x += PX_PER_S * dt;
+    }
+    apply();
+    requestAnimationFrame(tick);
+  };
+
+  // Stop and start.
+  const setPlaying = on => {
+    playing = on;
+    stage.classList.toggle('is-stopped', !on);
+    playBtn.setAttribute('aria-pressed', String(!on));
+    playBtn.querySelector('.gzw__play-t').textContent = on ? 'Pause' : 'Play';
+    playBtn.setAttribute('aria-label', on ? 'Pause the rank holders' : 'Play the rank holders');
+    [prevBtn, nextBtn].forEach(b => { b.tabIndex = on ? -1 : 0; b.setAttribute('aria-hidden', String(on)); });
+  };
+  playBtn.addEventListener('click', () => setPlaying(!playing));
+
+  // The chevrons: one clipping at a time, coming to rest square on one.
+  const go = dir => {
+    const from = glide ? glide.to : x;
+    const to = Math.round(from / step) * step + dir * step;
+    glide = { from: x, to, t0: performance.now(), ms: reduce ? 1 : 520 };
+  };
+  prevBtn.addEventListener('click', () => go(-1));
+  nextBtn.addEventListener('click', () => go(1));
+  stage.addEventListener('keydown', e => {
+    if (playing) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+  });
+
+  // Hover holds it still (a mouse only: a finger's tap is not a hover).
+  stage.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') hover = true; });
+  stage.addEventListener('pointerleave', () => { hover = false; });
+
+  // Drag.
+  reel.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, from: x, moved: false };
+    glide = null;
+    swallow = false;
+  });
+  reel.addEventListener('pointermove', e => {
+    if (!drag || drag.id !== e.pointerId) return;
+    const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+    if (!drag.moved) {
+      if (Math.abs(dx) > 6 && Math.abs(dx) > Math.abs(dy)) { drag.moved = true; reel.setPointerCapture(e.pointerId); reel.classList.add('is-grabbing'); }
+      else { if (Math.abs(dy) > 10) drag = null; return; }
+    }
+    x = drag.from - dx;
+  });
+  const endDrag = () => {
+    if (!drag) return;
+    if (drag.moved) swallow = true;
+    drag = null;
+    reel.classList.remove('is-grabbing');
+  };
+  reel.addEventListener('pointerup', endDrag);
+  reel.addEventListener('pointercancel', endDrag);
+
+  // A clipping chosen (not one let go after a drag) becomes the lead story.
   track.addEventListener('click', e => {
+    if (swallow) { swallow = false; e.preventDefault(); e.stopPropagation(); return; }
     const c = e.target.closest('.gzw__card'); if (!c) return;
     tell(list[+c.dataset.key]);
     if (innerWidth < 900) story.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' });
-  });
+  }, true);
+
+  new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; }).observe(stage);
   let rz = 0;
   addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(fill, 200); });
 
+  setPlaying(playing);
+  requestAnimationFrame(tick);
   fill();
   tell(list[0]);
 })();

@@ -7,17 +7,38 @@
 .gzw__kick { margin: 0; font: 800 19px/1.2 var(--gz-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--gz-ink); }
 .gzw__kick span { color: var(--gz-red); letter-spacing: .1em; }
 
+/* The stop / play button, on the right of the strip. */
+.gzw__play { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 10px; border: 1px solid rgba(194, 65, 12, .3); border-radius: 999px; background: #fff; cursor: pointer;
+  font: 600 13px/1 var(--gz-sans); letter-spacing: .04em; color: var(--gz-ink); transition: border-color .2s, background-color .2s, color .2s; }
+.gzw__play:hover { border-color: #C2410C; }
+.gzw__play:focus-visible { outline: 2px solid var(--gz-ink); outline-offset: 2px; }
+.gzw__play-i { position: relative; display: flex; width: 22px; height: 22px; align-items: center; justify-content: center; border-radius: 50%; background: #C2410C; }
+/* Pause: two bars; play: a triangle. */
+.gzw__play-i::before, .gzw__play-i::after { content: ""; width: 3px; height: 9px; margin: 0 1.5px; border-radius: 1px; background: #fff; }
+.gzw__play[aria-pressed="true"] .gzw__play-i::before { width: 0; height: 0; margin: 0 0 0 2px; border-style: solid; border-width: 5px 0 5px 8px; border-color: transparent transparent transparent #fff; border-radius: 0; background: none; }
+.gzw__play[aria-pressed="true"] .gzw__play-i::after { display: none; }
+
 /* The reel: the clippings drift left, edge to edge of the sheet, fading out at its sides. */
-.gzw__reel { position: relative; margin: 22px -40px 0; padding: 14px 0 18px; overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-  transition: opacity .18s; }
+.gzw__stage { position: relative; margin: 22px -40px 0; }
+.gzw__reel { position: relative; padding: 14px 0 18px; overflow: hidden; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.gzw__reel.is-grabbing { cursor: grabbing; }
+.gzw__reel.is-grabbing .gzw__pick { pointer-events: none; }
 .gzw__track { display: flex; gap: 20px; width: max-content; padding: 0 40px; will-change: transform; }
-.gzw__reel:hover .gzw__track, .gzw__reel:focus-within .gzw__track { animation-play-state: paused !important; }
-.gzw__reel.is-still .gzw__track { width: auto; justify-content: center; flex-wrap: nowrap; }
-.gzw__reel.is-still { -webkit-mask-image: none; mask-image: none; }
-.gzw__reel.is-manual { overflow-x: auto; scroll-snap-type: x mandatory; }
-.gzw__reel.is-manual .gzw__card { scroll-snap-align: start; }
-@keyframes gzw-drift { to { transform: translateX(var(--gzw-shift, -50%)); } }
+.gzw__ph img { -webkit-user-drag: none; user-select: none; }
+
+/* The chevrons: shown on hover (or focus) while the reel is stopped. */
+.gzw__chev { position: absolute; top: 50%; z-index: 3; display: flex; width: 46px; height: 46px; align-items: center; justify-content: center; translate: 0 -50%;
+  border: 1px solid rgba(42, 26, 18, .2); border-radius: 50%; background: rgba(255, 255, 255, .92); color: var(--gz-ink); cursor: pointer;
+  box-shadow: 0 10px 24px -12px rgba(70, 30, 8, .5); opacity: 0; pointer-events: none;
+  transition: opacity .25s, background-color .2s, color .2s, border-color .2s, scale .15s; }
+.gzw__chev--prev { left: 52px; }
+.gzw__chev--next { right: 52px; }
+.gzw__chev svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.gzw__stage.is-stopped:hover .gzw__chev, .gzw__stage.is-stopped .gzw__chev:focus-visible { opacity: 1; pointer-events: auto; }
+.gzw__chev:hover { border-color: #C2410C; background: #C2410C; color: #fff; }
+.gzw__chev:active { scale: .95; }
+.gzw__chev:focus-visible { outline: 2px solid var(--gz-ink); outline-offset: 2px; }
 
 /* A clipping: the portrait in newsprint tones, the rank on a seal, the name and programmes as its caption. */
 .gzw__card { position: relative; flex: none; width: 216px; }
@@ -68,12 +89,15 @@
   .gzw__text { padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--gz-line); }
 }
 @media (max-width: 640px) {
-  .gzw__reel { margin-inline: -20px; }
+  .gzw__stage { margin-inline: -20px; }
   .gzw__track { padding-inline: 20px; gap: 14px; }
+  .gzw__chev--prev { left: 16px; }
+  .gzw__chev--next { right: 16px; }
+  /* No hover on a touch screen: stopped, the chevrons simply show. */
+  @media (hover: none) { .gzw__stage.is-stopped .gzw__chev { opacity: 1; pointer-events: auto; } }
   .gzw__card { width: 184px; }
   .gzw__text .gz__cols { column-count: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gzw__track { animation: none !important; }
   .gzw__pick, .gzw__ph img { transition: none; }
 }
