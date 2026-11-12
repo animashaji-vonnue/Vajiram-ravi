@@ -1,15 +1,13 @@
 /* The CSE 2025 rank holders, after the team section on maven.com ("Learn from the best in the industry"), set in this
    page's newspaper layout: under the masthead, the headline and the deck (unchanged), a section strip ("The rank
-   holders · CSE 2025") with tabs for the programmes they prepared with, then a reel of the rank holders as newspaper
+   holders · CSE 2025"), then a reel of all the rank holders as newspaper
    photo clippings drifting slowly left (Maven's carousel), and under it the lead story.
 
    - A clipping: the portrait in newsprint tones (colour on hover or focus), the name and the programmes as its caption,
      and the rank on a serrated orange seal at the top left, as the educators' years of experience are stamped
      (js/faculty-ring.js): "AIR" over the number.
    - The reel loops on its own, slowly, and stops while the pointer or keyboard focus is on it; with too few clippings
-     to fill it (a narrow tab) it stands still, centred. Reduced motion: it stands still and scrolls sideways by hand.
-   - A tab (All, Interview Guidance, Test series, General Studies, Optional, each with its count) shows just the rank
-     holders who prepared with that kind of programme.
+     to fill it it stands still, centred. Reduced motion: it stands still and scrolls sideways by hand.
    - Choosing a clipping makes it the lead story under the reel: its headline and two paragraphs, set in newspaper
      columns, as the earlier front page did.
 
@@ -40,14 +38,6 @@
     const progs = splitProgs(t.programmes || extra[YEAR + '-' + t.rank]).map(name => ({ name, cat: catOf(name) }));
     return { key: i, rank: t.rank, name: tidyName(t.name), img: t.photo || t.img, progs, cats: [...new Set(progs.map(p => p.cat))] };
   });
-  const TABS = [
-    { cat: 'all', label: 'All' },
-    { cat: 'igp', label: 'Interview Guidance' },
-    { cat: 'test', label: 'Test series' },
-    { cat: 'gs', label: 'General Studies' },
-    { cat: 'opt', label: 'Optional' },
-  ].map(t => ({ ...t, n: t.cat === 'all' ? list.length : list.filter(x => x.cats.includes(t.cat)).length })).filter(t => t.n);
-
   /* ---------- words, for the lead story ---------- */
   const ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
   const words = n => (n <= 10 ? ONES[n] : String(n));
@@ -77,9 +67,6 @@
   wall.innerHTML = `
     <div class="gzw__head">
       <h3 class="gzw__kick">The rank holders <span>· CSE ${YEAR}</span></h3>
-      <div class="gzw__tabs" role="group" aria-label="Show the rank holders by the programme they prepared with">
-        ${TABS.map((t, i) => `<button type="button" class="gzw__tab" data-cat="${t.cat}" aria-pressed="${!i}">${t.label}<small>${t.n}</small></button>`).join('')}
-      </div>
     </div>
     <div class="gzw__reel" role="region" aria-roledescription="carousel" aria-label="CSE ${YEAR} rank holders">
       <div class="gzw__track"></div>
@@ -90,7 +77,6 @@
       <div class="gzw__text"><h3 class="gz__sub"></h3><div class="gz__cols"></div></div>
     </article>`;
   const reel = wall.querySelector('.gzw__reel'), track = wall.querySelector('.gzw__track');
-  const tabs = [...wall.querySelectorAll('.gzw__tab')];
   const story = wall.querySelector('.gzw__story');
 
   const card = (t, copy) => `<article class="gzw__card${t.rank === 1 ? ' is-first' : ''}" data-key="${t.key}"${copy ? ' aria-hidden="true"' : ''}>
@@ -128,7 +114,7 @@
 
   /* ---------- the reel ---------- */
   const PX_PER_S = 38;   // its drift: slow, as Maven's
-  let shown = list;
+  const shown = list;
   const fill = () => {
     track.style.animation = 'none';
     track.innerHTML = shown.map(t => card(t, false)).join('');
@@ -146,14 +132,6 @@
     wall.querySelectorAll('.gzw__card').forEach(c => c.classList.toggle('is-on', +c.dataset.key === current.key));
   };
 
-  tabs.forEach(b => b.addEventListener('click', () => {
-    if (b.getAttribute('aria-pressed') === 'true') return;
-    tabs.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-    const cat = b.dataset.cat;
-    shown = cat === 'all' ? list : list.filter(t => t.cats.includes(cat));
-    reel.classList.add('is-swapping');
-    setTimeout(() => { fill(); reel.classList.remove('is-swapping'); }, reduce ? 0 : 180);
-  }));
   track.addEventListener('click', e => {
     const c = e.target.closest('.gzw__card'); if (!c) return;
     tell(list[+c.dataset.key]);
