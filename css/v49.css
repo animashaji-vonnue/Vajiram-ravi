@@ -2453,3 +2453,10 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
 /* Contact card: the rows sit on the card's own 40px padding on both sides (the left had 4px of an unused accent border + 18px row padding,
    so the text started 62px in against 40px on the right). The hover tint is unchanged. */
 #visit .cm__list .cm__item { padding-left: 0; border-left: 0; }
+
+/* the GS book's cover carries the Vajiram & Ravi emblem in place of the name line (the emblem's banner reads the name), set like a
+   crest: its own colours, in a fine gold ring with a soft shadow, so it sits with the cover's gold rules */
+.gsbook__brand--logo { display: grid; place-items: center; width: 58px; height: 58px; margin: 0 auto 2px; padding: 4px; box-sizing: border-box; border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(246, 199, 122, .75), 0 0 0 4px rgba(246, 199, 122, .12), 0 6px 14px -6px rgba(40, 10, 0, .6); letter-spacing: 0; }
+.gsbook__brand--logo img { display: block; width: 100%; height: auto; }
+.gsbook--p .gsbook__brand--logo { width: 46px; height: 46px; padding: 3px; }
