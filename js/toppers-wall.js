@@ -90,7 +90,7 @@
       <p class="gzw__hint">Choose a rank holder to read their story.</p>
     </div>
     <article class="gzw__story" aria-live="polite">
-      <div class="gzw__by">${seal(1)}<p><b></b><span></span></p></div>
+      <div class="gzw__lead"><div class="gzw__by">${seal(1)}<p><b></b><span></span></p></div><figure class="gzw__shot"><img alt="" decoding="async"></figure></div>
       <div class="gzw__text"><h3 class="gz__sub"></h3><div class="gz__cols"></div></div>
     </article>`;
   const stage = wall.querySelector('.gzw__stage'), reel = wall.querySelector('.gzw__reel'), track = wall.querySelector('.gzw__track');
@@ -114,6 +114,13 @@
     story.querySelector('.gzw__seal').outerHTML = seal(t.rank);
     story.querySelector('.gzw__by p b').textContent = t.name;
     story.querySelector('.gzw__by p span').textContent = n ? `Prepared with ${t.progs.map(p => p.name).join(', ')}` : `CSE ${YEAR}`;
+    // the topper's photograph under the byline, faded across when the choice changes
+    const shot = story.querySelector('.gzw__shot'), img = shot.querySelector('img');
+    if (img.getAttribute('src') !== t.img) {
+      shot.classList.add('is-swapping');
+      const swap = () => { img.src = t.img; img.alt = `${t.name}, All India Rank ${t.rank}, UPSC CSE ${YEAR}`; img.decode ? img.decode().catch(() => {}).then(() => shot.classList.remove('is-swapping')) : shot.classList.remove('is-swapping'); };
+      img.getAttribute('src') ? setTimeout(swap, 180) : swap();
+    }
     story.querySelector('.gz__sub').innerHTML = first && stats.igp10 > 1
       ? `${esc(t.name)} heads the list; ${words(stats.igp10)} of the top ten were associated with the Interview Guidance Programme`
       : first ? `${esc(t.name)} heads the list in the Civil Services Examination ${YEAR}`
