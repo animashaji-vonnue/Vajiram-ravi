@@ -403,7 +403,7 @@
   // All / IGP / General Studies / Optional / Module Courses / Test Series, twelve programmes, each in one tab.
   // cat: the catalogue category its "View courses" opens; without one the button enquires with the programme pre-selected.
   // c: cloth colour (.gsbook--k0..k11), so no two neighbours match
-  const PTABS = ['All', 'IGP', 'General Studies', 'Optional', 'Module Courses', 'Test Series'];
+  const PTABS = window.__ptabs = ['All', 'IGP', 'General Studies', 'Optional', 'Module Courses', 'Test Series'];
   // a small illustration for each programme book, in the slot the description used to fill (same order as PROGS): gold line work with soft fills and an accent, inside a dotted medallion
   const PICON = [
     '<path class="f" d="M32 22c-4-3-10-4-16-3v22c6-1 12 0 16 3 4-3 10-4 16-3V19c-6-1-12 0-16 3Z"/><path d="M32 22v22"/><path d="M20 26c3 0 6 .6 9 2M20 31c3 0 6 .6 9 2M20 36c3 0 6 .6 9 2M44 26c-3 0-6 .6-9 2M44 31c-3 0-6 .6-9 2"/><path class="f" d="M40 19v9l3-2 3 2v-9"/><path d="M26 15l-2-3M38 15l2-3"/><circle class="a" cx="32" cy="13" r="1.6"/>',
@@ -419,7 +419,7 @@
     '<path d="M20 12h24M20 52h24"/><path class="f" d="M22 12c0 12 10 14 10 20s-10 8-10 20h20c0-12-10-14-10-20s10-8 10-20Z"/><path class="a" d="M27 47h10l-5-6Z"/><circle class="a" cx="32" cy="20" r="1.3"/>',
     '<path d="M32 52V37"/><path class="f" d="M32 10 20 28h6l-8 12h28l-8-12h6L32 10Z"/><path d="M14 52h36"/><circle class="a" cx="49" cy="15" r="3"/>'
   ];
-  const PROGS = [
+  const PROGS = window.__progs = [
     { t: 'General Studies PCM', tab: 'General Studies', sp: 'GS PCM', c: 0, prog: 'General Studies Prelims cum Mains 2027 (1 year)', d: 'The whole General Studies syllabus for Prelims and Mains, in one year, for graduates.' },
     { t: 'GS PCM – 2 Year Fledgling', tab: 'General Studies', sp: 'Fledgling', c: 5, prog: 'GS PCM 2-Year Fledgling 2028', d: 'The General Studies programme spread over two years, for college students.' },
     { t: 'GS Mains Crash Course', tab: 'General Studies', sp: 'GS Mains Crash', c: 4, prog: 'GS Mains Crash Course', d: 'A short, intensive run through General Studies for the Mains papers.' },
@@ -505,6 +505,7 @@
     tbtns.forEach(b => { const on = +b.dataset.g === k; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; });
     placeInd(reduce);
     const sel = tbtns[k]; tbar.scrollTo({ left: sel.offsetLeft - (tbar.clientWidth - sel.offsetWidth) / 2, behavior: reduce ? 'auto' : 'smooth' });
+    if (window.__progShelf) { window.__progShelf(PGROUPS[k].t); return; }   // version 6's shelf (js/programme-shelf.js) takes the tab from here
     active = PGROUPS[k].items;
     if (reduce) { renderShelves(true); return; }
     const me = ++swapId; clearTimeout(swapT);
@@ -604,7 +605,7 @@
       if (s.hover) kick(g);
     });
   }
-  let rzS; addEventListener('resize', () => { clearTimeout(rzS); rzS = setTimeout(() => { renderShelves(); setSp(); }, 150); });
+  let rzS; addEventListener('resize', () => { if (window.__progShelf) return; clearTimeout(rzS); rzS = setTimeout(() => { renderShelves(); setSp(); }, 150); });
   addEventListener('load', setSp); if (document.fonts && document.fonts.ready) document.fonts.ready.then(setSp);
   // a book without a course list: clicking it does what its "Enquire now" link does
   pageG.addEventListener('click', e => { const bk = e.target.closest('[data-book-prog]'); if (bk) bk.closest('.pbk').querySelector('[data-prog]').click(); });
