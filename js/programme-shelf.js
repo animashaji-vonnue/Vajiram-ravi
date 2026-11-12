@@ -29,21 +29,21 @@
   const zoom = () => (window.__z ? window.__z() : 1);
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
-  /* ---- The programmes: this page's twelve, each given a cloth cover in version 6's bookbinding colours, an
-     emblem and a pressed motif. ---- */
+  /* ---- The programmes: this page's twelve, each given its own cloth cover: a bookbinding colour (after version 6's),
+     an emblem and a pressed motif, no two alike. ---- */
   const COVERS = [
     { light: '#d9581c', base: '#c2410c', deep: '#8f3010', emblem: 'books', art: 'bars' },      // General Studies PCM
-    { light: '#4f7d5a', base: '#3b6345', deep: '#26422d', emblem: 'sprout', art: 'arcs' },     // GS PCM, 2-year Fledgling
-    { light: '#b8673a', base: '#9b5029', deep: '#6e3519', emblem: 'bolt', art: 'lines' },      // GS Mains crash course
+    { light: '#4f7d5a', base: '#3b6345', deep: '#26422d', emblem: 'sprout', art: 'steps' },    // GS PCM, 2-year Fledgling
+    { light: '#b8673a', base: '#9b5029', deep: '#6e3519', emblem: 'bolt', art: 'chevrons' },   // GS Mains crash course
     { light: '#c0362c', base: '#a3231c', deep: '#701510', emblem: 'quill', art: 'circles' },   // Optional subjects
     { light: '#2e6a80', base: '#1f4a5f', deep: '#14323f', emblem: 'abacus', art: 'grid' },     // CSAT
     { light: '#5e5f63', base: '#4a4b4e', deep: '#303133', emblem: 'mic', art: 'arches' },      // Interview guidance
     { light: '#7a3556', base: '#5e2742', deep: '#3f192c', emblem: 'target', art: 'target' },   // Prelims test series
-    { light: '#b88a2e', base: '#9a7020', deep: '#6b4c12', emblem: 'compass', art: 'arcs' },    // Mentorship
+    { light: '#b88a2e', base: '#9a7020', deep: '#6b4c12', emblem: 'compass', art: 'orbit' },   // Mentorship
     { light: '#4b5d8a', base: '#3a4a72', deep: '#26314f', emblem: 'blocks', art: 'quarters' }, // Module courses
     { light: '#a3545c', base: '#873f48', deep: '#5e2a31', emblem: 'pen', art: 'lines' },       // Mains test series
-    { light: '#336650', base: '#264f3e', deep: '#18352a', emblem: 'hourglass', art: 'bars' },  // Optional crash course
-    { light: '#5d6b34', base: '#485428', deep: '#2f3819', emblem: 'tree', art: 'quarters' },   // IFoS
+    { light: '#336650', base: '#264f3e', deep: '#18352a', emblem: 'hourglass', art: 'diamonds' },  // Optional crash course
+    { light: '#5d6b34', base: '#485428', deep: '#2f3819', emblem: 'tree', art: 'triangles' }, // IFoS
   ];
   const PROGS = window.__progs.map((p, i) => ({ name: p.t, category: p.tab, line: p.d, prog: p.prog, cover: COVERS[i % COVERS.length] }));
 
@@ -141,6 +141,12 @@
       lines: [m('sx', { x: 30, y: 44, width: 34, height: 8, rx: 2.5, fill: accent }), ...[[57, 22], [70, 44], [83, 20]].map(([y, w], i) => m('sx', { x: 30, y, width: w, height: 8, rx: 2.5, fill: soft, opacity: .75, style: `transition-delay:${(i + 1) * 60}ms` }))],
       target: [m('s108', { tag: 'circle', cx: 58, cy: 76, r: 34, fill: soft, opacity: .35 }), m('s112', { tag: 'circle', cx: 58, cy: 76, r: 23, fill: soft, opacity: .5, style: 'transition-delay:60ms' }), m('s116', { tag: 'circle', cx: 58, cy: 76, r: 13, fill: soft, opacity: .7, style: 'transition-delay:120ms' }), m('s13', { tag: 'circle', cx: 58, cy: 76, r: 6, fill: accent })],
       quarters: [m('u6', { tag: 'path', d: 'M30 104 V92 A26 26 0 0 1 56 66 V104 Z', fill: soft, opacity: .6 }), m('u10', { tag: 'path', d: 'M80 104 V90 A24 24 0 0 1 104 66 V104 Z', fill: soft, opacity: .75 }), m('dl', { tag: 'circle', cx: 76, cy: 46, r: 3.5, fill: accent })],
+      // Five more, so no two covers share a motif: rising steps, chevrons, an orbit, diamonds and pines.
+      steps: [m('u6', { x: 38, y: 82, width: 20, height: 26, rx: 3, fill: soft, opacity: .45 }), m('u10', { x: 61, y: 66, width: 20, height: 42, rx: 3, fill: soft, opacity: .65, style: 'transition-delay:60ms' }), m('u14', { x: 84, y: 50, width: 20, height: 58, rx: 3, fill: accent, style: 'transition-delay:120ms' })],
+      chevrons: [0, 1, 2].map(k => m('r14', { tag: 'path', d: `M${36 + k * 20} 62 l16 16 -16 16 h9 l16 -16 -16 -16 Z`, fill: k === 2 ? accent : soft, opacity: k === 2 ? 1 : .45 + k * .2, style: `transition-delay:${k * 60}ms` })),
+      orbit: [m('s110', { tag: 'circle', cx: 70, cy: 80, r: 26, fill: 'none', stroke: soft, 'stroke-width': 5, opacity: .6 }), m('s116', { tag: 'circle', cx: 70, cy: 80, r: 12, fill: soft, opacity: .55 }), m('or', { tag: 'circle', cx: 46, cy: 62, r: 6, fill: accent })],
+      diamonds: [m('rot', { tag: 'path', d: 'M58 54 76 72 58 90 40 72 Z', fill: soft, opacity: .55 }), m('rot', { tag: 'path', d: 'M84 70 98 84 84 98 70 84 Z', fill: soft, opacity: .75, style: 'transition-delay:60ms' }), m('rot-c', { tag: 'path', d: 'M86 44 94 52 86 60 78 52 Z', fill: accent, style: 'transition-delay:120ms' })],
+      triangles: [m('u6', { tag: 'path', d: 'M36 108 56 64 76 108 Z', fill: soft, opacity: .5 }), m('u10', { tag: 'path', d: 'M64 108 84 70 104 108 Z', fill: soft, opacity: .72, style: 'transition-delay:60ms' }), m('s16', { tag: 'path', d: 'M56 52 61 42 66 52 Z', fill: accent })],
     };
     return `<svg class="ps-geo" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${(parts[kind] || parts.bars).join('')}</svg>`;
   };

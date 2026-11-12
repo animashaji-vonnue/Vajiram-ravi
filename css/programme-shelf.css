@@ -59,6 +59,9 @@
 .ps-book:hover .ps-geo [data-m="ul"] { translate: -10px -8px; }
 .ps-book:hover .ps-geo [data-m="ur"] { translate: 6px -10px; }
 .ps-book:hover .ps-geo [data-m="dl"] { translate: -12px 6px; }
+.ps-book:hover .ps-geo [data-m="u14"] { translate: 0 -14px; }
+.ps-book:hover .ps-geo [data-m="r14"] { translate: 14px 0; }
+.ps-book:hover .ps-geo [data-m="or"] { translate: 26px 30px; }
 .ps-book:hover .ps-geo [data-m="s108"] { scale: 1.08; }
 .ps-book:hover .ps-geo [data-m="s110"] { scale: 1.1; }
 .ps-book:hover .ps-geo [data-m="s112"] { scale: 1.12; }
