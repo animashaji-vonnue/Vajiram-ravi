@@ -708,10 +708,13 @@
   }).join('');
   {
     const invs = $$('.inv');
-    // the tickets are laid down one after another as the section arrives
+    // as the section arrives the tickets flip face-up one after another, left to right along each row: the delay comes from the
+    // card's column in the current layout (four, two or one across), so every row turns over in reading order
     if (!reduce && 'IntersectionObserver' in window) {
       invs.forEach(c => c.classList.add('inv--pre'));
-      const io = new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { const c = e.target; c.classList.add('in'); o.unobserve(c); setTimeout(() => c.classList.remove('inv--pre', 'in'), 1500 + (+c.style.getPropertyValue('--i') || 0) * 110); } }), { threshold: .2 });   // the entrance classes drop away afterwards so they never touch the hover
+      const STEP = 140;
+      const column = c => invs.filter(x => x.offsetTop === c.offsetTop && x.offsetLeft < c.offsetLeft).length;
+      const io = new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { const c = e.target, d = column(c) * STEP; c.style.setProperty('--d', d + 'ms'); c.classList.add('in'); o.unobserve(c); setTimeout(() => c.classList.remove('inv--pre', 'in'), 1300 + d); } }), { threshold: .2 });   // the entrance classes drop away afterwards so they never touch the hover
       invs.forEach(c => io.observe(c));
     }
     // on hover the ticket tilts toward the pointer like a card in the hand: a light glare and a shadow that move with it

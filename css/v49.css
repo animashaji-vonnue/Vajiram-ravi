@@ -1508,6 +1508,11 @@ footer.foot { padding-left: 76px; padding-right: 76px; }
 /* batch tickets: smooth hover (the entrance transition no longer replaces the hover's, and the delay only applies to the entrance) and the button label centred */
 .inv--ticket { will-change: translate; transition: translate .45s cubic-bezier(.22, 1, .36, 1); }
 .inv--ticket.inv--pre.in { transition: opacity .7s var(--ease) calc(var(--i) * 110ms), transform .9s var(--ease) calc(var(--i) * 110ms), translate .45s cubic-bezier(.22, 1, .36, 1) 0s; }
+/* the entrance is a flip: each ticket swings face-up on its left edge, from edge-on to flat, a beat after the one to its left
+   (--d, set from its column in js/content.js) */
+.inv--ticket.inv--pre { opacity: 0; transform: perspective(1400px) rotateY(-88deg); transform-origin: 0 50%; }
+.inv--ticket.inv--pre.in { opacity: 1; transform: perspective(1400px) rotateY(0deg);
+  transition: opacity .35s ease var(--d, 0ms), transform 1s cubic-bezier(.2, .85, .25, 1.06) var(--d, 0ms), translate .45s cubic-bezier(.22, 1, .36, 1) 0s; }
 .inv--ticket .inv__reg.cta { display: grid; grid-template-columns: 38px minmax(0, 1fr) 38px; align-items: center; gap: 0; padding: 0 5px; }
 .inv--ticket .inv__reg.cta .btn__label { grid-column: 2; justify-self: center; text-align: center; }
 .inv--ticket .inv__reg.cta .sq { grid-column: 3; grid-row: 1; justify-self: end; }
