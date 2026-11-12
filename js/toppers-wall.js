@@ -63,9 +63,11 @@
   const seal = rank => `<span class="gzw__seal" aria-hidden="true"><svg viewBox="0 0 58 58" width="58" height="58"><path d="${SEAL_EDGE}"/><circle cx="29" cy="29" r="22.5"/></svg><span><small>AIR</small><b>${rank}</b></span></span>`;
 
   /* ---------- which rank holders the reel shows (the dropdown in the strip) ---------- */
+  // Named by rank, not by count: the 36 rank holders hold ranks from AIR 1 to AIR 48, with gaps.
+  const topRank = Math.max(...list.map(t => t.rank));
   const RANGES = [
-    { label: `All ${list.length} rank holders`, test: () => true },
-    { label: 'Ranks 1–10', test: t => t.rank <= 10 },
+    { label: `All ranks · AIR 1–${topRank}`, test: () => true },
+    { label: 'Top 10 · AIR 1–10', test: t => t.rank <= 10 },
   ];
 
   /* ---------- build ---------- */
@@ -79,8 +81,8 @@
     </div>
     <div class="gzw__stage" role="region" aria-roledescription="carousel" aria-label="CSE ${YEAR} rank holders">
       <div class="gzw__reel"><div class="gzw__track"></div></div>
-      <button type="button" class="gzw__chev gzw__chev--prev" aria-label="Previous rank holders" tabindex="-1"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5"/></svg></button>
-      <button type="button" class="gzw__chev gzw__chev--next" aria-label="Next rank holders" tabindex="-1"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5"/></svg></button>
+      <button type="button" class="gzw__chev gzw__chev--prev" aria-label="Previous rank holders" tabindex="-1"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M16 10H4m5-5-5 5 5 5"/></svg></button>
+      <button type="button" class="gzw__chev gzw__chev--next" aria-label="Next rank holders" tabindex="-1"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5"/></svg></button>
     </div>
     <div class="gzw__ctl">
       <button type="button" class="gzw__play" aria-pressed="false" aria-label="Pause the rank holders"><span class="gzw__play-i" aria-hidden="true"></span></button>

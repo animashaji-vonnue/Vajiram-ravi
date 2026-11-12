@@ -7,26 +7,32 @@
 .gzw__kick { margin: 0; font: 800 19px/1.2 var(--gz-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--gz-ink); }
 .gzw__kick span { color: var(--gz-red); letter-spacing: .1em; }
 
-/* The dropdown on the right of the strip: which rank holders the reel shows. */
-.gzw__range { position: relative; display: inline-flex; }
-.gzw__range::after { content: ""; position: absolute; top: 50%; right: 14px; width: 7px; height: 7px; margin-top: -5px; border-right: 1.6px solid #C2410C; border-bottom: 1.6px solid #C2410C;
+/* The dropdown on the right of the strip: which rank holders the reel shows. In the programme tabs' style (#ptabs):
+   a cream bar with 14px corners and 4px inside, the choice shown as its selected chip (burnt orange, 10px corners,
+   white Mukta 600 15px). */
+.gzw__range { position: relative; display: inline-flex; padding: 4px; border-radius: 14px; background: #f9f0e4; }
+.gzw__range::after { content: ""; position: absolute; top: 50%; right: 18px; width: 7px; height: 7px; margin-top: -5px; border-right: 1.6px solid #fff; border-bottom: 1.6px solid #fff;
   rotate: 45deg; pointer-events: none; }
-.gzw__range select { height: 38px; padding: 0 38px 0 16px; border: 1px solid rgba(194, 65, 12, .3); border-radius: 999px; background: #fff; cursor: pointer;
-  font: 600 14px/1 var(--gz-sans); color: var(--gz-ink); -webkit-appearance: none; appearance: none; transition: border-color .2s; }
-.gzw__range select:hover { border-color: #C2410C; }
+.gzw__range select { height: 40px; padding: 0 38px 0 14px; border: 0; border-radius: 10px; background: #C2410C; cursor: pointer;
+  font: 600 15px/1 "Mukta", var(--gz-sans); color: #fff; -webkit-appearance: none; appearance: none; transition: background-color .2s; }
+.gzw__range select:hover { background: #a93a0b; }
 .gzw__range select:focus-visible { outline: 2px solid var(--gz-ink); outline-offset: 2px; }
+.gzw__range option { background: #fff; color: #1e1a17; }
 
-/* Under the reel: the round stop / play button over the hint. */
+/* Under the reel: the round stop / play button over the hint, in the educator carousel's arrow style (.fr__btn):
+   48px, frosted cream, a fine ink rule, the icon in ink; hover fills it ink and turns the icon cream. */
 .gzw__ctl { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.gzw__play { display: flex; width: 40px; height: 40px; align-items: center; justify-content: center; padding: 0; border: 1px solid rgba(194, 65, 12, .3); border-radius: 50%; background: #fff;
-  cursor: pointer; box-shadow: 0 8px 18px -12px rgba(70, 30, 8, .45); transition: border-color .2s, background-color .2s, scale .15s; }
-.gzw__play:hover { border-color: #C2410C; }
-.gzw__play:active { scale: .94; }
-.gzw__play:focus-visible { outline: 2px solid var(--gz-ink); outline-offset: 2px; }
-.gzw__play-i { display: flex; width: 26px; height: 26px; align-items: center; justify-content: center; border-radius: 50%; background: #C2410C; }
-/* Pause: two bars; play: a triangle. */
-.gzw__play-i::before, .gzw__play-i::after { content: ""; width: 3px; height: 10px; margin: 0 1.5px; border-radius: 1px; background: #fff; }
-.gzw__play[aria-pressed="true"] .gzw__play-i::before { width: 0; height: 0; margin: 0 0 0 3px; border-style: solid; border-width: 5.5px 0 5.5px 9px; border-color: transparent transparent transparent #fff; border-radius: 0; background: none; }
+.gzw__play, .gzw__chev { display: flex; width: 48px; height: 48px; align-items: center; justify-content: center; padding: 0; border: 1px solid rgb(42 26 18 / .25); border-radius: 50%;
+  background: rgb(255 248 236 / .7); color: #2a1a12; cursor: pointer; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  transition: background-color .2s cubic-bezier(.22, 1, .36, 1), color .2s cubic-bezier(.22, 1, .36, 1), border-color .2s cubic-bezier(.22, 1, .36, 1), opacity .25s, scale 80ms cubic-bezier(.22, 1, .36, 1); }
+.gzw__play:hover, .gzw__chev:hover { border-color: #2a1a12; background: #2a1a12; color: #fff8ec; }
+.gzw__play:active, .gzw__chev:active { scale: .96; }
+.gzw__play:focus-visible, .gzw__chev:focus-visible { outline: 2px solid #cc5500; outline-offset: 3px; }
+/* Pause: two bars; play: a triangle; both in the icon's colour. */
+.gzw__play-i { display: flex; width: 20px; height: 20px; align-items: center; justify-content: center; }
+.gzw__play-i::before, .gzw__play-i::after { content: ""; width: 3px; height: 12px; margin: 0 2px; border-radius: 1px; background: currentColor; }
+.gzw__play[aria-pressed="true"] .gzw__play-i::before { width: 0; height: 0; margin: 0 0 0 3px; border-style: solid; border-width: 6.5px 0 6.5px 11px;
+  border-color: transparent transparent transparent currentColor; border-radius: 0; background: none; }
 .gzw__play[aria-pressed="true"] .gzw__play-i::after { display: none; }
 
 /* The reel: the clippings drift left, edge to edge of the sheet, fading out at its sides. */
@@ -40,18 +46,13 @@
 .gzw__track { display: flex; gap: 20px; width: max-content; padding: 0 40px; will-change: transform; }
 .gzw__ph img { -webkit-user-drag: none; user-select: none; }
 
-/* The chevrons: shown on hover (or focus) while the reel is stopped. */
-.gzw__chev { position: absolute; top: 50%; z-index: 3; display: flex; width: 46px; height: 46px; align-items: center; justify-content: center; translate: 0 -50%;
-  border: 1px solid rgba(42, 26, 18, .2); border-radius: 50%; background: rgba(255, 255, 255, .92); color: var(--gz-ink); cursor: pointer;
-  box-shadow: 0 10px 24px -12px rgba(70, 30, 8, .5); opacity: 0; pointer-events: none;
-  transition: opacity .25s, background-color .2s, color .2s, border-color .2s, scale .15s; }
+/* The chevrons (the arrows' look is shared with the play button above): shown on hover (or focus) while the reel is
+   stopped, level with the clippings. */
+.gzw__chev { position: absolute; top: 50%; z-index: 3; translate: 0 -50%; opacity: 0; pointer-events: none; }
 .gzw__chev--prev { left: 52px; }
 .gzw__chev--next { right: 52px; }
-.gzw__chev svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.gzw__chev svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .gzw__stage.is-stopped:hover .gzw__chev, .gzw__stage.is-stopped .gzw__chev:focus-visible { opacity: 1; pointer-events: auto; }
-.gzw__chev:hover { border-color: #C2410C; background: #C2410C; color: #fff; }
-.gzw__chev:active { scale: .95; }
-.gzw__chev:focus-visible { outline: 2px solid var(--gz-ink); outline-offset: 2px; }
 
 /* A clipping: the portrait in newsprint tones, the rank on a seal, the name and programmes as its caption. */
 .gzw__card { position: relative; flex: none; width: 216px; }
