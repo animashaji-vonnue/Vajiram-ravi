@@ -65,11 +65,11 @@
   /* ---------- which rank holders the reel shows (the dropdown in the strip) ---------- */
   // Named by rank, not by count (the 36 rank holders hold ranks up to AIR 48, with gaps).
   const RANGES = [
-    { label: 'Rank : 1 - 10', test: t => t.rank <= 10 },
     { label: 'Rank : 1 - 15', test: t => t.rank <= 15 },
+    { label: 'Rank : 1 - 30', test: t => t.rank <= 30 },
     { label: 'Rank : All', test: () => true },
   ];
-  const DEFAULT_RANGE = 1; // the reel opens on ranks 1 to 15
+  const DEFAULT_RANGE = 0; // the reel opens on ranks 1 to 15
 
   /* ---------- build ---------- */
   const deck = document.getElementById('gzDeck');
