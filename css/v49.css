@@ -2578,3 +2578,23 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
     mask: linear-gradient(180deg, transparent 58%, #000 82%); mask-composite: add; }
   #resources .sm__card--res > .sm__motif, #resources .sm__card--res:nth-child(n) > .sm__motif { bottom: -28%; }
 }
+
+/* ---- More free resources (2026-11-13): light marigold tiles, pale yellow into a soft orange (in place of white turning dark orange), with
+   the brand lotus line (its own motif, distinct from the cards' mandala) in faint burnt orange half off each tile's right edge behind
+   the arrow. On hover the tile warms to a deeper yellow-orange (still light), the lotus turns a little, and the type stays dark brown. ---- */
+#resources .sm__mini { background: linear-gradient(120deg, #FFF3D1 0%, #FFE3AE 50%, #FFCF98 100%); box-shadow: 0 0 0 1px rgba(214, 120, 30, .22), 0 12px 30px rgba(180, 100, 20, .08); }
+#resources .sm__mini::before { background: linear-gradient(120deg, #FFDC8C 0%, #FFBE6A 55%, #FFA458 100%); }
+#resources .sm__mini::after { content: ""; position: absolute; z-index: 0; top: 50%; right: -40px; width: 150px; aspect-ratio: 1; translate: 0 -50%; pointer-events: none;
+  background: #C2410C; opacity: .85;
+  -webkit-mask: url(../assets/img/brand/lotus-line.svg) center / contain no-repeat; mask: url(../assets/img/brand/lotus-line.svg) center / contain no-repeat;
+  transition: opacity .4s ease, transform 1.2s cubic-bezier(.22, 1, .36, 1); }
+#resources .sm__mini > *, #resources .sm__mini .sm__mini-go { z-index: 1; }
+#resources .sm__mini .sm__mini-t { color: #3A1E04; }
+#resources .sm__mini .sm__mini-go { stroke: #9A3412; }
+@media (hover: hover) and (pointer: fine) {
+  #resources .sm__mini:hover { box-shadow: 0 22px 40px -18px rgba(214, 110, 20, .45); }
+  #resources .sm__mini:hover .sm__mini-t, #resources .sm__mini:hover .sm__mini-d { color: #3A1E04; }
+  #resources .sm__mini:hover .sm__mini-go { stroke: #7C2D12; }
+  #resources .sm__mini:hover::after { opacity: 1; transform: rotate(18deg) scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) { #resources .sm__mini::after { transition: none; } }
