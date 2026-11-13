@@ -2684,3 +2684,18 @@ html .inv--ticket .inv__reg.cta:active { translate: var(--mx, 0px) calc(var(--my
 }
 @media (max-width: 640px) { .cm__navb { width: 40px; height: 40px; margin-top: -20px; } .cm__navb--prev { left: 12px; } .cm__navb--next { right: 12px; } }
 @media (prefers-reduced-motion: reduce) { .cm__navb { transition: opacity .2s; translate: none !important; } }
+/* ---- Nav alignment (2026-11-13, "fix the alignment and spacing issue for the nav bar"): the menu pill (52px), the language switch (44px)
+   and Let's talk (48px) were three heights, all hung from the top, so their bottoms did not line up. Now all three are 52px and centred
+   on one line, and the pill's padding is even (the last link's hover chip sits as far from the right end as the logo from the left). ---- */
+.nav { align-items: center; }
+.nav__pill { padding: 6px 6px 6px 14px; }
+.nav .lang { height: 52px; padding: 5px; }
+.nav .lang__thumb { top: 5px; bottom: 5px; left: 5px; width: calc(50% - 5px); }
+.nav .cta.cta.cta.cta.talk { height: 52px; padding-right: 7px; }
+@media (max-width: 1360px) { .nav__pill { padding-right: 6px; } }
+@media (max-width: 480px) {
+  .nav__pill, .nav .lang, .nav .cta.cta.cta.cta.talk { height: 46px; }
+  .nav .lang { padding: 4px; }
+  .nav .lang__thumb { top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); }
+  .nav .cta.cta.cta.cta.talk { padding: 0 4px; }
+}
