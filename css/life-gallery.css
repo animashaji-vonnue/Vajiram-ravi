@@ -47,9 +47,14 @@
 .lg__nav:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .lg__nav:active { scale: .94; }
 @media (hover: hover) and (pointer: fine) {
+  /* the arrows show only while the pointer is over the carousel, or one of them has keyboard focus (user 2026-11-13) */
+  .lg__nav { opacity: 0; pointer-events: none; transition: opacity .3s ease, background-color .2s, scale .2s, translate .25s; }
+  .lg__nav--prev { translate: 10px 0; }
+  .lg__nav--next { translate: -10px 0; }
+  .lg__stage:hover .lg__nav, .lg__stage:focus-within .lg__nav { opacity: 1; pointer-events: auto; translate: 0 0; }
   .lg__nav:hover { background: #fff; }
-  .lg__nav--prev:hover { translate: -2px 0; }
-  .lg__nav--next:hover { translate: 2px 0; }
+  .lg__stage:hover .lg__nav--prev:hover { translate: -2px 0; }
+  .lg__stage:hover .lg__nav--next:hover { translate: 2px 0; }
 }
 
 /* the caption and the dots */
