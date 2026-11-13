@@ -58,7 +58,15 @@
 .lg__dots button { position: relative; width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .42); cursor: pointer; transition: width .35s cubic-bezier(.65, 0, .35, 1), background-color .2s; }
 .lg__dots button::after { content: ""; position: absolute; inset: -8px -4px; }
 .lg__dots button:hover { background: rgba(255, 255, 255, .75); }
-.lg__dots button[aria-current="true"] { width: 26px; background: #FFD48A; }
+/* the indicator, as the faculty section's (css/faculty-ring.css .fr__dots): the current dot stretches and fills with the time until the
+   next photo, left to right, in gold over a faint gold track (js/life-gallery.js restarts it with each photo; it sits empty while held,
+   and is solid gold with reduced motion, when nothing counts) */
+.lg__dots button { overflow: hidden; transition: width .35s cubic-bezier(.65, 0, .35, 1), background-color .2s cubic-bezier(.22, 1, .36, 1); }
+.lg__dots button[aria-current="true"] { width: 24px; background: #FFD48A; }
+.lg.is-auto .lg__dots button[aria-current="true"] { background: rgba(255, 212, 138, .3); }
+.lg__dots i { position: absolute; inset: 0; border-radius: inherit; background: #FFD48A; transform: scaleX(0); transform-origin: left; }
+.lg.is-run .lg__dots button[aria-current="true"] i { animation: lgFill var(--lg-t, 2.5s) linear forwards; }
+@keyframes lgFill { to { transform: scaleX(1); } }
 .lg__dots button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 
 /* ---------- stacked (no pinned scene): after the six points ---------- */

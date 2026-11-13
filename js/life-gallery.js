@@ -34,7 +34,14 @@
   const preload = () => { if (!near) return; [i - 3, i - 2, i - 1, i, i + 1, i + 2, i + 3].forEach(k => { const im = cards[((k % N) + N) % N].querySelector('img'); if (im) im.loading = 'eager'; }); };
   const pinned = () => !!(sec && sec.classList.contains('cmp--run'));
   const running = () => auto && (pinned() ? raised : inView) && !focus && !document.hidden;
-  const restart = () => { clearTimeout(timer); if (running()) timer = setTimeout(() => go(i + 1), 2500); };   // 2.5 s a photo (user 2026-11-13)
+  const T = 2500;   // 2.5 s a photo (user 2026-11-13)
+  // the current dot fills over the same 2.5 s (css/life-gallery.css .lg.is-run), from empty each time the count starts again
+  const restart = () => {
+    clearTimeout(timer);
+    const run = running();
+    gal.classList.remove('is-run'); void gal.offsetWidth; gal.classList.toggle('is-run', run);
+    if (run) timer = setTimeout(() => go(i + 1), T);
+  };
   const go = n => {
     const next = ((n % N) + N) % N;
     if (next !== i) {
@@ -70,5 +77,8 @@
   new IntersectionObserver(es => { inView = es[0].isIntersecting; sync(); }, { threshold: .3 }).observe(stage);
   gal.addEventListener('lifegal', e => { raised = !!e.detail; sync(); });   // from js/story.js, in the pinned scene
 
+  dots.forEach(b => b.insertAdjacentHTML('beforeend', '<i aria-hidden="true"></i>'));
+  gal.style.setProperty('--lg-t', T / 1000 + 's');
+  if (auto) gal.classList.add('is-auto');
   place();
 })();
