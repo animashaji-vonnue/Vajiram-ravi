@@ -8,15 +8,16 @@
 .gzw__kick span { color: var(--gz-red); letter-spacing: .1em; }
 
 /* The dropdown on the right of the strip: which rank holders the reel shows. In the programme tabs' style (#ptabs):
-   a cream bar with 14px corners and 4px inside, the choice shown as its selected chip (burnt orange, 10px corners,
-   white Mukta 600 15px). */
+   a cream bar with 14px corners and 4px inside, the choice shown as its selected chip (10px corners, Mukta 600 15px). The chip is
+   in the page's newspaper ink with cream type and a gold chevron (user 2026-11-13, "give the dropdown a different colour"; it was the
+   same burnt orange as the seals and the section), to sit with the black rules and headings of the strip. */
 .gzw__range { position: relative; display: inline-flex; padding: 4px; border-radius: 14px; background: #f9f0e4; }
-.gzw__range::after { content: ""; position: absolute; top: 50%; right: 18px; width: 7px; height: 7px; margin-top: -5px; border-right: 1.6px solid #fff; border-bottom: 1.6px solid #fff;
+.gzw__range::after { content: ""; position: absolute; top: 50%; right: 18px; width: 7px; height: 7px; margin-top: -5px; border-right: 1.6px solid #FFD48A; border-bottom: 1.6px solid #FFD48A;
   rotate: 45deg; pointer-events: none; }
-.gzw__range select { height: 40px; padding: 0 38px 0 14px; border: 0; border-radius: 10px; background: #C2410C; cursor: pointer;
-  font: 600 15px/1 "Mukta", var(--gz-sans); color: #fff; -webkit-appearance: none; appearance: none; transition: background-color .2s; }
-.gzw__range select:hover { background: #a93a0b; }
-.gzw__range select:focus-visible { outline: 2px solid var(--gz-ink); outline-offset: 2px; }
+.gzw__range select { height: 40px; padding: 0 38px 0 14px; border: 0; border-radius: 10px; background: var(--gz-ink, #1e1a17); cursor: pointer;
+  font: 600 15px/1 "Mukta", var(--gz-sans); color: #FFF3E1; -webkit-appearance: none; appearance: none; transition: background-color .2s; }
+.gzw__range select:hover { background: #3a2f27; }
+.gzw__range select:focus-visible { outline: 2px solid #C2410C; outline-offset: 2px; }
 .gzw__range option { background: #fff; color: #1e1a17; }
 
 /* Under the reel: the round stop / play button over the hint, in the educator carousel's arrow style (.fr__btn):
