@@ -2509,28 +2509,48 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
   #resources .sm__pic, #resources .sm__card--res:nth-child(n) .sm__pic { position: relative; order: 99; right: auto; bottom: auto; align-self: flex-end; width: 76%; height: 190px; margin: 14px 0 -4px auto; } }
 @media (prefers-reduced-motion: reduce) { #resources .sm__pic, #resources .sm__pic img { transition: none; } }
 
-/* ---- Free resources, colour (2026-11-12): the cards rest on a light orange and, on hover, turn a deep burnt orange (in place of white
-   turning bright orange); the type turns cream, the link and the stage chips gold. ---- */
-#resources .sm__card--res:nth-child(n) { background: #FFE6D2; box-shadow: 0 0 0 1px rgba(194, 65, 12, .14), 0 18px 44px rgba(140, 64, 13, .07); }
-#resources .sm__card--res::before { background: linear-gradient(150deg, #A53A10 0%, #7E2A0B 55%, #5E1F08 100%); }
+/* ---- Free resources, colour and blend (2026-11-13): the cards take the GS flagship section's ground and its way of blending a picture in
+   (css/v25.css .gs): a deep mahogany-to-rust gradient, darker on the left for the type, with a warm orange glow behind the subject; the
+   card's own photograph as a faint ghost (its whole scene, feathered into the colour by masks, in soft light); film grain over it all;
+   the cut-out subject crisp on top on a dark shadow. Type in cream, the link and the stage chips in gold. On hover the warm glow comes up
+   behind the subject (the ::before layer), which lifts. ---- */
+#resources .sm__card--res:nth-child(n) { color: #FFF3E1;
+  background:
+    linear-gradient(90deg, rgba(30, 9, 4, .62) 0%, rgba(30, 9, 4, .36) 42%, rgba(30, 9, 4, .08) 70%, rgba(30, 9, 4, 0) 100%),
+    radial-gradient(52% 62% at 76% 72%, rgba(226, 96, 30, .5), transparent 72%),
+    radial-gradient(48% 42% at 6% 108%, rgba(240, 112, 40, .4), transparent 70%),
+    linear-gradient(100deg, #4e1708 0%, #6e220b 34%, #8a2d0e 60%, #5c1a08 82%, #3a1006 100%);
+  box-shadow: 0 22px 44px -24px rgba(58, 16, 6, .6); }
+#resources .sm__card--res::before { background: radial-gradient(58% 68% at 74% 70%, rgba(250, 128, 50, .55), transparent 72%); }
+#resources .sm__card--res::after { content: ""; position: absolute; inset: 0; z-index: 0; border-radius: inherit; pointer-events: none; opacity: .2; mix-blend-mode: overlay;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+#resources .sm__card--res > .sm__ghost { position: absolute; z-index: 0; inset: 0; max-width: none; pointer-events: none; opacity: .24; mix-blend-mode: soft-light;
+  background-repeat: no-repeat; background-position: right center; background-size: cover; filter: grayscale(.3) contrast(1.1);
+  -webkit-mask: linear-gradient(90deg, transparent 18%, #000 70%), linear-gradient(0deg, transparent 0%, #000 30%, #000 80%, transparent 100%); -webkit-mask-composite: source-in;
+  mask: linear-gradient(90deg, transparent 18%, #000 70%), linear-gradient(0deg, transparent 0%, #000 30%, #000 80%, transparent 100%); mask-composite: intersect;
+  transition: opacity .6s ease; }
+#resources .sm__card--res:nth-child(n) .sm__t { color: #FFF3E1; }
+#resources .sm__card--res:nth-child(n) .sm__d { color: rgba(255, 243, 225, .8); }
+#resources .sm__card--res:nth-child(n) > a.sm__act.tlink, #resources .sm__card--res:nth-child(n) > a.sm__act.tlink:hover { color: #FFD48A; }
+#resources .sm__card--res:nth-child(n) .sm__stages li { border-color: rgba(255, 212, 138, .5); color: #FFD48A; }
+#resources .sm__pic img { filter: drop-shadow(0 22px 22px rgba(10, 3, 1, .55)) drop-shadow(0 5px 8px rgba(10, 3, 1, .3)); }
 @media (hover: hover) and (pointer: fine) {
-  #resources .sm__card--res:nth-child(n):hover { box-shadow: 0 26px 54px rgba(94, 31, 8, .36); }
-  #resources .sm__card--res:nth-child(n):hover .sm__t { color: #FFF3E1; }
-  #resources .sm__card--res:nth-child(n):hover .sm__d { color: rgba(255, 243, 225, .78); }
-  #resources .sm__card--res:nth-child(n):hover > a.sm__act.tlink, #resources .sm__card--res:nth-child(n):hover > a.sm__act.tlink:hover { color: #FFD48A; }
-  #resources .sm__card--res:nth-child(n):hover .sm__stages li { border-color: rgba(255, 212, 138, .5); color: #FFD48A; }
-  #resources .sm__card--res:hover .sm__pic img { filter: drop-shadow(0 26px 26px rgba(0, 0, 0, .45)) drop-shadow(0 6px 8px rgba(0, 0, 0, .25)); }
+  #resources .sm__card--res:nth-child(n):hover { box-shadow: 0 30px 56px -24px rgba(58, 16, 6, .75); }
+  #resources .sm__card--res:nth-child(n):hover .sm__t { color: #fff; }
+  #resources .sm__card--res:nth-child(n):hover .sm__d { color: rgba(255, 243, 225, .9); }
+  #resources .sm__card--res:hover > .sm__ghost { opacity: .34; }
+  #resources .sm__card--res:hover .sm__pic img { filter: drop-shadow(0 30px 28px rgba(10, 3, 1, .6)) drop-shadow(0 8px 10px rgba(10, 3, 1, .32)); }
 }
 
 /* ---- Free resources, motif (2026-11-13): behind each card's picture, the site's mandala, recoloured through a mask: faint
-   burnt orange on the light card, gold on the dark hover, turning slowly as the card is pointed at. Every card carries the same mandala,
+   gold on the dark ground, a little stronger and turning slowly as the card is pointed at. Every card carries the same mandala,
    whole, like a halo behind the picture (--o / --oh: its strength at rest and on hover). ---- */
 #resources .sm__card--res > .sm__motif { position: absolute; z-index: 0; right: -10%; bottom: -16%; width: 86%; aspect-ratio: 1; pointer-events: none;
-  background: #C2410C; opacity: var(--o, .14);
+  background: #FFD48A; opacity: var(--o, .14);
   -webkit-mask: var(--m) center / contain no-repeat; mask: var(--m) center / contain no-repeat;
   transition: opacity .45s ease, background-color .45s ease, transform 1.4s cubic-bezier(.22, 1, .36, 1); }
 #resources .sm__card--res:nth-child(1) .sm__motif, #resources .sm__card--res:nth-child(6) .sm__motif { right: 2%; bottom: -34%; width: 66%; }
-#resources .sm__motif--mandala { --m: url(../assets/img/patterns/mandala.svg); --o: .34; --oh: .42; }   /* every card carries the mandala (user 2026-11-13) */
+#resources .sm__motif--mandala { --m: url(../assets/img/patterns/mandala.svg); --o: .22; --oh: .34; }   /* every card carries the mandala (user 2026-11-13) */
 @media (hover: hover) and (pointer: fine) {
   #resources .sm__card--res:hover .sm__motif { background: #FFD48A; opacity: var(--oh, .2); transform: rotate(14deg) scale(1.04); }
 }
