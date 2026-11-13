@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Geist:wght@500&family=Anek+Devanagari:wght@500&family=Geist+Mono:wght@400&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300&family=League+Spartan:wght@600;700&family=Mukta:wght@400;500;600;700&family=Source+Sans+3:wght@500;700&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/v49.css?v=296">
+<link rel="stylesheet" href="css/v49.css?v=300">
 <link rel="stylesheet" href="css/story.css?v=18">
 <link rel="stylesheet" href="css/intro.css?v=2">
 <link rel="stylesheet" href="css/toppers.css?v=64">
@@ -469,12 +469,13 @@
 <footer class="foot">
   <img class="foot__scene" src="assets/img/photos/footer-classroom.webp" alt="" aria-hidden="true" decoding="async" loading="lazy">
   <span class="foot__frame" aria-hidden="true"></span><!-- gold double rule + corner diamonds (Figma 2164:5557 "ornament border"); css/v49.css -->
-    <div class="foot__top">
-    <div class="foot__brand">
-      <a class="foot__logo foot__logo--mark" href="#top" aria-label="Vajiram &amp; Ravi, back to top"><img src="assets/img/brand/logo-white.png" alt="Vajiram &amp; Ravi, Institute for IAS Examination" width="966" height="227" loading="lazy" decoding="async"></a>
-      <p>Best IAS coaching in Delhi, India. Preparing UPSC aspirants in Old Rajinder Nagar since 1976.</p>
-      <ul class="socials" id="socials"></ul>
-    </div>
+  <!-- the top row, as version 6's footer sets it: the logo on the left, the line about the institute beside it, the social icons on the right, over a hairline -->
+  <div class="foot__bar">
+    <a class="foot__logo foot__logo--mark" href="#top" aria-label="Vajiram &amp; Ravi, back to top"><img src="assets/img/brand/logo-white.png" alt="Vajiram &amp; Ravi, Institute for IAS Examination" width="966" height="227" loading="lazy" decoding="async"></a>
+    <p class="foot__tag">Best IAS coaching in Delhi, India. Preparing UPSC aspirants in Old Rajinder Nagar since 1976.</p>
+    <ul class="socials" id="socials"></ul>
+  </div>
+  <div class="foot__top">
     <div class="foot__cols" id="footCols"></div>
   </div>
   <div class="foot__news" aria-labelledby="footNewsH">
@@ -485,7 +486,27 @@
       <li><span>Prelims</span><a href="https://vajiramandravi.com/" target="_blank" rel="noopener">Thiksey Monastery</a></li>
     </ul>
   </div>
-  <p class="foot__word" aria-hidden="true">Vajiram<span>&amp;</span>Ravi</p>
+  <!-- the giant name, engraved as in version 6 (its FooterWordmark): Mukta Bold across the content, pressed into the ground by an SVG filter
+       (a shade inside the top of each stroke, a warm light inside the bottom, a light lip under the letters), tuned for the orange -->
+  <div class="foot__engrave">
+    <span class="vh">Vajiram &amp; Ravi</span>
+    <svg aria-hidden="true" viewBox="0 0 1280 210" fill="none">
+      <defs>
+        <filter id="foot-deboss" x="-2%" y="-10%" width="104%" height="125%" color-interpolation-filters="sRGB">
+          <feOffset in="SourceAlpha" dy="8" result="down"/><feGaussianBlur in="down" stdDeviation="3.6" result="downSoft"/>
+          <feComposite in="SourceAlpha" in2="downSoft" operator="out" result="topBand"/>
+          <feFlood flood-color="#9a3412" flood-opacity=".45" result="shadeInk"/><feComposite in="shadeInk" in2="topBand" operator="in" result="innerShade"/>
+          <feOffset in="SourceAlpha" dy="-2.6" result="up"/><feGaussianBlur in="up" stdDeviation="1.2" result="upSoft"/>
+          <feComposite in="SourceAlpha" in2="upSoft" operator="out" result="bottomBand"/>
+          <feFlood flood-color="#ffffff" flood-opacity=".9" result="lightInk"/><feComposite in="lightInk" in2="bottomBand" operator="in" result="innerLight"/>
+          <feOffset in="SourceAlpha" dy="2" result="lipDown"/><feComposite in="lipDown" in2="SourceAlpha" operator="out" result="lipBand"/>
+          <feFlood flood-color="#ffe7cc" flood-opacity=".5" result="lipInk"/><feComposite in="lipInk" in2="lipBand" operator="in" result="lip"/>
+          <feMerge><feMergeNode in="lip"/><feMergeNode in="SourceGraphic"/><feMergeNode in="innerShade"/><feMergeNode in="innerLight"/></feMerge>
+        </filter>
+      </defs>
+      <text x="640" y="172" text-anchor="middle" textLength="1272" lengthAdjust="spacingAndGlyphs" filter="url(#foot-deboss)">Vajiram &amp; Ravi</text>
+    </svg>
+  </div>
   <div class="foot__bot"><span>© 2026 Vajiram &amp; Ravi. All rights reserved.</span><span><a href="#">Terms and Conditions</a><a href="#">Privacy Policy</a><a href="#">Grievance Redressal</a></span></div>
 </footer>
 
@@ -494,7 +515,7 @@
 <script src="js/toppers.js?v=33"></script>
 <script src="js/toppers-wall.js?v=4"></script>
 <script src="js/custom-select.js?v=3"></script>
-<script src="js/content.js?v=47"></script>
+<script src="js/content.js?v=49"></script>
 <script src="js/hero-v6.js?v=7"></script>
 <script src="js/faculty-ring.js?v=2"></script>
 <script src="js/programme-shelf.js?v=2"></script>

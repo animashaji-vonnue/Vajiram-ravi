@@ -2618,3 +2618,30 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
 @media (hover: hover) and (pointer: fine) {
   #resources .sm__more-list--bento .sm__mini:hover { box-shadow: 0 22px 40px -18px rgba(40, 24, 12, .55); }
 }
+
+/* ---- Footer, versions 6 and 7 combined (2026-11-13): version 7's contents and look (the orange ground over the classroom photo, the gold
+   frame, the link columns, the "Latest current affairs" panel, the legal bar), with version 6's top row and its engraved name.
+   - The top row (.foot__bar): the logo on the left with the line about the institute beside it, the social icons on the right, over a
+     hairline; the link columns and the news panel then start together under it (the brand column is gone).
+   - The engraved name (.foot__engrave, an SVG): Mukta Bold across the content, pressed into the ground: the letters a deeper rust than the
+     orange, a dark shade inside the top of each stroke, a warm light inside the bottom, a light lip under them. ---- */
+footer.foot .foot__bar { position: relative; z-index: 1; display: flex; align-items: center; gap: 28px; margin: 0 0 22px; padding: 0 0 16px; border-bottom: 1px solid rgba(255, 255, 255, .22); }
+footer.foot .foot__tag { margin: 0; max-width: 40ch; padding-left: 28px; border-left: 1px solid rgba(255, 255, 255, .22); font: 400 15px/1.45 var(--f); color: rgba(255, 255, 255, .8); }
+footer.foot .foot__bar .socials { display: flex; align-items: center; gap: 10px; margin: 0 0 0 auto; padding: 0; list-style: none; }
+@media (min-width: 901px) {
+  footer.foot .foot__top { display: block; }
+  footer.foot .foot__top > .foot__cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 40px; row-gap: 28px; align-items: start; }
+  footer.foot .foot__cols > div:nth-child(n) { grid-column: auto; grid-row: auto; }
+  footer.foot .foot__cols > .foot__news--5th { grid-column: 1 / -1; grid-row: auto; margin: 8px 0 0; }
+}
+@media (min-width: 1201px) {
+  footer.foot .foot__top > .foot__cols { grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(300px, 1.45fr); }
+  footer.foot .foot__cols > .foot__news--5th { grid-column: 5; grid-row: 1; margin: -4px 0 0; }
+}
+@media (max-width: 900px) {
+  footer.foot .foot__bar { flex-wrap: wrap; gap: 16px 20px; }
+  footer.foot .foot__tag { order: 3; flex-basis: 100%; max-width: none; padding-left: 0; border-left: 0; }
+}
+footer.foot .foot__engrave { position: relative; z-index: 1; max-width: 1160px; margin: 6px auto 0; user-select: none; }   /* the footer has to fit the screen (it is uncovered like a curtain) */
+footer.foot .foot__engrave svg { display: block; width: 100%; height: auto; overflow: visible; }
+footer.foot .foot__engrave text { font: 700 224px/1 "Mukta", var(--f); letter-spacing: -.03em; fill: #FFF6EC; }   /* white (user 2026-11-13), the filter still carves it in */
