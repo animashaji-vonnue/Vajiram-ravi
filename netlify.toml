@@ -1,0 +1,16 @@
+# Netlify build settings for version 7 of the homepage. They override whatever is set in the Netlify UI.
+# Version 7 is a plain static site (index.html, css/, js/, assets/), so there is nothing to build: Netlify publishes the
+# repository root as it is. (The earlier Next.js versions ran `npm run build` and published `out`.)
+[build]
+  command = "echo 'Static site: nothing to build'"
+  publish = "."
+
+[build.environment]
+  # Netlify adds its Next.js adapter to some sites; this one has no Next.js, so keep it off.
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
+
+# Cache the images and fonts for a long time; the HTML, CSS and JS carry ?v= numbers that change with each edit.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
