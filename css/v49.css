@@ -2664,3 +2664,23 @@ footer.foot .foot__bot { padding-bottom: 48px; }
 .cta, .cmp__cta { translate: var(--mx, 0px) var(--my, 0px); }
 html .cmp--run .cmp__cta { translate: var(--mx, 0px) calc((1 - var(--tb)) * 10px + var(--my, 0px)); }
 html .inv--ticket .inv__reg.cta:active { translate: var(--mx, 0px) calc(var(--my, 0px) + 2px); }
+/* ---- Contact us photos, previous / next (2026-11-13): round frosted buttons at the sides, middle height; they slide in while the pointer is
+   over the photos or one has keyboard focus, and stay visible on touch screens (js/visit-gallery.js adds them). ---- */
+.cm__nav { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.cm__navb { position: absolute; top: 50%; display: grid; place-items: center; width: 46px; height: 46px; margin: -23px 0 0; padding: 0; border: 1px solid rgba(255, 255, 255, .7); border-radius: 50%;
+  background: rgba(255, 249, 241, .86); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #C2410C; cursor: pointer; pointer-events: auto;
+  box-shadow: 0 10px 22px -12px rgba(58, 20, 6, .55); transition: opacity .3s var(--ease), translate .35s var(--ease), background-color .2s, scale .2s var(--ease); }
+.cm__navb svg { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.cm__navb--prev { left: 16px; }
+.cm__navb--next { right: 16px; }
+.cm__navb:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.cm__navb:active { scale: .94; }
+@media (hover: hover) and (pointer: fine) {
+  .cm__navb { opacity: 0; }
+  .cm__navb--prev { translate: -8px 0; }
+  .cm__navb--next { translate: 8px 0; }
+  .cm__gal:hover .cm__navb, .cm__gal:focus-within .cm__navb { opacity: 1; translate: 0 0; }
+  .cm__navb:hover { background: #fff; scale: 1.06; }
+}
+@media (max-width: 640px) { .cm__navb { width: 40px; height: 40px; margin-top: -20px; } .cm__navb--prev { left: 12px; } .cm__navb--next { right: 12px; } }
+@media (prefers-reduced-motion: reduce) { .cm__navb { transition: opacity .2s; translate: none !important; } }
