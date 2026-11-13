@@ -4,7 +4,7 @@
      Choosing a dot jumps to that topper and gives it its full time.
    - With each topper the rank card (AIR, name) is drawn in again.
    - The entrance waits for the intro screen (js/intro.js: html.vrv-lock, then 'vr:intro-done'); the four figures under the
-     panel then roll up to their values as each one rises in. The laurels sway only while the hero is on screen.
+     panel then roll up to their values as each one rises in.
    - Reduced motion: everything in place, the first topper stays (the dots still switch), nothing pushes in or rolls. */
 (() => {
   const hero = document.getElementById('hero');
@@ -50,7 +50,7 @@
     if (clock) paused ? clock.pause() : (onScreen && clock.play());
   });
 
-  // on screen: the clock runs and the laurels sway; off screen both rest
+  // on screen: the clock runs; off screen it rests
   new IntersectionObserver(es => {
     onScreen = es[0].isIntersecting;
     hero.classList.toggle('is-live', onScreen);

@@ -6,7 +6,7 @@
      (6.5s each, a 1s cross-fade, each portrait pushing in slowly). A warm wash from the left keeps the type legible.
    - The topper's rank top right, on a frosted card; the headline line by line, the lead, two buttons (v7's own .bt); dots that fill
      with the slide's time.
-   - Under the panel, on the orange: the four points, each figure in a cream laurel that sways a little while on screen.
+   - Under the panel, on the orange: the four points, each a large cream figure beside its line (no laurels, user 2026-11-13).
    Type is v7's: Newsreader (--f-title) for the headline and figures, Mukta (--f) for the rest. */
 .hx { --hx-gold: #FFD48A; --hx-cream: #FFF3E1; --hx-brown: 46 17 6; --hx-top: 96px; --hx-stats: 182px;
   position: relative; isolation: isolate; overflow: clip; padding: var(--hx-top) var(--hx-side-r, var(--hx-side, 20px)) 0 var(--hx-side, 20px); color: #fff;   /* sides: the nav's ends (js/hero-v6.js) */
@@ -83,14 +83,22 @@
 .hx__pause:focus-visible { left: 24px; bottom: 24px; z-index: 5; width: auto; height: auto; clip: auto; padding: 8px 16px; border-radius: 999px; background: var(--hx-cream);
   color: #2a1a12; font: 600 14px/1.2 var(--f); cursor: pointer; outline: 2px solid var(--hx-gold); outline-offset: 2px; }
 
-/* ---------- under the panel: the four points, each figure in its laurel ---------- */
+/* ---------- under the panel: the four points, each a large figure beside its line ---------- */
 .hx__stats { display: flex; align-items: center; justify-content: center; gap: 24px 64px; margin: 0; padding: 48px 16px; list-style: none; box-sizing: border-box; min-height: var(--hx-stats); }
 .hx__stat { display: flex; align-items: center; gap: 16px; }
-.hx__laurel { position: relative; display: flex; flex: none; align-items: center; justify-content: center; width: 108px; height: 86px; }
-.hx__sway { position: absolute; inset: 0; width: 100%; height: 100%; transform-origin: 50% 88%; animation: hxSway 9s cubic-bezier(.65, 0, .35, 1) infinite paused; }
-.hx.is-live .hx__sway { animation-play-state: running; }
-@keyframes hxSway { 0%, 100% { transform: none; } 25% { transform: rotate(-1.5deg); } 75% { transform: rotate(1.5deg); } }
-.hx__fig { position: relative; font: 500 28px/1 var(--f-title, Georgia), serif; color: var(--hx-cream); white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
+.hx__stat { gap: 18px; }
+/* with the larger figures the four no longer fit centred with fixed gaps: they spread across the panel's width (first at its left edge,
+   last at its right) and the lines beside them wrap narrower when space is short */
+@media (min-width: 901px) {
+  .hx__stats { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-between; column-gap: 32px; padding-left: 0; padding-right: 0; }
+  .hx__stats .hx__stat-t { width: auto; max-width: 150px; }
+}
+/* the figure, and under it an unseen copy of its final value that holds the width while the figure rolls up from 0 (js/hero-v6.js),
+   so the line beside it does not shift */
+.hx__num { display: inline-grid; flex: none; }
+.hx__num > .hx__fig { grid-area: 1 / 1; text-align: left; }
+.hx__fig--room { visibility: hidden; }
+.hx__fig { position: relative; font: 500 clamp(44px, 4vw, 60px)/1 var(--f-title, Georgia), serif; letter-spacing: -.02em; color: var(--hx-cream); white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
 .hx__stat-t { width: 150px; font: 400 17px/1.35 var(--f); color: rgba(255, 255, 255, .92); }
 
 /* ---------- the entrance (after the intro screen lifts): the panel settles, the headline line by line (from a small blur),
@@ -163,13 +171,12 @@ main .cover > #hero.hx + section > * { opacity: var(--cov, 1); transform: transl
   .hx__btns > span, .hx__btns .bt { width: 100%; }
   .hx__btns .bt { justify-content: space-between; }
   .hx__stat { flex-direction: column; align-items: flex-start; gap: 8px; }
-  .hx__laurel { width: 88px; height: 70px; }
-  .hx__fig { font-size: 23px; }
+  .hx__fig { font-size: 44px; }
   .hx__stat-t { font-size: 15px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hx__slide, .hx__slide img, .hx.is-in .hx__slide.is-on img { transition: none; scale: 1; }
-  .hx__sway, .hx__mark.is-drawn { animation: none; }
+  .hx__mark.is-drawn { animation: none; }
   .hx__dots button[aria-current="true"] i { transform: scaleX(1); }
 }
