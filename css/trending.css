@@ -7,7 +7,7 @@
 .tr { --tr-gap: 24px; --tr-h: 300px; position: relative; margin-top: 36px; padding: 0 0 64px; }   /* a little air under the four points (user 2026-11-13) */
 .tr__title { margin: 0 0 22px; text-align: center; font: 400 clamp(28px, 2.4vw, 36px)/1.15 var(--f-title, Georgia), serif; letter-spacing: -.02em; color: #fff; }
 
-.tr__stage { position: relative; }
+.tr__stage { position: relative; display: flow-root; }   /* flow-root: the track's -40px top margin (room for the pictures) stays inside, so the stage is the banner's height and the buttons centre on it */
 .tr__track { display: flex; gap: var(--tr-gap); overflow-x: clip; overflow-y: visible; padding-top: 40px; margin-top: -40px; touch-action: pan-y; }   /* room above for the pictures that rise out of the banner */
 .tr__slide { --bg-a: #FFF4E8; --bg-b: #FFE1C2; --ink: #8A2A07; --acc: #C2410C;
   position: relative; flex: 0 0 100%; box-sizing: border-box; min-height: var(--tr-h); display: flex; align-items: center; border-radius: 24px;
