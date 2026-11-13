@@ -2508,3 +2508,16 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
 @media (max-width: 640px) { #resources .sm__card--res { min-height: 0; }
   #resources .sm__pic, #resources .sm__card--res:nth-child(n) .sm__pic { position: relative; order: 99; right: auto; bottom: auto; align-self: flex-end; width: 76%; height: 190px; margin: 14px 0 -4px auto; } }
 @media (prefers-reduced-motion: reduce) { #resources .sm__pic, #resources .sm__pic img { transition: none; } }
+
+/* ---- Free resources, colour (2026-11-12): the cards rest on a light orange and, on hover, turn a deep burnt orange (in place of white
+   turning bright orange); the type turns cream, the link and the stage chips gold. ---- */
+#resources .sm__card--res:nth-child(n) { background: #FFE6D2; box-shadow: 0 0 0 1px rgba(194, 65, 12, .14), 0 18px 44px rgba(140, 64, 13, .07); }
+#resources .sm__card--res::before { background: linear-gradient(150deg, #A53A10 0%, #7E2A0B 55%, #5E1F08 100%); }
+@media (hover: hover) and (pointer: fine) {
+  #resources .sm__card--res:nth-child(n):hover { box-shadow: 0 26px 54px rgba(94, 31, 8, .36); }
+  #resources .sm__card--res:nth-child(n):hover .sm__t { color: #FFF3E1; }
+  #resources .sm__card--res:nth-child(n):hover .sm__d { color: rgba(255, 243, 225, .78); }
+  #resources .sm__card--res:nth-child(n):hover > a.sm__act.tlink, #resources .sm__card--res:nth-child(n):hover > a.sm__act.tlink:hover { color: #FFD48A; }
+  #resources .sm__card--res:nth-child(n):hover .sm__stages li { border-color: rgba(255, 212, 138, .5); color: #FFD48A; }
+  #resources .sm__card--res:hover .sm__pic img { filter: drop-shadow(0 26px 26px rgba(0, 0, 0, .45)) drop-shadow(0 6px 8px rgba(0, 0, 0, .25)); }
+}
