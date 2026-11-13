@@ -18,11 +18,16 @@
       const on = k === i;
       s.classList.toggle('is-on', on); s.inert = !on; s.toggleAttribute('aria-hidden', !on);
     });
+    near();
     dots.forEach((d, k) => {
       if (k === i) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current');
       const f = d.querySelector('i'); f.style.animation = 'none'; void f.offsetWidth; f.style.animation = '';   // restart the fill
     });
   };
+  // once the banners are on screen, load the picture on show and the ones either side, so they are there before they slide in
+  // (the other pictures stay lazy, so the page does not fetch them all before anyone scrolls down)
+  const near = () => { if (!seen) return;
+    [i - 1, i, i + 1].forEach(k => { const im = slides[(k + slides.length) % slides.length].querySelector('img'); if (im) im.loading = 'eager'; }); };
   const sync = () => tr.classList.toggle('is-paused', !seen || held || focus || document.hidden);
 
   tr.querySelector('.tr__nav--prev').addEventListener('click', () => go(i - 1));
@@ -43,6 +48,7 @@
   }, { passive: true });
 
   go(0);
+  new IntersectionObserver(es => { seen = es[0].isIntersecting; near(); sync(); }, { threshold: .35 }).observe(stage);
   if (!auto) return;
   dots.forEach(d => d.querySelector('i').addEventListener('animationend', () => { if (d.getAttribute('aria-current') === 'true') go(i + 1); }));
   stage.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { held = true; sync(); } });
@@ -50,6 +56,5 @@
   tr.addEventListener('focusin', () => { focus = true; sync(); });
   tr.addEventListener('focusout', e => { if (!tr.contains(e.relatedTarget)) { focus = false; sync(); } });
   document.addEventListener('visibilitychange', sync);
-  new IntersectionObserver(es => { seen = es[0].isIntersecting; sync(); }, { threshold: .35 }).observe(stage);
   tr.classList.add('is-auto', 'is-paused');
 })();
