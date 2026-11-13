@@ -2556,3 +2556,23 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
 }
 @media (max-width: 640px) { #resources .sm__motif, #resources .sm__card--res:nth-child(n) .sm__motif { right: -8%; bottom: -10%; width: 72%; } }
 @media (prefers-reduced-motion: reduce) { #resources .sm__motif { transition: none; } }
+
+/* ---- Free resources, keep the type clear (2026-11-13): the ghost photo and the mandala stay out of the text's area. Small cards carry
+   their text across the top (to about 45% down), so both sit below 50%; the wide cards carry it on the left (to about 50% across), so
+   both sit to the right of that. Tablets and phones (where every card's text runs full width) follow the small cards. ---- */
+#resources .sm__card--res > .sm__ghost {
+  -webkit-mask: linear-gradient(90deg, transparent 12%, #000 58%), linear-gradient(180deg, transparent 50%, #000 76%); -webkit-mask-composite: source-in;
+  mask: linear-gradient(90deg, transparent 12%, #000 58%), linear-gradient(180deg, transparent 50%, #000 76%); mask-composite: intersect; }
+#resources .sm__card--res > .sm__motif { bottom: -26%; }
+@media (min-width: 1001px) {
+  #resources .sm__card--res:nth-child(1) > .sm__ghost, #resources .sm__card--res:nth-child(6) > .sm__ghost {
+    -webkit-mask: linear-gradient(90deg, transparent 50%, #000 78%), linear-gradient(180deg, transparent 0%, #000 22%, #000 86%, transparent 100%); -webkit-mask-composite: source-in;
+    mask: linear-gradient(90deg, transparent 50%, #000 78%), linear-gradient(180deg, transparent 0%, #000 22%, #000 86%, transparent 100%); mask-composite: intersect; }
+  #resources .sm__card--res:nth-child(1) > .sm__motif, #resources .sm__card--res:nth-child(6) > .sm__motif { right: -6%; bottom: -36%; width: 54%; }
+}
+@media (max-width: 640px) {
+  #resources .sm__card--res > .sm__ghost {
+    -webkit-mask: linear-gradient(180deg, transparent 58%, #000 82%); -webkit-mask-composite: source-over;
+    mask: linear-gradient(180deg, transparent 58%, #000 82%); mask-composite: add; }
+  #resources .sm__card--res > .sm__motif, #resources .sm__card--res:nth-child(n) > .sm__motif { bottom: -28%; }
+}
