@@ -1,7 +1,6 @@
 /* Life at Vajiram & Ravi (user 2026-11-13, from a reference: a cover-flow photo carousel, auto-playing in a loop). It lives in the Why
    section after the six points, on its orange ground: a centred white title and intro in the section's type, then the photos as tall
-   rounded cards, the one in front large and flat, two each side smaller, turned away and dimmed, overlapping towards the middle. Each
-   card is labelled on the photo (a gold dot, the title, a short line). Under them the caption of the photo in front and dots; round
+   rounded cards, the one in front large and flat, two each side smaller, turned away and dimmed, overlapping towards the middle. Under them the caption of the photo in front and dots; round
    arrows at the sides. js/life-gallery.js sets each card's place (--d: -4 to 4 from the front) and runs it.
    In the pinned scene (css/story.css .cmp--run) the gallery is a layer over the stage that rises in as the chapters lift away (--gv from
    js/story.js); stacked (phones, short screens, reduced motion) it simply follows the six points. */
@@ -25,13 +24,8 @@
 .lg__card.is-on .lg__pick { cursor: default; }
 .lg__pick img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(.22, .8, .24, 1); transform: scale(1.06); }
 .lg__card.is-on .lg__pick img { transform: scale(1); }
-/* the label on the photo, over a dark fade along its foot */
-.lg__card::after { content: ""; position: absolute; inset: 45% 0 0; border-radius: 0 0 22px 22px; pointer-events: none; background: linear-gradient(180deg, transparent, rgba(30, 8, 0, .72)); }
-.lg__lab { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 16px; margin: 0; text-align: left; pointer-events: none; }
-.lg__lab b { position: relative; display: block; padding-left: 18px; font: 600 clamp(16px, 1.25vw, 19px)/1.2 var(--f); color: #fff; }
-.lg__lab b::before { content: ""; position: absolute; left: 0; top: .42em; width: 9px; height: 9px; border-radius: 50%; background: #FFD48A; box-shadow: 0 0 0 3px rgba(255, 212, 138, .25); }
-.lg__lab span { display: block; margin-top: 4px; padding-left: 18px; font: 500 13px/1.3 var(--f); letter-spacing: .02em; color: rgba(255, 255, 255, .78); }
-.lg__card:not(.is-on) .lg__lab span { opacity: 0; }
+/* no text on the photos (user 2026-11-13, "remove the text from the photo"): each card is the photograph alone; its title stays in
+   the card's accessible name and the caption below says what it shows */
 @media (hover: hover) and (pointer: fine) {
   .lg__card:not(.is-on):hover { filter: brightness(calc(var(--b, 1) + .12)); }
   .lg__card.is-on:hover .lg__pick img { transform: scale(1.03); }
@@ -85,8 +79,6 @@
   .lg { --cw: min(62vw, 260px); }
   .lg__h { font-size: 38px; }
   .lg__nav { display: none; }
-  .lg__lab { left: 14px; right: 14px; bottom: 12px; }
-  .lg__lab span { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
