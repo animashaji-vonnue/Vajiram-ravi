@@ -1,6 +1,6 @@
 /* What's trending (user 2026-11-13, from a reference: a "What's Trending" banner carousel): in the hero, under the four points, on its
    orange ground. A centred title in the hero's Newsreader; one wide banner at a time, sliding sideways. Each banner is a light tint
-   (peach, gold, sky, rose, sage) with a faint mandala behind its picture: a small label, a headline in Newsreader in the tint's deep
+   (light yellow and light brown in turn) with a faint mandala behind its picture: a small label, a headline in Newsreader in the tint's deep
    ink, one line under it and v7's orange button on the left; the picture (the Free resources cut-outs) on the right, rising a little
    out of the top of the banner. Under it, dots, the current one filling with the banner's time (6 s); previous and next buttons
    on the banner's edges while the pointer is over it. js/trending.js runs it. */
@@ -16,10 +16,13 @@
     linear-gradient(110deg, var(--bg-a) 0%, var(--bg-a) 34%, var(--bg-b) 100%);
   box-shadow: 0 26px 50px -30px rgba(60, 15, 0, .7), inset 0 0 0 1px rgba(255, 255, 255, .6);
   translate: calc(var(--tr-i, 0) * -1 * (100% + var(--tr-gap))) 0; transition: translate .8s cubic-bezier(.65, 0, .35, 1); }
-.tr__slide--gold  { --bg-a: #FFF8E6; --bg-b: #FFE3A3; --ink: #6B4100; --acc: #A86A08; }
-.tr__slide--sky   { --bg-a: #F2F6FC; --bg-b: #D5E2F4; --ink: #1F3A63; --acc: #3F5B87; }
-.tr__slide--rose  { --bg-a: #FFF2F2; --bg-b: #F6D3D9; --ink: #6E2236; --acc: #9D485B; }
-.tr__slide--sage  { --bg-a: #F1F8F3; --bg-b: #CFE6D9; --ink: #1E4E40; --acc: #326F66; }
+/* light yellows and light browns, in turn (user 2026-11-13, "use light yellow or brown for banners"); the type in a deep brown, the
+   label and the mandala in a warm ochre or tan */
+.tr__slide--butter { --bg-a: #FFFAE8; --bg-b: #FCE7A6; --ink: #5A3A08; --acc: #A86A08; }
+.tr__slide--sand   { --bg-a: #FAF3EA; --bg-b: #E8D2B6; --ink: #4A2A12; --acc: #8B5A2B; }
+.tr__slide--cream  { --bg-a: #FFFBEF; --bg-b: #F8E2B0; --ink: #5A3A08; --acc: #A0670F; }
+.tr__slide--latte  { --bg-a: #F8EFE6; --bg-b: #E2C7A9; --ink: #4A2A12; --acc: #855530; }
+.tr__slide--honey  { --bg-a: #FFF7E0; --bg-b: #F7D98C; --ink: #573607; --acc: #9C6107; }
 
 /* the faint mandala behind the picture, kept inside the banner's rounded corners */
 .tr__orn { position: absolute; inset: 0; z-index: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
