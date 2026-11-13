@@ -2659,3 +2659,8 @@ footer.foot .foot__bot { padding-bottom: 48px; }
   footer.foot .foot__top { padding-bottom: 52px; }
   footer.foot .foot__bot { padding-bottom: 72px; }
 }
+/* ---- Magnetic CTAs (2026-11-13): js/magnetic.js writes the pull into --mx / --my; these rules add it to each button's own translate
+   (the story's buttons rise in with translate, the ticket's Enroll button presses down with it). ---- */
+.cta, .cmp__cta { translate: var(--mx, 0px) var(--my, 0px); }
+html .cmp--run .cmp__cta { translate: var(--mx, 0px) calc((1 - var(--tb)) * 10px + var(--my, 0px)); }
+html .inv--ticket .inv__reg.cta:active { translate: var(--mx, 0px) calc(var(--my, 0px) + 2px); }
