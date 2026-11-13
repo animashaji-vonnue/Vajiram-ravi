@@ -2645,3 +2645,8 @@ footer.foot .foot__bar .socials { display: flex; align-items: center; gap: 10px;
 footer.foot .foot__engrave { position: relative; z-index: 1; max-width: 1160px; margin: 6px auto 0; user-select: none; }   /* the footer has to fit the screen (it is uncovered like a curtain) */
 footer.foot .foot__engrave svg { display: block; width: 100%; height: auto; overflow: visible; }
 footer.foot .foot__engrave text { font: 700 224px/1 "Mukta", var(--f); letter-spacing: -.03em; fill: #FFF6EC; }   /* white (user 2026-11-13), the filter still carves it in */
+/* The j's descender used to cross the hairline above the copyright row: the wordmark's SVG is taller now (viewBox 1280 x 248, so the j sits
+   inside it with room under it), and the gaps above the name and under the copyright row give that height back so the footer still fits
+   the screen (user 2026-11-13). */
+footer.foot .foot__top { padding-bottom: 30px; }
+footer.foot .foot__bot { padding-bottom: 48px; }
