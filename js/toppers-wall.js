@@ -1,7 +1,8 @@
 /* The CSE 2025 rank holders, after the team section on maven.com ("Learn from the best in the industry"), set in this
    page's newspaper layout: under the masthead, the headline and the deck (unchanged), a section strip ("The rank
    holders · CSE 2025"), then a reel of all the rank holders as newspaper
-   photo clippings drifting slowly left (Maven's carousel), and under it the lead story.
+   photo clippings drifting slowly left (Maven's carousel). (The lead story under it was removed, user 2026-11-13: the
+   clippings are no longer buttons, and the hint that pointed to the story is gone.)
 
    - A clipping: the portrait in newsprint tones (colour on hover or focus), the name and the programmes as its caption,
      and the rank on a serrated orange seal at the top left, as the educators' years of experience are stamped
@@ -10,8 +11,6 @@
      button over the hint under it stops and starts it; stopped, chevrons show on hover to step through it. Reduced
      motion: it starts stopped.
    - A dropdown in the strip chooses which rank holders the reel shows: all of them, or ranks 1 to 10.
-   - Choosing a clipping makes it the lead story under the reel: its headline and two paragraphs, set in newspaper
-     columns, as the earlier front page did.
 
    Data: window.NP_ARCHIVE (js/data/toppers-archive.js) and window.TOPPERS (js/data/toppers.js), CSE 2025 only.
    Styles: css/toppers-wall.css. This replaces the front page's photo, story and rank list (js/toppers.js, which
@@ -40,17 +39,6 @@
     const progs = splitProgs(t.programmes || extra[YEAR + '-' + t.rank]).map(name => ({ name, cat: catOf(name) }));
     return { key: i, rank: t.rank, name: tidyName(t.name), img: t.photo || t.img, progs, cats: [...new Set(progs.map(p => p.cat))] };
   });
-  /* ---------- words, for the lead story ---------- */
-  const ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
-  const words = n => (n <= 10 ? ONES[n] : String(n));
-  const join = a => (a.length < 2 ? a[0] : a.slice(0, -1).join(', the ') + ' and the ' + a[a.length - 1]);
-  const progList = t => join(t.progs.map(p => esc(p.name)));
-  const stats = {
-    top10: list.filter(t => t.rank <= 10).length,
-    igp10: list.filter(t => t.rank <= 10 && t.cats.includes('igp')).length,
-    n50: list.filter(t => t.rank <= 50).length,
-  };
-
   /* ---------- the seal: version 6's experience stamp, carrying the rank ---------- */
   const SEAL_EDGE = (() => {
     const teeth = 24, pts = [];
@@ -87,55 +75,17 @@
     </div>
     <div class="gzw__ctl">
       <button type="button" class="gzw__play" aria-pressed="false" aria-label="Pause the rank holders"><span class="gzw__play-i" aria-hidden="true"></span></button>
-      <p class="gzw__hint">Choose a rank holder to read their story.</p>
-    </div>
-    <article class="gzw__story" aria-live="polite">
-      <div class="gzw__lead"><figure class="gzw__shot"><span class="gzw__shot-ph"><img alt="" decoding="async"></span>${seal(1)}<figcaption class="gzw__by"><p><b></b><span></span></p></figcaption></figure></div>
-      <div class="gzw__text"><h3 class="gz__sub"></h3><div class="gz__cols"></div></div>
-    </article>`;
+    </div>`;
   const stage = wall.querySelector('.gzw__stage'), reel = wall.querySelector('.gzw__reel'), track = wall.querySelector('.gzw__track');
   const playBtn = wall.querySelector('.gzw__play'), [prevBtn, nextBtn] = wall.querySelectorAll('.gzw__chev'), rangeSel = wall.querySelector('.gzw__range select');
-  const story = wall.querySelector('.gzw__story');
 
   const card = (t, copy) => `<article class="gzw__card${t.rank === 1 ? ' is-first' : ''}" data-key="${t.key}"${copy ? ' aria-hidden="true"' : ''}>
-      <button type="button" class="gzw__pick"${copy ? ' tabindex="-1"' : ''} aria-label="${esc(t.name)}, All India Rank ${t.rank}: read the story">
+      <div class="gzw__pick">
         <span class="gzw__ph"><img src="${esc(t.img)}" alt="" loading="lazy" decoding="async"></span>
         ${seal(t.rank)}
         <span class="gzw__cap"><b class="gzw__nm"><span>${esc(t.name)}</span></b>${t.progs.length ? `<span class="gzw__pg">${t.progs.map(p => esc(p.name)).join(' · ')}</span>` : ''}</span>
-      </button>
+      </div>
     </article>`;
-
-  /* ---------- the lead story ---------- */
-  let current = list[0];
-  const tell = t => {
-    current = t;
-    wall.querySelectorAll('.gzw__card').forEach(c => c.classList.toggle('is-on', +c.dataset.key === t.key));
-    const first = t === list[0], n = t.progs.length;
-    story.querySelector('.gzw__seal').outerHTML = seal(t.rank);
-    story.querySelector('.gzw__by p b').textContent = t.name;
-    story.querySelector('.gzw__by p span').textContent = n ? `Prepared with ${t.progs.map(p => p.name).join(', ')}` : `CSE ${YEAR}`;
-    // the topper's photograph under the byline, faded across when the choice changes
-    const shot = story.querySelector('.gzw__shot'), img = shot.querySelector('img');
-    if (img.getAttribute('src') !== t.img) {
-      shot.classList.add('is-swapping');
-      const swap = () => { img.src = t.img; img.alt = `${t.name}, All India Rank ${t.rank}, UPSC CSE ${YEAR}`; img.decode ? img.decode().catch(() => {}).then(() => shot.classList.remove('is-swapping')) : shot.classList.remove('is-swapping'); };
-      img.getAttribute('src') ? setTimeout(swap, 180) : swap();
-    }
-    story.querySelector('.gz__sub').innerHTML = first && stats.igp10 > 1
-      ? `${esc(t.name)} heads the list; ${words(stats.igp10)} of the top ten were associated with the Interview Guidance Programme`
-      : first ? `${esc(t.name)} heads the list in the Civil Services Examination ${YEAR}`
-      : `${esc(t.name)} secures All India Rank ${t.rank} in the Civil Services Examination ${YEAR}`;
-    const paras = [n
-      ? `${esc(t.name)}, All India Rank ${t.rank} in the Civil Services Examination ${YEAR}, was associated with Vajiram &amp; Ravi through the ${progList(t)}.`
-      : `${esc(t.name)}, All India Rank ${t.rank} in the Civil Services Examination ${YEAR}, is among the rank holders who prepared with Vajiram &amp; Ravi.`];
-    if (first) {
-      const next = list.slice(1, 3).filter(x => x.progs.length);
-      if (next.length) paras.push(next.map(x => `${esc(x.name)}, AIR ${x.rank}, was associated with the ${progList(x)}.`).join(' '));
-    } else if (t.cats.includes('igp')) paras.push('The Interview Guidance Programme prepares candidates for the Personality Test, the final stage of the examination.');
-    else if (t.rank <= 10 && stats.top10 > 1) paras.push(`${esc(t.name)} is one of ${words(stats.top10)} rank holders in the top ten of CSE ${YEAR} who prepared with Vajiram &amp; Ravi.`);
-    if (stats.n50 > 1) paras.push(`${stats.n50} of the top 50 ranks in CSE ${YEAR} prepared with Vajiram &amp; Ravi.`);
-    story.querySelector('.gz__cols').innerHTML = paras.map(p => `<p>${p}</p>`).join('');
-  };
 
   /* ---------- the reel ----------
      Its position is kept here (x, in px, the track's shift left), so the drift, a drag and the chevrons all move the
@@ -156,7 +106,6 @@
     const cards = track.children;
     period = cards[shown.length].offsetLeft - cards[0].offsetLeft;
     step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : 236;
-    wall.querySelectorAll('.gzw__card').forEach(c => c.classList.toggle('is-on', +c.dataset.key === current.key));
     apply();
   };
 
@@ -235,13 +184,6 @@
   reel.addEventListener('pointerup', endDrag);
   reel.addEventListener('pointercancel', endDrag);
 
-  // A clipping chosen (not one let go after a drag) becomes the lead story.
-  track.addEventListener('click', e => {
-    if (swallow) { swallow = false; e.preventDefault(); e.stopPropagation(); return; }
-    const c = e.target.closest('.gzw__card'); if (!c) return;
-    tell(list[+c.dataset.key]);
-    if (innerWidth < 900) story.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' });
-  }, true);
 
   new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; }).observe(stage);
   let rz = 0;
@@ -250,5 +192,4 @@
   setPlaying(playing);
   requestAnimationFrame(tick);
   fill();
-  tell(list[0]);
 })();
