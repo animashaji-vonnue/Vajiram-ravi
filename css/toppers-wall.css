@@ -21,7 +21,7 @@
 
 /* Under the reel: the round stop / play button over the hint, in the educator carousel's arrow style (.fr__btn):
    48px, frosted cream, a fine ink rule, the icon in ink; hover fills it ink and turns the icon cream. */
-.gzw__ctl { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.gzw__ctl { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px; }   /* above the reel's extended foot, so the button takes its clicks */
 .gzw__play, .gzw__chev { display: flex; width: 48px; height: 48px; align-items: center; justify-content: center; padding: 0; border: 1px solid rgb(42 26 18 / .25); border-radius: 50%;
   background: rgb(255 248 236 / .7); color: #2a1a12; cursor: pointer; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
   transition: background-color .2s cubic-bezier(.22, 1, .36, 1), color .2s cubic-bezier(.22, 1, .36, 1), border-color .2s cubic-bezier(.22, 1, .36, 1), opacity .25s, scale 80ms cubic-bezier(.22, 1, .36, 1); }
@@ -36,8 +36,9 @@
 .gzw__play[aria-pressed="true"] .gzw__play-i::after { display: none; }
 
 /* The reel: the clippings drift left, edge to edge of the sheet, fading out at its sides. */
-.gzw__stage { position: relative; margin: 22px -40px 0; }
-.gzw__reel { position: relative; padding: 16px 0; overflow: hidden; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+.gzw__stage { position: relative; display: flow-root; margin: 22px -40px 0; }   /* flow-root: the reel's negative margins stay inside, so the stage keeps the cards' box and the chevrons stay centred */
+.gzw__reel { position: relative; padding: 24px 0 48px; margin: -8px 0 -32px; overflow: hidden;   /* room above for the hover lift and below for the cards' shadows (clipped at the reel's edge otherwise); the negative margins keep the layout, and the chevrons centred on the cards */
+   cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
 .gzw__reel.is-grabbing { cursor: grabbing; }
 .gzw__reel { transition: opacity .18s; }
