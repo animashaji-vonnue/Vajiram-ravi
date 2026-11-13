@@ -495,7 +495,7 @@
         <filter id="foot-deboss" x="-2%" y="-10%" width="104%" height="125%" color-interpolation-filters="sRGB">
           <feOffset in="SourceAlpha" dy="8" result="down"/><feGaussianBlur in="down" stdDeviation="3.6" result="downSoft"/>
           <feComposite in="SourceAlpha" in2="downSoft" operator="out" result="topBand"/>
-          <feFlood flood-color="#9a3412" flood-opacity=".45" result="shadeInk"/><feComposite in="shadeInk" in2="topBand" operator="in" result="innerShade"/>
+          <feFlood flood-color="#4a1405" flood-opacity=".75" result="shadeInk"/><feComposite in="shadeInk" in2="topBand" operator="in" result="innerShade"/>
           <feOffset in="SourceAlpha" dy="-2.6" result="up"/><feGaussianBlur in="up" stdDeviation="1.2" result="upSoft"/>
           <feComposite in="SourceAlpha" in2="upSoft" operator="out" result="bottomBand"/>
           <feFlood flood-color="#ffffff" flood-opacity=".9" result="lightInk"/><feComposite in="lightInk" in2="bottomBand" operator="in" result="innerLight"/>
