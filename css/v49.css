@@ -2522,24 +2522,15 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
   #resources .sm__card--res:hover .sm__pic img { filter: drop-shadow(0 26px 26px rgba(0, 0, 0, .45)) drop-shadow(0 6px 8px rgba(0, 0, 0, .25)); }
 }
 
-/* ---- Free resources, motifs (2026-11-13): behind each card's picture, one of the site's Indian motifs, recoloured through a mask: faint
-   burnt orange on the light card, gold on the dark hover, turning slowly as the card is pointed at. Single ornaments (surya rays, lotus,
-   mandala) sit whole like a halo; the small repeating patterns (jaali, phool, bandhani) show as a circle that fades out at its edge.
-   --o / --oh even out the motifs' own stroke opacities so they all read at the same strength. ---- */
+/* ---- Free resources, motif (2026-11-13): behind each card's picture, the site's mandala, recoloured through a mask: faint
+   burnt orange on the light card, gold on the dark hover, turning slowly as the card is pointed at. Every card carries the same mandala,
+   whole, like a halo behind the picture (--o / --oh: its strength at rest and on hover). ---- */
 #resources .sm__card--res > .sm__motif { position: absolute; z-index: 0; right: -10%; bottom: -16%; width: 86%; aspect-ratio: 1; pointer-events: none;
   background: #C2410C; opacity: var(--o, .14);
   -webkit-mask: var(--m) center / contain no-repeat; mask: var(--m) center / contain no-repeat;
   transition: opacity .45s ease, background-color .45s ease, transform 1.4s cubic-bezier(.22, 1, .36, 1); }
 #resources .sm__card--res:nth-child(1) .sm__motif, #resources .sm__card--res:nth-child(6) .sm__motif { right: 2%; bottom: -34%; width: 66%; }
-#resources .sm__motif--surya { --m: url(../assets/img/patterns/surya-rays.svg); --o: .5; --oh: .6; }
-#resources .sm__motif--lotus { --m: url(../assets/img/brand/lotus-line.svg); --o: 1; --oh: 1; }
-#resources .sm__motif--mandala { --m: url(../assets/img/patterns/mandala.svg); --o: .34; --oh: .42; }
-#resources .sm__card--res > .sm__motif--jaali, #resources .sm__card--res > .sm__motif--phool, #resources .sm__card--res > .sm__motif--bandhani { --o: .2; --oh: .26;
-  -webkit-mask: var(--m) 0 0 / var(--t) var(--t) repeat, radial-gradient(closest-side, #000 45%, transparent 100%); -webkit-mask-composite: source-in;
-  mask: var(--m) 0 0 / var(--t) var(--t) repeat, radial-gradient(closest-side, #000 45%, transparent 100%); mask-composite: intersect; }
-#resources .sm__motif--jaali { --m: url(../assets/img/patterns/jaali.svg); --t: 30px; --o: .3 !important; --oh: .34 !important; }
-#resources .sm__motif--phool { --m: url(../assets/img/patterns/phool.svg); --t: 34px; }
-#resources .sm__motif--bandhani { --m: url(../assets/img/patterns/bandhani.svg); --t: 24px; --o: .3 !important; --oh: .34 !important; }
+#resources .sm__motif--mandala { --m: url(../assets/img/patterns/mandala.svg); --o: .34; --oh: .42; }   /* every card carries the mandala (user 2026-11-13) */
 @media (hover: hover) and (pointer: fine) {
   #resources .sm__card--res:hover .sm__motif { background: #FFD48A; opacity: var(--oh, .2); transform: rotate(14deg) scale(1.04); }
 }
