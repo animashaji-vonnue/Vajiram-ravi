@@ -2599,3 +2599,20 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
   #resources .sm__mini:hover::after { opacity: .7; transform: rotate(18deg) scale(1.08); }
 }
 @media (prefers-reduced-motion: reduce) { #resources .sm__mini::after { transition: none; } }
+
+/* ---- More free resources, colours (2026-11-13): each tile in one of the batch tickets' head colours (indigo #3F5B87, teal #326F66,
+   rose #9D485B, ochre #B47A20, burnt orange #C64613), ordered so no two neighbours match in the four-, two- or one-column grid. On hover
+   the tile deepens a shade (the ::before layer as a dark veil). ---- */
+#resources .sm__more-list--bento > li:nth-child(1) .sm__mini { --tile: #3F5B87; }
+#resources .sm__more-list--bento > li:nth-child(2) .sm__mini { --tile: #326F66; }
+#resources .sm__more-list--bento > li:nth-child(3) .sm__mini { --tile: #9D485B; }
+#resources .sm__more-list--bento > li:nth-child(4) .sm__mini { --tile: #B47A20; }
+#resources .sm__more-list--bento > li:nth-child(5) .sm__mini { --tile: #C64613; }
+#resources .sm__more-list--bento > li:nth-child(6) .sm__mini { --tile: #3F5B87; }
+#resources .sm__more-list--bento > li:nth-child(7) .sm__mini { --tile: #B47A20; }
+#resources .sm__more-list--bento > li:nth-child(8) .sm__mini { --tile: #326F66; }
+#resources .sm__more-list--bento .sm__mini { background: var(--tile, #3F5B87); box-shadow: 0 0 0 1px rgba(255, 255, 255, .06) inset, 0 12px 30px -12px rgba(40, 24, 12, .35); }
+#resources .sm__more-list--bento .sm__mini::before { background: rgba(14, 8, 4, .2); }
+@media (hover: hover) and (pointer: fine) {
+  #resources .sm__more-list--bento .sm__mini:hover { box-shadow: 0 22px 40px -18px rgba(40, 24, 12, .55); }
+}
