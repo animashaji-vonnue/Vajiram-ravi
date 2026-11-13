@@ -2650,3 +2650,12 @@ footer.foot .foot__engrave text { font: 700 224px/1 "Mukta", var(--f); letter-sp
    the screen (user 2026-11-13). */
 footer.foot .foot__top { padding-bottom: 30px; }
 footer.foot .foot__bot { padding-bottom: 48px; }
+/* A taller footer (user 2026-11-13, "increase the total height of the footer by a bit"): about 80px more air, spread over the gaps (top
+   padding, under the logo bar, between the columns and the name, under the copyright row). It is now taller than a 900px screen;
+   js/footer-curtain.js handles that (the footer's top sticks at the top of the screen and the rest scrolls into view). */
+@media (min-width: 641px) {
+  footer.foot { padding-top: 100px; }
+  footer.foot .foot__bar { margin-bottom: 32px; }
+  footer.foot .foot__top { padding-bottom: 52px; }
+  footer.foot .foot__bot { padding-bottom: 72px; }
+}
