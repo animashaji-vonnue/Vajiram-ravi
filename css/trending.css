@@ -5,7 +5,7 @@
    out of the top of the banner. Under it, dots, the current one filling with the banner's time (6 s); previous and next buttons
    on the banner's edges while the pointer is over it. js/trending.js runs it. */
 .tr { --tr-gap: 24px; --tr-h: 300px; position: relative; margin-top: 36px; padding: 0 0 64px; }   /* a little air under the four points (user 2026-11-13) */
-.tr__title { margin: 0 0 22px; text-align: center; font: 400 clamp(28px, 2.4vw, 36px)/1.15 var(--f-title, Georgia), serif; letter-spacing: -.02em; color: #fff; }
+/* no visible title (user 2026-11-13, "lets remove this"); the region keeps "What's trending" as its accessible name */
 
 .tr__stage { position: relative; display: flow-root; }   /* flow-root: the track's -40px top margin (room for the pictures) stays inside, so the stage is the banner's height and the buttons centre on it */
 .tr__track { display: flex; gap: var(--tr-gap); overflow-x: clip; overflow-y: visible; padding-top: 40px; margin-top: -40px; touch-action: pan-y; }   /* room above for the pictures that rise out of the banner */
@@ -84,7 +84,6 @@
 /* phones and small tablets: the picture goes under the type, the banner grows to fit; no side buttons (swipe or the dots) */
 @media (max-width: 760px) {
   .tr { margin-top: 20px; padding-bottom: 48px; }
-  .tr__title { margin-bottom: 16px; font-size: 26px; }
   .tr__track { padding-top: 0; margin-top: 0; }
   .tr__slide { --tr-h: 0px; flex-direction: column; align-items: stretch; border-radius: 20px; }
   .tr__copy { width: 100%; padding: 26px 22px 0; }
