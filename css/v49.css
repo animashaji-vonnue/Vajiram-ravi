@@ -2585,8 +2585,8 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
 #resources .sm__mini { background: #3F5B87; box-shadow: 0 0 0 1px rgba(255, 255, 255, .06) inset, 0 12px 30px -10px rgba(36, 52, 82, .35); }
 #resources .sm__mini::before { background: #34507A; }
 #resources .sm__mini::after { content: ""; position: absolute; z-index: 0; top: 50%; right: -40px; width: 150px; aspect-ratio: 1; translate: 0 -50%; pointer-events: none;
-  background: #fff; opacity: .55;
-  -webkit-mask: url(../assets/img/brand/lotus-line.svg) center / contain no-repeat; mask: url(../assets/img/brand/lotus-line.svg) center / contain no-repeat;
+  background: #fff; opacity: .5;   /* lotus-line-solid.svg: the lotus line with its strokes at full strength, so this opacity sets how white it reads */
+  -webkit-mask: url(../assets/img/brand/lotus-line-solid.svg) center / contain no-repeat; mask: url(../assets/img/brand/lotus-line-solid.svg) center / contain no-repeat;
   transition: opacity .4s ease, transform 1.2s cubic-bezier(.22, 1, .36, 1); }
 #resources .sm__mini > *, #resources .sm__mini .sm__mini-go { z-index: 1; }
 #resources .sm__mini .sm__mini-t { color: #fff; }
@@ -2596,6 +2596,6 @@ footer.foot .foot__logo--mark:focus-visible { outline: 2px solid #fff; outline-o
   #resources .sm__mini:hover { box-shadow: 0 22px 40px -18px rgba(36, 52, 82, .6); }
   #resources .sm__mini:hover .sm__mini-t, #resources .sm__mini:hover .sm__mini-d { color: #fff; }
   #resources .sm__mini:hover .sm__mini-go { stroke: #fff; }
-  #resources .sm__mini:hover::after { opacity: .75; transform: rotate(18deg) scale(1.08); }
+  #resources .sm__mini:hover::after { opacity: .7; transform: rotate(18deg) scale(1.08); }
 }
 @media (prefers-reduced-motion: reduce) { #resources .sm__mini::after { transition: none; } }
