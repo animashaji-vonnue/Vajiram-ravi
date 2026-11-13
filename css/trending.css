@@ -1,0 +1,106 @@
+/* What's trending (user 2026-11-13, from a reference: a "What's Trending" banner carousel): in the hero, under the four points, on its
+   orange ground. A centred title in the hero's Newsreader; one wide banner at a time, sliding sideways. Each banner is a light tint
+   (peach, gold, sky, rose, sage) with a faint mandala behind its picture: a small label, a headline in Newsreader in the tint's deep
+   ink, one line under it and v7's orange button on the left; the picture (the Free resources cut-outs) on the right, rising a little
+   out of the top of the banner. Under it, dots, the current one filling with the banner's time (6 s); previous and next buttons
+   on the banner's edges while the pointer is over it. js/trending.js runs it. */
+.tr { --tr-gap: 24px; --tr-h: 300px; position: relative; padding: 0 0 64px; }
+.tr__title { margin: 0 0 22px; text-align: center; font: 400 clamp(28px, 2.4vw, 36px)/1.15 var(--f-title, Georgia), serif; letter-spacing: -.02em; color: #fff; }
+
+.tr__stage { position: relative; }
+.tr__track { display: flex; gap: var(--tr-gap); overflow-x: clip; overflow-y: visible; padding-top: 40px; margin-top: -40px; touch-action: pan-y; }   /* room above for the pictures that rise out of the banner */
+.tr__slide { --bg-a: #FFF4E8; --bg-b: #FFE1C2; --ink: #8A2A07; --acc: #C2410C;
+  position: relative; flex: 0 0 100%; box-sizing: border-box; min-height: var(--tr-h); display: flex; align-items: center; border-radius: 24px;
+  background:
+    radial-gradient(38% 80% at 80% 62%, rgba(255, 255, 255, .7), transparent 70%),
+    linear-gradient(110deg, var(--bg-a) 0%, var(--bg-a) 34%, var(--bg-b) 100%);
+  box-shadow: 0 26px 50px -30px rgba(60, 15, 0, .7), inset 0 0 0 1px rgba(255, 255, 255, .6);
+  translate: calc(var(--tr-i, 0) * -1 * (100% + var(--tr-gap))) 0; transition: translate .8s cubic-bezier(.65, 0, .35, 1); }
+.tr__slide--gold  { --bg-a: #FFF8E6; --bg-b: #FFE3A3; --ink: #6B4100; --acc: #A86A08; }
+.tr__slide--sky   { --bg-a: #F2F6FC; --bg-b: #D5E2F4; --ink: #1F3A63; --acc: #3F5B87; }
+.tr__slide--rose  { --bg-a: #FFF2F2; --bg-b: #F6D3D9; --ink: #6E2236; --acc: #9D485B; }
+.tr__slide--sage  { --bg-a: #F1F8F3; --bg-b: #CFE6D9; --ink: #1E4E40; --acc: #326F66; }
+
+/* the faint mandala behind the picture, kept inside the banner's rounded corners */
+.tr__orn { position: absolute; inset: 0; z-index: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
+.tr__orn::before { content: ""; position: absolute; right: 2%; top: 50%; width: 46%; aspect-ratio: 1; translate: 0 -50%; background: var(--acc); opacity: .12;
+  -webkit-mask: url(../assets/img/patterns/mandala.svg) center / contain no-repeat; mask: url(../assets/img/patterns/mandala.svg) center / contain no-repeat; }
+
+.tr__copy { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; width: 58%; padding: 40px 0 40px clamp(28px, 4vw, 64px); box-sizing: border-box; }
+.tr__k { margin: 0 0 14px; padding: 6px 12px; border-radius: 999px; font: 700 12px/1.2 var(--f); letter-spacing: .12em; text-transform: uppercase;
+  color: var(--acc); background: color-mix(in srgb, var(--acc) 12%, transparent); }
+.tr__h { margin: 0; font: 500 clamp(28px, 2.7vw, 42px)/1.1 var(--f-title, Georgia), serif; letter-spacing: -.02em; color: var(--ink); text-wrap: balance; }
+.tr__d { margin: 12px 0 0; font: 400 18px/1.45 var(--f); color: rgba(43, 26, 16, .82); text-wrap: pretty; }
+.tr__cta.bt { margin-top: 24px; }
+
+/* the picture, on the right, its top rising out of the banner */
+.tr__pic { position: absolute; z-index: 1; right: clamp(24px, 5%, 80px); bottom: 14px; width: 36%; height: calc(100% + 26px); margin: 0; display: flex; align-items: flex-end; justify-content: center; pointer-events: none; }
+.tr__pic img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;
+  filter: drop-shadow(0 22px 22px rgba(60, 20, 6, .32)) drop-shadow(0 4px 6px rgba(60, 20, 6, .18)); transition: translate .8s cubic-bezier(.22, 1, .36, 1) .25s, rotate .8s cubic-bezier(.22, 1, .36, 1) .25s; }
+.tr__slide:not(.is-on) .tr__pic img { translate: 0 18px; rotate: -3deg; }
+
+/* previous / next, on the banner's edges, while the pointer is over it (always on touch screens wide enough to show them) */
+.tr__nav { position: absolute; top: calc(50% - 23px); z-index: 4; display: grid; place-items: center; width: 46px; height: 46px; padding: 0; border: 1px solid rgba(255, 255, 255, .8); border-radius: 50%;
+  background: rgba(255, 249, 241, .92); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #C2410C; cursor: pointer;
+  box-shadow: 0 12px 24px -12px rgba(58, 20, 6, .6); transition: opacity .3s ease, translate .35s cubic-bezier(.22, 1, .36, 1), background-color .2s, scale .2s; }
+.tr__nav svg { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.tr__nav--prev { left: -23px; }
+.tr__nav--next { right: -23px; }
+.tr__nav:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.tr__nav:active { scale: .94; }
+@media (hover: hover) and (pointer: fine) {
+  .tr__nav { opacity: 0; }
+  .tr__nav--prev { translate: 8px 0; }
+  .tr__nav--next { translate: -8px 0; }
+  .tr__stage:hover .tr__nav, .tr__stage:focus-within .tr__nav { opacity: 1; translate: 0 0; }
+  .tr__nav:hover { background: #fff; scale: 1.06; }
+}
+
+/* the dots: which banner is on, the current one filling with its time */
+.tr__dots { display: flex; justify-content: center; gap: 10px; margin: 22px 0 0; }
+.tr__dots button { position: relative; width: 9px; height: 9px; padding: 0; overflow: hidden; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .42); cursor: pointer;
+  transition: width .35s cubic-bezier(.65, 0, .35, 1), background-color .2s; }
+.tr__dots button::after { content: ""; position: absolute; inset: -8px; }
+.tr__dots button:hover { background: rgba(255, 255, 255, .7); }
+.tr__dots button[aria-current="true"] { width: 32px; background: rgba(255, 255, 255, .35); }
+.tr__dots i { position: absolute; inset: 0; border-radius: inherit; background: #fff; transform: scaleX(0); transform-origin: left; }
+.tr__dots button[aria-current="true"] i { transform: scaleX(1); }
+.tr.is-auto .tr__dots button[aria-current="true"] i { transform: scaleX(0); animation: trFill 6s linear forwards; }
+.tr.is-auto.is-paused .tr__dots i { animation-play-state: paused; }
+@keyframes trFill { to { transform: scaleX(1); } }
+.tr__dots button:focus-visible { outline: 2px solid #FFD48A; outline-offset: 3px; }
+
+/* the hero settles back as Programmes rises over it; the banners go with it */
+.tr { scale: calc(1 - var(--cover, 0) * .06); transform-origin: 50% 0; }
+
+/* ---------- narrower screens ---------- */
+@media (max-width: 1100px) {
+  .tr__copy { width: 56%; }
+  .tr__h { font-size: 30px; }
+  .tr__pic { width: 32%; right: 28px; }
+  .tr__nav--prev { left: -14px; }
+  .tr__nav--next { right: -14px; }
+}
+/* phones and small tablets: the picture goes under the type, the banner grows to fit; no side buttons (swipe or the dots) */
+@media (max-width: 760px) {
+  .tr { padding-bottom: 48px; }
+  .tr__title { margin-bottom: 16px; font-size: 26px; }
+  .tr__track { padding-top: 0; margin-top: 0; }
+  .tr__slide { --tr-h: 0px; flex-direction: column; align-items: stretch; border-radius: 20px; }
+  .tr__copy { width: 100%; padding: 26px 22px 0; }
+  .tr__h { font-size: 27px; }
+  .tr__d { font-size: 16px; }
+  .tr__cta.bt { margin-top: 18px; }
+  .tr__pic { position: relative; right: auto; bottom: auto; width: auto; height: 180px; margin: 10px 22px 18px; justify-content: flex-end; }
+  .tr__orn::before { right: -10%; top: auto; bottom: -12%; width: 70%; translate: none; }
+  .tr__nav { display: none; }
+}
+@media (max-width: 480px) {
+  .tr__cta.bt { width: 100%; justify-content: space-between; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tr__slide, .tr__pic img { transition: none; }
+  .tr__slide:not(.is-on) .tr__pic img { translate: none; rotate: none; }
+  .tr { scale: none; }
+}
