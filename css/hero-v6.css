@@ -90,11 +90,16 @@
 /* with the larger figures: the four sit as a centred group with a gap that grows with the screen (they used to spread to the panel's
    edges, too far apart on wide screens, user 2026-11-13); where space is short the lines beside them wrap narrower so they still fit */
 @media (min-width: 901px) {
-  .hx__stats { display: grid; grid-template-columns: repeat(4, auto); justify-content: center; column-gap: clamp(32px, 4vw, 88px); padding-left: 0; padding-right: 0; }
+  .hx__stats { --sg: clamp(32px, 4vw, 88px); display: grid; grid-template-columns: repeat(4, auto); justify-content: center; padding-left: 0; padding-right: 0; }
+  .hx .hx__stats { column-gap: var(--sg); }
   .hx__stats .hx__stat-t { width: auto; max-width: 150px; }
+  /* a small gold diamond in the middle of each gap, level with the figures (user 2026-11-13) */
+  .hx__stats .hx__stat { position: relative; }
+  .hx__stats .hx__stat + .hx__stat::before { content: ""; position: absolute; left: calc(var(--sg) / -2 - 4px); top: 50%; width: 8px; height: 8px; margin-top: -4px;
+    background: #FFD48A; rotate: 45deg; box-shadow: 0 0 0 3px rgba(255, 212, 138, .18); pointer-events: none; }
 }
 @media (min-width: 901px) and (max-width: 1180px) {   /* small laptops and tablets on their side: a size down, so the lines keep to two or three rows */
-  .hx__stats { column-gap: 28px; }
+  .hx__stats { --sg: 36px; }
   .hx__stats .hx__fig { font-size: 38px; }
   .hx__stats .hx__stat { gap: 12px; }
   .hx__stats .hx__stat-t { font-size: 15px; }
