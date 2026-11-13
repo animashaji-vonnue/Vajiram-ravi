@@ -1,0 +1,88 @@
+/* Life at Vajiram & Ravi (user 2026-11-13, from a reference: a cover-flow photo carousel, auto-playing in a loop). It lives in the Why
+   section after the six points, on its orange ground: a centred white title and intro in the section's type, then the photos as tall
+   rounded cards, the one in front large and flat, two each side smaller, turned away and dimmed, overlapping towards the middle. Each
+   card is labelled on the photo (a gold dot, the title, a short line). Under them the caption of the photo in front and dots; round
+   arrows at the sides. js/life-gallery.js sets each card's place (--d: -4 to 4 from the front) and runs it.
+   In the pinned scene (css/story.css .cmp--run) the gallery is a layer over the stage that rises in as the chapters lift away (--gv from
+   js/story.js); stacked (phones, short screens, reduced motion) it simply follows the six points. */
+.lg { --cw: clamp(220px, 21vw, 330px); --ch: calc(var(--cw) * 1.28); position: relative; color: #fff; text-align: center; }
+.lg__hd { max-width: 720px; margin: 0 auto; }
+.lg__h { margin: 0; font: 400 clamp(40px, 4.2vw, 64px)/1.02 var(--f-title, Georgia), serif; letter-spacing: -.02em; color: #fff; }
+.lg__intro { max-width: 520px; margin: 14px auto 0; font: 400 var(--body-fs, 17px)/var(--body-lh, 1.6) var(--f); color: rgba(255, 255, 255, .9); text-wrap: pretty; }
+
+/* the cards */
+.lg__stage { position: relative; height: calc(var(--ch) + 40px); margin-top: clamp(28px, 4vh, 44px); perspective: 1500px; touch-action: pan-y; }
+.lg__track { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; transform-style: preserve-3d; }
+.lg__card { --d: 0; --a: 0;   /* --d: place from the front (signed); --a: |--d| */
+  position: absolute; left: 50%; top: 20px; width: var(--cw); height: var(--ch); margin: 0 0 0 calc(var(--cw) / -2);
+  transform: translateX(calc(var(--x, 0) * var(--cw))) scale(var(--s, 1)) rotateY(var(--r, 0deg));
+  opacity: var(--o, 1); z-index: var(--z, 1);
+  transition: transform .9s cubic-bezier(.22, .8, .24, 1), opacity .6s ease, filter .9s ease; filter: brightness(var(--b, 1)); }
+.lg__pick { display: block; width: 100%; height: 100%; padding: 0; border: 0; border-radius: 22px; overflow: hidden; background: #6b2a0c; cursor: pointer;
+  box-shadow: 0 30px 50px -24px rgba(50, 12, 0, .75), 0 4px 10px rgba(50, 12, 0, .2), inset 0 0 0 1px rgba(255, 255, 255, .2); }
+.lg__card.is-on .lg__pick { cursor: default; }
+.lg__pick img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(.22, .8, .24, 1); transform: scale(1.06); }
+.lg__card.is-on .lg__pick img { transform: scale(1); }
+/* the label on the photo, over a dark fade along its foot */
+.lg__card::after { content: ""; position: absolute; inset: 45% 0 0; border-radius: 0 0 22px 22px; pointer-events: none; background: linear-gradient(180deg, transparent, rgba(30, 8, 0, .72)); }
+.lg__lab { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 16px; margin: 0; text-align: left; pointer-events: none; }
+.lg__lab b { position: relative; display: block; padding-left: 18px; font: 600 clamp(16px, 1.25vw, 19px)/1.2 var(--f); color: #fff; }
+.lg__lab b::before { content: ""; position: absolute; left: 0; top: .42em; width: 9px; height: 9px; border-radius: 50%; background: #FFD48A; box-shadow: 0 0 0 3px rgba(255, 212, 138, .25); }
+.lg__lab span { display: block; margin-top: 4px; padding-left: 18px; font: 500 13px/1.3 var(--f); letter-spacing: .02em; color: rgba(255, 255, 255, .78); }
+.lg__card:not(.is-on) .lg__lab span { opacity: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .lg__card:not(.is-on):hover { filter: brightness(calc(var(--b, 1) + .12)); }
+  .lg__card.is-on:hover .lg__pick img { transform: scale(1.03); }
+}
+
+/* the arrows at the sides */
+.lg__nav { position: absolute; top: calc(20px + var(--ch) / 2 - 24px); z-index: 20; display: grid; place-items: center; width: 48px; height: 48px; padding: 0;
+  border: 1px solid rgba(255, 255, 255, .7); border-radius: 50%; background: rgba(255, 249, 241, .92); color: #C2410C; cursor: pointer;
+  box-shadow: 0 14px 26px -14px rgba(50, 12, 0, .7); transition: background-color .2s, scale .2s, translate .25s; }
+.lg__nav svg { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.lg__nav--prev { left: max(0px, calc(50% - var(--cw) * 2.35 - 48px)); }
+.lg__nav--next { right: max(0px, calc(50% - var(--cw) * 2.35 - 48px)); }
+.lg__nav:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.lg__nav:active { scale: .94; }
+@media (hover: hover) and (pointer: fine) {
+  .lg__nav:hover { background: #fff; }
+  .lg__nav--prev:hover { translate: -2px 0; }
+  .lg__nav--next:hover { translate: 2px 0; }
+}
+
+/* the caption and the dots */
+.lg__cap { min-height: 2.9em; max-width: 520px; margin: 10px auto 0; font: 400 16px/1.45 var(--f); color: rgba(255, 255, 255, .92); text-wrap: balance; transition: opacity .3s ease; }
+.lg__cap.is-sw { opacity: 0; }
+.lg__dots { display: flex; justify-content: center; gap: 8px; margin: 14px 0 0; }
+.lg__dots button { position: relative; width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .42); cursor: pointer; transition: width .35s cubic-bezier(.65, 0, .35, 1), background-color .2s; }
+.lg__dots button::after { content: ""; position: absolute; inset: -8px -4px; }
+.lg__dots button:hover { background: rgba(255, 255, 255, .75); }
+.lg__dots button[aria-current="true"] { width: 26px; background: #FFD48A; }
+.lg__dots button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* ---------- stacked (no pinned scene): after the six points ---------- */
+#story:not(.cmp--run) .cmp__gal { margin-top: clamp(96px, 14vh, 160px); }
+
+/* ---------- in the pinned scene: a layer over the stage, rising in as the chapters lift away ---------- */
+.cmp--run .cmp__gal { position: absolute; inset: 0; z-index: 30; display: flex; flex-direction: column; justify-content: center; padding: calc(84px + 2vh) var(--px) 3vh;
+  box-sizing: border-box; --cw: clamp(200px, min(22vw, 33vh), 340px); opacity: var(--gv, 0); pointer-events: none; }
+.cmp--run .cmp__gal.is-shown { pointer-events: auto; }
+.cmp--run .lg__hd { translate: 0 calc((1 - var(--gv, 0)) * 10vh); }
+.cmp--run .lg__stage, .cmp--run .lg__cap, .cmp--run .lg__dots { translate: 0 calc((1 - var(--gv, 0)) * 16vh); }
+.cmp--run .cmp__ov { translate: 0 calc(var(--lift, 0) * -10vh); opacity: calc(var(--ov) * (1 - var(--lift, 0))); }
+.cmp--run .cmp__ov.is-gone { visibility: hidden; }
+@media (max-height: 760px) { .cmp--run .lg__intro { display: none; } .cmp--run .lg__stage { margin-top: 20px; } }
+
+/* ---------- phones and small tablets ---------- */
+@media (max-width: 760px) {
+  .lg { --cw: min(62vw, 260px); }
+  .lg__h { font-size: 38px; }
+  .lg__nav { display: none; }
+  .lg__lab { left: 14px; right: 14px; bottom: 12px; }
+  .lg__lab span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lg__card, .lg__pick img, .lg__cap { transition: none; }
+  .cmp--run .lg__hd, .cmp--run .lg__stage, .cmp--run .lg__cap, .cmp--run .lg__dots, .cmp--run .cmp__ov { translate: none; }
+}

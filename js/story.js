@@ -5,12 +5,15 @@
      182-280  the card shrinks into the first chapter's photo slot (40vw x 52vh, bottom-left) and the heading and chapters fade up
      280-322  the caption blurs in, its rule draws, the button rises
      then     each next chapter swings in about its bottom-left corner from 30deg while the track slides a screen (112vh, 7vh apart)
+     then     (version 7, "Life at Vajiram & Ravi", user 2026-11-13) a short rest on the sixth chapter, then the chapters lift away
+              (GA to GA+60) while the photo gallery (#lifeGal) rises in (GA+35 to GB); it holds a moment before the scene lets go
    What is drawn trails the scroll on an exponential ease. Wide screens (900 x 600 and up) with motion only; otherwise css/story.css
    shows the chapters stacked. A spacer after the section supplies the scroll the scene plays over. */
 (() => {
   const sec = document.getElementById('story');
   if (!sec) return;
   const stage = sec.querySelector('.cmp__stage'), card = sec.querySelector('.cmp__card'), track = sec.querySelector('.cmp__track');
+  const ov = sec.querySelector('.cmp__ov'), gal = sec.querySelector('.cmp__gal');
   const panels = [...track.children], N = panels.length;
   const wide = matchMedia('(min-width: 900px) and (min-height: 600px)'), reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -19,7 +22,11 @@
   const lerp = (a, b, t) => a + (b - a) * t;
   // the first chapter's photo slot (css/story.css .cmp--run .cmp__ph): width SW vw, height SH vh, top ST of the screen
   const SW = 44, SH = 54, ST = .36;
-  const S0 = 322, STEP = 119, DUR = 112, RUN = S0 + (N - 1) * STEP + 40, TAU = .12;
+  const S0 = 322, STEP = 119, DUR = 112, TAU = .12;
+  const LAND = S0 + (N - 2) * STEP + DUR;                   // the sixth chapter has landed
+  const GA = LAND + 30, GB = GA + 110;                      // the gallery: chapters lift from GA, the gallery is fully up at GB
+  const RUN = gal ? GB + 30 : S0 + (N - 1) * STEP + 40;
+  let shown = null;
   // Version 7: the opening zoom (0-322) is skipped. The scene starts settled on the first chapter, and the scroll only
   // carries the chapters sliding in from the right.
   const START = S0;
@@ -52,6 +59,19 @@
       p.style.setProperty('--e', e.toFixed(4));   // css/story.css: the photo settles from a slight zoom as its chapter lands
     });
     track.style.setProperty('--tx', (-shift * 100).toFixed(3) + 'vw');
+    if (gal) {
+      const lift = io(seg(u, GA, GA + 60)), gv = io(seg(u, GA + 35, GB));
+      st.setProperty('--lift', lift.toFixed(4));
+      st.setProperty('--gv', gv.toFixed(4));
+      gal.classList.toggle('is-up', gv > .001);
+      ov.classList.toggle('is-gone', lift > .999);
+      const sh = gv > .6;
+      if (sh !== shown) {
+        shown = sh;
+        gal.classList.toggle('is-shown', sh);   // (not inert: tabbing into the gallery scrolls it up, see focusin below)
+        gal.dispatchEvent(new CustomEvent('lifegal', { detail: sh }));   // js/life-gallery.js starts / stops its autoplay
+      }
+    }
     const w = lerp(lerp(22, 92, g), SW, m) * W / 100, ht = lerp(lerp(49, 82, g), SH, m) * h / 100;
     // settled, the card sits exactly on the first chapter's photo slot: left = --px, top = ST
     const xEnd = px + SW / 200 * W - W / 2, yEnd = (ST + SH / 200) * h - h / 2;
@@ -80,20 +100,21 @@
     sec.classList.toggle('cmp--run', on);
     if (on) {
       sec.after(spacer); size(); su = aim(); draw(su);   // version 7: draw the settled first chapter at once, before any scroll
-      sec.querySelectorAll('img[loading="lazy"]').forEach(i => { i.loading = 'eager'; });   // off-screen chapters would never intersect
+      sec.querySelectorAll('.cmp__ov img[loading="lazy"]').forEach(i => { i.loading = 'eager'; });   // off-screen chapters would never intersect (the gallery loads its own)
       queue();
     } else {
       spacer.remove();
       stage.removeAttribute('style'); track.removeAttribute('style'); card.removeAttribute('style');
       panels.forEach(p => { p.style.transform = ''; p.style.removeProperty('--e'); });
+      if (gal) { shown = null; gal.classList.remove('is-up', 'is-shown'); ov.classList.remove('is-gone'); gal.dispatchEvent(new CustomEvent('lifegal', { detail: false })); }
     }
   };
 
   // a focused link brings its chapter to rest on screen
   sec.addEventListener('focusin', e => {
     if (!on) return;
-    const p = e.target.closest('.cmp__p'); if (!p) return;
-    const k = panels.indexOf(p), u = k ? S0 + (k - 1) * STEP + DUR : S0;
+    const p = e.target.closest('.cmp__p'), g = gal && gal.contains(e.target); if (!p && !g) return;
+    const k = p ? panels.indexOf(p) : -1, u = g ? GB : k ? S0 + (k - 1) * STEP + DUR : S0;
     const y0 = spacer.getBoundingClientRect().top + scrollY - H();
     const y = y0 + (u - START) / 100 * H();
     if (window.__lenis) window.__lenis.scrollTo(y, { immediate: true }); else scrollTo({ top: y, behavior: 'auto' });
