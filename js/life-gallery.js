@@ -1,8 +1,9 @@
 /* Life at Vajiram & Ravi (#lifeGal; styles in css/life-gallery.css). A cover-flow carousel that loops: every card gets its place from
    the front, d = -4..4 (the shortest way round), and from it where it sits (--x, in card widths), its size (--s), its turn (--r), how
-   bright (--b) and whether it shows (--o: two cards each side, the rest wait unseen just outside). It advances every 3.6 s while it is
-   in view (in the pinned Why scene: once js/story.js has raised it, the "lifegal" event), and pauses while the pointer is over the
-   photos, while the keyboard is in it, and while the tab is hidden; with prefers-reduced-motion it does not advance on its own. The
+   bright (--b) and whether it shows (--o: two cards each side, the rest wait unseen just outside). It advances every 2.5 s, round and round,
+   while it is in view (in the pinned Why scene: once js/story.js has raised it, the "lifegal" event). It keeps going under the pointer
+   and after a click; it holds only while keyboard focus is in it and while the tab is hidden; with prefers-reduced-motion it does not
+   advance on its own. The
    arrows, the dots, the arrow keys, a click on a side photo and a sideways swipe move it. */
 (() => {
   const gal = document.getElementById('lifeGal'); if (!gal) return;
@@ -12,7 +13,7 @@
   const N = cards.length; if (N < 2) return;
   const auto = !matchMedia('(prefers-reduced-motion: reduce)').matches;
   const X = [0, .78, 1.36, 1.8, 2.1], S = [1, .84, .7, .6, .55], R = [0, 16, 24, 28, 30], B = [1, .8, .66, .6, .6], O = [1, 1, .92, 0, 0];
-  let i = 0, inView = false, raised = false, held = false, focus = false, timer = 0, near = false;
+  let i = 0, inView = false, raised = false, focus = false, timer = 0, near = false;
 
   const place = () => {
     cards.forEach((c, k) => {
@@ -32,8 +33,8 @@
   // once the section is on screen, load the photos in view and the next ones round (the rest stay lazy until they come near)
   const preload = () => { if (!near) return; [i - 3, i - 2, i - 1, i, i + 1, i + 2, i + 3].forEach(k => { const im = cards[((k % N) + N) % N].querySelector('img'); if (im) im.loading = 'eager'; }); };
   const pinned = () => !!(sec && sec.classList.contains('cmp--run'));
-  const running = () => auto && (pinned() ? raised : inView) && !held && !focus && !document.hidden;
-  const restart = () => { clearTimeout(timer); if (running()) timer = setTimeout(() => go(i + 1), 3600); };
+  const running = () => auto && (pinned() ? raised : inView) && !focus && !document.hidden;
+  const restart = () => { clearTimeout(timer); if (running()) timer = setTimeout(() => go(i + 1), 2500); };   // 2.5 s a photo (user 2026-11-13)
   const go = n => {
     const next = ((n % N) + N) % N;
     if (next !== i) {
@@ -62,9 +63,8 @@
     if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) go(i + (dx < 0 ? 1 : -1));
   }, { passive: true });
 
-  stage.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { held = true; restart(); } });
-  stage.addEventListener('pointerleave', () => { held = false; restart(); });
-  gal.addEventListener('focusin', () => { focus = true; restart(); });
+  // it keeps looping under the pointer and after a click; only keyboard focus inside it (someone reading with the keyboard) holds it
+  gal.addEventListener('focusin', e => { focus = e.target.matches(':focus-visible'); restart(); });
   gal.addEventListener('focusout', e => { if (!gal.contains(e.relatedTarget)) { focus = false; restart(); } });
   document.addEventListener('visibilitychange', restart);
   new IntersectionObserver(es => { inView = es[0].isIntersecting; sync(); }, { threshold: .3 }).observe(stage);
