@@ -12,7 +12,8 @@
   const stage = gal.querySelector('.lg__stage'), cap = gal.querySelector('.lg__cap');
   const N = cards.length; if (N < 2) return;
   const auto = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const X = [0, .78, 1.36, 1.8, 2.1], S = [1, .84, .7, .6, .55], R = [0, 16, 24, 28, 30], B = [1, .8, .66, .6, .6], O = [1, 1, .92, 0, 0];
+  // the front photo a size up (1.14) and the others see-through (55%, then 32%), so the one in front stands out (user 2026-11-13)
+  const X = [0, .9, 1.5, 1.92, 2.2], S = [1.14, .8, .66, .58, .55], R = [0, 16, 24, 28, 30], B = [1, .92, .85, .8, .8], O = [1, .55, .32, 0, 0];
   let i = 0, inView = false, raised = false, focus = false, timer = 0, near = false;
 
   const place = () => {

@@ -10,12 +10,13 @@
 .lg__intro { max-width: 520px; margin: 14px auto 0; font: 400 var(--body-fs, 17px)/var(--body-lh, 1.6) var(--f); color: rgba(255, 255, 255, .9); text-wrap: pretty; }
 
 /* the cards */
-.lg__stage { position: relative; height: calc(var(--ch) + 40px); margin-top: clamp(28px, 4vh, 44px); touch-action: pan-y; }
+.lg__stage { position: relative; height: calc(var(--ch) * 1.14 + 40px);   /* room for the front card at 1.14 */
+   margin-top: clamp(28px, 4vh, 44px); touch-action: pan-y; }
 /* each card carries its own perspective and the track stays flat, so the cards stack by z-index: the one in front is always on top
    (in a shared 3D space the turned side cards' near edges came forward past it, user 2026-11-13) */
 .lg__track { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
 .lg__card { --d: 0; --a: 0;   /* --d: place from the front (signed); --a: |--d| */
-  position: absolute; left: 50%; top: 20px; width: var(--cw); height: var(--ch); margin: 0 0 0 calc(var(--cw) / -2);
+  position: absolute; left: 50%; top: calc(20px + var(--ch) * .07); width: var(--cw); height: var(--ch); margin: 0 0 0 calc(var(--cw) / -2);
   transform: translateX(calc(var(--x, 0) * var(--cw))) perspective(1500px) scale(var(--s, 1)) rotateY(var(--r, 0deg));
   opacity: var(--o, 1); z-index: var(--z, 1);
   transition: transform .9s cubic-bezier(.22, .8, .24, 1), opacity .6s ease, filter .9s ease; filter: brightness(var(--b, 1)); }
@@ -32,7 +33,7 @@
 }
 
 /* the arrows at the sides */
-.lg__nav { position: absolute; top: calc(20px + var(--ch) / 2 - 24px); z-index: 20; display: grid; place-items: center; width: 48px; height: 48px; padding: 0;
+.lg__nav { position: absolute; top: calc(20px + var(--ch) * .57 - 24px); z-index: 20; display: grid; place-items: center; width: 48px; height: 48px; padding: 0;
   border: 1px solid rgba(255, 255, 255, .7); border-radius: 50%; background: rgba(255, 249, 241, .92); color: #C2410C; cursor: pointer;
   box-shadow: 0 14px 26px -14px rgba(50, 12, 0, .7); transition: background-color .2s, scale .2s, translate .25s; }
 .lg__nav svg { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
