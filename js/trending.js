@@ -1,5 +1,8 @@
 /* What's trending (#trending, in the hero under the four points; styles in css/trending.css). One banner at a time, sliding sideways
-   (each slide is moved by --tr-i, the index of the banner on show). The current dot fills over 6 s (a CSS animation) and its end moves
+   in an endless loop: each banner sits at its place from the one on show, d (-2..2, the shortest way round), so after the last banner
+   the first comes in from the right like any other, and going back from the first brings the last in from the left (user 2026-11-13:
+   it used to slide back past every banner); a banner that changes sides out of sight jumps there without sliding (--tr-o = d - its
+   index, since the flex row already places it at its index). The current dot fills over 6 s (a CSS animation) and its end moves
    to the next banner. It pauses while the pointer is over the banners or the keyboard is in them, while off screen, and while the tab
    is hidden; with prefers-reduced-motion it does not advance on its own. Previous / next buttons, the dots, the arrow keys and a
    sideways swipe change the banner. Only the banner on show can be reached (the others are inert). */
@@ -14,7 +17,11 @@
   const go = n => {
     i = (n + slides.length) % slides.length;
     slides.forEach((s, k) => {
-      s.style.setProperty('--tr-i', i);
+      let d = ((k - i) % slides.length + slides.length) % slides.length; if (d > slides.length / 2) d -= slides.length;
+      if (s._d !== undefined && Math.abs(d - s._d) > 1 && d !== 0 && s._d !== 0) {   // changing sides out of sight: no slide
+        s.style.transition = 'none'; s.style.setProperty('--tr-o', d - k); void s.offsetWidth; s.style.transition = '';
+      } else s.style.setProperty('--tr-o', d - k);
+      s._d = d;
       const on = k === i;
       s.classList.toggle('is-on', on); s.inert = !on; s.toggleAttribute('aria-hidden', !on);
     });
